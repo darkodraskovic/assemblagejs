@@ -103,7 +103,7 @@ function parseMap(game, collider, maker) {
                         args[prop] = eval(oData["properties"][prop]);
                     }
 
-                    var o = new A_.Sprite();
+                    var o = new A_.SPRITES.Sprite();
 
                     for (var prop in oData) {
                         o[prop] = oData[prop];

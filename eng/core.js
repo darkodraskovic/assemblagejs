@@ -193,4 +193,5 @@ SAT.Polygon.prototype.setScale = function (x, y) {
 }
 
 var A_ = {};
+A_.SPRITES = {};
 A_.MODULES = {};

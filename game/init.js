@@ -43,7 +43,7 @@ var collider = new A_.Collider();
 var DEBUG = true;
 // INITIALIZE GAMEWORLD
 function onAssetsLoaded() {
-    Player.inject(A_.MODULES.Topdown);
+    A_.SPRITES.ArcadeSprite.inject(A_.MODULES.Topdown);
 //    Player.inject(A_.MODULES.Platformer);
     
     parseMap(game, collider, maker);
