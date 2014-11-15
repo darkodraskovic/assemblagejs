@@ -1,0 +1,39 @@
+{"frames": {
+
+"ice_block.png":
+{
+	"frame": {"x":2,"y":2,"w":132,"h":131},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":132,"h":131},
+	"sourceSize": {"w":132,"h":131},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"metal_crate.png":
+{
+	"frame": {"x":136,"y":2,"w":131,"h":131},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":131,"h":131},
+	"sourceSize": {"w":131,"h":131},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"wooden_crate.png":
+{
+	"frame": {"x":269,"y":2,"w":132,"h":131},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":132,"h":131},
+	"sourceSize": {"w":132,"h":131},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "crates.png",
+	"format": "RGBA8888",
+	"size": {"w":403,"h":135},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:1d60e23ceea0cbb51871541fc0fea58b:09c0fd11f54435b1011050c2a0c56be8:903d5a8c338301bcf02826ab4713e267$"
+}
+}
