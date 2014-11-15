@@ -53,7 +53,7 @@ A_.SPRITES.Sprite = Class.extend({
     },
     update: function () {
 
-    },
+    },    
     postupdate: function () {
         this.sprite.rotation = this.rotation;
         this.sprite.alpha = this.alpha;
@@ -237,7 +237,8 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
     collideWithStatic: function (other, response) {
         var pon = this.prevOverlapN.clone();
         this._super(other, response);
-
+        
+        // BUG: the sprite does not bounce in tilemap corners
         if (this.bounciness > 0) {
             if (response.overlapN.x !== 0 && Math.abs(this.velocity.x) > this.speed.x) {
                 if (pon.y === 0)

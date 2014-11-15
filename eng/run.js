@@ -30,7 +30,7 @@ A_.Game = Class.extend({
         y: 0,
         width: 0,
         height: 0,
-        clickPosition: null,
+        mousePosition: null,
         container: null
     },
     updateSprites: [],
@@ -133,12 +133,12 @@ A_.Game = Class.extend({
         // #docs This will return the point containing global coordinates of the mouse,
         // more precisely, a point containing the coordinates of the global InteractionData position.
         // InteractionData holds all information related to an Interaction event.
-        this.gameWorld.clickPosition = this.stage.getMousePosition().clone();
-        // Transform the mouse click position from the unscaled stage's global system to
+        this.gameWorld.mousePosition = this.stage.getMousePosition().clone();
+        // Transform the mouse position from the unscaled stage's global system to
         // the unscaled scaled gameWorld.container's system. 
-        this.gameWorld.clickPosition.x /= this.scale;
-        this.gameWorld.clickPosition.y /= this.scale;
-        this.gameWorld.clickPosition.x += this.camera.x;
-        this.gameWorld.clickPosition.y += this.camera.y;
+        this.gameWorld.mousePosition.x /= this.scale;
+        this.gameWorld.mousePosition.y /= this.scale;
+        this.gameWorld.mousePosition.x += this.camera.x;
+        this.gameWorld.mousePosition.y += this.camera.y;
     }
 });

@@ -125,7 +125,7 @@ function makeCamera(width, height, innerBoundOffset) {
 
         if (this.worldBounded) {
             this.bound();
-        }
+        }        
 
         var campPos = {x: this.x, y: this.y};
         game.gameWorld.container.position.x = -campPos.x;

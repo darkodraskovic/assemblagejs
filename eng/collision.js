@@ -50,6 +50,9 @@ A_.Collider = Class.extend({
         o.collisionPolygon.origH = o.collisionPolygon.h;
 
         o.collides = true;
+        
+        if (o.sprite && o.sprite.interactive)
+            o.sprite.hitArea = SATPolygonToPIXIPolygon(o.collisionPolygon, false);
 
         o.updateCollisionPolygon = function () {
             // We don't need to worry about transforming from positive y axis of SAT.js

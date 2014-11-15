@@ -2,21 +2,28 @@
 if (typeof (Number.prototype.toRad) === "undefined") {
     Number.prototype.toRad = function () {
         return this * Math.PI / 180;
-    }
+    };
 }
 
 /** Converts numeric radians to degrees */
 if (typeof (Number.prototype.toDeg) === "undefined") {
     Number.prototype.toDeg = function () {
         return this * 180 / Math.PI;
-    }
+    };
 }
 
 if (typeof (Number.prototype.clamp) === "undefined") {
     Number.prototype.clamp = function (min, max) {
         return Math.min(max, Math.max(min, this));
-    }
+    };
 }
+
+if (typeof (Number.prototype.lerp) === "undefined") {
+    Number.prototype.lerp = function (a, x, b) {
+        return a + x * (b - a);
+    };
+}
+
 
 /* Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/
@@ -142,27 +149,37 @@ var inject = function (prop) {
 //
 //var ani = new Animal();
 
-function drawSATPolygon(graphics, polygon) {
-    var calcPointsTransl = _.map(polygon.calcPoints,
-            function (calcPoint) {
-                return calcPoint.clone().add(new SAT.Vector(polygon.pos.x, polygon.pos.y));
-            });
+function drawSATPolygon(graphics, polygon) {    
+    var calcPointsArr = (SATPolygonToPIXIPolygon(polygon, true)).points;
 
-    var calcPointsArr = _.reduce(calcPointsTransl, function (points, vector) {
+    graphics.lineStyle(2, 0xff0000);
+
+    graphics.drawPolygon(calcPointsArr);
+    graphics.endFill();
+}
+
+function SATPolygonToPIXIPolygon(SATPolygon, translated) {
+    var calcPoints;
+    if (translated) {        
+        calcPoints = _.map(SATPolygon.calcPoints,
+                function (calcPoint) {
+                    return calcPoint.clone().add(new SAT.Vector(SATPolygon.pos.x, SATPolygon.pos.y));
+                });
+    } else {
+        calcPoints = _.map(SATPolygon.calcPoints,
+                function (calcPoint) {
+                    return calcPoint.clone();
+                });        
+    }
+
+    var calcPointsArr = _.reduce(calcPoints, function (points, vector) {
         return points.concat(_.reduce(vector, function (coords, point) {
             return coords.concat(point)
         }, []));
     }, []);
     calcPointsArr[calcPointsArr.length] = calcPointsArr[0];
-    calcPointsArr[calcPointsArr.length] = calcPointsArr[1];
-
-    // graphics.beginFill(0xFF3300);
-    // #docs: Specifies the line style used for subsequent calls to Graphics 
-    // methods such as the lineTo() method or the drawCircle() method.
-    graphics.lineStyle(2, 0xff0000);
-
-    graphics.drawPolygon(calcPointsArr);
-    graphics.endFill();
+    calcPointsArr[calcPointsArr.length] = calcPointsArr[1]; 
+    return new PIXI.Polygon(calcPointsArr);    
 }
 
 function drawCircle(graphics, position) {

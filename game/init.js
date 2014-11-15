@@ -43,15 +43,15 @@ var collider = new A_.Collider();
 var DEBUG = true;
 // INITIALIZE GAMEWORLD
 function onAssetsLoaded() {
-    A_.SPRITES.ArcadeSprite.inject(A_.MODULES.Topdown);
+    Player.inject(A_.MODULES.Topdown);
 //    Player.inject(A_.MODULES.Platformer);
     
     parseMap(game, collider, maker);
 
     camera = makeCamera(game.renderer.view.width, game.renderer.view.height, 0.25, player);
     camera.followee = player;
-    camera.followType = "centered";
-    camera.worldBounded = false;
+    camera.followType = "bounded";
+    camera.worldBounded = true;
     player.camera = camera;
 
     game.camera = camera;
