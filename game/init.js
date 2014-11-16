@@ -4,7 +4,7 @@
 var mapData;
 // The json file loader; used to load in JSON data and parse it.
 // Here, it loads a JSON file exported by TILED.
-var mapLoader = new PIXI.JsonLoader("assets/map.json");
+var mapLoader = new PIXI.JsonLoader("assets/map_skorpio.json");
 
 mapLoader.on('loaded', function (evt) {
     // parsed data can be found in evt.content.json (1.6) and in 2.0...
@@ -21,7 +21,11 @@ mapLoader.on('loaded', function (evt) {
 // Supported image formats include 'jpeg', 'jpg', 'png', 'gif'.  
 // Supported sprite sheet data formats only include 'JSON' at this time. 
 // Supported bitmap font data formats include 'xml' and 'fnt'.
-var assetsToLoad = ["assets/metal_tiles.png", "assets/ice_tiles.png", "assets/ball.png"];
+var assetsToLoad = [
+    "assets/Armor2Walk.png", "assets/Armor2Hurt.png", "assets/Armor2Shoot.png",
+    "assets/AgentWalk.png",
+    "assets/Interior-Furniture.png"
+];
 var assetLoader = new PIXI.AssetLoader(assetsToLoad);
 // use callback
 assetLoader.onComplete = onAssetsLoaded;
@@ -43,9 +47,11 @@ var collider = new A_.Collider();
 var DEBUG = true;
 // INITIALIZE GAMEWORLD
 function onAssetsLoaded() {
+    game.collider = collider;
+    
     Player.inject(A_.MODULES.Topdown);
 //    Player.inject(A_.MODULES.Platformer);
-    
+
     parseMap(game, collider, maker);
 
     camera = makeCamera(game.renderer.view.width, game.renderer.view.height, 0.25, player);
@@ -57,7 +63,6 @@ function onAssetsLoaded() {
     game.camera = camera;
     game.setScale(game.scale);
 
-    game.collider = collider;
 
     if (DEBUG) {
         collider.setDebug();
@@ -75,10 +80,14 @@ function gameLoop() {
 }
 
 function maker(name, args) {
+    var o;
     switch (name) {
         case "Player":
             player = new Player();
-            var o = player;
+            o = player;
+            break;
+        case "Agent":
+            o = new Agent();
             break;
         default:
             break;

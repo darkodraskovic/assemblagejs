@@ -1,3 +1,5 @@
+var A_ = {};
+
 /** Converts numeric degrees to radians */
 if (typeof (Number.prototype.toRad) === "undefined") {
     Number.prototype.toRad = function () {
@@ -23,6 +25,15 @@ if (typeof (Number.prototype.lerp) === "undefined") {
         return a + x * (b - a);
     };
 }
+
+A_.UTILITIES = {};
+A_.UTILITIES.arrayRange = function (lowEnd, highEnd) {
+    var list = [];
+    for (var i = lowEnd; i <= highEnd; i++) {
+        list.push(i);
+    }
+    return list;
+};
 
 
 /* Simple JavaScript Inheritance
@@ -149,7 +160,7 @@ var inject = function (prop) {
 //
 //var ani = new Animal();
 
-function drawSATPolygon(graphics, polygon) {    
+function drawSATPolygon(graphics, polygon) {
     var calcPointsArr = (SATPolygonToPIXIPolygon(polygon, true)).points;
 
     graphics.lineStyle(2, 0xff0000);
@@ -160,7 +171,7 @@ function drawSATPolygon(graphics, polygon) {
 
 function SATPolygonToPIXIPolygon(SATPolygon, translated) {
     var calcPoints;
-    if (translated) {        
+    if (translated) {
         calcPoints = _.map(SATPolygon.calcPoints,
                 function (calcPoint) {
                     return calcPoint.clone().add(new SAT.Vector(SATPolygon.pos.x, SATPolygon.pos.y));
@@ -169,7 +180,7 @@ function SATPolygonToPIXIPolygon(SATPolygon, translated) {
         calcPoints = _.map(SATPolygon.calcPoints,
                 function (calcPoint) {
                     return calcPoint.clone();
-                });        
+                });
     }
 
     var calcPointsArr = _.reduce(calcPoints, function (points, vector) {
@@ -178,8 +189,8 @@ function SATPolygonToPIXIPolygon(SATPolygon, translated) {
         }, []));
     }, []);
     calcPointsArr[calcPointsArr.length] = calcPointsArr[0];
-    calcPointsArr[calcPointsArr.length] = calcPointsArr[1]; 
-    return new PIXI.Polygon(calcPointsArr);    
+    calcPointsArr[calcPointsArr.length] = calcPointsArr[1];
+    return new PIXI.Polygon(calcPointsArr);
 }
 
 function drawCircle(graphics, position) {
@@ -209,6 +220,6 @@ SAT.Polygon.prototype.setScale = function (x, y) {
     this.setOffset(new SAT.Vector(this.offset.x * x, this.offset.y * y));
 }
 
-var A_ = {};
+
 A_.SPRITES = {};
 A_.MODULES = {};

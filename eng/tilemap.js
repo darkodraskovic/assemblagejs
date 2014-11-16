@@ -67,10 +67,9 @@ function makeTilemap(layer, img,
         tileSprite.getPosition = function () { return this.position;}
         this.layer.addChild(tileSprite);
         if (this.layer.collision) {
-            collider.activateCollisionFor(tileSprite, tileW, tileH, 0, 0);
+            collider.activateCollisionFor(tileSprite, null, tileW, tileH, 0, 0);
             tileSprite.collisionType = "static";
             collider.collisionStatics.push(tileSprite);
-            // collisionObjects.push(tileSprite);
         }
 
     };

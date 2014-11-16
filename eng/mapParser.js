@@ -97,6 +97,7 @@ function parseMap(game, collider, maker) {
                 // copy object data into temp var
                 var oData = layersData[i]["objects"][j];
 
+                // POLY || RECT
                 if (oData.polygon || oData.type === "Rectangle") {
                     var args = {};
                     for (var prop in oData["properties"]) {
@@ -113,25 +114,19 @@ function parseMap(game, collider, maker) {
                         o[prop] = args[prop];
                     }
 
-//                    o.position.x = o.x;
-//                    o.position.y = o.y;
                     o.setPosition(o.x, o.y);
 
                     if (oData.polygon) {
                         var collisionPolygon = createSATPolygonFromTiled(oData, true);
-                        collider.activateCollisionFor(o, 0, 0, 0, 0, collisionPolygon);
+                        o.setCollision(collisionPolygon);
                         var pos = o.getPosition();
                         o.setPosition(pos.x - collisionPolygon.offset.x, pos.y - collisionPolygon.offset.y);
-//                        o.position.x -= collisionPolygon.offset.x;
-//                        o.position.y -= collisionPolygon.offset.y;
                         o.updateCollisionPolygon();
 
                     } else {
                         var pos = o.getPosition();
                         o.setPosition(pos.x + oData.width / 2, pos.y + oData.height / 2);
-//                        o.position.x += oData.width / 2;
-//                        o.position.y += oData.height / 2;
-                        collider.activateCollisionFor(o, oData.width, oData.height);
+                        o.setCollision();
                     }
 
                     o.update();
@@ -157,41 +152,16 @@ function parseMap(game, collider, maker) {
                     // nevertheless, y axis in TILED points downwards
                     var pos = o.getPosition();
                     o.setPosition(o.x + o.width / 2, o.y + o.height / 2);
-//                    o.position.x = o.x + o.width / 2;
-//                    o.position.y = o.y - o.height / 2;
 
                     var colPolyData = _.find(collider.collisionMasks, function (mask) {
                         return mask.name === o.collisionMask;
                     });
                     if (colPolyData) {
                         var collisionPolygon = createSATPolygonFromTiled(colPolyData, true);
-                        collider.activateCollisionFor(o, 0, 0, 0, 0, collisionPolygon);
+                        o.setCollision(collisionPolygon);
                     }
                     else
-                    if (o.properties) {
-                        if (o.properties["collisionW"] && o.properties["collisionH"]) {
-                            var colW = o["collisionW"];
-                            var colH = o["collisionH"];
-                            collider.activateCollisionFor(o, colW, colH);
-                        } else
-                            collider.activateCollisionFor(o);
-                    }
-
-
-                    if (o.properties) {
-                        if (o.properties["collisionOffsetX"]) {
-                            o.collisionPolygon.offset.x += o["collisionOffsetX"];
-                            o.collisionPolygon.origOffset.x = o.collisionPolygon.offset.x;
-                            o.collisionPolygon.recalc();
-                            o.updateCollisionPolygon();
-                        }
-                        if (o.properties["collisionOffsetY"]) {
-                            o.collisionPolygon.offset.y += o["collisionOffsetY"];
-                            o.collisionPolygon.origOffset.y = o.collisionPolygon.offset.y;
-                            o.collisionPolygon.recalc();
-                            o.updateCollisionPolygon();
-                        }
-                    }
+                        o.setCollision();
 
                     layer.addChild(o.sprite);
                 }
@@ -216,6 +186,9 @@ function parseMap(game, collider, maker) {
                             o.collisionType = "static";
                             collider.collisionStatics.push(o);
                         }
+                    } else {
+                        o.collisionType = "static";
+                        collider.collisionStatics.push(o);
                     }
                 }
             }

@@ -5,6 +5,8 @@ A_.SPRITES.Sprite = Class.extend({
     rectangle: null,
     bounded: true,
     prevOverlapN: new SAT.Vector(0, 0),
+    collisionOffsetX: 0,
+    collisionOffsetY: 0,
     init: function () {
         if (this.image) {
             this.sprite = new PIXI.Sprite.fromImage(this.image);
@@ -24,6 +26,7 @@ A_.SPRITES.Sprite = Class.extend({
         this.height = 1;
 
         this.alpha = 1;
+
     },
     setPosition: function (x, y) {
         this.sprite.position.x = x;
@@ -51,9 +54,24 @@ A_.SPRITES.Sprite = Class.extend({
     getScale: function () {
         return this.sprite.scale;
     },
+    setCollision: function (polygon) {
+        if (!this.collisionW)
+            this.collisionW = this.width;
+        if (!this.collisionH)
+            this.collisionH = this.height;
+        
+        if (polygon) {
+            window.console.log("Poly of " + this.name);
+            game.collider.activateCollisionFor(this, polygon);
+        }
+        else {
+            game.collider.activateCollisionFor(this, polygon, this.collisionW, this.collisionH,
+                    this.collisionW / 2 - this.collisionOffsetX, this.collisionH / 2 - this.collisionOffsetY);
+        }
+    },
     update: function () {
 
-    },    
+    },
     postupdate: function () {
         this.sprite.rotation = this.rotation;
         this.sprite.alpha = this.alpha;
@@ -71,7 +89,7 @@ A_.SPRITES.Sprite = Class.extend({
     // COLLISION callbacks
     collideWithStatic: function (other, response) {
         var pos = this.getPosition();
-        this.setPosition(pos.x - response.overlapV.x, pos.y - response.overlapV.y);  
+        this.setPosition(pos.x - response.overlapV.x, pos.y - response.overlapV.y);
         this.prevOverlapN = response.overlapN;
     },
     collideWithDynamic: function (other, response) {
@@ -104,6 +122,13 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
 
         if (this.animSheet) {
             this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
+            if (!this.frameW) {
+                this.frameW = this.baseTexture.width;
+            }
+            if (!this.frameH) {
+                this.frameH = this.baseTexture.height;
+            }
+
             var colls = Math.round(this.baseTexture.width / this.frameW);
             var rows = Math.round(this.baseTexture.height / this.frameH);
 
@@ -116,6 +141,7 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
             }
             this.addAnimation("default", [0], 1)
             this.setAnimation("default");
+            this.currentAnimationName = "default";
         }
     },
     addAnimation: function (name, frames, speed) {
@@ -140,6 +166,8 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
     setAnimation: function (name, frame, speed) {
         // play from the start by default
         if (!frame) {
+            if (this.currentAnimationName === name)
+                return;
             frame = 0;
         }
         if (speed) {
@@ -155,6 +183,7 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
         }
 
         this.currentAnimation = this.animations[name];
+        this.currentAnimationName = name;
         this.animations[name].visible = true;
         // goes to a frame and begins playing the animation
         this.animations[name].gotoAndPlay(frame);
@@ -165,9 +194,9 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
 A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
     velocity: new SAT.Vector(0, 0),
     gravity: new SAT.Vector(0, 0),
-    friction: new SAT.Vector(20, 20),
+    friction: new SAT.Vector(40, 40),
     acceleration: new SAT.Vector(0, 0),
-    maxVelocity: new SAT.Vector(512, 512),
+    maxVelocity: new SAT.Vector(256, 256),
     speed: new SAT.Vector(64, 64),
     isMoving: false,
     bounciness: 0.5,
@@ -237,7 +266,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
     collideWithStatic: function (other, response) {
         var pon = this.prevOverlapN.clone();
         this._super(other, response);
-        
+
         // BUG: the sprite does not bounce in tilemap corners
         if (this.bounciness > 0) {
             if (response.overlapN.x !== 0 && Math.abs(this.velocity.x) > this.speed.x) {
@@ -245,7 +274,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
                     this.bounced.horizontal = true;
             }
             if (response.overlapN.y !== 0 && Math.abs(this.velocity.y) > this.speed.y) {
-                if (pon.x === 0)                    
+                if (pon.x === 0)
                     this.bounced.vertical = true;
             }
         }
@@ -255,6 +284,8 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
 /******************************************************************************/
 /******************************************************************************/
 A_.MODULES.Topdown = {
+    direction: "right",
+    state: "idle",
     init: function () {
         this._super();
         A_.INPUT.addMapping("left", A_.KEY.A);
@@ -267,16 +298,26 @@ A_.MODULES.Topdown = {
 
         if (A_.INPUT.down["left"]) {
             this.velocity.x -= this.speed.x;
+            this.direction = "left";
         }
         if (A_.INPUT.down["right"]) {
             this.velocity.x += this.speed.x;
+            this.direction = "right";
         }
 
         if (A_.INPUT.down["up"]) {
             this.velocity.y -= this.speed.y;
+            this.direction = "up";
         }
         if (A_.INPUT.down["down"]) {
             this.velocity.y += this.speed.y;
+            this.direction = "down";
+        }
+
+        if (this.velocity.x === 0 && this.velocity.y === 0) {
+            this.state = "standing";
+        } else {
+            this.state = "moving";
         }
     }
 }
@@ -302,7 +343,7 @@ A_.MODULES.Platformer = {
         if (A_.INPUT.down["right"]) {
             this.velocity.x += this.speed.x;
         }
-        if (A_.INPUT.pressed["jump"]) {
+        if (A_.INPUT.down["jump"]) {
             if (this.platformerState === "grounded") {
                 this.velocity.y -= this.jumpForce;
             }
