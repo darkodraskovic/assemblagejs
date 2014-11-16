@@ -54,7 +54,7 @@ function onAssetsLoaded() {
 
     parseMap(game, maker);
 
-    game.debug = true;
+    game.debug = false;
     if (game.debug) {
         game.collider.setDebug();
         game.gameWorld.container.addChild(game.collider.debugLayer);

@@ -72,19 +72,6 @@ A_.Collider = Class.extend({
         };
     },
     processCollisions: function () {
-        // DYNAMIC VS STATIC
-        for (i = 0; i < this.collisionDynamics.length; i++) {
-            var o1 = this.collisionDynamics[i];
-            for (j = 0; j < this.collisionStatics.length; j++) {
-                var o2 = this.collisionStatics[j];
-                var response = new SAT.Response();
-                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
-                if (collided) {
-                    o1.collideWithStatic(o2, response);
-                }
-            }
-        }
-
         // DYNAMIC VS DYNAMIC
         for (i = 0; i < this.collisionDynamics.length - 1; i++) {
             var o1 = this.collisionDynamics[i];
@@ -98,6 +85,20 @@ A_.Collider = Class.extend({
                 }
             }
         }
+
+        // DYNAMIC VS STATIC
+        for (i = 0; i < this.collisionDynamics.length; i++) {
+            var o1 = this.collisionDynamics[i];
+            for (j = 0; j < this.collisionStatics.length; j++) {
+                var o2 = this.collisionStatics[j];
+                var response = new SAT.Response();
+                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
+                if (collided) {
+                    o1.collideWithStatic(o2, response);
+                }
+            }
+        }
+
 
         // DYNAMIC VS SENSORS
         for (i = 0; i < this.collisionDynamics.length; i++) {

@@ -34,6 +34,8 @@ function parseMap(game, maker) {
                 layer.collision = true;
             if (layersData[i]["properties"]["update"])
                 layer.update = true;
+            if (layersData[i]["properties"]["sortBy"])
+                layer.sortBy = layersData[i]["properties"]["sortBy"];
             if (layersData[i]["properties"]["parallax"]) {
                 layer.parallax = parseFloat(layersData[i]["properties"]["parallax"]);
             }
@@ -171,28 +173,6 @@ function parseMap(game, maker) {
                     game.updateSprites.push(o);
                 }
 
-                // Set collisions
-                if (layer.collision === true) {
-                    collider.collisionSprites.push(o);
-
-                    if (o.collisionType) {
-
-                        if (o.collisionType === "dynamic") {
-                            collider.collisionDynamics.push(o);
-                        } else if (o.collisionType === "static") {
-                            collider.collisionStatics.push(o);
-                        } else if (o.collisionType === "sensor") {
-                            collider.collisionSensors.push(o);
-                        }
-                        else {
-                            o.collisionType = "static";
-                            collider.collisionStatics.push(o);
-                        }
-                    } else {
-                        o.collisionType = "static";
-                        collider.collisionStatics.push(o);
-                    }
-                }
             }
 
             if (!layer.update) {

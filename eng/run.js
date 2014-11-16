@@ -69,7 +69,18 @@ A_.Game = Class.extend({
         _.each(this.updateSprites, function (sprite) {
             sprite.postupdate();
         });
-
+        
+        _.each(this.layers, function (layer) {
+           if (layer["sortBy"]) {
+               layer.children = _.sortBy(layer.children, function (child) {
+                    return child.position.y;
+               });
+               _.each(layer.children, function (child, i) {
+                   layer.setChildIndex(child, i);
+               }) 
+           } 
+        });
+        
         if (this.debug) {
             this.collider.drawDebug();
         }

@@ -60,6 +60,7 @@
                      "collisionH":"48",
                      "collisionMask":"\"Player\"",
                      "collisionOffsetY":"6",
+                     "collisionResponse":"\"active\"",
                      "collisionType":"\"dynamic\"",
                      "collisionW":"26"
                     },
@@ -464,6 +465,7 @@
          "properties":
             {
              "collision":"true",
+             "sortBy":"y",
              "update":"true"
             },
          "type":"objectgroup",

@@ -3,7 +3,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     frameH: 64,
     walkAnimSpeed: 0.3,
     init: function () {
-        this._super();
+        this._super();              
 
         this.sprite.interactive = true;
         var that = this;

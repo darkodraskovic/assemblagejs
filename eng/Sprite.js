@@ -60,6 +60,7 @@ A_.SPRITES.Sprite = Class.extend({
         if (!this.collisionH)
             this.collisionH = this.height;
 
+
         if (polygon) {
             game.collider.activateCollisionFor(this, polygon);
         }
@@ -67,6 +68,25 @@ A_.SPRITES.Sprite = Class.extend({
             game.collider.activateCollisionFor(this, polygon, this.collisionW, this.collisionH,
                     this.collisionW / 2 - this.collisionOffsetX, this.collisionH / 2 - this.collisionOffsetY);
         }
+
+        game.collider.collisionSprites.push(this);
+        if (this.collisionType) {
+            if (this.collisionType === "dynamic") {
+                game.collider.collisionDynamics.push(this);
+            } else if (this.collisionType === "static") {
+                game.collider.collisionStatics.push(this);
+            } else if (this.collisionType === "sensor") {
+                game.collider.collisionSensors.push(this);
+            }
+        }
+        else {
+            this.collisionType = "static";
+            game.collider.collisionStatics.push(this);
+        }
+        if (!this.collisionResponse) {
+            this.collisionResponse = "passive";
+        }
+
     },
     update: function () {
 
@@ -100,9 +120,11 @@ A_.SPRITES.Sprite = Class.extend({
 
         var pos = this.getPosition();
         if (this.collisionPolygon === response.a) {
-            this.setPosition(pos.x - response.overlapV.x / 2, pos.y - response.overlapV.y / 2);
+//            this.setPosition(pos.x - response.overlapV.x / 2, pos.y - response.overlapV.y / 2);
+            this.setPosition(pos.x - response.overlapV.x, pos.y - response.overlapV.y);
         } else {
-            this.setPosition(pos.x + response.overlapV.x / 2, pos.y + response.overlapV.y / 2);
+//            this.setPosition(pos.x + response.overlapV.x / 2, pos.y + response.overlapV.y / 2);
+            this.setPosition(pos.x + response.overlapV.x, pos.y + response.overlapV.y);
         }
     },
     collideWithSensor: function (other, response) {
