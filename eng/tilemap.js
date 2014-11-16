@@ -67,9 +67,9 @@ function makeTilemap(layer, img,
         tileSprite.getPosition = function () { return this.position;}
         this.layer.addChild(tileSprite);
         if (this.layer.collision) {
-            collider.activateCollisionFor(tileSprite, null, tileW, tileH, 0, 0);
+            game.collider.activateCollisionFor(tileSprite, null, tileW, tileH, 0, 0);
             tileSprite.collisionType = "static";
-            collider.collisionStatics.push(tileSprite);
+            game.collider.collisionStatics.push(tileSprite);
         }
 
     };
@@ -86,8 +86,8 @@ function makeTilemap(layer, img,
             this.layer.removeChild(sprite);
             // Statics
             if (layer.collision) {
-                var ind = collider.collisionStatics.indexOf(sprite);
-                collider.collisionStatics.splice(ind, 1);
+                var ind = game.collider.collisionStatics.indexOf(sprite);
+                game.collider.collisionStatics.splice(ind, 1);
             }
             // Tilemap
             this.tiles[x][y] = null;

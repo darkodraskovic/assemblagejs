@@ -137,7 +137,29 @@ var inject = function (prop) {
 })();
 
 
-
+A_.copy = function (object) {
+    if (
+            !object || typeof (object) != 'object' ||
+            object instanceof HTMLElement ||
+            object instanceof Class
+            ) {
+        return object;
+    }
+    else if (object instanceof Array) {
+        var c = [];
+        for (var i = 0, l = object.length; i < l; i++) {
+            c[i] = A_.copy(object[i]);
+        }
+        return c;
+    }
+    else {
+        var c = {};
+        for (var i in object) {
+            c[i] = A_.copy(object[i]);
+        }
+        return c;
+    }
+}
 //var Person = Class.extend({
 //    say: function () {
 //        console.log("Hi");
@@ -160,14 +182,14 @@ var inject = function (prop) {
 //
 //var ani = new Animal();
 
-function drawSATPolygon(graphics, polygon) {
-    var calcPointsArr = (SATPolygonToPIXIPolygon(polygon, true)).points;
+        function drawSATPolygon(graphics, polygon) {
+            var calcPointsArr = (SATPolygonToPIXIPolygon(polygon, true)).points;
 
-    graphics.lineStyle(2, 0xff0000);
+            graphics.lineStyle(2, 0xff0000);
 
-    graphics.drawPolygon(calcPointsArr);
-    graphics.endFill();
-}
+            graphics.drawPolygon(calcPointsArr);
+            graphics.endFill();
+        }
 
 function SATPolygonToPIXIPolygon(SATPolygon, translated) {
     var calcPoints;

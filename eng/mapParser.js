@@ -1,5 +1,7 @@
-function parseMap(game, collider, maker) {
+function parseMap(game, maker) {
 
+    var collider = game.collider;
+    
     game.gameWorld.width = mapData["width"] * mapData["tilewidth"];
     game.gameWorld.height = mapData["height"] * mapData["tileheight"];
     game.gameWorld.mapWidth = mapData["width"];

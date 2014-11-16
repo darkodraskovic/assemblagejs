@@ -59,9 +59,8 @@ A_.SPRITES.Sprite = Class.extend({
             this.collisionW = this.width;
         if (!this.collisionH)
             this.collisionH = this.height;
-        
+
         if (polygon) {
-            window.console.log("Poly of " + this.name);
             game.collider.activateCollisionFor(this, polygon);
         }
         else {
@@ -115,10 +114,10 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
     animSheet: null,
     frameW: null,
     frameH: null,
-    animations: {},
     currentAnimation: null,
     init: function () {
         this._super();
+        this.animations = {};
 
         if (this.animSheet) {
             this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
@@ -139,7 +138,7 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
                             new PIXI.Rectangle(j * this.frameW, i * this.frameH,
                                     this.frameW, this.frameH));
             }
-            this.addAnimation("default", [0], 1)
+            this.addAnimation("default", [0], 1);
             this.setAnimation("default");
             this.currentAnimationName = "default";
         }
@@ -153,7 +152,10 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
         var textures = [];
         for (var i = 0; i < frames.length; i++)
             textures[i] = this.textures[frames[i]];
+
         var animation = new PIXI.MovieClip(textures);
+
+//        window.console.log(animation);
 
         animation.anchor.x = 0.5;
         animation.anchor.y = 0.5;
@@ -192,18 +194,24 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
 
 
 A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
-    velocity: new SAT.Vector(0, 0),
-    gravity: new SAT.Vector(0, 0),
-    friction: new SAT.Vector(40, 40),
-    acceleration: new SAT.Vector(0, 0),
-    maxVelocity: new SAT.Vector(256, 256),
-    speed: new SAT.Vector(64, 64),
+//    velocity: new SAT.Vector(0, 0),
+//    gravity: new SAT.Vector(0, 0),
+//    friction: new SAT.Vector(40, 40),
+//    acceleration: new SAT.Vector(0, 0),
+//    maxVelocity: new SAT.Vector(256, 256),
+//    speed: new SAT.Vector(64, 64),
     isMoving: false,
     bounciness: 0.5,
     minBounceSpeed: 64,
-    bounced: {horizontal: false, vertical: false},
     init: function () {
         this._super();
+        this.velocity = new SAT.Vector(0, 0);
+        this.gravity = new SAT.Vector(0, 0);
+        this.friction = new SAT.Vector(40, 40);
+        this.acceleration = new SAT.Vector(0, 0);
+        this.maxVelocity = new SAT.Vector(256, 256);
+        this.speed = new SAT.Vector(64, 64);
+        this.bounced = {horizontal: false, vertical: false};
     },
     update: function () {
         this._super();
@@ -262,6 +270,12 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
         var y = startPos.y + vel.y;
         this.setPosition(x, y);
 
+        if (this.velocity.x !== 0 || this.velocity.y !== 0) {
+            this.isMoving = true;
+        } else {
+            this.isMoving = false;
+        }
+
     },
     collideWithStatic: function (other, response) {
         var pon = this.prevOverlapN.clone();
@@ -284,8 +298,46 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
 /******************************************************************************/
 /******************************************************************************/
 A_.MODULES.Topdown = {
-    direction: "right",
-    state: "idle",
+    simpleDir: "right",
+    motionState: "idle",
+    motionStates: ["moving", "idle"],
+    cardinalDir: "",
+    cardinalDirs: ["", "N", "NW", "NE", "S", "SW", "SE"],
+    init: function () {
+        this._super();
+    },
+    update: function () {
+        if (this.cardinalDir === "") {
+            this.motionState = "idle";
+        } else
+            this.motionState = "moving";
+
+        this.prevCardDir = this.cardinalDir;
+
+        if (this.motionState === "moving") {
+            if (this.cardinalDir.indexOf("N") > -1) {
+                this.velocity.y -= this.speed.y;
+                this.simpleDir = "up";
+            }
+            else if (this.cardinalDir.indexOf("S") > -1) {
+                this.velocity.y += this.speed.y;
+                this.simpleDir = "down";
+            }
+            if (this.cardinalDir.indexOf("W") > -1) {
+                this.velocity.x -= this.speed.x;
+                this.simpleDir = "left";
+            }
+            else if (this.cardinalDir.indexOf("E") > -1) {
+                this.velocity.x += this.speed.x;
+                this.simpleDir = "right";
+            }
+        }
+
+        this._super();
+    }
+}
+
+A_.MODULES.TopdownWASD = {
     init: function () {
         this._super();
         A_.INPUT.addMapping("left", A_.KEY.A);
@@ -294,33 +346,22 @@ A_.MODULES.Topdown = {
         A_.INPUT.addMapping("up", A_.KEY.W);
     },
     update: function () {
-        this._super();
-
-        if (A_.INPUT.down["left"]) {
-            this.velocity.x -= this.speed.x;
-            this.direction = "left";
-        }
-        if (A_.INPUT.down["right"]) {
-            this.velocity.x += this.speed.x;
-            this.direction = "right";
-        }
-
+        // Movement direction
+        this.cardinalDir = "";
         if (A_.INPUT.down["up"]) {
-            this.velocity.y -= this.speed.y;
-            this.direction = "up";
+            this.cardinalDir = "N";
+        } else if (A_.INPUT.down["down"]) {
+            this.cardinalDir = "S";
         }
-        if (A_.INPUT.down["down"]) {
-            this.velocity.y += this.speed.y;
-            this.direction = "down";
+        if (A_.INPUT.down["left"]) {
+            this.cardinalDir += "W";
+        } else if (A_.INPUT.down["right"]) {
+            this.cardinalDir += "E";
         }
 
-        if (this.velocity.x === 0 && this.velocity.y === 0) {
-            this.state = "standing";
-        } else {
-            this.state = "moving";
-        }
+        this._super();
     }
-}
+};
 
 A_.MODULES.Platformer = {
     platformerState: "grounded",
@@ -358,12 +399,6 @@ A_.MODULES.Platformer = {
             this.platformerState = "jumping";
         } else if (this.platformerState !== "jumping") {
             this.platformerState = "grounded";
-        }
-
-        if (this.velocity.x !== 0) {
-            this.isMoving = true;
-        } else {
-            this.isMoving = false;
         }
     },
     collideWithStatic: function (other, response) {

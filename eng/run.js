@@ -42,11 +42,14 @@ A_.Game = Class.extend({
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
 
-        this.gameWorld.container = new PIXI.DisplayObjectContainer();        
+        this.gameWorld.container = new PIXI.DisplayObjectContainer();
         this.stage.addChild(this.gameWorld.container);
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
+
+        this.collider = new A_.Collider();
+
     },
     run: function () {
 

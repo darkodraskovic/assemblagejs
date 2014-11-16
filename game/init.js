@@ -42,17 +42,23 @@ var camera;
 var player;
 
 var game = new A_.Game();
-var collider = new A_.Collider();
+//var collider = new A_.Collider();
 
-var DEBUG = true;
+//var DEBUG = true;
 // INITIALIZE GAMEWORLD
 function onAssetsLoaded() {
-    game.collider = collider;
-    
-    Player.inject(A_.MODULES.Topdown);
-//    Player.inject(A_.MODULES.Platformer);
+//    game.collider = collider;
 
-    parseMap(game, collider, maker);
+    Anime.inject(A_.MODULES.Topdown);
+    Player.inject(A_.MODULES.TopdownWASD);
+
+    parseMap(game, maker);
+
+    game.debug = true;
+    if (game.debug) {
+        game.collider.setDebug();
+        game.gameWorld.container.addChild(game.collider.debugLayer);
+    }
 
     camera = makeCamera(game.renderer.view.width, game.renderer.view.height, 0.25, player);
     camera.followee = player;
@@ -64,10 +70,10 @@ function onAssetsLoaded() {
     game.setScale(game.scale);
 
 
-    if (DEBUG) {
-        collider.setDebug();
-        game.gameWorld.container.addChild(collider.debugLayer);
-    }
+//    if (DEBUG) {
+//        collider.setDebug();
+//        game.gameWorld.container.addChild(collider.debugLayer);
+//    }
 
     // Start game loop
     requestAnimFrame(gameLoop);
