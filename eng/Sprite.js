@@ -7,6 +7,8 @@ A_.SPRITES.Sprite = Class.extend({
     prevOverlapN: new SAT.Vector(0, 0),
     collisionOffsetX: 0,
     collisionOffsetY: 0,
+    layer: null,
+    destroyThis: false,
     init: function () {
         if (this.image) {
             this.sprite = new PIXI.Sprite.fromImage(this.image);
@@ -59,7 +61,6 @@ A_.SPRITES.Sprite = Class.extend({
             this.collisionW = this.width;
         if (!this.collisionH)
             this.collisionH = this.height;
-
 
         if (polygon) {
             game.collider.activateCollisionFor(this, polygon);

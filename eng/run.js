@@ -33,10 +33,14 @@ A_.Game = Class.extend({
         mousePosition: null,
         container: null
     },
+//    polygons: [],
+//    sprites: [],
     updateSprites: [],
     spriteLayers: [],
     tileLayers: [],
     layers: [],
+    spritesToDestroy: [],
+    spritesToCreate: [],
     init: function () {
         this.stage = new PIXI.Stage(this.stageColor);
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
@@ -52,6 +56,7 @@ A_.Game = Class.extend({
 
     },
     run: function () {
+        var that = this;
 
         var now = new Date().getTime();
         this.dt = now - this.time;
@@ -69,18 +74,27 @@ A_.Game = Class.extend({
         _.each(this.updateSprites, function (sprite) {
             sprite.postupdate();
         });
-        
-        _.each(this.layers, function (layer) {
-           if (layer["sortBy"]) {
-               layer.children = _.sortBy(layer.children, function (child) {
-                    return child.position.y;
-               });
-               _.each(layer.children, function (child, i) {
-                   layer.setChildIndex(child, i);
-               }) 
-           } 
+
+        _.each(this.updateSprites, function (sprite) {
+            if (sprite.destroyThis) {
+                that.destroySprite(sprite);
+            }
         });
+        this.postDestroy();
         
+        this.postCreate();
+
+        _.each(this.layers, function (layer) {
+            if (layer["sortBy"]) {
+                layer.children = _.sortBy(layer.children, function (child) {
+                    return child.position.y;
+                });
+                _.each(layer.children, function (child, i) {
+                    layer.setChildIndex(child, i);
+                })
+            }
+        });
+
         if (this.debug) {
             this.collider.drawDebug();
         }
@@ -107,6 +121,78 @@ A_.Game = Class.extend({
             }
         }
     },
+    
+    createSprite: function (SpriteClass, layer, x, y) {
+        if (!SpriteClass)
+            return;
+        
+        if (!_.contains(this.layers, layer)) {
+            layer = this.layers[0];
+        }
+        
+        var sprite = new SpriteClass();
+        sprite.setCollision();
+        if (this.debug) {
+            sprite.debugGraphics = new PIXI.Graphics();
+            this.collider.debugLayer.addChild(sprite.debugGraphics);
+        }
+        
+        sprite.layer = layer;
+        layer.addChild(sprite.sprite);
+        sprite.setPosition(x, y);
+        this.spritesToCreate.push(sprite);
+    },
+    
+    postCreate: function () {
+        var that = this;
+        _.each(this.spritesToCreate, function (sprite) {
+            that.updateSprites.push(sprite);
+        });
+        this.spritesToCreate = [];
+    },
+    
+    destroySprite: function (sprite) {
+        if (_.contains(this.updateSprites, sprite)) {
+            this.spritesToDestroy.push(sprite);
+        } else
+            return;
+
+        if (_.contains(this.collider.collisionSprites, sprite)) {
+            this.collider.collisionSprites.splice(this.collider.collisionSprites.indexOf(sprite), 1);
+        }
+        if (sprite.collisionType) {
+            switch (sprite.collisionType) {
+                case "static":
+                    this.collider.collisionStatics.splice(this.collider.collisionStatics.indexOf(sprite), 1);
+                    break;
+                case "dynamic":
+                    this.collider.collisionDynamics.splice(this.collider.collisionDynamics.indexOf(sprite), 1);
+                    break;
+                case "sensor":
+                    this.collider.collisionSensors.splice(this.collider.collisionSensors.indexOf(sprite), 1);
+                    break;
+            }
+        }
+        if (sprite.collisionPolygon) {
+            delete(sprite.collisionPolygon);
+        }
+        
+        // TODO: destroy collision mask
+        
+        if (sprite.debugGraphics) {
+            sprite.debugGraphics.parent.removeChild(sprite.debugGraphics);
+        }
+        sprite.sprite.parent.removeChild(sprite.sprite);
+    },
+    
+    postDestroy: function () {
+        var that = this;
+        _.each(this.spritesToDestroy, function (sprite) {
+            that.updateSprites.splice(that.updateSprites.indexOf(sprite), 1);
+        });
+        this.spritesToDestroy = [];    
+    },
+    
     setScale: function (scale) {
         if (scale > 0.25 && scale < 1.5) {
             // scale the game world according to scale

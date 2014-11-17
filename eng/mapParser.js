@@ -29,6 +29,10 @@ function parseMap(game, maker) {
 
     for (i = 0; i < layersData.length; i++) {
         var layer = new PIXI.DisplayObjectContainer();
+        for (var prop in layersData[i]) {
+            layer[prop] = layersData[i][prop];
+        }
+        
         if (layersData[i]["properties"]) {
             if (layersData[i]["properties"]["collision"])
                 layer.collision = true;
@@ -134,6 +138,7 @@ function parseMap(game, maker) {
                     }
 
                     o.update();
+//                    game.polygons.push(o);
                 }
                 else {
                     var args = {};
@@ -160,6 +165,7 @@ function parseMap(game, maker) {
                     var colPolyData = _.find(collider.collisionMasks, function (mask) {
                         return mask.name === o.collisionMask;
                     });
+                    
                     if (colPolyData) {
                         var collisionPolygon = createSATPolygonFromTiled(colPolyData, true);
                         o.setCollision(collisionPolygon);
@@ -168,11 +174,12 @@ function parseMap(game, maker) {
                         o.setCollision();
 
                     layer.addChild(o.sprite);
+                    o.layer = layer;
                 }
                 if (layer.update === true) {
                     game.updateSprites.push(o);
                 }
-
+//                game.sprites.push(o);
             }
 
             if (!layer.update) {
@@ -197,10 +204,18 @@ function bakeLayer(layer) {
 
     // render the layer to the render texture
     renderTexture.render(layer);
-
+    
+    // TODO: this commented piece of code makes tiled map non seamless
+//    for (var prop in layer) {
+//        if (layer.hasOwnProperty(prop)) {
+//            sprite[prop] = layer[prop];
+//        }
+//    }
     sprite.baked = true;
     sprite.position = layer.position;
     sprite.parallax = layer.parallax;
+    sprite.name = layer.name;    
+
     return sprite;
 }
 

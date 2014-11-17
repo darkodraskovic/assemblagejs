@@ -3,7 +3,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     frameH: 64,
     walkAnimSpeed: 0.3,
     init: function () {
-        this._super();              
+        this._super();
 
         this.sprite.interactive = true;
         var that = this;
@@ -32,6 +32,11 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
 
 var Player = Anime.extend({
     animSheet: "assets/Armor2Walk.png",
+
+    collideWithDynamic: function (other, response) {
+        this._super(other, response);
+        other.destroyThis = true;        
+    }
 });
 
 //var Agent = A_.SPRITES.ArcadeSprite.extend({
@@ -48,6 +53,7 @@ var Agent = Anime.extend({
     collisionOffsetY: 6,
     animSheet: "assets/AgentWalk.png",
     timer: 0,
+    collisionType: "dynamic",
     init: function () {
         this._super();
         this.maxVelocity = new SAT.Vector(64, 64);
