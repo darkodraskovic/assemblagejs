@@ -115,7 +115,7 @@ A_.SPRITES.Sprite = Class.extend({
         }
     },
     destroy: function () {
-        this.destroyThis = true;
+        game.spritesToDestroy.push(this);
     },
     // COLLISION callbacks
     collideWithStatic: function (other, response) {

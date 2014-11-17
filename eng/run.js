@@ -46,7 +46,7 @@ A_.Game = Class.extend({
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
 
-        this.gameWorld.container = new PIXI.DisplayObjectContainer();        
+        this.gameWorld.container = new PIXI.DisplayObjectContainer();
         this.stage.addChild(this.gameWorld.container);
 
         this.time = new Date().getTime();
@@ -73,13 +73,10 @@ A_.Game = Class.extend({
 
         _.each(this.updateSprites, function (sprite) {
             sprite.postupdate();
-            if (sprite.destroyThis) {
-                that.destroySprite(sprite);
-            }
         });
-
-        this.postDestroy();
         
+        this.destroySprites();
+
         this.postCreate();
 
         _.each(this.layers, function (layer) {
@@ -119,42 +116,37 @@ A_.Game = Class.extend({
             }
         }
     },
-    
     createSprite: function (SpriteClass, layer, x, y) {
         if (!SpriteClass)
             return;
-        
+
         if (!_.contains(this.layers, layer)) {
             layer = this.layers[0];
         }
-        
+
         var sprite = new SpriteClass();
         sprite.setCollision();
         if (this.debug) {
             sprite.debugGraphics = new PIXI.Graphics();
             this.collider.debugLayer.addChild(sprite.debugGraphics);
         }
-        
+
         sprite.layer = layer;
         layer.addChild(sprite.sprite);
         sprite.setPosition(x, y);
         this.spritesToCreate.push(sprite);
-        
+
         return sprite;
     },
-    
     postCreate: function () {
         var that = this;
         _.each(this.spritesToCreate, function (sprite) {
             that.updateSprites.push(sprite);
         });
-        this.spritesToCreate = [];
+        this.spritesToCreate.length = 0;
     },
-    
     destroySprite: function (sprite) {
-        if (_.contains(this.updateSprites, sprite)) {
-            this.spritesToDestroy.push(sprite);
-        } else
+        if (!_.contains(this.updateSprites, sprite)) 
             return;
 
         if (_.contains(this.collider.collisionSprites, sprite)) {
@@ -176,23 +168,22 @@ A_.Game = Class.extend({
         if (sprite.collisionPolygon) {
             delete(sprite.collisionPolygon);
         }
-        
+
         // TODO: destroy collision mask
-        
+
         if (sprite.debugGraphics) {
             sprite.debugGraphics.parent.removeChild(sprite.debugGraphics);
         }
         sprite.sprite.parent.removeChild(sprite.sprite);
+        this.updateSprites.splice(this.updateSprites.indexOf(sprite), 1);
     },
-    
-    postDestroy: function () {
+    destroySprites: function () {
         var that = this;
         _.each(this.spritesToDestroy, function (sprite) {
-            that.updateSprites.splice(that.updateSprites.indexOf(sprite), 1);
+            that.destroySprite(sprite)
         });
-        this.spritesToDestroy = [];    
+        this.spritesToDestroy.length = 0;
     },
-    
     setScale: function (scale) {
         if (scale > 0.25 && scale < 1.5) {
             // scale the game world according to scale
