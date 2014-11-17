@@ -46,7 +46,7 @@ A_.Game = Class.extend({
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
 
-        this.gameWorld.container = new PIXI.DisplayObjectContainer();
+        this.gameWorld.container = new PIXI.DisplayObjectContainer();        
         this.stage.addChild(this.gameWorld.container);
 
         this.time = new Date().getTime();
@@ -73,13 +73,14 @@ A_.Game = Class.extend({
 
         _.each(this.updateSprites, function (sprite) {
             sprite.postupdate();
-        });
-
-        _.each(this.updateSprites, function (sprite) {
             if (sprite.destroyThis) {
                 that.destroySprite(sprite);
             }
         });
+
+//        _.each(this.updateSprites, function (sprite) {
+//        });
+
         this.postDestroy();
         
         this.postCreate();
@@ -141,6 +142,8 @@ A_.Game = Class.extend({
         layer.addChild(sprite.sprite);
         sprite.setPosition(x, y);
         this.spritesToCreate.push(sprite);
+        
+        return sprite;
     },
     
     postCreate: function () {

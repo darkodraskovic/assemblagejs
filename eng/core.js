@@ -26,16 +26,17 @@ if (typeof (Number.prototype.lerp) === "undefined") {
     };
 }
 
-A_.UTILITIES = {};
-A_.UTILITIES.arrayRange = function (lowEnd, highEnd) {
-    var list = [];
-    for (var i = lowEnd; i <= highEnd; i++) {
-        list.push(i);
-    }
-    return list;
+A_.UTILS = {};
+
+A_.UTILS.angleTo = function (pos1, pos2) {
+    return Math.atan2(pos2.y - pos1.y, pos2.x - pos1.x);
 };
 
-
+A_.UTILS.distanceToPos = function (pos1, pos2) {
+    var xd = pos2.x - pos1.x;
+    var yd = pos2.y - pos2.y;
+    return Math.sqrt(xd * xd + yd * yd);
+};
 /* Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/
  * MIT Licensed.
@@ -160,36 +161,26 @@ A_.copy = function (object) {
         return c;
     }
 }
-//var Person = Class.extend({
-//    say: function () {
-//        console.log("Hi");
-//    }
-//});
-//
-//Person.inject({
-//    swing: function () {
-//        console.log("Zap!");
-//    }
-//});
-//
-//var Animal = Person.extend({});
-//Animal.inject({
-//    say: function () {
-//        this._super();
-//        console.log("I am animal!");
-//    }
-//});
-//
-//var ani = new Animal();
 
-        function drawSATPolygon(graphics, polygon) {
-            var calcPointsArr = (SATPolygonToPIXIPolygon(polygon, true)).points;
+function drawSATPolygon(graphics, polygon) {
+    var calcPointsArr = [];
+    if (polygon.baked) {
+        _.each(polygon.baked.points, function (point, i) {
+            if (i % 2 === 0) {
+                calcPointsArr[i] = point + polygon.pos.x;
+            } else {
+                calcPointsArr[i] = point + polygon.pos.y;
+            }
+        });
+    } else {
+        calcPointsArr = (SATPolygonToPIXIPolygon(polygon, true)).points;
+    }
 
-            graphics.lineStyle(2, 0xff0000);
+    graphics.lineStyle(2, 0xff0000);
 
-            graphics.drawPolygon(calcPointsArr);
-            graphics.endFill();
-        }
+    graphics.drawPolygon(calcPointsArr);
+    graphics.endFill();
+}
 
 function SATPolygonToPIXIPolygon(SATPolygon, translated) {
     var calcPoints;

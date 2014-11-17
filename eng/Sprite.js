@@ -4,9 +4,12 @@ A_.SPRITES.Sprite = Class.extend({
     baseTexture: null,
     rectangle: null,
     bounded: true,
+    outOfBounds: false,
     prevOverlapN: new SAT.Vector(0, 0),
     collisionOffsetX: 0,
     collisionOffsetY: 0,
+    collisionW: 0,
+    collisionH: 0,
     layer: null,
     destroyThis: false,
     init: function () {
@@ -100,11 +103,19 @@ A_.SPRITES.Sprite = Class.extend({
             var pos = this.getPosition();
             this.setPosition(Math.max(this.collisionPolygon.w / 2, Math.min(pos.x, game.gameWorld.width - this.collisionPolygon.w / 2)),
                     Math.max(this.collisionPolygon.h / 2, Math.min(pos.y, game.gameWorld.height - this.collisionPolygon.h / 2)));
+        } else {
+            var pos = this.getPosition();
+            if (pos.x < 0 || pos.x > game.gameWorld.width || pos.y < 0 || pos.y > game.gameWorld.height) {
+                this.destroy();
+            }
         }
 
         if (this.collides) {
             this.updateCollisionPolygon();
         }
+    },
+    destroy: function () {
+        this.destroyThis = true;
     },
     // COLLISION callbacks
     collideWithStatic: function (other, response) {
@@ -113,7 +124,10 @@ A_.SPRITES.Sprite = Class.extend({
         this.prevOverlapN = response.overlapN;
     },
     collideWithDynamic: function (other, response) {
-        if (this.collisionType === "static" || this.collisionType === "sensor")
+//        if (this.collisionType === "static" || this.collisionType === "sensor")
+//            return;
+
+        if (this.collisionResponse === "lite" || other.collisionResponse === "lite")
             return;
 
         if (this.collisionResponse === "passive" && other.collisionResponse === "passive")
@@ -163,7 +177,8 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
             }
             this.addAnimation("default", [0], 1);
             this.setAnimation("default");
-            this.currentAnimationName = "default";
+//            this.currentAnimationName = "default";
+            this.addAnimation("all", _.range(0, this.textures.length), 0.05);
         }
     },
     addAnimation: function (name, frames, speed) {
@@ -190,13 +205,15 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
     },
     setAnimation: function (name, frame, speed) {
         // play from the start by default
-        if (!frame) {
+        if (typeof frame === 'undefined') {
             if (this.currentAnimationName === name)
                 return;
             frame = 0;
         }
-        if (speed) {
-            this.animations["name"].animationSpeed = speed;
+        if (typeof speed !== 'undefined') {
+            this.animations[name].animationSpeed = speed;
+        } else {
+            this.animations[name].animationSpeed = 0.1;
         }
 
         // Turn off the previously playing animation
@@ -324,39 +341,70 @@ A_.MODULES.Topdown = {
     simpleDir: "right",
     motionState: "idle",
     motionStates: ["moving", "idle"],
-    cardinalDir: "",
-    cardinalDirs: ["", "N", "NW", "NE", "S", "SW", "SE"],
+    cardinalDir: "E",
+    cardinalDirs: ["N", "NW", "NE", "S", "SW", "SE"],
     init: function () {
         this._super();
     },
     update: function () {
-        if (this.cardinalDir === "") {
-            this.motionState = "idle";
-        } else
-            this.motionState = "moving";
-
-        this.prevCardDir = this.cardinalDir;
-
         if (this.motionState === "moving") {
-            if (this.cardinalDir.indexOf("N") > -1) {
+            if (this.cardinalContains("N")) {
                 this.velocity.y -= this.speed.y;
                 this.simpleDir = "up";
             }
-            else if (this.cardinalDir.indexOf("S") > -1) {
+            if (this.cardinalContains("S")) {
                 this.velocity.y += this.speed.y;
                 this.simpleDir = "down";
             }
-            if (this.cardinalDir.indexOf("W") > -1) {
+            if (this.cardinalContains("W")) {
                 this.velocity.x -= this.speed.x;
                 this.simpleDir = "left";
             }
-            else if (this.cardinalDir.indexOf("E") > -1) {
+            if (this.cardinalContains("E")) {
                 this.velocity.x += this.speed.x;
                 this.simpleDir = "right";
             }
         }
 
         this._super();
+    },
+    cardinalToAngle: function (car) {
+        if (!car) car = this.cardinalDir;
+        switch (car) {
+            case "N":
+                return -90;
+                break;
+            case "S":
+                return 90;
+                break;
+            case "W":
+                return -180;
+                break;
+            case "E":
+                return 0;
+                break;
+            case "NW":
+                return -135;
+                break;
+            case "NE":
+                return -45;
+                break;
+            case "SW":
+                return 135;
+                break;
+            case "SE":
+                return 45;
+                break;
+            default :
+                return 0;
+        }
+    },
+    cardinalContains: function (cont, car) {
+        if (!car) car = this.cardinalDir;
+        
+        if (car.indexOf(cont) > -1) {
+            return true;
+        }
     }
 }
 
@@ -368,19 +416,25 @@ A_.MODULES.TopdownWASD = {
         A_.INPUT.addMapping("down", A_.KEY.S);
         A_.INPUT.addMapping("up", A_.KEY.W);
     },
+    
     update: function () {
-        // Movement direction
-        this.cardinalDir = "";
+        var cd = "";
         if (A_.INPUT.down["up"]) {
-            this.cardinalDir = "N";
+            cd = "N";
         } else if (A_.INPUT.down["down"]) {
-            this.cardinalDir = "S";
+            cd = "S";
         }
         if (A_.INPUT.down["left"]) {
-            this.cardinalDir += "W";
+            cd += "W";
         } else if (A_.INPUT.down["right"]) {
-            this.cardinalDir += "E";
+            cd += "E";
         }
+
+        if (cd.length > 0) {
+            this.motionState = "moving";
+            this.cardinalDir = cd;
+        } else
+            this.motionState = "idle";
 
         this._super();
     }

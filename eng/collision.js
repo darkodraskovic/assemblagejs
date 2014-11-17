@@ -54,7 +54,7 @@ A_.Collider = Class.extend({
         if (o.sprite && o.sprite.interactive)
             o.sprite.hitArea = SATPolygonToPIXIPolygon(o.collisionPolygon, false);
         
-//        o.collisionPolygon.baked = SATPolygonToPIXIPolygon(o.collisionPolygon, false);
+        o.collisionPolygon.baked = SATPolygonToPIXIPolygon(o.collisionPolygon, false);
 
         o.updateCollisionPolygon = function () {
             var colPol = this.collisionPolygon;

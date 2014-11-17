@@ -22,8 +22,8 @@ mapLoader.on('loaded', function (evt) {
 // Supported sprite sheet data formats only include 'JSON' at this time. 
 // Supported bitmap font data formats include 'xml' and 'fnt'.
 var assetsToLoad = [
-    "assets/Armor2Walk.png", "assets/Armor2Hurt.png", "assets/Armor2Shoot.png",
-    "assets/AgentWalk.png",
+    "assets/PlayerComplete.png",
+    "assets/AgentComplete.png",
     "assets/Interior-Furniture.png"
 ];
 var assetLoader = new PIXI.AssetLoader(assetsToLoad);
@@ -54,7 +54,7 @@ function onAssetsLoaded() {
 
     parseMap(game, maker);
 
-    game.debug = true;
+    game.debug = false;
     if (game.debug) {
         game.collider.setDebug();
         game.gameWorld.container.addChild(game.collider.debugLayer);
@@ -62,8 +62,8 @@ function onAssetsLoaded() {
 
     camera = makeCamera(game.renderer.view.width, game.renderer.view.height, 0.25, player);
     camera.followee = player;
-    camera.followType = "bounded";
-    camera.worldBounded = true;
+    camera.followType = "centered";
+    camera.worldBounded = false;
     player.camera = camera;
 
     game.camera = camera;
