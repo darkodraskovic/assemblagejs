@@ -3,6 +3,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     frameH: 64,
     animSpeed: 0.3,
     alive: true,
+    simpleDir: "right",
     init: function () {
         this._super();
 
@@ -18,6 +19,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
 
         this.addAnimation("death", _.range(36, 42), this.animSpeed);
         this.animations["death"].loop = false;
+
         var that = this;
         this.animations["death"].onComplete = function () {
             that.destroy();
@@ -25,6 +27,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     },
     update: function () {
         this._super();
+
         if (this.alive) {
             this.setAnimation(this.motionState + "_" + this.simpleDir);
         }
@@ -44,6 +47,16 @@ var Player = Anime.extend({
         this._super();
     },
     update: function () {
+        var rot = (A_.UTILS.angleTo(this.getPosition(), game.gameWorld.mousePosition)).toDeg();
+        if (rot >= -45 && rot < 45) {
+            this.simpleDir = "right"
+        } else if (rot >= 45 && rot < 135) {
+            this.simpleDir = "down"
+        } else if (rot > 135 || rot <= -135) {
+            this.simpleDir = "left"
+        } else
+            this.simpleDir = "up";
+
         this._super();
 
     },
@@ -76,6 +89,18 @@ var Agent = Anime.extend({
     },
     update: function () {
         if (this.alive) {
+            if (this.cardinalContains("N")) {
+                this.simpleDir = "up";
+            }
+            if (this.cardinalContains("S")) {
+                this.simpleDir = "down";
+            }
+            if (this.cardinalContains("W")) {
+                this.simpleDir = "left";
+            }
+            if (this.cardinalContains("E")) {
+                this.simpleDir = "right";
+            }
             this.timer += game.dt;
             if (this.timer > 2) {
                 this.timer = 0;

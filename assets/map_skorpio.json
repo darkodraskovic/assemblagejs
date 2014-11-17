@@ -143,7 +143,7 @@
                  "type":"",
                  "visible":true,
                  "width":1,
-                 "x":800,
+                 "x":704,
                  "y":480
                 }, 
                 {
@@ -158,7 +158,7 @@
                  "type":"",
                  "visible":true,
                  "width":1,
-                 "x":704,
+                 "x":608,
                  "y":768
                 }, 
                 {
@@ -218,7 +218,7 @@
                  "type":"",
                  "visible":true,
                  "width":1,
-                 "x":992,
+                 "x":896,
                  "y":576
                 }, 
                 {
@@ -250,6 +250,66 @@
                  "width":1,
                  "x":32,
                  "y":352
+                }, 
+                {
+                 "gid":258,
+                 "height":1,
+                 "name":"Agent",
+                 "properties":
+                    {
+                     "collisionType":"\"dynamic\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1,
+                 "x":480,
+                 "y":160
+                }, 
+                {
+                 "gid":258,
+                 "height":1,
+                 "name":"Agent",
+                 "properties":
+                    {
+                     "collisionType":"\"dynamic\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1,
+                 "x":192,
+                 "y":352
+                }, 
+                {
+                 "gid":258,
+                 "height":1,
+                 "name":"Agent",
+                 "properties":
+                    {
+                     "collisionType":"\"dynamic\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1,
+                 "x":288,
+                 "y":64
+                }, 
+                {
+                 "gid":258,
+                 "height":1,
+                 "name":"Agent",
+                 "properties":
+                    {
+                     "collisionType":"\"dynamic\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1,
+                 "x":0,
+                 "y":96
                 }],
          "opacity":1,
          "properties":
@@ -424,7 +484,7 @@
              "collision":"true"
             },
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "width":64,
          "x":0,
          "y":0
@@ -436,7 +496,7 @@
          "objects":[],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "width":64,
          "x":0,
          "y":0

@@ -338,7 +338,6 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
 /******************************************************************************/
 /******************************************************************************/
 A_.MODULES.Topdown = {
-    simpleDir: "right",
     motionState: "idle",
     motionStates: ["moving", "idle"],
     cardinalDir: "E",
@@ -350,19 +349,15 @@ A_.MODULES.Topdown = {
         if (this.motionState === "moving") {
             if (this.cardinalContains("N")) {
                 this.velocity.y -= this.speed.y;
-                this.simpleDir = "up";
             }
             if (this.cardinalContains("S")) {
                 this.velocity.y += this.speed.y;
-                this.simpleDir = "down";
             }
             if (this.cardinalContains("W")) {
                 this.velocity.x -= this.speed.x;
-                this.simpleDir = "left";
             }
             if (this.cardinalContains("E")) {
                 this.velocity.x += this.speed.x;
-                this.simpleDir = "right";
             }
         }
 

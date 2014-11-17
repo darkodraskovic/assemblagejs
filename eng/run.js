@@ -78,9 +78,6 @@ A_.Game = Class.extend({
             }
         });
 
-//        _.each(this.updateSprites, function (sprite) {
-//        });
-
         this.postDestroy();
         
         this.postCreate();

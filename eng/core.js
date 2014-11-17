@@ -21,8 +21,8 @@ if (typeof (Number.prototype.clamp) === "undefined") {
 }
 
 if (typeof (Number.prototype.lerp) === "undefined") {
-    Number.prototype.lerp = function (a, x, b) {
-        return a + x * (b - a);
+    Number.prototype.lerp = function (a, b) {
+        return a + this * (b - a);
     };
 }
 
