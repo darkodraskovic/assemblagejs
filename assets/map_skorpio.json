@@ -314,6 +314,21 @@
                  "width":1,
                  "x":0,
                  "y":96
+                }, 
+                {
+                 "gid":259,
+                 "height":1,
+                 "name":"Computer",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1,
+                 "x":288,
+                 "y":160
                 }],
          "opacity":1,
          "properties":

@@ -46,12 +46,12 @@ var Player = Anime.extend({
     init: function (props) {
         this._super(props);
         var that = this;
-        game.stage.click = function () {
+        A_.game.stage.click = function () {
             that.shoot();
         };
     },
     update: function () {
-        var rot = (A_.UTILS.angleTo(this.getPosition(), game.gameWorld.mousePosition)).toDeg();
+        var rot = (A_.UTILS.angleTo(this.getPosition(), A_.game.level.mousePosition)).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right"
         } else if (rot >= 45 && rot < 135) {
@@ -66,8 +66,8 @@ var Player = Anime.extend({
     },
     shoot: function () {
         var pos = this.getPosition();
-        var bullet = game.createSprite(Bullet, this.layer, pos.x, pos.y + 8);
-        bullet.rotation = A_.UTILS.angleTo(this.getPosition(), game.gameWorld.mousePosition);
+        var bullet = A_.game.createSprite(Bullet, this.layer, pos.x, pos.y + 8);
+        bullet.rotation = A_.UTILS.angleTo(this.getPosition(), A_.game.level.mousePosition);
         bullet.setAnimation("all", 16, 0);
         bullet.velocity.y = bullet.speed * Math.sin(bullet.rotation);
         bullet.velocity.x = bullet.speed * Math.cos(bullet.rotation);
@@ -106,7 +106,7 @@ var Agent = Anime.extend({
             if (this.cardinalContains("E")) {
                 this.facing = "right";
             }
-            this.timer += game.dt;
+            this.timer += A_.game.dt;
             if (this.timer > 2) {
                 this.timer = 0;
                 this.cardinalDir = _.sample(this.cardinalDirs);

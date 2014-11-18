@@ -21,8 +21,8 @@ A_.SPRITES.Sprite = Class.extend({
             this.sprite = new PIXI.Sprite.fromImage(this.image);
         } else if (this.frame) {
             this.sprite = new PIXI.Sprite.fromFrame(this.frame);
-        } else if (this.baseTexture) {
-            this.sprite = new PIXI.Texture(this.baseTexture, this.rectangle);
+//        } else if (this.baseTexture) {
+//            this.sprite = new PIXI.Sprite(new PIXI.Texture(this.baseTexture, this.rectangle));
         } else
             this.sprite = new PIXI.DisplayObjectContainer();
 
@@ -79,28 +79,28 @@ A_.SPRITES.Sprite = Class.extend({
             this.collisionH = this.sprite.height;
 
         if (polygon) {
-            game.collider.activateCollisionFor(this, polygon, null, null, this.collisionOffsetX, this.collisionOffsetY);
+            A_.game.collider.activateCollisionFor(this, polygon, null, null, this.collisionOffsetX, this.collisionOffsetY);
         }
         else {
-            game.collider.activateCollisionFor(this, polygon, this.collisionW, this.collisionH,
+            A_.game.collider.activateCollisionFor(this, polygon, this.collisionW, this.collisionH,
                     -this.collisionW / 2 + this.collisionOffsetX, -this.collisionH / 2 + this.collisionOffsetY);
         }
 
         if (this.collides || this.collisionType) {    
             this.collides = true;
-            game.collider.collisionSprites.push(this);
+            A_.game.collider.collisionSprites.push(this);
             if (this.collisionType) {
                 if (this.collisionType === "dynamic") {
-                    game.collider.collisionDynamics.push(this);
+                    A_.game.collider.collisionDynamics.push(this);
                 } else if (this.collisionType === "static") {
-                    game.collider.collisionStatics.push(this);
+                    A_.game.collider.collisionStatics.push(this);
                 } else if (this.collisionType === "sensor") {
-                    game.collider.collisionSensors.push(this);
+                    A_.game.collider.collisionSensors.push(this);
                 }
             }
             else {
                 this.collisionType = "static";
-                game.collider.collisionStatics.push(this);
+                A_.game.collider.collisionStatics.push(this);
             }
             if (!this.collisionResponse) {
                 this.collisionResponse = "passive";
@@ -117,11 +117,11 @@ A_.SPRITES.Sprite = Class.extend({
 
         if (this.bounded) {
             var pos = this.getPosition();
-            this.setPosition(Math.max(this.collisionPolygon.w / 2, Math.min(pos.x, game.gameWorld.width - this.collisionPolygon.w / 2)),
-                    Math.max(this.collisionPolygon.h / 2, Math.min(pos.y, game.gameWorld.height - this.collisionPolygon.h / 2)));
+            this.setPosition(Math.max(this.collisionPolygon.w / 2, Math.min(pos.x, A_.game.level.width - this.collisionPolygon.w / 2)),
+                    Math.max(this.collisionPolygon.h / 2, Math.min(pos.y, A_.game.level.height - this.collisionPolygon.h / 2)));
         } else {
             var pos = this.getPosition();
-            if (pos.x < 0 || pos.x > game.gameWorld.width || pos.y < 0 || pos.y > game.gameWorld.height) {
+            if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
                 this.destroy();
             }
         }
@@ -131,7 +131,7 @@ A_.SPRITES.Sprite = Class.extend({
         }
     },
     destroy: function () {
-        game.spritesToDestroy.push(this);
+        A_.game.spritesToDestroy.push(this);
     },
     // COLLISION callbacks
     collideWithStatic: function (other, response) {
@@ -320,7 +320,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
         this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
 
         var vel = this.velocity.clone();
-        vel.scale(game.dt, game.dt);
+        vel.scale(A_.game.dt, A_.game.dt);
 
         var x = startPos.x + vel.x;
         var y = startPos.y + vel.y;

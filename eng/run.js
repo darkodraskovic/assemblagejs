@@ -2,9 +2,9 @@ window.addEventListener("mousewheel", mouseWheelHandler, false);
 function mouseWheelHandler(e) {
     var scaleDelta = 0.02;
     if (e.wheelDelta > 0) {
-        game.setScale(game.scale + scaleDelta);
+        A_.game.setScale(A_.game.scale + scaleDelta);
     } else {
-        game.setScale(game.scale - scaleDelta);
+        A_.game.setScale(A_.game.scale - scaleDelta);
     }
 }
 
@@ -25,7 +25,7 @@ A_.Game = Class.extend({
         resolution: 1
     },
     renderer: null,
-    gameWorld: {
+    level: {
         x: 0,
         y: 0,
         width: 0,
@@ -42,12 +42,13 @@ A_.Game = Class.extend({
     spritesToDestroy: [],
     spritesToCreate: [],
     init: function () {
+        A_.game = this;
         this.stage = new PIXI.Stage(this.stageColor);
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
 
-        this.gameWorld.container = new PIXI.DisplayObjectContainer();
-        this.stage.addChild(this.gameWorld.container);
+        this.level.container = new PIXI.DisplayObjectContainer();
+        this.stage.addChild(this.level.container);
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
@@ -58,7 +59,7 @@ A_.Game = Class.extend({
         if (debug) {
             this.debug = true;
             this.collider.setDebug();
-            this.gameWorld.container.addChild(this.collider.debugLayer);
+            this.level.container.addChild(this.collider.debugLayer);
         }
 
         this.camera = makeCamera(this.renderer.view.width, this.renderer.view.height, cameraOptions.innerBoundOffset);
@@ -116,8 +117,8 @@ A_.Game = Class.extend({
 
         // Transform the position from container's scaled local system  
         // into stage's unscaled global system.
-        this.gameWorld.container.position.x *= this.scale;
-        this.gameWorld.container.position.y *= this.scale;
+        this.level.container.position.x *= this.scale;
+        this.level.container.position.y *= this.scale;
 
 //        this.gameWorld.container.position.x = Math.round(this.gameWorld.container.position.x);
 //        this.gameWorld.container.position.y = Math.round(this.gameWorld.container.position.y);
@@ -214,7 +215,7 @@ A_.Game = Class.extend({
     setScale: function (scale) {
         if (scale > 0.25 && scale < 1.5) {
             // scale the game world according to scale
-            this.gameWorld.container.scale = new PIXI.Point(scale, scale);
+            this.level.container.scale = new PIXI.Point(scale, scale);
 
             // position canvas in the center of the window if...
             // console.log(gameWorld.container.width); 
@@ -222,16 +223,16 @@ A_.Game = Class.extend({
             // BUG: wrong behavior when screenBounded === false
             // BUG: zoom/in out camera movement strange behavior
             if (this.camera.followType === "bounded") {
-                if (this.gameWorld.container.width < this.renderer.view.width) {
-                    this.gameWorld.x = (this.renderer.view.width - this.gameWorld.container.width) / 2;
-                    this.gameWorld.x /= scale;
+                if (this.level.container.width < this.renderer.view.width) {
+                    this.level.x = (this.renderer.view.width - this.level.container.width) / 2;
+                    this.level.x /= scale;
                 }
 //            else {
 //		this.gameWorld.x = 0;
 //	    }
-                if (this.gameWorld.container.height < this.renderer.view.height) {
-                    this.gameWorld.y = (this.renderer.view.height - this.gameWorld.container.height) / 2;
-                    this.gameWorld.y /= scale;
+                if (this.level.container.height < this.renderer.view.height) {
+                    this.level.y = (this.renderer.view.height - this.level.container.height) / 2;
+                    this.level.y /= scale;
                 }
 //            else {
 //		this.gameWorld.y = 0;
@@ -251,12 +252,12 @@ A_.Game = Class.extend({
         // #docs This will return the point containing global coordinates of the mouse,
         // more precisely, a point containing the coordinates of the global InteractionData position.
         // InteractionData holds all information related to an Interaction event.
-        this.gameWorld.mousePosition = this.stage.getMousePosition().clone();
+        this.level.mousePosition = this.stage.getMousePosition().clone();
         // Transform the mouse position from the unscaled stage's global system to
         // the unscaled scaled gameWorld.container's system. 
-        this.gameWorld.mousePosition.x /= this.scale;
-        this.gameWorld.mousePosition.y /= this.scale;
-        this.gameWorld.mousePosition.x += this.camera.x;
-        this.gameWorld.mousePosition.y += this.camera.y;
+        this.level.mousePosition.x /= this.scale;
+        this.level.mousePosition.y /= this.scale;
+        this.level.mousePosition.x += this.camera.x;
+        this.level.mousePosition.y += this.camera.y;
     }
 });

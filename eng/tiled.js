@@ -2,10 +2,10 @@ function createMap(game, mapData) {
 
     var collider = game.collider;
 
-    game.gameWorld.width = mapData["width"] * mapData["tilewidth"];
-    game.gameWorld.height = mapData["height"] * mapData["tileheight"];
-    game.gameWorld.mapWidth = mapData["width"];
-    game.gameWorld.mapHeight = mapData["height"];
+    game.level.width = mapData["width"] * mapData["tilewidth"];
+    game.level.height = mapData["height"] * mapData["tileheight"];
+    game.level.mapWidth = mapData["width"];
+    game.level.mapHeight = mapData["height"];
 
     var layersData = mapData["layers"];
     var collisionLayer = _.find(layersData, function (layerData) {
@@ -52,9 +52,9 @@ function createMap(game, mapData) {
 
         // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld
         if (layersData[i]["type"] === "imagelayer") {
-            var bg = makeBackground("assets/" + layersData[i]["image"], game.gameWorld.width, game.gameWorld.height);
+            var bg = makeBackground("assets/" + layersData[i]["image"], game.level.width, game.level.height);
             layer.addChild(bg);
-            game.gameWorld.container.addChild(layer);
+            game.level.container.addChild(layer);
         }
 
         // if current layer is TILE LAYER
@@ -83,8 +83,8 @@ function createMap(game, mapData) {
                 if (tileData[j] !== 0) {
                     tileData[j] = tileData[j] - tileset.firstgid;
                     var gid = tileData[j];
-                    var mapX = j % game.gameWorld.mapWidth;
-                    var mapY = Math.floor(j / game.gameWorld.mapWidth);
+                    var mapX = j % game.level.mapWidth;
+                    var mapY = Math.floor(j / game.level.mapWidth);
                     tilemap.setTile(gid, mapX, mapY);
                 }
             }
@@ -94,7 +94,7 @@ function createMap(game, mapData) {
                 layer = bakeLayer(layer);
             }
 
-            game.gameWorld.container.addChild(layer);
+            game.level.container.addChild(layer);
             layer.tilemap = tilemap;
             game.tileLayers.push(layer);
 
@@ -181,7 +181,7 @@ function createMap(game, mapData) {
                 layer = bakeLayer(layer);
             }
 
-            game.gameWorld.container.addChild(layer);
+            game.level.container.addChild(layer);
 
             game.spriteLayers.push(layer);
         }
@@ -192,7 +192,7 @@ function createMap(game, mapData) {
 // if layer's object do not update their properties, such as animation or position
 // pre-bake layer, ie. make a single sprite/texture out of layer's objects
 function bakeLayer(layer) {
-    var renderTexture = new PIXI.RenderTexture(game.gameWorld.width, game.gameWorld.height);
+    var renderTexture = new PIXI.RenderTexture(A_.game.level.width, A_.game.level.height);
 
     // create a sprite that uses the new render texture
     var sprite = new PIXI.Sprite(renderTexture);
