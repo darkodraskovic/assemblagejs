@@ -31,14 +31,12 @@ A_.Game = Class.extend({
         width: 0,
         height: 0,
         mousePosition: null,
-        container: null
+        container: null,
+        updateSprites: [],
+        spriteLayers: [],
+        tileLayers: [],
+        layers: [],
     },
-//    polygons: [],
-//    sprites: [],
-    updateSprites: [],
-    spriteLayers: [],
-    tileLayers: [],
-    layers: [],
     spritesToDestroy: [],
     spritesToCreate: [],
     init: function () {
@@ -75,8 +73,6 @@ A_.Game = Class.extend({
         this.setScale(this.scale);
     },
     run: function () {
-        var that = this;
-
         var now = new Date().getTime();
         this.dt = now - this.time;
         this.time = now;
@@ -84,13 +80,13 @@ A_.Game = Class.extend({
 
         this.processInput();
 
-        _.each(this.updateSprites, function (sprite) {
+        _.each(this.level.updateSprites, function (sprite) {
             sprite.update();
         });
 
         this.collider.processCollisions();
 
-        _.each(this.updateSprites, function (sprite) {
+        _.each(this.level.updateSprites, function (sprite) {
             sprite.postupdate();
         });
 
@@ -98,7 +94,7 @@ A_.Game = Class.extend({
 
         this.postCreate();
 
-        _.each(this.layers, function (layer) {
+        _.each(this.level.layers, function (layer) {
             if (layer["sort"]) {
                 layer.children = _.sortBy(layer.children, function (child) {
                     return child.position.y;
@@ -143,7 +139,7 @@ A_.Game = Class.extend({
 //            layer = this.layers[0];
 //        }
         if (!layer) {
-            layer = this.layers[0];
+            layer = this.level.layers[0];
         }
 
 
@@ -166,18 +162,18 @@ A_.Game = Class.extend({
     postCreate: function () {
         var that = this;
         _.each(this.spritesToCreate, function (sprite) {
-            that.updateSprites.push(sprite);
+            that.level.updateSprites.push(sprite);
         });
         this.spritesToCreate.length = 0;
     },
     destroySprite: function (sprite) {
-        if (!_.contains(this.updateSprites, sprite))
+        if (!_.contains(this.level.updateSprites, sprite))
             return;
 
         if (_.contains(this.collider.collisionSprites, sprite)) {
             this.collider.collisionSprites.splice(this.collider.collisionSprites.indexOf(sprite), 1);
         }
-        
+
         if (sprite.collisionType) {
             switch (sprite.collisionType) {
                 case "static":
@@ -203,7 +199,7 @@ A_.Game = Class.extend({
             sprite.debugGraphics.parent.removeChild(sprite.debugGraphics);
         }
         sprite.sprite.parent.removeChild(sprite.sprite);
-        this.updateSprites.splice(this.updateSprites.indexOf(sprite), 1);
+        this.level.updateSprites.splice(this.level.updateSprites.indexOf(sprite), 1);
     },
     destroySprites: function () {
         var that = this;

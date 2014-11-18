@@ -96,7 +96,7 @@ function createMap(game, mapData) {
 
             game.level.container.addChild(layer);
             layer.tilemap = tilemap;
-            game.tileLayers.push(layer);
+            game.level.tileLayers.push(layer);
 
         }
 
@@ -183,9 +183,9 @@ function createMap(game, mapData) {
 
             game.level.container.addChild(layer);
 
-            game.spriteLayers.push(layer);
+            game.level.spriteLayers.push(layer);
         }
-        game.layers.push(layer);
+        game.level.layers.push(layer);
     }
 }
 

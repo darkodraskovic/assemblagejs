@@ -9,12 +9,12 @@ var player;
 
 var myGame = new A_.Game();
 
-var loader = new A_.Loader(onLoaded, "assets/map_skorpio.json", assetsToLoad);
-loader.loadLevel();
+var myLoader = new A_.Loader(onLoaded, "assets/map_skorpio.json", assetsToLoad);
+myLoader.loadLevel();
 
 // INITIALIZE GAMEWORLD
 function onLoaded() {
-    createMap(myGame, loader.mapDataParsed);
+    createMap(myGame, myLoader.mapDataParsed);
 
     var debug = true;
     var cameraOptions = {innerBoundOffset: 0.25, worldBounded: false, followType: "centered"};
