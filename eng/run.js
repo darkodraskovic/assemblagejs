@@ -54,6 +54,20 @@ A_.Game = Class.extend({
 
         this.collider = new A_.Collider();
     },
+    initialize: function (debug, cameraOptions) {
+        if (debug) {
+            this.debug = true;
+            this.collider.setDebug();
+            this.gameWorld.container.addChild(this.collider.debugLayer);
+        }
+
+        this.camera = makeCamera(this.renderer.view.width, this.renderer.view.height, cameraOptions.innerBoundOffset);
+        this.camera.worldBounded = cameraOptions.worldBounded;
+        this.camera.followee = cameraOptions.followee;
+        this.camera.followType = cameraOptions.followType;
+
+        this.setScale(this.scale);
+    },
     run: function () {
         var that = this;
 
@@ -119,9 +133,13 @@ A_.Game = Class.extend({
         if (!SpriteClass)
             return;
 
-        if (!_.contains(this.layers, layer)) {
+//        if (!_.contains(this.layers, layer)) {
+//            layer = this.layers[0];
+//        }
+        if (!layer) {
             layer = this.layers[0];
         }
+
 
         var sprite = new SpriteClass(props);
         sprite.setCollision(collisionPolygon);

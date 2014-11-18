@@ -44,8 +44,17 @@ A_.SPRITES.Sprite = Class.extend({
             this.updateCollisionPolygon();
         }
     },
+    setPositionRelative: function (x, y) {
+        this.setPosition(this.sprite.position.x + x, this.sprite.position.y + y);
+    },
     getPosition: function () {
         return this.sprite.position;
+    },
+    getPositionX: function () {
+        return this.sprite.position.x;
+    },
+    getPositionY: function () {
+        return this.sprite.position.y;
     },
     setSize: function (x, y) {
         this.width = x;

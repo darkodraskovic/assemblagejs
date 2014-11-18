@@ -32,15 +32,16 @@ function parseMap(game) {
         for (var prop in layersData[i]) {
             layer[prop] = layersData[i][prop];
         }
-        
+
         // TODO: rewrite this to be automatic and to use eval
         if (layersData[i]["properties"]) {
             if (layersData[i]["properties"]["collision"])
                 layer.collision = true;
             if (layersData[i]["properties"]["baked"])
                 layer.baked = true;
-            if (layersData[i]["properties"]["sortBy"])
-                layer.sortBy = layersData[i]["properties"]["sortBy"];
+            if (layersData[i]["properties"]["sort"]) {
+                layer.sort = true;
+            }
             if (layersData[i]["properties"]["parallax"]) {
                 layer.parallax = parseFloat(layersData[i]["properties"]["parallax"]);
             }
@@ -61,7 +62,7 @@ function parseMap(game) {
 
             var baked = layer.baked;
             layer.baked = false;
-            
+
             var img = layersData[i]["properties"]["image"];
             var tileset;
             for (var j = 0; j < mapData["tilesets"].length; j++) {
@@ -164,12 +165,12 @@ function parseMap(game) {
                     } else {
                         collisionPolygon = null;
                     }
-
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
                     var pos = o.getPosition();
                     o.setPosition(pos.x + o.sprite.width / 2, pos.y - o.sprite.height / 2)
-                    if (o.name === "Player")
+                    if (o.name === "Player") {
                         player = o;
+                    }
                 }
             }
 
@@ -206,7 +207,6 @@ function bakeLayer(layer) {
     sprite.position = layer.position;
     sprite.parallax = layer.parallax;
     sprite.name = layer.name;
-    window.console.log("baked");
 
     return sprite;
 }

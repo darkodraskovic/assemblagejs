@@ -39,6 +39,8 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
+Anime.inject(A_.MODULES.Topdown);
+
 var Player = Anime.extend({
     animSheet: "assets/PlayerComplete.png",
     init: function (props) {
@@ -71,6 +73,8 @@ var Player = Anime.extend({
         bullet.velocity.x = bullet.speed * Math.cos(bullet.rotation);
     }
 });
+
+Player.inject(A_.MODULES.TopdownWASD);
 
 var Agent = Anime.extend({
     frameW: 64,

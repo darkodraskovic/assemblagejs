@@ -34,37 +34,19 @@ mapLoader.load();
 
 /***************************************************************************************/
 /***************************************************************************************/
-// viewport that follows the player
-var camera;
-
 var player;
 
 var game = new A_.Game();
 
 // INITIALIZE GAMEWORLD
 function onAssetsLoaded() {
-    Anime.inject(A_.MODULES.Topdown);
-    Player.inject(A_.MODULES.TopdownWASD);
-
     parseMap(game);
 
-    game.debug = true;
-    if (game.debug) {
-        game.collider.setDebug();
-        game.gameWorld.container.addChild(game.collider.debugLayer);
-    }
-
-    camera = makeCamera(game.renderer.view.width, game.renderer.view.height, 0.25, player);
-    camera.followee = player;
-    camera.followType = "centered";
-    camera.worldBounded = false;
-    player.camera = camera;
-
-    game.camera = camera;
-    game.setScale(game.scale);
+    var debug = true;
+    var cameraOptions = {innerBoundOffset: 0.25, worldBounded: false, followee: player, followType: "centered"};
+    game.initialize(debug, cameraOptions);
 
     requestAnimFrame(gameLoop);
-
 }
 
 function gameLoop() {
