@@ -32,8 +32,6 @@ assetLoader.onComplete = onAssetsLoaded;
 
 mapLoader.load();
 
-
-
 /***************************************************************************************/
 /***************************************************************************************/
 // viewport that follows the player
@@ -42,19 +40,15 @@ var camera;
 var player;
 
 var game = new A_.Game();
-//var collider = new A_.Collider();
 
-//var DEBUG = true;
 // INITIALIZE GAMEWORLD
 function onAssetsLoaded() {
-//    game.collider = collider;
-
     Anime.inject(A_.MODULES.Topdown);
     Player.inject(A_.MODULES.TopdownWASD);
 
-    parseMap(game, maker);
+    parseMap(game);
 
-    game.debug = false;
+    game.debug = true;
     if (game.debug) {
         game.collider.setDebug();
         game.gameWorld.container.addChild(game.collider.debugLayer);
@@ -69,13 +63,6 @@ function onAssetsLoaded() {
     game.camera = camera;
     game.setScale(game.scale);
 
-
-//    if (DEBUG) {
-//        collider.setDebug();
-//        game.gameWorld.container.addChild(collider.debugLayer);
-//    }
-
-    // Start game loop
     requestAnimFrame(gameLoop);
 
 }
@@ -83,20 +70,4 @@ function onAssetsLoaded() {
 function gameLoop() {
     requestAnimFrame(gameLoop);
     game.run();
-}
-
-function maker(name, args) {
-    var o;
-    switch (name) {
-        case "Player":
-            player = new Player();
-            o = player;
-            break;
-        case "Agent":
-            o = new Agent();
-            break;
-        default:
-            break;
-    }
-    return o;
 }

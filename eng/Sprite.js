@@ -12,7 +12,11 @@ A_.SPRITES.Sprite = Class.extend({
     collisionH: 0,
     layer: null,
     destroyThis: false,
-    init: function () {
+    init: function (props) {
+        for (var prop in props) {
+            this[prop] = props[prop];
+        }
+        
         if (this.image) {
             this.sprite = new PIXI.Sprite.fromImage(this.image);
         } else if (this.frame) {
@@ -66,11 +70,11 @@ A_.SPRITES.Sprite = Class.extend({
             this.collisionH = this.height;
 
         if (polygon) {
-            game.collider.activateCollisionFor(this, polygon);
+            game.collider.activateCollisionFor(this, polygon, null, null, this.collisionOffsetX, this.collisionOffsetY);
         }
         else {
             game.collider.activateCollisionFor(this, polygon, this.collisionW, this.collisionH,
-                    this.collisionW / 2 - this.collisionOffsetX, this.collisionH / 2 - this.collisionOffsetY);
+                    -this.collisionW / 2 + this.collisionOffsetX, -this.collisionH / 2 + this.collisionOffsetY);
         }
 
         game.collider.collisionSprites.push(this);
@@ -152,8 +156,8 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
     frameW: null,
     frameH: null,
     currentAnimation: null,
-    init: function () {
-        this._super();
+    init: function (props) {
+        this._super(props);
         this.animations = {};
 
         if (this.animSheet) {
@@ -243,8 +247,8 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
     isMoving: false,
     bounciness: 0.5,
     minBounceSpeed: 64,
-    init: function () {
-        this._super();
+    init: function (props) {
+        this._super(props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
         this.friction = new SAT.Vector(40, 40);
@@ -342,8 +346,8 @@ A_.MODULES.Topdown = {
     motionStates: ["moving", "idle"],
     cardinalDir: "E",
     cardinalDirs: ["N", "NW", "NE", "S", "SW", "SE"],
-    init: function () {
-        this._super();
+    init: function (props) {
+        this._super(props);
     },
     update: function () {
         if (this.motionState === "moving") {
@@ -404,8 +408,8 @@ A_.MODULES.Topdown = {
 }
 
 A_.MODULES.TopdownWASD = {
-    init: function () {
-        this._super();
+    init: function (props) {
+        this._super(props);
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("down", A_.KEY.S);
@@ -443,8 +447,8 @@ A_.MODULES.Platformer = {
     gravity: new SAT.Vector(0, 20),
     friction: new SAT.Vector(20, 0),
     maxVelocity: new SAT.Vector(400, 1000),
-    init: function () {
-        this._super();
+    init: function (props) {
+        this._super(props);
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("jump", A_.KEY.SPACE);

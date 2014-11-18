@@ -5,8 +5,8 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     frameW: 32,
     frameH: 32,
     collisionType: "dynamic",
-    init: function () {
-        this._super();
+    init: function (props) {
+        this._super(props);
         this.friction.x = 0;
         this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 1000;

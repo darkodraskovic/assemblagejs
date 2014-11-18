@@ -1,4 +1,4 @@
-function parseMap(game, maker) {
+function parseMap(game) {
 
     var collider = game.collider;
     
@@ -141,44 +141,33 @@ function parseMap(game, maker) {
 //                    game.polygons.push(o);
                 }
                 else {
+
                     var args = {};
                     for (var prop in oData["properties"]) {
                         args[prop] = eval(oData["properties"][prop]);
                     }
 
-                    // create an object based on give data
-                    var o = maker(oData["name"], args);
-
                     for (var prop in oData) {
-                        o[prop] = oData[prop];
+                        args[prop] = oData[prop];
                     }
-
-                    for (var prop in args) {
-                        o[prop] = args[prop];
-                    }
-                    // our objects are centered with .anchor property
-                    // object's origin in TILED is the bottom left corner
-                    // nevertheless, y axis in TILED points downwards
-                    var pos = o.getPosition();
-                    o.setPosition(o.x + o.width / 2, o.y + o.height / 2);
-
-                    var colPolyData = _.find(collider.collisionMasks, function (mask) {
-                        return mask.name === o.collisionMask;
-                    });
                     
+                    var colPolyData = _.find(collider.collisionMasks, function (mask) {
+                        return mask.name === args.collisionMask;
+                    });                    
                     if (colPolyData) {
                         var collisionPolygon = createSATPolygonFromTiled(colPolyData, true);
-                        o.setCollision(collisionPolygon);
+                    } else {
+                        collisionPolygon = null;
                     }
-                    else
-                        o.setCollision();
 
-                    layer.addChild(o.sprite);
-                    o.layer = layer;
+                    var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
+
+                    if (o.name === "Player") player = o;
+
                 }
-                if (layer.update === true) {
-                    game.updateSprites.push(o);
-                }
+//                if (layer.update === true) {
+//                    game.updateSprites.push(o);
+//                }
 //                game.sprites.push(o);
             }
 

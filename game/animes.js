@@ -3,9 +3,10 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     frameH: 64,
     animSpeed: 0.3,
     alive: true,
-    simpleDir: "right",
-    init: function () {
-        this._super();
+    facing: "right",
+    bounciness: 0,
+    init: function (props) {
+        this._super(props);
 
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
@@ -29,7 +30,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
         this._super();
 
         if (this.alive) {
-            this.setAnimation(this.motionState + "_" + this.simpleDir);
+            this.setAnimation(this.motionState + "_" + this.facing);
         }
         else {
             this.setAnimation("death");
@@ -39,23 +40,23 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
 
 var Player = Anime.extend({
     animSheet: "assets/PlayerComplete.png",
-    init: function () {
+    init: function (props) {
+        this._super(props);
         var that = this;
         game.stage.click = function () {
             that.shoot();
         };
-        this._super();
     },
     update: function () {
         var rot = (A_.UTILS.angleTo(this.getPosition(), game.gameWorld.mousePosition)).toDeg();
         if (rot >= -45 && rot < 45) {
-            this.simpleDir = "right"
+            this.facing = "right"
         } else if (rot >= 45 && rot < 135) {
-            this.simpleDir = "down"
+            this.facing = "down"
         } else if (rot > 135 || rot <= -135) {
-            this.simpleDir = "left"
+            this.facing = "left"
         } else
-            this.simpleDir = "up";
+            this.facing = "up";
 
         this._super();
 
@@ -81,8 +82,8 @@ var Agent = Anime.extend({
     animSheet: "assets/AgentComplete.png",
     timer: 0,
     collisionType: "dynamic",
-    init: function () {
-        this._super();
+    init: function (props) {
+        this._super(props);
         this.maxVelocity = new SAT.Vector(64, 64);
         this.motionState = "moving";
         this.timer = 2;
@@ -90,16 +91,16 @@ var Agent = Anime.extend({
     update: function () {
         if (this.alive) {
             if (this.cardinalContains("N")) {
-                this.simpleDir = "up";
+                this.facing = "up";
             }
             if (this.cardinalContains("S")) {
-                this.simpleDir = "down";
+                this.facing = "down";
             }
             if (this.cardinalContains("W")) {
-                this.simpleDir = "left";
+                this.facing = "left";
             }
             if (this.cardinalContains("E")) {
-                this.simpleDir = "right";
+                this.facing = "right";
             }
             this.timer += game.dt;
             if (this.timer > 2) {

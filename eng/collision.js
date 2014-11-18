@@ -35,11 +35,11 @@ A_.Collider = Class.extend({
             // o.collisionPolygon.translate(-w / 2, -h / 2);
             //
             //  #docs: Sets the offset, a translation to apply to the polygon before the angle rotation
-            var offset = new SAT.Vector(-offsetX, -offsetY);
-            o.collisionPolygon.setOffset(offset);
         } else {
             o.collisionPolygon = polygon;
         }
+        var offset = new SAT.Vector(offsetX, offsetY);
+        o.collisionPolygon.setOffset(offset);
 
         o.collisionPolygon.origPoints = _.map(o.collisionPolygon.points, function (point) {
             return point.clone();

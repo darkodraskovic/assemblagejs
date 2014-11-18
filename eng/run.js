@@ -53,7 +53,6 @@ A_.Game = Class.extend({
         this.dt = new Date().getTime();
 
         this.collider = new A_.Collider();
-
     },
     run: function () {
         var that = this;
@@ -116,7 +115,7 @@ A_.Game = Class.extend({
             }
         }
     },
-    createSprite: function (SpriteClass, layer, x, y) {
+    createSprite: function (SpriteClass, layer, x, y, props, collisionPolygon) {
         if (!SpriteClass)
             return;
 
@@ -124,8 +123,9 @@ A_.Game = Class.extend({
             layer = this.layers[0];
         }
 
-        var sprite = new SpriteClass();
-        sprite.setCollision();
+        var sprite = new SpriteClass(props);
+        sprite.setCollision(collisionPolygon);
+        
         if (this.debug) {
             sprite.debugGraphics = new PIXI.Graphics();
             this.collider.debugLayer.addChild(sprite.debugGraphics);
@@ -134,6 +134,7 @@ A_.Game = Class.extend({
         sprite.layer = layer;
         layer.addChild(sprite.sprite);
         sprite.setPosition(x, y);
+        
         this.spritesToCreate.push(sprite);
 
         return sprite;
