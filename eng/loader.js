@@ -1,4 +1,4 @@
-A_.Loader = Class.extend({
+A_.LevelLoader = Class.extend({
     mapDataJSON: "",
     mapDataParsed: {},
     mapLoader: null,
@@ -16,7 +16,7 @@ A_.Loader = Class.extend({
         var that = this;
         this.mapLoader = new PIXI.JsonLoader(this.mapDataJSON);
         this.mapLoader.load();
-        this.mapLoader.on('loaded', function (evt) {
+        this.mapLoader.on('loaded', function (evt) {            
             that.mapDataParsed = evt.content.content.json;
             that.loadAssets();
         });

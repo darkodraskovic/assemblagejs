@@ -172,7 +172,8 @@ function createMap(game, mapData) {
 //                        player = o;
 //                    }
                     if (o.followee) {
-                        game.followee = o;
+//                        game.followee = o;
+                        game.level.followee = o;
                     }
                 }
             }

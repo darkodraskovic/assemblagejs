@@ -7,13 +7,53 @@ function mouseWheelHandler(e) {
         A_.game.setScale(A_.game.scale - scaleDelta);
     }
 }
+A_.Level = Class.extend({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    mousePosition: null,
+    container: null,
+    followee: null,
+    updateSprites: [],
+    spriteLayers: [],
+    tileLayers: [],
+    layers: [],
+    camera: null,
+    init: function () {
+        this.container = new PIXI.DisplayObjectContainer();
+    },
+    setupCamera: function (cameraOptions) {
+        this.camera = makeCamera(A_.game.renderer.view.width, A_.game.renderer.view.height, cameraOptions.innerBoundOffset);
+        this.camera.worldBounded = cameraOptions.worldBounded;
+        if (cameraOptions.followee) {
+            this.camera.followee = cameraOptions.followee;
+        } else {
+            this.camera.followee = this.followee;
+            this.followee = null;
+        }
+        this.camera.followType = cameraOptions.followType;
+    },
+    addLayer: function (layer) {
+        this.layers.push(layer);
+    },
+    addSpriteLayer: function (layer) {
+        this.spriteLayers.push(layer);
+        this.addLayer(layer);
+    },
+    addTileLayer: function (layer) {
+        this.tileLayers.push(layer);
+        this.addLayer(layer);
+    }
+
+});
 
 A_.Game = Class.extend({
     time: new Date().getTime(),
     dt: new Date().getTime(),
     debug: true,
     scale: 1,
-    camera: null,
+//    camera: null,
     collider: null,
     screenW: 800,
     screenH: 600,
@@ -45,32 +85,36 @@ A_.Game = Class.extend({
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
 
-        this.level.container = new PIXI.DisplayObjectContainer();
-        this.stage.addChild(this.level.container);
-
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
-
-        this.collider = new A_.Collider();
     },
-    initialize: function (debug, cameraOptions) {
-        if (debug) {
-            this.debug = true;
+    loadLevel: function (mapDataJSON, assetsToLoad, cameraOptions, debug) {
+        this.cameraOptions = cameraOptions;
+        this.debug = debug;
+        
+        this.levelLoader = new A_.LevelLoader(this.onLevelLoaded.bind(this), mapDataJSON, assetsToLoad);
+        this.levelLoader.loadLevel();
+    },
+    onLevelLoaded: function () {        
+        window.console.log(this);
+        this.collider = new A_.Collider();
+        A_.collider = this.collider;
+        
+        this.level = new A_.Level();        
+        
+        createMap(this, this.levelLoader.mapDataParsed);
+        
+        this.level.setupCamera(this.cameraOptions);
+        
+        if (this.debug) {
             this.collider.setDebug();
             this.level.container.addChild(this.collider.debugLayer);
-        }
-
-        this.camera = makeCamera(this.renderer.view.width, this.renderer.view.height, cameraOptions.innerBoundOffset);
-        this.camera.worldBounded = cameraOptions.worldBounded;
-        if (cameraOptions.followee) {
-            this.camera.followee = cameraOptions.followee;
-        } else {
-            this.camera.followee = this.followee;
-            this.followee = null;
-        }
-        this.camera.followType = cameraOptions.followType;
+        }        
 
         this.setScale(this.scale);
+        
+        this.stage.addChild(this.level.container);
+        startGame();
     },
     run: function () {
         var now = new Date().getTime();
@@ -109,7 +153,7 @@ A_.Game = Class.extend({
             this.collider.drawDebug();
         }
 
-        this.camera.update();
+        this.level.camera.update();
 
         // Transform the position from container's scaled local system  
         // into stage's unscaled global system.
@@ -190,7 +234,7 @@ A_.Game = Class.extend({
         if (sprite.collisionPolygon) {
             delete(sprite.collisionPolygon);
         }
-        if (sprite === this.camera.followee) {
+        if (sprite === this.level.camera.followee) {
             this.camera.followee = null;
         }
         // TODO: destroy collision mask
@@ -218,7 +262,7 @@ A_.Game = Class.extend({
             // console.log(gameWorld.container.height); 
             // BUG: wrong behavior when screenBounded === false
             // BUG: zoom/in out camera movement strange behavior
-            if (this.camera.followType === "bounded") {
+            if (this.level.camera.followType === "bounded") {
                 if (this.level.container.width < this.renderer.view.width) {
                     this.level.x = (this.renderer.view.width - this.level.container.width) / 2;
                     this.level.x /= scale;
@@ -236,8 +280,8 @@ A_.Game = Class.extend({
             }
 
             // If the world is scaled 2x, camera sees 2x less and vice versa. 
-            this.camera.width = this.renderer.view.width / scale;
-            this.camera.height = this.renderer.view.height / scale;
+            this.level.camera.width = this.renderer.view.width / scale;
+            this.level.camera.height = this.renderer.view.height / scale;
 
 //        this.camera.centerOn(player);
 
@@ -253,7 +297,7 @@ A_.Game = Class.extend({
         // the unscaled scaled gameWorld.container's system. 
         this.level.mousePosition.x /= this.scale;
         this.level.mousePosition.y /= this.scale;
-        this.level.mousePosition.x += this.camera.x;
-        this.level.mousePosition.y += this.camera.y;
+        this.level.mousePosition.x += this.level.camera.x;
+        this.level.mousePosition.y += this.level.camera.y;
     }
 });
