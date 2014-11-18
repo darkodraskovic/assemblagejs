@@ -5,18 +5,18 @@ A_.SPRITES.Sprite = Class.extend({
     rectangle: null,
     bounded: true,
     outOfBounds: false,
-    prevOverlapN: new SAT.Vector(0, 0),
     collisionOffsetX: 0,
     collisionOffsetY: 0,
     collisionW: 0,
     collisionH: 0,
+    collides: false,
     layer: null,
     destroyThis: false,
     init: function (props) {
         for (var prop in props) {
             this[prop] = props[prop];
         }
-        
+
         if (this.image) {
             this.sprite = new PIXI.Sprite.fromImage(this.image);
         } else if (this.frame) {
@@ -28,7 +28,6 @@ A_.SPRITES.Sprite = Class.extend({
 
         this.sprite.anchor = new PIXI.Point(0.5, 0.5);
 
-//        this.position = new PIXI.Point(0, 0);
         this.rotation = 0;
 
         this.width = 1;
@@ -36,6 +35,7 @@ A_.SPRITES.Sprite = Class.extend({
 
         this.alpha = 1;
 
+        this.prevOverlapN = new SAT.Vector(0, 0);
     },
     setPosition: function (x, y) {
         this.sprite.position.x = x;
@@ -65,9 +65,9 @@ A_.SPRITES.Sprite = Class.extend({
     },
     setCollision: function (polygon) {
         if (!this.collisionW)
-            this.collisionW = this.width;
+            this.collisionW = this.sprite.width;
         if (!this.collisionH)
-            this.collisionH = this.height;
+            this.collisionH = this.sprite.height;
 
         if (polygon) {
             game.collider.activateCollisionFor(this, polygon, null, null, this.collisionOffsetX, this.collisionOffsetY);
@@ -77,22 +77,25 @@ A_.SPRITES.Sprite = Class.extend({
                     -this.collisionW / 2 + this.collisionOffsetX, -this.collisionH / 2 + this.collisionOffsetY);
         }
 
-        game.collider.collisionSprites.push(this);
-        if (this.collisionType) {
-            if (this.collisionType === "dynamic") {
-                game.collider.collisionDynamics.push(this);
-            } else if (this.collisionType === "static") {
-                game.collider.collisionStatics.push(this);
-            } else if (this.collisionType === "sensor") {
-                game.collider.collisionSensors.push(this);
+        if (this.collides || this.collisionType) {    
+            this.collides = true;
+            game.collider.collisionSprites.push(this);
+            if (this.collisionType) {
+                if (this.collisionType === "dynamic") {
+                    game.collider.collisionDynamics.push(this);
+                } else if (this.collisionType === "static") {
+                    game.collider.collisionStatics.push(this);
+                } else if (this.collisionType === "sensor") {
+                    game.collider.collisionSensors.push(this);
+                }
             }
-        }
-        else {
-            this.collisionType = "static";
-            game.collider.collisionStatics.push(this);
-        }
-        if (!this.collisionResponse) {
-            this.collisionResponse = "passive";
+            else {
+                this.collisionType = "static";
+                game.collider.collisionStatics.push(this);
+            }
+            if (!this.collisionResponse) {
+                this.collisionResponse = "passive";
+            }
         }
 
     },
@@ -368,7 +371,8 @@ A_.MODULES.Topdown = {
         this._super();
     },
     cardinalToAngle: function (car) {
-        if (!car) car = this.cardinalDir;
+        if (!car)
+            car = this.cardinalDir;
         switch (car) {
             case "N":
                 return -90;
@@ -399,8 +403,9 @@ A_.MODULES.Topdown = {
         }
     },
     cardinalContains: function (cont, car) {
-        if (!car) car = this.cardinalDir;
-        
+        if (!car)
+            car = this.cardinalDir;
+
         if (car.indexOf(cont) > -1) {
             return true;
         }
@@ -415,7 +420,6 @@ A_.MODULES.TopdownWASD = {
         A_.INPUT.addMapping("down", A_.KEY.S);
         A_.INPUT.addMapping("up", A_.KEY.W);
     },
-    
     update: function () {
         var cd = "";
         if (A_.INPUT.down["up"]) {

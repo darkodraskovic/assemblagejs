@@ -5,6 +5,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     alive: true,
     facing: "right",
     bounciness: 0,
+    collides: true,
     init: function (props) {
         this._super(props);
 
@@ -70,7 +71,6 @@ var Player = Anime.extend({
         bullet.velocity.x = bullet.speed * Math.cos(bullet.rotation);
     }
 });
-
 
 var Agent = Anime.extend({
     frameW: 64,

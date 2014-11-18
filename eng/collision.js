@@ -48,8 +48,6 @@ A_.Collider = Class.extend({
         o.collisionPolygon.origOffset = o.collisionPolygon.offset.clone();
         o.collisionPolygon.origW = o.collisionPolygon.w;
         o.collisionPolygon.origH = o.collisionPolygon.h;
-
-        o.collides = true;
         
         if (o.sprite && o.sprite.interactive)
             o.sprite.hitArea = SATPolygonToPIXIPolygon(o.collisionPolygon, false);

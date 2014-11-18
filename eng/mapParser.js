@@ -1,7 +1,7 @@
 function parseMap(game) {
 
     var collider = game.collider;
-    
+
     game.gameWorld.width = mapData["width"] * mapData["tilewidth"];
     game.gameWorld.height = mapData["height"] * mapData["tileheight"];
     game.gameWorld.mapWidth = mapData["width"];
@@ -33,11 +33,12 @@ function parseMap(game) {
             layer[prop] = layersData[i][prop];
         }
         
+        // TODO: rewrite this to be automatic and to use eval
         if (layersData[i]["properties"]) {
             if (layersData[i]["properties"]["collision"])
                 layer.collision = true;
-            if (layersData[i]["properties"]["update"])
-                layer.update = true;
+            if (layersData[i]["properties"]["baked"])
+                layer.baked = true;
             if (layersData[i]["properties"]["sortBy"])
                 layer.sortBy = layersData[i]["properties"]["sortBy"];
             if (layersData[i]["properties"]["parallax"]) {
@@ -58,7 +59,9 @@ function parseMap(game) {
         // if current layer is TILE LAYER
         else if (layersData[i]["type"] === "tilelayer") {
 
-
+            var baked = layer.baked;
+            layer.baked = false;
+            
             var img = layersData[i]["properties"]["image"];
             var tileset;
             for (var j = 0; j < mapData["tilesets"].length; j++) {
@@ -85,7 +88,8 @@ function parseMap(game) {
                 }
             }
 
-            if (!layer.update) {
+            layer.baked = baked;
+            if (layer.baked) {
                 layer = bakeLayer(layer);
             }
 
@@ -106,6 +110,7 @@ function parseMap(game) {
                 var oData = layersData[i]["objects"][j];
 
                 // POLY || RECT
+                // TODO: write Game.createPolygon()
                 if (oData.polygon || oData.type === "Rectangle") {
                     var args = {};
                     for (var prop in oData["properties"]) {
@@ -126,6 +131,7 @@ function parseMap(game) {
 
                     if (oData.polygon) {
                         var collisionPolygon = createSATPolygonFromTiled(oData, true);
+                        o.collides = true;
                         o.setCollision(collisionPolygon);
                         var pos = o.getPosition();
                         o.setPosition(pos.x - collisionPolygon.offset.x, pos.y - collisionPolygon.offset.y);
@@ -133,15 +139,14 @@ function parseMap(game) {
 
                     } else {
                         var pos = o.getPosition();
-                        o.setPosition(pos.x + oData.width / 2, pos.y + oData.height / 2);
+                        o.setPosition(pos.x, pos.y);
+                        o.collides = true;
                         o.setCollision();
                     }
-
                     o.update();
 //                    game.polygons.push(o);
                 }
                 else {
-
                     var args = {};
                     for (var prop in oData["properties"]) {
                         args[prop] = eval(oData["properties"][prop]);
@@ -150,10 +155,10 @@ function parseMap(game) {
                     for (var prop in oData) {
                         args[prop] = oData[prop];
                     }
-                    
+
                     var colPolyData = _.find(collider.collisionMasks, function (mask) {
                         return mask.name === args.collisionMask;
-                    });                    
+                    });
                     if (colPolyData) {
                         var collisionPolygon = createSATPolygonFromTiled(colPolyData, true);
                     } else {
@@ -161,17 +166,14 @@ function parseMap(game) {
                     }
 
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
-
-                    if (o.name === "Player") player = o;
-
+                    var pos = o.getPosition();
+                    o.setPosition(pos.x + o.sprite.width / 2, pos.y - o.sprite.height / 2)
+                    if (o.name === "Player")
+                        player = o;
                 }
-//                if (layer.update === true) {
-//                    game.updateSprites.push(o);
-//                }
-//                game.sprites.push(o);
             }
 
-            if (!layer.update) {
+            if (layer.baked) {
                 layer = bakeLayer(layer);
             }
 
@@ -193,7 +195,7 @@ function bakeLayer(layer) {
 
     // render the layer to the render texture
     renderTexture.render(layer);
-    
+
     // TODO: this commented piece of code makes tiled map non seamless
 //    for (var prop in layer) {
 //        if (layer.hasOwnProperty(prop)) {
@@ -203,7 +205,8 @@ function bakeLayer(layer) {
     sprite.baked = true;
     sprite.position = layer.position;
     sprite.parallax = layer.parallax;
-    sprite.name = layer.name;    
+    sprite.name = layer.name;
+    window.console.log("baked");
 
     return sprite;
 }

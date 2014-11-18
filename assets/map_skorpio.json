@@ -7,6 +7,7 @@
          "opacity":1,
          "properties":
             {
+             "baked":"true",
              "image":"Interior-Furniture.png"
             },
          "type":"tilelayer",
@@ -22,6 +23,7 @@
          "opacity":1,
          "properties":
             {
+             "baked":"true",
              "image":"Interior-Furniture.png"
             },
          "type":"tilelayer",
@@ -37,6 +39,7 @@
          "opacity":1,
          "properties":
             {
+             "baked":"true",
              "collision":"true",
              "image":"Interior-Furniture.png"
             },
@@ -68,8 +71,8 @@
                  "type":"",
                  "visible":true,
                  "width":1,
-                 "x":160,
-                 "y":192
+                 "x":288,
+                 "y":256
                 }, 
                 {
                  "gid":258,
@@ -314,9 +317,7 @@
          "opacity":1,
          "properties":
             {
-             "collision":"true",
-             "sortBy":"y",
-             "update":"true"
+             "sort":"true"
             },
          "type":"objectgroup",
          "visible":true,
@@ -331,6 +332,7 @@
          "opacity":1,
          "properties":
             {
+             "baked":"true",
              "image":"Interior-Furniture.png"
             },
          "type":"tilelayer",

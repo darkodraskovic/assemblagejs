@@ -73,13 +73,13 @@ A_.Game = Class.extend({
         _.each(this.updateSprites, function (sprite) {
             sprite.postupdate();
         });
-        
+
         this.destroySprites();
 
         this.postCreate();
 
         _.each(this.layers, function (layer) {
-            if (layer["sortBy"]) {
+            if (layer["sort"]) {
                 layer.children = _.sortBy(layer.children, function (child) {
                     return child.position.y;
                 });
@@ -125,7 +125,7 @@ A_.Game = Class.extend({
 
         var sprite = new SpriteClass(props);
         sprite.setCollision(collisionPolygon);
-        
+
         if (this.debug) {
             sprite.debugGraphics = new PIXI.Graphics();
             this.collider.debugLayer.addChild(sprite.debugGraphics);
@@ -134,7 +134,7 @@ A_.Game = Class.extend({
         sprite.layer = layer;
         layer.addChild(sprite.sprite);
         sprite.setPosition(x, y);
-        
+
         this.spritesToCreate.push(sprite);
 
         return sprite;
@@ -147,7 +147,7 @@ A_.Game = Class.extend({
         this.spritesToCreate.length = 0;
     },
     destroySprite: function (sprite) {
-        if (!_.contains(this.updateSprites, sprite)) 
+        if (!_.contains(this.updateSprites, sprite))
             return;
 
         if (_.contains(this.collider.collisionSprites, sprite)) {
