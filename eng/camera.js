@@ -116,11 +116,13 @@ function makeCamera(width, height, innerBoundOffset) {
     };
 
     camera.update = function () {
-        if (this.followType === "centered") {
-            this.followCentered();
-        }
-        else if (this.followType === "bounded") {
-            this.followBounded();
+        if (this.followee) {            
+            if (this.followType === "centered") {
+                this.followCentered();
+            }
+            else if (this.followType === "bounded") {
+                this.followBounded();
+            }
         }
 
         if (this.worldBounded) {

@@ -63,7 +63,12 @@ A_.Game = Class.extend({
 
         this.camera = makeCamera(this.renderer.view.width, this.renderer.view.height, cameraOptions.innerBoundOffset);
         this.camera.worldBounded = cameraOptions.worldBounded;
-        this.camera.followee = cameraOptions.followee;
+        if (cameraOptions.followee) {
+            this.camera.followee = cameraOptions.followee;
+        } else {
+            this.camera.followee = this.followee;
+            this.followee = null;
+        }
         this.camera.followType = cameraOptions.followType;
 
         this.setScale(this.scale);
@@ -171,6 +176,7 @@ A_.Game = Class.extend({
         if (_.contains(this.collider.collisionSprites, sprite)) {
             this.collider.collisionSprites.splice(this.collider.collisionSprites.indexOf(sprite), 1);
         }
+        
         if (sprite.collisionType) {
             switch (sprite.collisionType) {
                 case "static":
@@ -187,7 +193,9 @@ A_.Game = Class.extend({
         if (sprite.collisionPolygon) {
             delete(sprite.collisionPolygon);
         }
-
+        if (sprite === this.camera.followee) {
+            this.camera.followee = null;
+        }
         // TODO: destroy collision mask
 
         if (sprite.debugGraphics) {

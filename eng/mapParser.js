@@ -1,4 +1,4 @@
-function parseMap(game) {
+function createMap(game, mapData) {
 
     var collider = game.collider;
 
@@ -168,8 +168,11 @@ function parseMap(game) {
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
                     var pos = o.getPosition();
                     o.setPosition(pos.x + o.sprite.width / 2, pos.y - o.sprite.height / 2)
-                    if (o.name === "Player") {
-                        player = o;
+//                    if (o.name === "Player") {
+//                        player = o;
+//                    }
+                    if (o.followee) {
+                        game.followee = o;
                     }
                 }
             }

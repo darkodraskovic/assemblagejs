@@ -65,7 +65,8 @@
                      "collisionOffsetY":"-24",
                      "collisionResponse":"\"active\"",
                      "collisionType":"\"dynamic\"",
-                     "collisionW":"26"
+                     "collisionW":"26",
+                     "followee":"true"
                     },
                  "rotation":0,
                  "type":"",

@@ -1,25 +1,29 @@
 A_.Loader = Class.extend({
     mapDataJSON: "",
     mapDataParsed: {},
+    mapLoader: null,
     assetsToLoad: [],
-    levelLoader: null,
     assetLoader: null,
     init: function (callback, mapDataJSON, assetsToLoad) {
         this.callback = callback;
         this.mapDataJSON = mapDataJSON;
         this.assetsToLoad = assetsToLoad;
     },
-    loadMap: function (mapDataJSON) {
+    loadLevel: function () {
+        this.loadMap();
+    },
+    loadMap: function () {
         var that = this;
-        this.mapDataJSON = mapDataJSON;
-        this.levelLoader = new PIXI.JsonLoader(mapDataJSON);
-        this.levelLoader.on('loaded', function (evt) {
-           that.mapDataParsed = evt.content.content.json;
-           that.loadAssets();
+        this.mapLoader = new PIXI.JsonLoader(this.mapDataJSON);
+        this.mapLoader.load();
+        this.mapLoader.on('loaded', function (evt) {
+            that.mapDataParsed = evt.content.content.json;
+            that.loadAssets();
         });
     },
     loadAssets: function () {
         this.assetLoader = new PIXI.AssetLoader(this.assetsToLoad);
-        this.assetLoader.onComplete  = this.callback;
+        this.assetLoader.onComplete = this.callback;
+        this.assetLoader.load();
     }
 });
