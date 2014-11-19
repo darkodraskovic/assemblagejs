@@ -1,3 +1,11 @@
+function runGame() {
+    requestAnimFrame(runGame);
+
+    if (A_.game.isRunning === true) {
+        A_.game.run();
+    }
+}
+
 window.addEventListener("mousewheel", mouseWheelHandler, false);
 function mouseWheelHandler(e) {
     var scaleDelta = 0.02;
@@ -33,6 +41,7 @@ A_.Game = Class.extend({
 
         this.spritesToDestroy = [];
         this.spritesToCreate = [];
+        requestAnimFrame(runGame);
     },
     loadLevel: function (mapDataJSON, assetsToLoad, cameraOptions, debug) {
         this.mapDataJSON = mapDataJSON;
@@ -64,7 +73,7 @@ A_.Game = Class.extend({
         this.stage.addChild(this.level.container);
 
         this.isRunning = true;
-        startGame();
+
     },
     unloadLevel: function () {
         this.destroyLevel = true;

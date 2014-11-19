@@ -76,18 +76,37 @@ function createMap(game, mapData) {
             var mapH = layersData[i]["height"];
             var tileW = tileset.tilewidth;
             var tileH = tileset.tileheight;
-            var tilemap = createTilemap(layer, "assets/" + img, mapW, mapH, tileW, tileH);
 
             var tileData = layersData[i]["data"];
+            var tileData2D = [];
+            for (var j = 0; j < mapW; j++) {
+                tileData2D[j] = [];
+                for (var k = 0; k < mapH; k++) {
+                    tileData2D[j][k] = -1;
+                }
+            }
             for (var j = 0; j < tileData.length; j++) {
                 if (tileData[j] !== 0) {
                     tileData[j] = tileData[j] - tileset.firstgid;
                     var gid = tileData[j];
                     var mapX = j % game.level.mapWidth;
                     var mapY = Math.floor(j / game.level.mapWidth);
-                    tilemap.setTile(gid, mapX, mapY);
+                    tileData2D[mapX][mapY] = gid;
+//                    tilemap.setTile(gid, mapX, mapY);
                 }
             }
+
+//            var tilemap = createTilemap(layer, "assets/" + img, tileData2D, tileW, tileH);
+//            for (var j = 0; j < tileData2D.length; j++) {
+//                for (var k = 0; k < tileData2D[j].length; k++) {
+//                    if (tileData2D[j][k] > -1) {
+//                        tilemap.setTile(tileData2D[j][k], j, k);
+//                    }
+//                }
+//            }
+
+            var tilemap = new A_.Tilelayer(layer, "assets/" + img, tileW, tileH);
+            tilemap.createTilelayer(tileData2D);
 
             layer.baked = baked;
             if (layer.baked) {
@@ -95,7 +114,7 @@ function createMap(game, mapData) {
             }
 
             game.level.container.addChild(layer);
-            layer.tilemap = tilemap;
+//            layer.tilemap = tilemap;
             game.level.tileLayers.push(layer);
 
         }

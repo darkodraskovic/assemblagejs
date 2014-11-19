@@ -1,87 +1,93 @@
-function createTilemap(layer, img,
-        mapW, mapH, tileW, tileH) {
+A_.Tilelayer = Class.extend({
+    init: function (layer, img, tileW, tileH) {
+        this.layer = layer;
+        this.baked = false;
 
-    var tilemap = {
-    };
+        this.img = img;
+        this.bTxt = new PIXI.BaseTexture.fromImage(img, PIXI.scaleModes.LINEAR);
+        this.imgW = this.bTxt.width;
+        this.imgH = this.bTxt.height;
+        this.imgCols = this.imgW / tileW;
+        this.imgRows = this.imgH / tileH;
 
-    tilemap.layer = layer;
-    tilemap.baked = false;
 
-    tilemap.img = img;
-    tilemap.bTxt = new PIXI.BaseTexture.fromImage(img, PIXI.scaleModes.LINEAR);
-    tilemap.imgW = tilemap.bTxt.width;
-    tilemap.imgH = tilemap.bTxt.height;
-    tilemap.imgCols = tilemap.imgW / tileW;
-    tilemap.imgRows = tilemap.imgH / tileH;
+        this.tileW = tileW;
+        this.tileH = tileH;
 
-    tilemap.mapW = mapW;
-    tilemap.mapH = mapH;
-    tilemap.tileW = tileW;
-    tilemap.tileH = tileH;
+        this.tiles = [];
 
-    tilemap.tiles = [];
 
-    for (var i = 0; i < mapW; i++) {
-        tilemap.tiles[i] = [];
-        for (var j = 0; j < mapH; j++) {
-            tilemap.tiles[i][j] = null;
+    },
+    createTilelayer: function (layerData) {
+        this.mapW = layerData.length;
+        this.mapH = layerData[0].length;
+        for (var i = 0; i < this.mapW; i++) {
+            this.tiles[i] = [];
+            for (var j = 0; j < this.mapH; j++) {
+                this.tiles[i][j] = null;
+            }
         }
-    }
 
-    tilemap.getTile = function (x, y) {
+        for (var j = 0; j < layerData.length; j++) {
+            for (var k = 0; k < layerData[j].length; k++) {
+                if (layerData[j][k] > -1) {
+                    this.setTile(layerData[j][k], j, k);
+                }
+            }
+        }
+
+        this.layer.tilemap = this;
+    },
+    getTile: function (x, y) {
         return this.tiles[x][y];
-
-    };
-
-    tilemap.setTile = function (gid, x, y) {        
+    },
+    setTile: function (gid, x, y) {
         if (this.layer.baked)
             return;
-        if (typeof gid === "undefined" || typeof x === "undefined" || typeof y === "undefined") 
+        if (typeof gid === "undefined" || typeof x === "undefined" || typeof y === "undefined")
             return;
         if (gid < 0 || gid >= this.imgCols * this.imgRows)
             return;
-        if (x < 0 || x >= tilemap.mapW)
+        if (x < 0 || x >= this.mapW)
             return;
-        if (y < 0 || y >= tilemap.mapH)
+        if (y < 0 || y >= this.mapH)
             return;
         if (this.tiles[x][y]) {
             if (this.tiles[x][y] === gid)
                 return;
             this.removeTile(x, y);
         }
-        
+
         var tile = this.createTile(gid);
         this.setTileInMap(tile, x, y);
         var worldCoords = this.mapToWorld(x, y);
         this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
-    };
-
-    tilemap.setTileInMap = function (tile, x, y) {
+    },
+    setTileInMap: function (tile, x, y) {
         this.tiles[x][y] = tile;
-    };
-
-    tilemap.setTileInWorld = function (tile, x, y) {
+    },
+    setTileInWorld: function (tile, x, y) {
         var tileSprite = tile.sprite;
         tileSprite.position.x = x;
         tileSprite.position.y = y;
-        tileSprite.getPosition = function () { return this.position;}
+        tileSprite.getPosition = function () {
+            return this.position;
+        };
         this.layer.addChild(tileSprite);
         if (this.layer.collision) {
-            A_.collider.activateCollisionFor(tileSprite, null, tileW, tileH, 0, 0);
+            A_.collider.activateCollisionFor(tileSprite, null, this.tileW, this.tileH, 0, 0);
             tileSprite.collisionType = "static";
             A_.collider.collisionStatics.push(tileSprite);
         }
-
-    };
-
-    tilemap.removeTile = function (x, y) {
+    },
+    removeTile: function (x, y) {
         if (!this.layer.update)
             return;
 
         if (this.tiles[x][y]) {
             var sprite = this.tiles[x][y].sprite;
 
-            // REMOVE from
+            // REMOVE FROM
             // Pixi
             this.layer.removeChild(sprite);
             // Statics
@@ -92,36 +98,29 @@ function createTilemap(layer, img,
             // Tilemap
             this.tiles[x][y] = null;
         }
-    };
-
-    tilemap.worldToMap = function (x, y) {
+    },
+    worldToMap: function (x, y) {
         return [Math.round(x / this.tileW), Math.round(y / this.tileH)];
-    };
-
-    tilemap.mapToWorld = function (x, y) {
+    },
+    mapToWorld: function (x, y) {
         return [x * this.tileW, y * this.tileH];
-    };
-
-
-    tilemap.createTileSprite = function (gid) {
-        var frame = new PIXI.Rectangle((gid % this.imgCols) * tileW,
+    },
+    createTileSprite: function (gid) {
+        var frame = new PIXI.Rectangle((gid % this.imgCols) * this.tileW,
                 Math.floor(gid / this.imgCols) * this.tileH, this.tileW, this.tileH);
         var tileTexture = new PIXI.Texture(this.bTxt, frame);
         var tileSprite = new PIXI.Sprite(tileTexture);
 
         return tileSprite;
-    };
-
-    tilemap.createTile = function (gid) {
+    },
+    createTile: function (gid) {
         var tile = {};
 
         var sprite = this.createTileSprite(gid);
 
         tile.gid = gid;
-        tile.sprite = sprite;                
+        tile.sprite = sprite;
 
         return tile;
-    };
-
-    return tilemap;
-}
+    },
+});
