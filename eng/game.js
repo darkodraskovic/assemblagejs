@@ -67,8 +67,12 @@ A_.Game = Class.extend({
         this.isRunning = true;
         startGame();
     },
+    unsetLevel: function () {
+        this.destroyLevelFlag = true;
+    },
     destroyLevel: function () {
-        this.isRunning = false;
+        this.destroyLevelFlag = false;
+        this.isRunning = false;        
 
         this.collider = null;
         A_.collider = null;
@@ -77,7 +81,12 @@ A_.Game = Class.extend({
         A_.level = null;
         
         this.levelLoader = null;
-        this.stage.removeChildren();
+        
+        delete(A_.game.level);
+        delete(A_.game.collider);
+        delete(A_.game.LevelLoader);
+        
+        this.stage.removeChildren();       
         
         this.loadLevel(this.mapDataJSON, this.assetsToLoad, this.cameraOptions, this.debug);
     },
@@ -132,7 +141,7 @@ A_.Game = Class.extend({
 //        this.gameWorld.container.position.y = Math.round(this.gameWorld.container.position.y);
 
         this.renderer.render(this.stage);
-
+        
 
         for (var action in A_.INPUT.actions) {
             if (A_.INPUT.pressed[action] === true) {
@@ -142,6 +151,10 @@ A_.Game = Class.extend({
                 A_.INPUT.released[action] = false;
             }
         }
+
+        if (this.destroyLevelFlag)
+            this.destroyLevel();
+
     },
     createSprite: function (SpriteClass, layer, x, y, props, collisionPolygon) {
         if (!SpriteClass)

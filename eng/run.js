@@ -1,8 +1,11 @@
 function startGame() {
+    A_.game.isRunning = true;
     requestAnimFrame(runGame);
 }
 
 function runGame() {
-    requestAnimFrame(runGame);
-    A_.game.run();
+    if (A_.game.isRunning === true) {        
+        A_.game.run();
+        requestAnimFrame(runGame);
+    }
 }
