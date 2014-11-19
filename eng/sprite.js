@@ -1,8 +1,8 @@
 A_.SPRITES.Sprite = Class.extend({
-    image: null,
-    frame: null,
-    baseTexture: null,
-    rectangle: null,
+//    image: null,
+//    frame: null,
+//    baseTexture: null,
+//    rectangle: null,
     bounded: true,
     outOfBounds: false,
     collisionOffsetX: 0,
@@ -10,7 +10,6 @@ A_.SPRITES.Sprite = Class.extend({
     collisionW: 0,
     collisionH: 0,
     collides: false,
-    layer: null,
     destroyThis: false,
     init: function (props) {
         for (var prop in props) {
@@ -164,10 +163,9 @@ A_.SPRITES.Sprite = Class.extend({
 });
 
 A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
-    animSheet: null,
-    frameW: null,
-    frameH: null,
-    currentAnimation: null,
+//    animSheet: undefined,
+    frameW: 0,
+    frameH: 0,
     init: function (props) {
         this._super(props);
         this.animations = {};
@@ -431,7 +429,7 @@ A_.MODULES.TopdownWASD = {
     },
     update: function () {
         var cd = "";
-        if (A_.INPUT.down["up"]) {
+        if (A_.INPUT.down["up"]) {            
             cd = "N";
         } else if (A_.INPUT.down["down"]) {
             cd = "S";

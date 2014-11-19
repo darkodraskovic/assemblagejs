@@ -1,10 +1,5 @@
 A_.LevelLoader = Class.extend({
-    mapDataJSON: "",
-    mapDataParsed: {},
-    mapLoader: null,
-    assetsToLoad: [],
-    assetLoader: null,
-    init: function (callback, mapDataJSON, assetsToLoad) {
+    init: function (callback, mapDataJSON, assetsToLoad) {        
         this.callback = callback;
         this.mapDataJSON = mapDataJSON;
         this.assetsToLoad = assetsToLoad;

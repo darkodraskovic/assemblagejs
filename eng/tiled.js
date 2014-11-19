@@ -91,7 +91,7 @@ function createMap(game, mapData) {
 
             layer.baked = baked;
             if (layer.baked) {
-                layer = bakeLayer(layer);
+                layer = bakeLayer(layer, game.level);
             }
 
             game.level.container.addChild(layer);
@@ -179,7 +179,7 @@ function createMap(game, mapData) {
             }
 
             if (layer.baked) {
-                layer = bakeLayer(layer);
+                layer = bakeLayer(layer, game.level);
             }
 
             game.level.container.addChild(layer);
@@ -192,8 +192,8 @@ function createMap(game, mapData) {
 
 // if layer's object do not update their properties, such as animation or position
 // pre-bake layer, ie. make a single sprite/texture out of layer's objects
-function bakeLayer(layer) {
-    var renderTexture = new PIXI.RenderTexture(A_.game.level.width, A_.game.level.height);
+function bakeLayer(layer, level) {
+    var renderTexture = new PIXI.RenderTexture(level.width, level.height);
 
     // create a sprite that uses the new render texture
     var sprite = new PIXI.Sprite(renderTexture);

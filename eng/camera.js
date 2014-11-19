@@ -1,25 +1,3 @@
-A_.Camera = Class.extend({
-    x: 0,
-    y: 0,
-    width: 800,
-    height: 600,
-    offset: 0.25,
-    innerBoundOffset: {},
-    followee: null,
-    followType: "centered",
-    worldBounded: false,
-    clickDelta: {},
-    init: function () {
-        this.innerBoundOffset.left = this.offset;
-        this.innerBoundOffset.right = 1 - this.offset;
-        this.innerBoundOffset.top = this.offset;
-        this.innerBoundOffset.bottom = 1 - this.offset;
-    }
-});
-
-/***************************************************************/
-/***************************************************************/
-
 function makeCamera(width, height, innerBoundOffset) {
     var camera = {};
 

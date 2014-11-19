@@ -1,15 +1,13 @@
 A_.Collider = Class.extend({
-    // Overall array of objects that need to be tested for collision (for book keeping purposes).
-    collisionSprites: [],
-    collisionDynamics: [],
-    collisionStatics: [],
-    collisionSensors: [],
-    // Array of named collision masks
-    collisionMasks: [],
-    debugLayer: null,
     init: function () {
         this.debugLayer = new PIXI.DisplayObjectContainer()
         this.debugLayer.parallax = 100;
+        this.collisionSprites = [];
+        this.collisionStatics = [];
+        this.collisionDynamics = [];
+        this.collisionSensors = [];
+        this.collisionMasks = [];
+        
     },
     activateCollisionFor: function (o, polygon, w, h, offsetX, offsetY) {
         if (!w)
