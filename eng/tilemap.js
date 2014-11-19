@@ -1,4 +1,4 @@
-function makeTilemap(layer, img,
+function createTilemap(layer, img,
         mapW, mapH, tileW, tileH) {
 
     var tilemap = {
@@ -50,7 +50,7 @@ function makeTilemap(layer, img,
             this.removeTile(x, y);
         }
         
-        var tile = this.makeTile(gid);
+        var tile = this.createTile(gid);
         this.setTileInMap(tile, x, y);
         var worldCoords = this.mapToWorld(x, y);
         this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
@@ -103,7 +103,7 @@ function makeTilemap(layer, img,
     };
 
 
-    tilemap.makeTileSprite = function (gid) {
+    tilemap.createTileSprite = function (gid) {
         var frame = new PIXI.Rectangle((gid % this.imgCols) * tileW,
                 Math.floor(gid / this.imgCols) * this.tileH, this.tileW, this.tileH);
         var tileTexture = new PIXI.Texture(this.bTxt, frame);
@@ -112,10 +112,10 @@ function makeTilemap(layer, img,
         return tileSprite;
     };
 
-    tilemap.makeTile = function (gid) {
+    tilemap.createTile = function (gid) {
         var tile = {};
 
-        var sprite = this.makeTileSprite(gid);
+        var sprite = this.createTileSprite(gid);
 
         tile.gid = gid;
         tile.sprite = sprite;                

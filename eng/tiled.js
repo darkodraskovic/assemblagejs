@@ -76,7 +76,7 @@ function createMap(game, mapData) {
             var mapH = layersData[i]["height"];
             var tileW = tileset.tilewidth;
             var tileH = tileset.tileheight;
-            var tilemap = makeTilemap(layer, "assets/" + img, mapW, mapH, tileW, tileH);
+            var tilemap = createTilemap(layer, "assets/" + img, mapW, mapH, tileW, tileH);
 
             var tileData = layersData[i]["data"];
             for (var j = 0; j < tileData.length; j++) {

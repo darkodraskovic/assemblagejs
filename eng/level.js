@@ -42,5 +42,4 @@ A_.Level = Class.extend({
         this.tileLayers.push(layer);
         this.addLayer(layer);
     }
-
 });
