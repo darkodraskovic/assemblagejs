@@ -33,5 +33,39 @@ A_.Level = Class.extend({
     addTileLayer: function (layer) {
         this.tileLayers.push(layer);
         this.addLayer(layer);
+    },
+    findSpriteByName: function (name) {
+        var sprite = _.find(this.sprites, function (sprite) {
+            return sprite.name === name;
+        });
+        return sprite;
+    },
+    findSpritesByName: function (name) {
+        var sprites = [];
+        _.each(this.sprites, function (sprite) {
+            if (sprite.name === name) {
+                sprites.push(sprite);
+            }
+        });
+        return sprites;
+    },
+    findSpriteByClass: function (Class) {
+        var sprite = _.find(this.sprites, function (sprite) {
+            return sprite instanceof Class;
+        });
+        return sprite;
+    },
+    findSpritesByClass: function (Class) {
+        var sprites = [];
+        _.each(this.sprites, function (sprite) {
+            if (sprite instanceof Class) {
+                sprites.push(sprite);
+            }
+        });
+        return sprites;
+    },
+    // TODO
+    findSpriteByID: function () {
+
     }
 });

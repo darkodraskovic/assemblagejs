@@ -85,12 +85,15 @@ A_.SPRITES.Sprite = Class.extend({
                     -this.collisionW / 2 + this.collisionOffsetX, -this.collisionH / 2 + this.collisionOffsetY);
         }
 
-        if (this.collides || this.collisionType) {    
+        if (this.collides || this.collisionType) {
             this.collides = true;
             A_.game.collider.collisionSprites.push(this);
             if (this.collisionType) {
                 if (this.collisionType === "dynamic") {
                     A_.game.collider.collisionDynamics.push(this);
+                    if (!this.collisionResponse) {
+                        this.collisionResponse = "passive";
+                    }
                 } else if (this.collisionType === "static") {
                     A_.game.collider.collisionStatics.push(this);
                 } else if (this.collisionType === "sensor") {
@@ -100,9 +103,6 @@ A_.SPRITES.Sprite = Class.extend({
             else {
                 this.collisionType = "static";
                 A_.game.collider.collisionStatics.push(this);
-            }
-            if (!this.collisionResponse) {
-                this.collisionResponse = "passive";
             }
         }
 
@@ -429,7 +429,7 @@ A_.MODULES.TopdownWASD = {
     },
     update: function () {
         var cd = "";
-        if (A_.INPUT.down["up"]) {            
+        if (A_.INPUT.down["up"]) {
             cd = "N";
         } else if (A_.INPUT.down["down"]) {
             cd = "S";

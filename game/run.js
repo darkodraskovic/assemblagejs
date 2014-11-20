@@ -17,17 +17,14 @@ A_.game.loadLevel("level1");
 
 // LOOP
 A_.game.preupdate = function () {
-    if (!_.find(A_.game.level.sprites, function (sprite) {
-        return sprite instanceof Agent
-    })) {
+    if (!A_.level.findSpriteByClass(Agent)) {
         if (this.levelName === "level1") {
             A_.game.loadLevel("level2");
 
         } else {
             A_.game.loadLevel("level1");
         }
-    }
-    
+    }    
 };
 
 A_.game.postupdate = function () {

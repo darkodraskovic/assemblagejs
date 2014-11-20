@@ -44,10 +44,11 @@ function createMap(game, mapData) {
             }
             if (layersData[i]["properties"]["parallax"]) {
                 layer.parallax = parseFloat(layersData[i]["properties"]["parallax"]);
+                if (isNaN(layer.parallax)) { layer.parallax = 100; }                    
             }
-            if (!layer.parallax || isNaN(layer.parallax)) {
-                layer.parallax = 100;
-            }
+        }
+        if (typeof layer.parallax === "undefined") {
+            layer.parallax = 100;
         }
 
         // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld
