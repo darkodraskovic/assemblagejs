@@ -3,14 +3,6 @@ A_.Level = Class.extend({
     y: 0,
     width: 0,
     height: 0,
-//    mousePosition: null,
-//    container: null,
-//    followee: null,
-//    updateSprites: [],
-//    spriteLayers: [],
-//    tileLayers: [],
-//    layers: [],
-//    camera: null,
     init: function () {
         this.container = new PIXI.DisplayObjectContainer();
         this.followee = null;

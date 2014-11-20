@@ -5,12 +5,11 @@ var assetsToLoad = [
     "assets/Muzzleflashes-Shots.png",
     "assets/Computer1.png"
 ];
-var player;
 
-var myGame = new A_.Game();
-
-var debug = true;
 var cameraOptions = {innerBoundOffset: 0.25, worldBounded: false, followType: "centered"};
-myGame.loadLevel("assets/map_skorpio.json", assetsToLoad, cameraOptions, debug);
-myGame = null;
+A_.game.setDefaultCameraOptions(cameraOptions);
 
+A_.game.addLevel("level1", "assets/map_skorpio.json", assetsToLoad, cameraOptions);
+A_.game.addLevel("level2", "assets/map_skorpio2.json", assetsToLoad, cameraOptions);
+
+A_.game.loadLevel("level1");

@@ -230,6 +230,8 @@ function bakeLayer(layer, level) {
     sprite.position = layer.position;
     sprite.parallax = layer.parallax;
     sprite.name = layer.name;
+    // If the layer is baked, we do not need the tilemap.
+//    if (layer.tilemap) { sprite.tilemap = layer.tilemap; }
 
     return sprite;
 }

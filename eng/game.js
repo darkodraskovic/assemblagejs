@@ -6,16 +6,6 @@ function runGame() {
     }
 }
 
-window.addEventListener("mousewheel", mouseWheelHandler, false);
-function mouseWheelHandler(e) {
-    var scaleDelta = 0.02;
-    if (e.wheelDelta > 0) {
-        A_.game.setScale(A_.game.scale + scaleDelta);
-    } else {
-        A_.game.setScale(A_.game.scale - scaleDelta);
-    }
-}
-
 A_.Game = Class.extend({
     debug: true,
     scale: 1,
@@ -23,15 +13,16 @@ A_.Game = Class.extend({
     screenH: 600,
     stageColor: 0x757575,
     isRunning: false,
-    rendererOptions: {
-        antialiasing: false,
-        transparent: false,
-        resolution: 1
-    },
+    debug: true,
+            rendererOptions: {
+                antialiasing: false,
+                transparent: false,
+                resolution: 1
+            },
 //    spritesToDestroy: [],
 //    spritesToCreate: [],
     init: function () {
-        A_.game = this;
+//        A_.game = this;
         this.stage = new PIXI.Stage(this.stageColor);
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
@@ -41,15 +32,43 @@ A_.Game = Class.extend({
 
         this.spritesToDestroy = [];
         this.spritesToCreate = [];
+        this.levels = [];
+
         requestAnimFrame(runGame);
     },
-    loadLevel: function (mapDataJSON, assetsToLoad, cameraOptions, debug) {
-        this.mapDataJSON = mapDataJSON;
-        this.assetsToLoad = assetsToLoad;
+    setDefaultCameraOptions: function (cameraOptions) {
         this.cameraOptions = cameraOptions;
-        this.debug = debug;
+    },
+    addLevel: function (name, mapDataJSON, assetsToLoad, cameraOptions) {
+        var level = {name: name, mapDataJSON: mapDataJSON, assetsToLoad: assetsToLoad, cameraOptions: cameraOptions}
+        this.levels.push(level);
+    },
+    loadLevel: function (name) {
+        var level = _.find(this.levels, function (level) {
+            return level.name === name
+        });
+        if (!level) {
+            window.console.log("No level named " + name);
+            return;
+        }
 
-        this.levelLoader = new A_.LevelLoader(this.onLevelLoaded.bind(this), mapDataJSON, assetsToLoad);
+        if (this.level) {
+            this.destroyLevel = true;
+            this.createLevel = true;
+            this.levelToLoad = level;
+            return;
+        } else {
+            this.levelToLoad = level;
+            this.activateLevelLoader();
+        }
+
+    },
+    activateLevelLoader: function () {
+        if (this.levelToLoad.cameraOptions) {
+            this.cameraOptions = this.levelToLoad.cameraOptions;
+        }
+
+        this.levelLoader = new A_.LevelLoader(this.onLevelLoaded.bind(this), this.levelToLoad.mapDataJSON, this.levelToLoad.assetsToLoad);
         this.levelLoader.loadLevel();
     },
     onLevelLoaded: function () {
@@ -72,8 +91,9 @@ A_.Game = Class.extend({
 
         this.stage.addChild(this.level.container);
 
+        this.createLevel = false;
+        this.levelToLoad = null;
         this.isRunning = true;
-
     },
     unloadLevel: function () {
         this.destroyLevel = true;
@@ -94,7 +114,6 @@ A_.Game = Class.extend({
         this.stage.removeChildren();
 
         this.destroyLevel = false;
-        this.loadLevel(this.mapDataJSON, this.assetsToLoad, this.cameraOptions, this.debug);
     },
     run: function () {
         if (!this.isRunning)
@@ -161,6 +180,9 @@ A_.Game = Class.extend({
         if (this.destroyLevel) {
             this.isRunning = false;
             this.clearLevel();
+            if (this.createLevel) {
+                this.activateLevelLoader();
+            }
         }
 
     },
@@ -290,3 +312,15 @@ A_.Game = Class.extend({
         this.level.mousePosition.y += this.level.camera.y;
     }
 });
+
+A_.game = new A_.Game();
+
+window.addEventListener("mousewheel", mouseWheelHandler, false);
+function mouseWheelHandler(e) {
+    var scaleDelta = 0.02;
+    if (e.wheelDelta > 0) {
+        A_.game.setScale(A_.game.scale + scaleDelta);
+    } else {
+        A_.game.setScale(A_.game.scale - scaleDelta);
+    }
+}
