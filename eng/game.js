@@ -22,23 +22,30 @@ A_.Game = Class.extend({
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
 
-        this.spritesToDestroy = [];
-        this.spritesToCreate = [];
+        this.assetsToLoad = null;
         this.levels = [];
         this.level = null;
+        this.spritesToDestroy = [];
+        this.spritesToCreate = [];
 
         requestAnimFrame(runGame);
     },
     setDefaultCameraOptions: function (cameraOptions) {
         this.cameraOptions = cameraOptions;
     },
-    addLevel: function (name, mapDataJSON, assetsToLoad, cameraOptions) {
-        var level = {name: name, mapDataJSON: mapDataJSON, assetsToLoad: assetsToLoad, cameraOptions: cameraOptions}
+    setAssetsToLoad: function (assetsToLoad) {
+        this.assetsToLoad = assetsToLoad;
+    },
+    addLevel: function (name, mapDataJSON, cameraOptions) {
+        var level = {name: name, mapDataJSON: mapDataJSON, cameraOptions: cameraOptions};
         this.levels.push(level);
     },
     loadLevel: function (name) {
+        if (!_.find(this.levels, function (level){ return level.name === name})) {
+            this.addLevel(name, "assets/" + name + ".json");
+        }
         var level = _.find(this.levels, function (level) {
-            return level.name === name
+            return level.name === name;
         });
         if (!level) {
             window.console.log("No level named " + name);
@@ -54,15 +61,20 @@ A_.Game = Class.extend({
             this.levelToLoad = level;
             this.activateLevelLoader();
         }
-
     },
     activateLevelLoader: function () {
         if (this.levelToLoad.cameraOptions) {
             this.cameraOptions = this.levelToLoad.cameraOptions;
         }
 
-        this.levelLoader = new A_.LevelLoader(this.onLevelLoaded.bind(this), this.levelToLoad.mapDataJSON, this.levelToLoad.assetsToLoad);
-        this.levelLoader.loadLevel();
+//        this.levelLoader = new A_.LevelLoader(this.onLevelLoaded.bind(this), this.levelToLoad.mapDataJSON, this.levelToLoad.assetsToLoad);
+        this.levelLoader = new A_.LevelLoader();
+        this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.mapDataJSON);
+    },
+    onMapLoaded: function () {
+        var assetsToLoad = fetchAssetListFromMapData(this.levelLoader.mapDataParsed);
+        window.console.log(assetsToLoad);
+        this.levelLoader.loadAssets(this.onLevelLoaded(), assetsToLoad);
     },
     onLevelLoaded: function () {
         this.collider = new A_.Collider();

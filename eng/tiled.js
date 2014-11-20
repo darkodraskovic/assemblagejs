@@ -1,3 +1,38 @@
+function fetchAssetListFromMapData(mapData) {
+    var assetsToLoad = [];
+    _.each(mapData["tilesets"], function (tileset) {
+        assetsToLoad.push("assets/" + tileset["image"]);
+    });
+    
+    var layersData = mapData["layers"];
+    var classes = [];
+    for (i = 0; i < layersData.length; i++) {
+        // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld
+        if (layersData[i]["type"] === "imagelayer") {
+            assetsToLoad.push(layersData[i]["image"]);
+        } else if (layersData[i]["type"] === "objectgroup") {
+            _.each(layersData[i]["objects"], function (o) {
+                if (!o["polygon"] && o["type"] !== "Rectangle") {
+                    if (!_.contains(classes, o["name"])) {
+                        classes.push(o["name"]);
+                    }
+                }
+            });
+        }
+    }
+    _.each(classes, function (c) {
+        var asset = eval(c).prototype.animSheet;
+        if (!asset) {
+            asset = eval(c).prototype.image;
+        }
+        if (asset.indexOf("/") > -1) {
+            asset = asset.substring(asset.lastIndexOf("/") + 1);
+        }
+        assetsToLoad.push("assets/" + asset);
+    });
+    return assetsToLoad;
+}
+
 function createMap(game, mapData) {
 
     var collider = game.collider;

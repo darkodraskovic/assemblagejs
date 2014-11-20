@@ -41,13 +41,9 @@ A_.Level = Class.extend({
         return sprite;
     },
     findSpritesByName: function (name) {
-        var sprites = [];
-        _.each(this.sprites, function (sprite) {
-            if (sprite.name === name) {
-                sprites.push(sprite);
-            }
-        });
-        return sprites;
+        return _.filter(this.sprites, function (sprite) {
+            return sprite.name === name;
+        });       
     },
     findSpriteByClass: function (Class) {
         var sprite = _.find(this.sprites, function (sprite) {
@@ -56,13 +52,9 @@ A_.Level = Class.extend({
         return sprite;
     },
     findSpritesByClass: function (Class) {
-        var sprites = [];
-        _.each(this.sprites, function (sprite) {
-            if (sprite instanceof Class) {
-                sprites.push(sprite);
-            }
-        });
-        return sprites;
+        return _.filter(this.sprites, function (sprite) {
+            return sprite instanceof Class;
+        });        
     },
     // TODO
     findSpriteByID: function () {
