@@ -29,4 +29,17 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
 var Computer = A_.SPRITES.Sprite.extend({
     image: "assets/Computer1.png",
     collisionType: "static",
+    interactive: true,
+    update: function () {
+        this._super();
+        if (this.leftpressed) {
+            window.console.log("Pressed");
+        }
+        if (this.leftreleased) {
+            window.console.log("Released");
+        }
+        if (this.leftdown) {
+            window.console.log("Down");
+        }
+    }
 })

@@ -35,6 +35,25 @@ A_.SPRITES.Sprite = Class.extend({
         this.alpha = 1;
 
         this.prevOverlapN = new SAT.Vector(0, 0);
+        
+        var that = this;
+        if (this.interactive) {
+            this.sprite.interactive = true;
+            this.sprite.mousedown = function (){
+                that.leftpressed = true;
+                that.leftdown = true;
+            }
+            this.sprite.mouseup = function (){
+                that.leftreleased = true;
+                that.leftdown = false;
+            }
+        }
+    },
+    setInteractive: function() {
+        this.sprite.interactive = true;
+    },
+    removeInteractive: function() {
+        this.sprite.interactive = false;
     },
     setPosition: function (x, y) {
         this.sprite.position.x = x;
@@ -61,6 +80,12 @@ A_.SPRITES.Sprite = Class.extend({
     },
     getSize: function () {
         return {width: this.sprite.width, height: this.sprite.height};
+    },
+    getWidth: function () {
+        return this.sprite.width; 
+    },
+    getHeight: function () {
+        return this.sprite.height; 
     },
     setScale: function (x, y) {
         this.sprite.scale = new PIXI.Point(x, y);

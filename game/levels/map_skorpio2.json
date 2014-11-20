@@ -442,10 +442,6 @@
                  "y":288
                 }],
          "opacity":1,
-         "properties":
-            {
-             "collision":"true"
-            },
          "type":"objectgroup",
          "visible":true,
          "width":64,

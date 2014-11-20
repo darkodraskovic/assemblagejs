@@ -45,10 +45,6 @@ var Player = Anime.extend({
     animSheet: "assets/PlayerComplete.png",
     init: function (props) {
         this._super(props);
-        var that = this;
-        A_.game.stage.click = function () {
-            that.shoot();
-        };
     },
     update: function () {
         var rot = (A_.UTILS.angleTo(this.getPosition(), A_.game.level.mousePosition)).toDeg();
@@ -61,6 +57,9 @@ var Player = Anime.extend({
         } else
             this.facing = "up";
 
+        if (A_.game.leftpressed) {
+            this.shoot();
+        }
         this._super();
 
     },

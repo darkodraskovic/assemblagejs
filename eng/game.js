@@ -19,6 +19,16 @@ A_.Game = Class.extend({
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
 
+        var that = this;
+        this.stage.mousedown = function () {
+            that.leftpressed = true;
+            that.leftdown = true;
+        }
+        this.stage.mouseup = function () {
+            that.leftreleased = true;
+            that.leftdown = false;
+        }
+
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
 
@@ -41,7 +51,9 @@ A_.Game = Class.extend({
         this.levels.push(level);
     },
     loadLevel: function (name) {
-        if (!_.find(this.levels, function (level){ return level.name === name})) {
+        if (!_.find(this.levels, function (level) {
+            return level.name === name
+        })) {
             this.addLevel(name, "game/levels/" + name + ".json");
         }
         var level = _.find(this.levels, function (level) {
@@ -97,7 +109,7 @@ A_.Game = Class.extend({
         this.levelName = this.levelToLoad.name;
         this.createLevel = false;
         this.levelToLoad = null;
-        
+
         this.postcreate();
         this.isRunning = true;
     },
@@ -134,7 +146,7 @@ A_.Game = Class.extend({
 
         // User-defined function.
         this.preupdate();
-        
+
         _.each(this.level.sprites, function (sprite) {
             sprite.update();
         });
@@ -188,6 +200,16 @@ A_.Game = Class.extend({
                 A_.INPUT.released[action] = false;
             }
         }
+
+        _.each(this.level.sprites, function (sprite) {
+            if (sprite.interactive) {
+                sprite.leftpressed = false;
+                sprite.leftreleased = false;
+            }
+        });
+
+        this.leftpressed = false;
+        this.leftreleased = false;
 
         if (this.destroyLevel) {
             this.isRunning = false;
