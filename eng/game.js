@@ -43,8 +43,9 @@ A_.Game = Class.extend({
         this.cameraOptions = cameraOptions;
     },
     // LOAD EMPTY LEVEL
-    loadEmptyLevel: function (name, cameraOptions) {
-        var level = {name: name, cameraOptions: cameraOptions};
+    loadEmptyLevel: function (name) {
+        var level = this.addLevel(name);
+
         this.levelToLoad = level;
         if (this.level) {
             this.destroyLevel = true;
@@ -55,28 +56,20 @@ A_.Game = Class.extend({
         }
     },
     activateEmptyLevelLoader: function () {
-        this.collider = new A_.Collider();
-        A_.collider = this.collider;
-
-        this.level = new A_.Level();
-        A_.level = this.level;
+        this.createLevelTemplate();
 
         var layer = this.level.createEmptyLayer();
-        var text = new PIXI.Text("Level loaded :)", {font: "Bold 50px Courier New", fill: "Black", 
-            stroke: "LightGrey",strokeThickness: 0, 
-            dropShadow: true, dropShadowColor: '#444444', dropShadowAngle: Math.PI/4, dropShadowDistance: 4});
+        var text = new PIXI.Text("Level loaded :)", {font: "Bold 50px Courier New", fill: "Black",
+            stroke: "LightGrey", strokeThickness: 0,
+            dropShadow: true, dropShadowColor: '#444444', dropShadowAngle: Math.PI / 4, dropShadowDistance: 4});
         layer.addChild(text);
         text.anchor = new PIXI.Point(0.5, 0.5);
         text.position.x = this.renderer.width / 2;
         text.position.y = this.renderer.height / 2;
-                
+
         this.startLevel();
     },
     // LOAD LEVEL from TILED
-    addLevel: function (name, mapDataJSON, cameraOptions) {
-        var level = {name: name, mapDataJSON: mapDataJSON, cameraOptions: cameraOptions};
-        this.levels.push(level);
-    },
     loadTiledLevel: function (name) {
         if (!_.find(this.levels, function (level) {
             return level.name === name
@@ -113,25 +106,33 @@ A_.Game = Class.extend({
         this.onLevelLoaded();
     },
     onLevelLoaded: function () {
-        this.collider = new A_.Collider();
-        A_.collider = this.collider;
-
-        this.level = new A_.Level();
-        A_.level = this.level;
+        this.createLevelTemplate();
 
         createMap(this, this.levelLoader.mapDataParsed);
 
         this.startLevel();
     },
     // COMMON LEVEL routines
+    addLevel: function (name, mapDataJSON, cameraOptions) {
+        var level = {name: name, mapDataJSON: mapDataJSON, cameraOptions: cameraOptions};
+        this.levels.push(level);
+        return level;
+    },
+    createLevelTemplate: function () {
+        this.collider = new A_.Collider();
+        A_.collider = this.collider;
+
+        this.level = new A_.Level();
+        A_.level = this.level;
+    },
     startLevel: function () {
         if (this.levelToLoad.cameraOptions) {
             this.cameraOptions = this.levelToLoad.cameraOptions;
         }
 
         this.level.setupCamera(this.cameraOptions);
-        this.level.camera.x =0;
-        this.level.camera.y =0;
+        this.level.camera.x = 0;
+        this.level.camera.y = 0;
 
         if (this.debug) {
             this.collider.setDebug();
