@@ -1,11 +1,3 @@
-function runGame() {
-    requestAnimFrame(runGame);
-
-    if (A_.game.isRunning === true) {
-        A_.game.run();
-    }
-}
-
 A_.Game = Class.extend({
     debug: true,
     scale: 1,
@@ -33,6 +25,7 @@ A_.Game = Class.extend({
         this.spritesToDestroy = [];
         this.spritesToCreate = [];
         this.levels = [];
+        this.level = null;
 
         requestAnimFrame(runGame);
     },
@@ -91,8 +84,11 @@ A_.Game = Class.extend({
 
         this.stage.addChild(this.level.container);
 
+        this.levelName = this.levelToLoad.name;
         this.createLevel = false;
         this.levelToLoad = null;
+        
+        this.postcreate();
         this.isRunning = true;
     },
     unloadLevel: function () {
@@ -126,15 +122,21 @@ A_.Game = Class.extend({
 
         this.processInput();
 
-        _.each(this.level.updateSprites, function (sprite) {
+        // User-defined function.
+        this.preupdate();
+        
+        _.each(this.level.sprites, function (sprite) {
             sprite.update();
         });
 
         this.collider.processCollisions();
 
-        _.each(this.level.updateSprites, function (sprite) {
+        _.each(this.level.sprites, function (sprite) {
             sprite.postupdate();
         });
+
+        // User-defined function.
+        this.postupdate();
 
         this.destroySprites();
 
@@ -217,12 +219,12 @@ A_.Game = Class.extend({
     postcreate: function () {
         var that = this;
         _.each(this.spritesToCreate, function (sprite) {
-            that.level.updateSprites.push(sprite);
+            that.level.sprites.push(sprite);
         });
         this.spritesToCreate.length = 0;
     },
     destroySprite: function (sprite) {
-        if (!_.contains(this.level.updateSprites, sprite))
+        if (!_.contains(this.level.sprites, sprite))
             return;
 
         if (_.contains(this.collider.collisionSprites, sprite)) {
@@ -254,7 +256,7 @@ A_.Game = Class.extend({
             sprite.debugGraphics.parent.removeChild(sprite.debugGraphics);
         }
         sprite.sprite.parent.removeChild(sprite.sprite);
-        this.level.updateSprites.splice(this.level.updateSprites.indexOf(sprite), 1);
+        this.level.sprites.splice(this.level.sprites.indexOf(sprite), 1);
     },
     destroySprites: function () {
         var that = this;
@@ -312,6 +314,14 @@ A_.Game = Class.extend({
         this.level.mousePosition.y += this.level.camera.y;
     }
 });
+
+function runGame() {
+    requestAnimFrame(runGame);
+
+    if (A_.game.isRunning === true) {
+        A_.game.run();
+    }
+}
 
 A_.game = new A_.Game();
 

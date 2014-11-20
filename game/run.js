@@ -1,3 +1,8 @@
+// CONFIG
+var cameraOptions = {innerBoundOffset: 0.25, worldBounded: false, followType: "centered"};
+A_.game.setDefaultCameraOptions(cameraOptions);
+
+// LEVELS
 var assetsToLoad = [
     "assets/PlayerComplete.png",
     "assets/AgentComplete.png",
@@ -6,10 +11,25 @@ var assetsToLoad = [
     "assets/Computer1.png"
 ];
 
-var cameraOptions = {innerBoundOffset: 0.25, worldBounded: false, followType: "centered"};
-A_.game.setDefaultCameraOptions(cameraOptions);
-
-A_.game.addLevel("level1", "assets/map_skorpio.json", assetsToLoad, cameraOptions);
-A_.game.addLevel("level2", "assets/map_skorpio2.json", assetsToLoad, cameraOptions);
-
+A_.game.addLevel("level1", "assets/map_skorpio.json", assetsToLoad);
+A_.game.addLevel("level2", "assets/map_skorpio2.json", assetsToLoad);
 A_.game.loadLevel("level1");
+
+// LOOP
+A_.game.preupdate = function () {
+    if (!_.find(A_.game.level.sprites, function (sprite) {
+        return sprite instanceof Agent
+    })) {
+        if (this.levelName === "level1") {
+            A_.game.loadLevel("level2");
+
+        } else {
+            A_.game.loadLevel("level1");
+        }
+    }
+    
+};
+
+A_.game.postupdate = function () {
+
+};
