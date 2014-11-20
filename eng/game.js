@@ -61,6 +61,15 @@ A_.Game = Class.extend({
         this.level = new A_.Level();
         A_.level = this.level;
 
+        var layer = this.level.createEmptyLayer();
+        var text = new PIXI.Text("Level loaded :)", {font: "Bold 50px Courier New", fill: "Black", 
+            stroke: "LightGrey",strokeThickness: 0, 
+            dropShadow: true, dropShadowColor: '#444444', dropShadowAngle: Math.PI/4, dropShadowDistance: 4});
+        layer.addChild(text);
+        text.anchor = new PIXI.Point(0.5, 0.5);
+        text.position.x = this.renderer.width / 2;
+        text.position.y = this.renderer.height / 2;
+                
         this.startLevel();
     },
     // LOAD LEVEL from TILED
@@ -121,6 +130,8 @@ A_.Game = Class.extend({
         }
 
         this.level.setupCamera(this.cameraOptions);
+        this.level.camera.x =0;
+        this.level.camera.y =0;
 
         if (this.debug) {
             this.collider.setDebug();
@@ -158,6 +169,7 @@ A_.Game = Class.extend({
 
         this.destroyLevel = false;
     },
+    // GAME LOOP
     run: function () {
         if (!this.isRunning)
             return;

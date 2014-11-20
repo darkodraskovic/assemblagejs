@@ -23,8 +23,17 @@ A_.Level = Class.extend({
         }
         this.camera.followType = cameraOptions.followType;
     },
+    createEmptyLayer: function (){
+        var layer = new PIXI.DisplayObjectContainer();
+        layer.baked = false;
+        layer.collision = false;
+        layer.parallax = 100;
+        this.addLayer(layer);
+        return layer;
+    },
     addLayer: function (layer) {
         this.layers.push(layer);
+        this.container.addChild(layer);
     },
     addSpriteLayer: function (layer) {
         this.spriteLayers.push(layer);
