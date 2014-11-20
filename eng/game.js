@@ -42,7 +42,7 @@ A_.Game = Class.extend({
     },
     loadLevel: function (name) {
         if (!_.find(this.levels, function (level){ return level.name === name})) {
-            this.addLevel(name, "assets/" + name + ".json");
+            this.addLevel(name, "game/levels/" + name + ".json");
         }
         var level = _.find(this.levels, function (level) {
             return level.name === name;
@@ -67,13 +67,11 @@ A_.Game = Class.extend({
             this.cameraOptions = this.levelToLoad.cameraOptions;
         }
 
-//        this.levelLoader = new A_.LevelLoader(this.onLevelLoaded.bind(this), this.levelToLoad.mapDataJSON, this.levelToLoad.assetsToLoad);
         this.levelLoader = new A_.LevelLoader();
         this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.mapDataJSON);
     },
     onMapLoaded: function () {
         var assetsToLoad = fetchAssetListFromMapData(this.levelLoader.mapDataParsed);
-        window.console.log(assetsToLoad);
         this.levelLoader.loadAssets(this.onLevelLoaded(), assetsToLoad);
     },
     onLevelLoaded: function () {

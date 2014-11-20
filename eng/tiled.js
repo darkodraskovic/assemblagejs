@@ -1,9 +1,13 @@
 function fetchAssetListFromMapData(mapData) {
     var assetsToLoad = [];
     _.each(mapData["tilesets"], function (tileset) {
-        assetsToLoad.push("assets/" + tileset["image"]);
+        var img = tileset["image"];
+        if (img.indexOf("/") > -1) {
+            img = img.substring(img.lastIndexOf("/") + 1);
+        }
+        assetsToLoad.push("assets/" + img);
     });
-    
+
     var layersData = mapData["layers"];
     var classes = [];
     for (i = 0; i < layersData.length; i++) {
@@ -79,7 +83,9 @@ function createMap(game, mapData) {
             }
             if (layersData[i]["properties"]["parallax"]) {
                 layer.parallax = parseFloat(layersData[i]["properties"]["parallax"]);
-                if (isNaN(layer.parallax)) { layer.parallax = 100; }                    
+                if (isNaN(layer.parallax)) {
+                    layer.parallax = 100;
+                }
             }
         }
         if (typeof layer.parallax === "undefined") {
@@ -102,7 +108,12 @@ function createMap(game, mapData) {
             var img = layersData[i]["properties"]["image"];
             var tileset;
             for (var j = 0; j < mapData["tilesets"].length; j++) {
-                if (mapData["tilesets"][j].image === img) {
+                var tilesetimg = mapData["tilesets"][j].image;
+                if (tilesetimg.indexOf("/") > -1) {
+                    tilesetimg = tilesetimg.substring(tilesetimg.lastIndexOf("/") + 1);
+                }
+//                if (mapData["tilesets"][j].image === img) {
+                if (tilesetimg === img) {
                     tileset = mapData["tilesets"][j];
                     break;
                 }
