@@ -5,12 +5,11 @@ A_.Game = Class.extend({
     screenH: 600,
     stageColor: 0x757575,
     isRunning: false,
-    debug: true,
-            rendererOptions: {
-                antialiasing: false,
-                transparent: false,
-                resolution: 1
-            },
+    rendererOptions: {
+        antialiasing: false,
+        transparent: false,
+        resolution: 1
+    },
 //    spritesToDestroy: [],
 //    spritesToCreate: [],
     init: function () {
@@ -23,11 +22,11 @@ A_.Game = Class.extend({
         this.stage.mousedown = function () {
             that.leftpressed = true;
             that.leftdown = true;
-        }
+        };
         this.stage.mouseup = function () {
             that.leftreleased = true;
             that.leftdown = false;
-        }
+        };
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
@@ -43,14 +42,33 @@ A_.Game = Class.extend({
     setDefaultCameraOptions: function (cameraOptions) {
         this.cameraOptions = cameraOptions;
     },
-    setAssetsToLoad: function (assetsToLoad) {
-        this.assetsToLoad = assetsToLoad;
+    // LOAD EMPTY LEVEL
+    loadEmptyLevel: function (name, cameraOptions) {
+        var level = {name: name, cameraOptions: cameraOptions};
+        this.levelToLoad = level;
+        if (this.level) {
+            this.destroyLevel = true;
+            this.createEmptyLevel = true;
+            return;
+        } else {
+            this.activateEmptyLevelLoader();
+        }
     },
+    activateEmptyLevelLoader: function () {
+        this.collider = new A_.Collider();
+        A_.collider = this.collider;
+
+        this.level = new A_.Level();
+        A_.level = this.level;
+
+        this.startLevel();
+    },
+    // LOAD LEVEL from TILED
     addLevel: function (name, mapDataJSON, cameraOptions) {
         var level = {name: name, mapDataJSON: mapDataJSON, cameraOptions: cameraOptions};
         this.levels.push(level);
     },
-    loadLevel: function (name) {
+    loadTiledLevel: function (name) {
         if (!_.find(this.levels, function (level) {
             return level.name === name
         })) {
@@ -66,25 +84,24 @@ A_.Game = Class.extend({
 
         if (this.level) {
             this.destroyLevel = true;
-            this.createLevel = true;
+            this.createTiledLevel = true;
             this.levelToLoad = level;
             return;
         } else {
             this.levelToLoad = level;
-            this.activateLevelLoader();
+            this.activateTiledLevelLoader();
         }
     },
-    activateLevelLoader: function () {
-        if (this.levelToLoad.cameraOptions) {
-            this.cameraOptions = this.levelToLoad.cameraOptions;
-        }
-
+    activateTiledLevelLoader: function () {
         this.levelLoader = new A_.LevelLoader();
         this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.mapDataJSON);
     },
     onMapLoaded: function () {
         var assetsToLoad = fetchAssetListFromMapData(this.levelLoader.mapDataParsed);
-        this.levelLoader.loadAssets(this.onLevelLoaded(), assetsToLoad);
+        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), assetsToLoad);
+    },
+    onAssetsLoaded: function () {
+        this.onLevelLoaded();
     },
     onLevelLoaded: function () {
         this.collider = new A_.Collider();
@@ -94,6 +111,14 @@ A_.Game = Class.extend({
         A_.level = this.level;
 
         createMap(this, this.levelLoader.mapDataParsed);
+
+        this.startLevel();
+    },
+    // COMMON LEVEL routines
+    startLevel: function () {
+        if (this.levelToLoad.cameraOptions) {
+            this.cameraOptions = this.levelToLoad.cameraOptions;
+        }
 
         this.level.setupCamera(this.cameraOptions);
 
@@ -107,7 +132,7 @@ A_.Game = Class.extend({
         this.stage.addChild(this.level.container);
 
         this.levelName = this.levelToLoad.name;
-        this.createLevel = false;
+        this.createTiledLevel = false;
         this.levelToLoad = null;
 
         this.postcreate();
@@ -214,8 +239,10 @@ A_.Game = Class.extend({
         if (this.destroyLevel) {
             this.isRunning = false;
             this.clearLevel();
-            if (this.createLevel) {
-                this.activateLevelLoader();
+            if (this.createTiledLevel) {
+                this.activateTiledLevelLoader();
+            } else if (this.createEmptyLevel) {
+                this.activateEmptyLevelLoader();
             }
         }
 
