@@ -75,21 +75,21 @@ function makeCamera(width, height, innerBoundOffset) {
     };
 
     camera.bound = function () {
-        if (this.x < A_.game.level.x)
+        if (this.x < A_.level.x)
         {
-            this.x = A_.game.level.x;
+            this.x = A_.level.x;
         }
-        if (this.y < A_.game.level.y)
+        if (this.y < A_.level.y)
         {
-            this.y = A_.game.level.y;
+            this.y = A_.level.y;
         }
-        if (this.x + this.width > A_.game.level.x + A_.game.level.width)
+        if (this.x + this.width > A_.level.x + A_.level.width)
         {
-            this.x = A_.game.level.x + A_.game.level.width - this.width;
+            this.x = A_.level.x + A_.level.width - this.width;
         }
-        if (this.y + this.height > A_.game.level.y + A_.game.level.height)
+        if (this.y + this.height > A_.level.y + A_.level.height)
         {
-            this.y = A_.game.level.y + A_.game.level.height - this.height;
+            this.y = A_.level.y + A_.level.height - this.height;
         }
     };
 
@@ -108,11 +108,11 @@ function makeCamera(width, height, innerBoundOffset) {
         }        
 
         var campPos = {x: this.x, y: this.y};
-        A_.game.level.container.position.x = -campPos.x;
-        A_.game.level.container.position.y = -campPos.y;
+        A_.level.container.position.x = -campPos.x;
+        A_.level.container.position.y = -campPos.y;
         
-        for (var i = 0; i < A_.game.level.container.children.length; i++) {
-            var layer = A_.game.level.container.children[i];
+        for (var i = 0; i < A_.level.container.children.length; i++) {
+            var layer = A_.level.container.children[i];
             layer.position.x = campPos.x * layer.parallax / 100 - campPos.x;
             layer.position.y = campPos.y * layer.parallax / 100 - campPos.y;
         }

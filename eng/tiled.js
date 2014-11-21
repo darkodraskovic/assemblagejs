@@ -112,7 +112,6 @@ function createMap(game, mapData) {
                 if (tilesetimg.indexOf("/") > -1) {
                     tilesetimg = tilesetimg.substring(tilesetimg.lastIndexOf("/") + 1);
                 }
-//                if (mapData["tilesets"][j].image === img) {
                 if (tilesetimg === img) {
                     tileset = mapData["tilesets"][j];
                     break;
@@ -139,18 +138,8 @@ function createMap(game, mapData) {
                     var mapX = j % game.level.mapWidth;
                     var mapY = Math.floor(j / game.level.mapWidth);
                     tileData2D[mapX][mapY] = gid;
-//                    tilemap.setTile(gid, mapX, mapY);
                 }
             }
-
-//            var tilemap = createTilemap(layer, "assets/" + img, tileData2D, tileW, tileH);
-//            for (var j = 0; j < tileData2D.length; j++) {
-//                for (var k = 0; k < tileData2D[j].length; k++) {
-//                    if (tileData2D[j][k] > -1) {
-//                        tilemap.setTile(tileData2D[j][k], j, k);
-//                    }
-//                }
-//            }
 
             var tilemap = new A_.Tilelayer(layer, "assets/" + img, tileW, tileH);
             tilemap.createTilelayer(tileData2D);
@@ -160,10 +149,7 @@ function createMap(game, mapData) {
                 layer = bakeLayer(layer, game.level);
             }
 
-            game.level.container.addChild(layer);
-//            layer.tilemap = tilemap;
-            game.level.tileLayers.push(layer);
-
+            game.level.addTileLayer(layer);
         }
 
         // if the current layer is OBJECT LAYER
@@ -234,11 +220,8 @@ function createMap(game, mapData) {
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
                     var pos = o.getPosition();
                     o.setPosition(pos.x + o.sprite.width / 2, pos.y - o.sprite.height / 2)
-//                    if (o.name === "Player") {
-//                        player = o;
-//                    }
+
                     if (o.followee) {
-//                        game.followee = o;
                         game.level.followee = o;
                     }
                 }
@@ -248,11 +231,8 @@ function createMap(game, mapData) {
                 layer = bakeLayer(layer, game.level);
             }
 
-            game.level.container.addChild(layer);
-
-            game.level.spriteLayers.push(layer);
+            game.level.addSpriteLayer(layer)
         }
-        game.level.layers.push(layer);
     }
 }
 

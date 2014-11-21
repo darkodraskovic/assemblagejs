@@ -7,7 +7,7 @@ A_.Collider = Class.extend({
         this.collisionDynamics = [];
         this.collisionSensors = [];
         this.collisionMasks = [];
-        
+
     },
     activateCollisionFor: function (o, polygon, w, h, offsetX, offsetY) {
         if (!w)
@@ -46,10 +46,10 @@ A_.Collider = Class.extend({
         o.collisionPolygon.origOffset = o.collisionPolygon.offset.clone();
         o.collisionPolygon.origW = o.collisionPolygon.w;
         o.collisionPolygon.origH = o.collisionPolygon.h;
-        
+
         if (o.sprite && o.sprite.interactive)
             o.sprite.hitArea = SATPolygonToPIXIPolygon(o.collisionPolygon, false);
-        
+
         o.collisionPolygon.baked = SATPolygonToPIXIPolygon(o.collisionPolygon, false);
 
         o.updateCollisionPolygon = function () {
@@ -62,9 +62,9 @@ A_.Collider = Class.extend({
             var pos = this.getPosition();
             colPol.pos.x = pos.x;
             colPol.pos.y = pos.y;
-            
+
             // #docs: Sets the rotation angle 
-            colPol.setAngle(this.rotation);            
+            colPol.setAngle(this.rotation);
         };
     },
     processCollisions: function () {
@@ -124,7 +124,9 @@ A_.Collider = Class.extend({
 
             debugGraphics.clear();
             drawSATPolygon(debugGraphics, colPol);
-            // drawCircle(debugGraphics, this.collisionSprites[i].getPosition());
+            // draw circle in the center of the sprite
+//            debugGraphics.lineStyle(2, 0xFF0000);
+//            debugGraphics.drawCircle(colPol.pos.x, colPol.pos.y, 3);
         }
     }
 });

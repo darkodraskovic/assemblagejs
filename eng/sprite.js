@@ -1,8 +1,4 @@
 A_.SPRITES.Sprite = Class.extend({
-//    image: null,
-//    frame: null,
-//    baseTexture: null,
-//    rectangle: null,
     bounded: true,
     outOfBounds: false,
     collisionOffsetX: 0,
@@ -17,9 +13,12 @@ A_.SPRITES.Sprite = Class.extend({
         }
 
         if (this.image) {
+            this.image = "assets/" + this.image;
             this.sprite = new PIXI.Sprite.fromImage(this.image);
-        } else if (this.frame) {
-            this.sprite = new PIXI.Sprite.fromFrame(this.frame);
+//        } else if (this.frame) {
+//            this.sprite = new PIXI.Sprite.fromFrame(this.frame);
+//        } else if (this.texture) {
+//            this.sprite = new PIXI.Sprite(this.texture);
 //        } else if (this.baseTexture) {
 //            this.sprite = new PIXI.Sprite(new PIXI.Texture(this.baseTexture, this.rectangle));
         } else
@@ -188,7 +187,6 @@ A_.SPRITES.Sprite = Class.extend({
 });
 
 A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
-//    animSheet: undefined,
     frameW: 0,
     frameH: 0,
     init: function (props) {
@@ -196,6 +194,7 @@ A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
         this.animations = {};
 
         if (this.animSheet) {
+            this.animSheet = "assets/" + this.animSheet;
             this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
             if (!this.frameW) {
                 this.frameW = this.baseTexture.width;

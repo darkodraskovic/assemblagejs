@@ -206,16 +206,6 @@ function SATPolygonToPIXIPolygon(SATPolygon, translated) {
     return new PIXI.Polygon(calcPointsArr);
 }
 
-function drawCircle(graphics, position) {
-    graphics.lineStyle(2, 0xFF0000);
-    graphics.drawCircle(position.x, position.y, 3);
-}
-
-function drawRectangle(graphics, pos, w, h) {
-    graphics.lineStyle(2, 0xFF0000);
-    graphics.drawRect(pos.x, pos.y, w, h);
-}
-
 SAT.Polygon.prototype.setScale = function (x, y) {
     this.points = _.map(this.origPoints, function (origPoint) {
         return origPoint.clone();

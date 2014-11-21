@@ -42,7 +42,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
 Anime.inject(A_.MODULES.Topdown);
 
 var Player = Anime.extend({
-    animSheet: "assets/PlayerComplete.png",
+    animSheet: "PlayerComplete.png",
     init: function (props) {
         this._super(props);
     },
@@ -82,7 +82,7 @@ var Agent = Anime.extend({
     collisionH: 48,
     collisionOffsetX: 0,
     collisionOffsetY: 6,
-    animSheet: "assets/AgentComplete.png",
+    animSheet: "AgentComplete.png",
     timer: 0,
     collisionType: "dynamic",
     init: function (props) {

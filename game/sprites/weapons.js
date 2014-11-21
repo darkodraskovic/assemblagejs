@@ -1,5 +1,5 @@
 var Bullet = A_.SPRITES.ArcadeSprite.extend({
-    animSheet: "assets/Muzzleflashes-Shots.png",
+    animSheet: "Muzzleflashes-Shots.png",
     collisionW: 12,
     collisionH: 10,
     frameW: 32,
@@ -27,7 +27,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
 });
 
 var Computer = A_.SPRITES.Sprite.extend({
-    image: "assets/Computer1.png",
+    image: "Computer1.png",
     collisionType: "static",
     interactive: true,
     update: function () {

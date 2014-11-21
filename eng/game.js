@@ -10,10 +10,7 @@ A_.Game = Class.extend({
         transparent: false,
         resolution: 1
     },
-//    spritesToDestroy: [],
-//    spritesToCreate: [],
     init: function () {
-//        A_.game = this;
         this.stage = new PIXI.Stage(this.stageColor);
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
@@ -129,7 +126,6 @@ A_.Game = Class.extend({
         if (this.levelToLoad.cameraOptions) {
             this.cameraOptions = this.levelToLoad.cameraOptions;
         }
-
         this.level.setupCamera(this.cameraOptions);
         this.level.camera.x = 0;
         this.level.camera.y = 0;
@@ -147,7 +143,7 @@ A_.Game = Class.extend({
         this.createTiledLevel = false;
         this.levelToLoad = null;
 
-        this.postcreate();
+        this.createSprites();
         this.isRunning = true;
     },
     unloadLevel: function () {
@@ -170,103 +166,11 @@ A_.Game = Class.extend({
 
         this.destroyLevel = false;
     },
-    // GAME LOOP
-    run: function () {
-        if (!this.isRunning)
-            return;
-
-        var now = new Date().getTime();
-        this.dt = now - this.time;
-        this.time = now;
-        this.dt /= 1000;
-
-        this.processInput();
-
-        // User-defined function.
-        this.preupdate();
-
-        _.each(this.level.sprites, function (sprite) {
-            sprite.update();
-        });
-
-        this.collider.processCollisions();
-
-        _.each(this.level.sprites, function (sprite) {
-            sprite.postupdate();
-        });
-
-        // User-defined function.
-        this.postupdate();
-
-        this.destroySprites();
-
-        this.postcreate();
-
-        _.each(this.level.layers, function (layer) {
-            if (layer["sort"]) {
-                layer.children = _.sortBy(layer.children, function (child) {
-                    return child.position.y;
-                });
-                _.each(layer.children, function (child, i) {
-                    layer.setChildIndex(child, i);
-                })
-            }
-        });
-
-        if (this.debug) {
-            this.collider.drawDebug();
-        }
-
-        this.level.camera.update();
-
-        // Transform the position from container's scaled local system  
-        // into stage's unscaled global system.
-        this.level.container.position.x *= this.scale;
-        this.level.container.position.y *= this.scale;
-
-//        this.gameWorld.container.position.x = Math.round(this.gameWorld.container.position.x);
-//        this.gameWorld.container.position.y = Math.round(this.gameWorld.container.position.y);
-
-        this.renderer.render(this.stage);
-
-
-        for (var action in A_.INPUT.actions) {
-            if (A_.INPUT.pressed[action] === true) {
-                A_.INPUT.pressed[action] = false;
-            }
-            if (A_.INPUT.released[action] === true) {
-                A_.INPUT.released[action] = false;
-            }
-        }
-
-        _.each(this.level.sprites, function (sprite) {
-            if (sprite.interactive) {
-                sprite.leftpressed = false;
-                sprite.leftreleased = false;
-            }
-        });
-
-        this.leftpressed = false;
-        this.leftreleased = false;
-
-        if (this.destroyLevel) {
-            this.isRunning = false;
-            this.clearLevel();
-            if (this.createTiledLevel) {
-                this.activateTiledLevelLoader();
-            } else if (this.createEmptyLevel) {
-                this.activateEmptyLevelLoader();
-            }
-        }
-
-    },
+    // SPRITE CREATION and DESTRUCTION
     createSprite: function (SpriteClass, layer, x, y, props, collisionPolygon) {
         if (!SpriteClass)
             return;
 
-//        if (!_.contains(this.layers, layer)) {
-//            layer = this.layers[0];
-//        }
         if (!layer) {
             layer = this.level.layers[0];
         }
@@ -288,7 +192,7 @@ A_.Game = Class.extend({
 
         return sprite;
     },
-    postcreate: function () {
+    createSprites: function () {
         var that = this;
         _.each(this.spritesToCreate, function (sprite) {
             that.level.sprites.push(sprite);
@@ -337,6 +241,121 @@ A_.Game = Class.extend({
         });
         this.spritesToDestroy.length = 0;
     },
+    // GAME LOOP
+    run: function () {
+        if (!this.isRunning)
+            return;
+
+        var now = new Date().getTime();
+        this.dt = now - this.time;
+        this.time = now;
+        this.dt /= 1000;
+
+        this.processInput();
+
+        this.update();
+
+        this.manageSprites();
+
+        this.render();
+
+        this.postprocessInput();
+
+        this.manageLevels();
+
+    },
+    processInput: function () {
+        // #docs This will return the point containing global coordinates of the mouse,
+        // more precisely, a point containing the coordinates of the global InteractionData position.
+        // InteractionData holds all information related to an Interaction event.
+        this.level.mousePosition = this.stage.getMousePosition().clone();
+        // Transform the mouse position from the unscaled stage's global system to
+        // the unscaled scaled gameWorld.container's system. 
+        this.level.mousePosition.x /= this.scale;
+        this.level.mousePosition.y /= this.scale;
+        this.level.mousePosition.x += this.level.camera.x;
+        this.level.mousePosition.y += this.level.camera.y;
+    },
+    update: function () {
+        // User-defined function.
+        this.preupdate();
+
+        _.each(this.level.sprites, function (sprite) {
+            sprite.update();
+        });
+
+        this.collider.processCollisions();
+
+        _.each(this.level.sprites, function (sprite) {
+            sprite.postupdate();
+        });
+
+        // User-defined function.
+        this.postupdate();
+
+        _.each(this.level.layers, function (layer) {
+            if (layer["sort"]) {
+                layer.children = _.sortBy(layer.children, function (child) {
+                    return child.position.y;
+                });
+                _.each(layer.children, function (child, i) {
+                    layer.setChildIndex(child, i);
+                })
+            }
+        });
+    },
+    manageSprites: function () {
+        this.destroySprites();
+        this.createSprites();
+    },
+    render: function () {
+        if (this.debug) {
+            this.collider.drawDebug();
+        }
+
+        this.level.camera.update();
+
+        // Transform the position from container's scaled local system  
+        // into stage's unscaled global system.
+        this.level.container.position.x *= this.scale;
+        this.level.container.position.y *= this.scale;
+
+//        this.gameWorld.container.position.x = Math.round(this.gameWorld.container.position.x);
+//        this.gameWorld.container.position.y = Math.round(this.gameWorld.container.position.y);
+
+        this.renderer.render(this.stage);
+    },
+    postprocessInput: function () {
+        for (var action in A_.INPUT.actions) {
+            if (A_.INPUT.pressed[action] === true) {
+                A_.INPUT.pressed[action] = false;
+            }
+            if (A_.INPUT.released[action] === true) {
+                A_.INPUT.released[action] = false;
+            }
+        }
+
+        _.each(this.level.sprites, function (sprite) {
+            if (sprite.interactive) {
+                sprite.leftpressed = false;
+                sprite.leftreleased = false;
+            }
+        });
+
+        this.leftpressed = false;
+        this.leftreleased = false;
+    },
+    manageLevels: function () {
+        if (this.destroyLevel) {
+            this.isRunning = false;
+            this.clearLevel();
+            if (this.createTiledLevel) {
+                this.activateTiledLevelLoader();
+            } else if (this.createEmptyLevel) {
+                this.activateEmptyLevelLoader();
+            }
+        }
+    },
     setScale: function (scale) {
         if (scale > 0.25 && scale < 1.5) {
             // scale the game world according to scale
@@ -372,18 +391,6 @@ A_.Game = Class.extend({
 
             this.scale = scale;
         }
-    },
-    processInput: function () {
-        // #docs This will return the point containing global coordinates of the mouse,
-        // more precisely, a point containing the coordinates of the global InteractionData position.
-        // InteractionData holds all information related to an Interaction event.
-        this.level.mousePosition = this.stage.getMousePosition().clone();
-        // Transform the mouse position from the unscaled stage's global system to
-        // the unscaled scaled gameWorld.container's system. 
-        this.level.mousePosition.x /= this.scale;
-        this.level.mousePosition.y /= this.scale;
-        this.level.mousePosition.x += this.level.camera.x;
-        this.level.mousePosition.y += this.level.camera.y;
     }
 });
 
