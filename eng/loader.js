@@ -14,7 +14,7 @@ A_.LevelLoader = Class.extend({
         this.assetLoader.onComplete = callback;
         this.assetLoader.load();
     },
-    // WORK IN PROGRESS: automatic dependencies loading
+    // WORK IN PROGRESS: automatic dependencies loading...
     resetDependencies: function () {
         this.dependencies = [];
         this.failedToLoad = [];
