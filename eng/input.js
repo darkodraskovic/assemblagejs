@@ -92,7 +92,6 @@ A_.KEY = {
     PERIOD: 190
 };
 
-A_.INPUT = {};
 A_.INPUT.actions = {};
 A_.INPUT.pressed = {};
 A_.INPUT.released = {};

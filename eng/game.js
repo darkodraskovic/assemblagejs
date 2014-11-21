@@ -24,6 +24,10 @@ A_.Game = Class.extend({
             that.leftreleased = true;
             that.leftdown = false;
         };
+        this.stage.mouseupoutside = function () {
+            that.leftreleased = true;
+            that.leftdown = false;
+        };
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
@@ -37,7 +41,7 @@ A_.Game = Class.extend({
         requestAnimFrame(runGame);
     },
     setDefaultCameraOptions: function (cameraOptions) {
-        this.cameraOptions = cameraOptions;
+        this.defaultCameraOptions = cameraOptions;
     },
     // LOAD EMPTY LEVEL
     loadEmptyLevel: function (name) {
@@ -102,6 +106,9 @@ A_.Game = Class.extend({
     onAssetsLoaded: function () {
         this.onLevelLoaded();
     },
+    onSpritesLoaded: function () {
+        
+    },
     onLevelLoaded: function () {
         this.createLevelTemplate();
 
@@ -124,9 +131,9 @@ A_.Game = Class.extend({
     },
     startLevel: function () {
         if (this.levelToLoad.cameraOptions) {
-            this.cameraOptions = this.levelToLoad.cameraOptions;
+            this.defaultCameraOptions = this.levelToLoad.cameraOptions;
         }
-        this.level.setupCamera(this.cameraOptions);
+        this.level.setupCamera(this.defaultCameraOptions);
         this.level.camera.x = 0;
         this.level.camera.y = 0;
 

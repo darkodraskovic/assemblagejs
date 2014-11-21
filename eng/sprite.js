@@ -46,6 +46,10 @@ A_.SPRITES.Sprite = Class.extend({
                 that.leftreleased = true;
                 that.leftdown = false;
             }
+            this.sprite.mouseupoutside = function (){
+                that.leftreleased = true;
+                that.leftdown = false;
+            }
         }
     },
     setInteractive: function() {

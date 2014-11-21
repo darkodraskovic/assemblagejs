@@ -130,3 +130,64 @@ A_.Collider = Class.extend({
         }
     }
 });
+
+function drawSATPolygon(graphics, polygon) {
+    var calcPointsArr = [];
+    if (polygon.baked) {
+        _.each(polygon.baked.points, function (point, i) {
+            if (i % 2 === 0) {
+                calcPointsArr[i] = point + polygon.pos.x;
+            } else {
+                calcPointsArr[i] = point + polygon.pos.y;
+            }
+        });
+    } else {
+        calcPointsArr = (SATPolygonToPIXIPolygon(polygon, true)).points;
+    }
+
+    graphics.lineStyle(2, 0xff0000);
+
+    graphics.drawPolygon(calcPointsArr);
+    graphics.endFill();
+}
+
+function SATPolygonToPIXIPolygon(SATPolygon, translated) {
+    var calcPoints;
+    if (translated) {
+        calcPoints = _.map(SATPolygon.calcPoints,
+                function (calcPoint) {
+                    return calcPoint.clone().add(new SAT.Vector(SATPolygon.pos.x, SATPolygon.pos.y));
+                });
+    } else {
+        calcPoints = _.map(SATPolygon.calcPoints,
+                function (calcPoint) {
+                    return calcPoint.clone();
+                });
+    }
+
+    var calcPointsArr = _.reduce(calcPoints, function (points, vector) {
+        return points.concat(_.reduce(vector, function (coords, point) {
+            return coords.concat(point)
+        }, []));
+    }, []);
+    calcPointsArr[calcPointsArr.length] = calcPointsArr[0];
+    calcPointsArr[calcPointsArr.length] = calcPointsArr[1];
+    return new PIXI.Polygon(calcPointsArr);
+}
+
+SAT.Polygon.prototype.setScale = function (x, y) {
+    this.points = _.map(this.origPoints, function (origPoint) {
+        return origPoint.clone();
+    })
+    _.each(this.points, function (point) {
+        return point.scale(x, y)
+    });
+
+    this.w = this.origW;
+    this.h = this.origH;
+    this.w *= x;
+    this.h *= x;
+
+    this.offset = this.origOffset.clone();
+    this.setOffset(new SAT.Vector(this.offset.x * x, this.offset.y * y));
+}

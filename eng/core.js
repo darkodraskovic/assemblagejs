@@ -1,4 +1,8 @@
 var A_ = {};
+A_.UTILS = {};
+A_.SPRITES = {};
+A_.MODULES = {};
+A_.INPUT = {};
 
 /** Converts numeric degrees to radians */
 if (typeof (Number.prototype.toRad) === "undefined") {
@@ -26,7 +30,40 @@ if (typeof (Number.prototype.lerp) === "undefined") {
     };
 }
 
-A_.UTILS = {};
+A_.UTILS.copy = function (object) {
+    if (
+            !object || typeof (object) != 'object' ||
+            object instanceof HTMLElement ||
+            object instanceof Class
+            ) {
+        return object;
+    }
+    else if (object instanceof Array) {
+        var c = [];
+        for (var i = 0, l = object.length; i < l; i++) {
+            c[i] = A_.copy(object[i]);
+        }
+        return c;
+    }
+    else {
+        var c = {};
+        for (var i in object) {
+            c[i] = A_.copy(object[i]);
+        }
+        return c;
+    }
+};
+
+// remove all own properties on obj,
+// effectively reverting it to a new object
+A_.UTILS.wipe = function (obj)
+{
+    for (var p in obj)
+    {
+        if (obj.hasOwnProperty(p))
+            delete obj[p];
+    }
+};
 
 A_.UTILS.angleTo = function (pos1, pos2) {
     return Math.atan2(pos2.y - pos1.y, pos2.x - pos1.x);
@@ -37,6 +74,7 @@ A_.UTILS.distanceToPos = function (pos1, pos2) {
     var yd = pos2.y - pos2.y;
     return Math.sqrt(xd * xd + yd * yd);
 };
+
 /* Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/
  * MIT Licensed.
@@ -136,93 +174,3 @@ var inject = function (prop) {
         return Class;
     };
 })();
-
-
-A_.copy = function (object) {
-    if (
-            !object || typeof (object) != 'object' ||
-            object instanceof HTMLElement ||
-            object instanceof Class
-            ) {
-        return object;
-    }
-    else if (object instanceof Array) {
-        var c = [];
-        for (var i = 0, l = object.length; i < l; i++) {
-            c[i] = A_.copy(object[i]);
-        }
-        return c;
-    }
-    else {
-        var c = {};
-        for (var i in object) {
-            c[i] = A_.copy(object[i]);
-        }
-        return c;
-    }
-}
-
-function drawSATPolygon(graphics, polygon) {
-    var calcPointsArr = [];
-    if (polygon.baked) {
-        _.each(polygon.baked.points, function (point, i) {
-            if (i % 2 === 0) {
-                calcPointsArr[i] = point + polygon.pos.x;
-            } else {
-                calcPointsArr[i] = point + polygon.pos.y;
-            }
-        });
-    } else {
-        calcPointsArr = (SATPolygonToPIXIPolygon(polygon, true)).points;
-    }
-
-    graphics.lineStyle(2, 0xff0000);
-
-    graphics.drawPolygon(calcPointsArr);
-    graphics.endFill();
-}
-
-function SATPolygonToPIXIPolygon(SATPolygon, translated) {
-    var calcPoints;
-    if (translated) {
-        calcPoints = _.map(SATPolygon.calcPoints,
-                function (calcPoint) {
-                    return calcPoint.clone().add(new SAT.Vector(SATPolygon.pos.x, SATPolygon.pos.y));
-                });
-    } else {
-        calcPoints = _.map(SATPolygon.calcPoints,
-                function (calcPoint) {
-                    return calcPoint.clone();
-                });
-    }
-
-    var calcPointsArr = _.reduce(calcPoints, function (points, vector) {
-        return points.concat(_.reduce(vector, function (coords, point) {
-            return coords.concat(point)
-        }, []));
-    }, []);
-    calcPointsArr[calcPointsArr.length] = calcPointsArr[0];
-    calcPointsArr[calcPointsArr.length] = calcPointsArr[1];
-    return new PIXI.Polygon(calcPointsArr);
-}
-
-SAT.Polygon.prototype.setScale = function (x, y) {
-    this.points = _.map(this.origPoints, function (origPoint) {
-        return origPoint.clone();
-    })
-    _.each(this.points, function (point) {
-        return point.scale(x, y)
-    });
-
-    this.w = this.origW;
-    this.h = this.origH;
-    this.w *= x;
-    this.h *= x;
-
-    this.offset = this.origOffset.clone();
-    this.setOffset(new SAT.Vector(this.offset.x * x, this.offset.y * y));
-}
-
-
-A_.SPRITES = {};
-A_.MODULES = {};
