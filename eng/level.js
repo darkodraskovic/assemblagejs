@@ -10,18 +10,6 @@ A_.Level = Class.extend({
         this.tileLayers = [];
         this.spriteLayers = [];
         this.layers = [];
-        this.camera = null;
-    },
-    setupCamera: function (cameraOptions) {
-        this.camera = makeCamera(A_.game.renderer.view.width, A_.game.renderer.view.height, cameraOptions.innerBoundOffset);
-        this.camera.worldBounded = cameraOptions.worldBounded;
-        if (cameraOptions.followee) {
-            this.camera.followee = cameraOptions.followee;
-        } else {
-            this.camera.followee = this.followee;
-            this.followee = null;
-        }
-        this.camera.followType = cameraOptions.followType;
     },
     createEmptyLayer: function (){
         var layer = new PIXI.DisplayObjectContainer();

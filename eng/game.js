@@ -5,6 +5,7 @@ A_.Game = Class.extend({
     screenH: 600,
     stageColor: 0x757575,
     isRunning: false,
+    mousePosition: {stage: {x: 0, y: 0}, level: {x: 0, y: 0}},
     init: function () {
         this.rendererOptions = A_.CONFIG.renderer;
         this.stage = new PIXI.Stage(this.stageColor);
@@ -112,8 +113,8 @@ A_.Game = Class.extend({
         this.startLevel();
     },
     // COMMON LEVEL routines
-    addLevel: function (name, mapDataJSON, cameraOptions) {
-        var level = {name: name, mapDataJSON: mapDataJSON, cameraOptions: cameraOptions};
+    addLevel: function (name, mapDataJSON) {
+        var level = {name: name, mapDataJSON: mapDataJSON};
         this.levels.push(level);
         return level;
     },
@@ -125,12 +126,7 @@ A_.Game = Class.extend({
         A_.level = this.level;
     },
     startLevel: function () {
-        if (this.levelToLoad.cameraOptions) {
-            this.cameraOptions = this.levelToLoad.cameraOptions;
-        }
-        this.level.setupCamera(this.cameraOptions);
-        this.level.camera.x = 0;
-        this.level.camera.y = 0;
+        this.setupCamera();
 
         if (this.debug) {
             this.collider.setDebug();
@@ -167,6 +163,23 @@ A_.Game = Class.extend({
         this.stage.removeChildren();
 
         this.destroyLevel = false;
+    },
+    // CAMERA
+    setupCamera: function () {
+        this.camera = makeCamera(A_.game.renderer.view.width, A_.game.renderer.view.height, this.cameraOptions.innerBoundOffset);
+        if (this.cameraOptions.worldBounded) {
+            this.camera.worldBounded = this.cameraOptions.worldBounded;
+        } else { this.camera.worldBounded = false; }
+        if (this.cameraOptions.followee) {
+            this.camera.followee = this.cameraOptions.followee;
+        } else {
+            this.camera.followee = null;
+            this.camera.x = 0;
+            this.camera.y = 0;
+        }
+        if (this.camera.followType) {
+            this.camera.followType = this.cameraOptions.followType;
+        } else { this.camera.followType = "centered"; }
     },
     // SPRITE CREATION and DESTRUCTION
     createSprite: function (SpriteClass, layer, x, y, props, collisionPolygon) {
@@ -225,8 +238,8 @@ A_.Game = Class.extend({
         if (sprite.collisionPolygon) {
             delete(sprite.collisionPolygon);
         }
-        if (sprite === this.level.camera.followee) {
-            this.level.camera.followee = null;
+        if (sprite === this.camera.followee) {
+            this.camera.followee = null;
         }
         // TODO: destroy collision mask
 
@@ -269,14 +282,20 @@ A_.Game = Class.extend({
     processInput: function () {
         // #docs This will return the point containing global coordinates of the mouse,
         // more precisely, a point containing the coordinates of the global InteractionData position.
-        // InteractionData holds all information related to an Interaction event.
-        this.level.mousePosition = this.stage.getMousePosition().clone();
-        // Transform the mouse position from the unscaled stage's global system to
-        // the unscaled scaled gameWorld.container's system. 
-        this.level.mousePosition.x /= this.scale;
-        this.level.mousePosition.y /= this.scale;
-        this.level.mousePosition.x += this.level.camera.x;
-        this.level.mousePosition.y += this.level.camera.y;
+        // InteractionData holds all information related to an Interaction event.        
+//        this.level.mousePosition = this.stage.getMousePosition().clone();
+//        // Transform the mouse position from the unscaled stage's global system to
+//        // the unscaled scaled gameWorld.container's system. 
+//        this.level.mousePosition.x /= this.scale;
+//        this.level.mousePosition.y /= this.scale;
+//        this.level.mousePosition.x += this.camera.x;
+//        this.level.mousePosition.y += this.camera.y;
+        this.mousePosition.stage = this.stage.getMousePosition().clone();
+        this.mousePosition.level = this.stage.getMousePosition().clone();
+        this.mousePosition.level.x /= this.scale;
+        this.mousePosition.level.y /= this.scale;
+        this.mousePosition.level.x += this.camera.x;
+        this.mousePosition.level.y += this.camera.y;
     },
     update: function () {
         // User-defined function.
@@ -315,7 +334,7 @@ A_.Game = Class.extend({
             this.collider.drawDebug();
         }
 
-        this.level.camera.update();
+        this.camera.update();
 
         // Transform the position from container's scaled local system  
         // into stage's unscaled global system.
@@ -368,7 +387,7 @@ A_.Game = Class.extend({
             // console.log(gameWorld.container.height); 
             // BUG: wrong behavior when screenBounded === false
             // BUG: zoom/in out camera movement strange behavior
-            if (this.level.camera.followType === "bounded") {
+            if (this.camera.followType === "bounded") {
                 if (this.level.container.width < this.renderer.view.width) {
                     this.level.x = (this.renderer.view.width - this.level.container.width) / 2;
                     this.level.x /= scale;
@@ -386,8 +405,8 @@ A_.Game = Class.extend({
             }
 
             // If the world is scaled 2x, camera sees 2x less and vice versa. 
-            this.level.camera.width = this.renderer.view.width / scale;
-            this.level.camera.height = this.renderer.view.height / scale;
+            this.camera.width = this.renderer.view.width / scale;
+            this.camera.height = this.renderer.view.height / scale;
 
 //        this.camera.centerOn(player);
 

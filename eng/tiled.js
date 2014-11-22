@@ -234,7 +234,7 @@ function createMap(game, mapData) {
                     o.setPosition(pos.x + o.sprite.width / 2, pos.y - o.sprite.height / 2)
 
                     if (o.followee) {
-                        game.level.followee = o;
+                        game.cameraOptions.followee = o;
                     }
                 }
             }

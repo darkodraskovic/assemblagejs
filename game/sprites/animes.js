@@ -47,7 +47,7 @@ var Player = Anime.extend({
         this._super(props);
     },
     update: function () {
-        var rot = (A_.UTILS.angleTo(this.getPosition(), A_.game.level.mousePosition)).toDeg();
+        var rot = (A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level)).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right"
         } else if (rot >= 45 && rot < 135) {
@@ -66,7 +66,7 @@ var Player = Anime.extend({
     shoot: function () {
         var pos = this.getPosition();
         var bullet = A_.game.createSprite(Bullet, this.layer, pos.x, pos.y + 8);
-        bullet.rotation = A_.UTILS.angleTo(this.getPosition(), A_.game.level.mousePosition);
+        bullet.rotation = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
         bullet.setAnimation("all", 16, 0);
         bullet.velocity.y = bullet.speed * Math.sin(bullet.rotation);
         bullet.velocity.x = bullet.speed * Math.cos(bullet.rotation);
