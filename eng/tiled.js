@@ -21,14 +21,11 @@ function fetchAssetListFromMapData(mapData) {
         } else if (layersData[i]["type"] === "objectgroup") {
             _.each(layersData[i]["objects"], function (o) {
                 if (!o["polygon"] && o["type"] !== "Rectangle") {
-//                    if (!_.contains(classes, o["name"])) {
                     classes.push(o["name"]);
-//                    }
                 }
             });
         }
     }
-
     classes = _.uniq(classes);
 
     _.each(classes, function (c) {
@@ -107,8 +104,8 @@ function createMap(game, mapData) {
             if (img.indexOf("/") > -1) {
                 img = img.substring(img.lastIndexOf("/") + 1);
             }
-            var bg = makeBackground("assets/" + img, game.level.width, game.level.height);
-            layer.addChild(bg);
+            var tiledSprite = new A_.SCENERY.TiledSprite({image: img, width: game.level.width, height: game.level.height});
+            layer.addChild(tiledSprite.sprite);
             game.level.container.addChild(layer);
         }
 
@@ -155,7 +152,7 @@ function createMap(game, mapData) {
                 }
             }
 
-            var tilemap = new A_.Tilelayer(layer, "assets/" + img, tileW, tileH);
+            var tilemap = new A_.TILES.Tilemap(layer, "assets/" + img, tileW, tileH);
             tilemap.createTilelayer(tileData2D);
 
             layer.baked = baked;

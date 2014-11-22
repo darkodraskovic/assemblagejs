@@ -1,9 +1,19 @@
-function makeBackground(image, width, height) {
-    var texture = new PIXI.Texture.fromImage(image);
-    var background = new PIXI.TilingSprite(texture, width, height);
+A_.SCENERY.TiledSprite = Class.extend({
+    init: function (props) {
+        for (var prop in props) {
+            this[prop] = props[prop];
+        }
 
-    background.position.x = 0;
-    background.position.y = 0;
+        if (this.image) {
+            this.image = "assets/" + this.image;
+        }
+        var texture = new PIXI.Texture.fromImage(this.image);
+        this.sprite = new PIXI.TilingSprite(texture, this.width, this.height);
+    },
+    setPosition: function (x, y) {
+        this.position.x = x;
+        this.position.y = y;
+    }
+});
 
-    return background;
-}
+

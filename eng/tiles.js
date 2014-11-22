@@ -1,11 +1,11 @@
-A_.Tile = Class.extend({
+A_.TILES.Tile = Class.extend({
     init: function (gid, sprite) {
         this.gid = gid;
         this.sprite = sprite;
     }    
 });
 
-A_.Tilelayer = Class.extend({
+A_.TILES.Tilemap = Class.extend({
     init: function (layer, img, tileW, tileH) {
         this.layer = layer;
         this.baked = false;
@@ -122,6 +122,6 @@ A_.Tilelayer = Class.extend({
     },
     createTile: function (gid) {
         var sprite = this.createTileSprite(gid);        
-        return new A_.Tile(gid, sprite);
+        return new A_.TILES.Tile(gid, sprite);
     },
 });

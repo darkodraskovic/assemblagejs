@@ -1,16 +1,12 @@
 A_.Game = Class.extend({
     debug: true,
-    scale: 0.5,
+    scale: 1,
     screenW: 800,
     screenH: 600,
     stageColor: 0x757575,
     isRunning: false,
-    rendererOptions: {
-        antialiasing: false,
-        transparent: false,
-        resolution: 1
-    },
     init: function () {
+        this.rendererOptions = A_.CONFIG.renderer;
         this.stage = new PIXI.Stage(this.stageColor);
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
@@ -38,10 +34,9 @@ A_.Game = Class.extend({
         this.spritesToDestroy = [];
         this.spritesToCreate = [];
 
+        this.cameraOptions = A_.CONFIG.camera;
+
         requestAnimFrame(runGame);
-    },
-    setDefaultCameraOptions: function (cameraOptions) {
-        this.defaultCameraOptions = cameraOptions;
     },
     // LOAD EMPTY LEVEL
     loadEmptyLevel: function (name) {
@@ -107,7 +102,7 @@ A_.Game = Class.extend({
         this.onLevelLoaded();
     },
     onSpritesLoaded: function () {
-        
+
     },
     onLevelLoaded: function () {
         this.createLevelTemplate();
@@ -131,9 +126,9 @@ A_.Game = Class.extend({
     },
     startLevel: function () {
         if (this.levelToLoad.cameraOptions) {
-            this.defaultCameraOptions = this.levelToLoad.cameraOptions;
+            this.cameraOptions = this.levelToLoad.cameraOptions;
         }
-        this.level.setupCamera(this.defaultCameraOptions);
+        this.level.setupCamera(this.cameraOptions);
         this.level.camera.x = 0;
         this.level.camera.y = 0;
 
@@ -400,16 +395,6 @@ A_.Game = Class.extend({
         }
     }
 });
-
-function runGame() {
-    requestAnimFrame(runGame);
-
-    if (A_.game.isRunning === true) {
-        A_.game.run();
-    }
-}
-
-A_.game = new A_.Game();
 
 window.addEventListener("mousewheel", mouseWheelHandler, false);
 function mouseWheelHandler(e) {

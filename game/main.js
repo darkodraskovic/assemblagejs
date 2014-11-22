@@ -1,7 +1,3 @@
-// CONFIG
-var cameraOptions = {innerBoundOffset: 0.25, worldBounded: false, followType: "centered"};
-A_.game.setDefaultCameraOptions(cameraOptions);
-
 // START
 //A_.game.loadTiledLevel("map_skorpio1");
 A_.game.loadTiledLevel("ships");

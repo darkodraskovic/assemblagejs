@@ -1,8 +1,11 @@
 var A_ = {};
 A_.UTILS = {};
 A_.SPRITES = {};
+A_.TILES = {};
+A_.SCENERY = {};
 A_.MODULES = {};
 A_.INPUT = {};
+A_.CONFIG = {};
 
 /** Converts numeric degrees to radians */
 if (typeof (Number.prototype.toRad) === "undefined") {

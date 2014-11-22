@@ -62,7 +62,6 @@
                     {
                      "collisionH":"48",
                      "collisionMask":"\"Player\"",
-                     "collisionOffsetY":"-24",
                      "collisionResponse":"\"active\"",
                      "collisionType":"\"dynamic\"",
                      "collisionW":"26",

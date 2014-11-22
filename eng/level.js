@@ -54,15 +54,15 @@ A_.Level = Class.extend({
             return sprite.name === name;
         });       
     },
-    findSpriteByClass: function (Class) {
+    findSpriteByClass: function (spriteClass) {
         var sprite = _.find(this.sprites, function (sprite) {
-            return sprite instanceof Class;
+            return sprite instanceof spriteClass;
         });
         return sprite;
     },
-    findSpritesByClass: function (Class) {
+    findSpritesByClass: function (spriteClass) {
         return _.filter(this.sprites, function (sprite) {
-            return sprite instanceof Class;
+            return sprite instanceof spriteClass;
         });        
     },
     // TODO
