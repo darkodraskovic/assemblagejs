@@ -1,6 +1,6 @@
 A_.Game = Class.extend({
     debug: true,
-    scale: 1,
+    scale: 0.5,
     screenW: 800,
     screenH: 600,
     stageColor: 0x757575,

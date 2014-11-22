@@ -13,17 +13,24 @@ function fetchAssetListFromMapData(mapData) {
     for (i = 0; i < layersData.length; i++) {
         // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld
         if (layersData[i]["type"] === "imagelayer") {
-            assetsToLoad.push(layersData[i]["image"]);
+            var img = layersData[i]["image"];
+            if (img.indexOf("/") > -1) {
+                img = img.substring(img.lastIndexOf("/") + 1);
+            }
+            assetsToLoad.push("assets/" + img);
         } else if (layersData[i]["type"] === "objectgroup") {
             _.each(layersData[i]["objects"], function (o) {
                 if (!o["polygon"] && o["type"] !== "Rectangle") {
-                    if (!_.contains(classes, o["name"])) {
-                        classes.push(o["name"]);
-                    }
+//                    if (!_.contains(classes, o["name"])) {
+                    classes.push(o["name"]);
+//                    }
                 }
             });
         }
     }
+
+    classes = _.uniq(classes);
+
     _.each(classes, function (c) {
         var asset = eval(c).prototype.animSheet;
         if (!asset) {
@@ -71,13 +78,15 @@ function createMap(game, mapData) {
         for (var prop in layersData[i]) {
             layer[prop] = layersData[i][prop];
         }
+        layer.alpha = layer.opacity;
 
         // TODO: rewrite this to be automatic and to use eval
         if (layersData[i]["properties"]) {
             if (layersData[i]["properties"]["collision"])
                 layer.collision = true;
-            if (layersData[i]["properties"]["baked"])
+            if (layersData[i]["properties"]["baked"]) {
                 layer.baked = true;
+            }
             if (layersData[i]["properties"]["sort"]) {
                 layer.sort = true;
             }
@@ -94,7 +103,11 @@ function createMap(game, mapData) {
 
         // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld
         if (layersData[i]["type"] === "imagelayer") {
-            var bg = makeBackground("assets/" + layersData[i]["image"], game.level.width, game.level.height);
+            var img = layersData[i]["image"];
+            if (img.indexOf("/") > -1) {
+                img = img.substring(img.lastIndexOf("/") + 1);
+            }
+            var bg = makeBackground("assets/" + img, game.level.width, game.level.height);
             layer.addChild(bg);
             game.level.container.addChild(layer);
         }
@@ -102,6 +115,7 @@ function createMap(game, mapData) {
         // if current layer is TILE LAYER
         else if (layersData[i]["type"] === "tilelayer") {
 
+//            window.console.log(layer.baked);
             var baked = layer.baked;
             layer.baked = false;
 
@@ -217,6 +231,7 @@ function createMap(game, mapData) {
                     } else {
                         collisionPolygon = null;
                     }
+                    
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
                     var pos = o.getPosition();
                     o.setPosition(pos.x + o.sprite.width / 2, pos.y - o.sprite.height / 2)
@@ -253,6 +268,7 @@ function bakeLayer(layer, level) {
 //            sprite[prop] = layer[prop];
 //        }
 //    }
+    sprite.alpha = layer.alpha;
     sprite.baked = true;
     sprite.position = layer.position;
     sprite.parallax = layer.parallax;

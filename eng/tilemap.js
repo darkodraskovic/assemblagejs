@@ -1,3 +1,10 @@
+A_.Tile = Class.extend({
+    init: function (gid, sprite) {
+        this.gid = gid;
+        this.sprite = sprite;
+    }    
+});
+
 A_.Tilelayer = Class.extend({
     init: function (layer, img, tileW, tileH) {
         this.layer = layer;
@@ -55,7 +62,7 @@ A_.Tilelayer = Class.extend({
         if (this.tiles[x][y]) {
             if (this.tiles[x][y] === gid)
                 return;
-            this.removeTile(x, y);
+            this.unsetTile(x, y);
         }
 
         var tile = this.createTile(gid);
@@ -80,18 +87,18 @@ A_.Tilelayer = Class.extend({
             A_.collider.collisionStatics.push(tileSprite);
         }
     },
-    removeTile: function (x, y) {
-        if (!this.layer.update)
+    unsetTile: function (x, y) {
+        if (this.layer.baked)
             return;
 
-        if (this.tiles[x][y]) {
+        if (this.tiles[x] && this.tiles[x][y]) {
             var sprite = this.tiles[x][y].sprite;
 
             // REMOVE FROM
             // Pixi
             this.layer.removeChild(sprite);
             // Statics
-            if (layer.collision) {
+            if (this.layer.collision) {
                 var ind = A_.collider.collisionStatics.indexOf(sprite);
                 A_.collider.collisionStatics.splice(ind, 1);
             }
@@ -114,13 +121,7 @@ A_.Tilelayer = Class.extend({
         return tileSprite;
     },
     createTile: function (gid) {
-        var tile = {};
-
-        var sprite = this.createTileSprite(gid);
-
-        tile.gid = gid;
-        tile.sprite = sprite;
-
-        return tile;
+        var sprite = this.createTileSprite(gid);        
+        return new A_.Tile(gid, sprite);
     },
 });
