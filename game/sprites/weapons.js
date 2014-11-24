@@ -5,6 +5,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     frameW: 32,
     frameH: 32,
     collisionResponse: "sensor",
+    collidesWith: A_.COLLISION.Type.ENEMY,
     init: function (props) {
         this._super(props);
         this.friction.x = 0;
@@ -31,6 +32,8 @@ var Computer = A_.SPRITES.CollisionSprite.extend({
     image: "Computer1.png",
     collisionResponse: "static",
     interactive: true,
+    collisionType: A_.COLLISION.Type.ITEM,
+    collidesWith: A_.COLLISION.Type.NONE,
     update: function () {
         this._super();
         if (this.leftpressed) {

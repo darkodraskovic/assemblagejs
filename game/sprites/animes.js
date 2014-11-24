@@ -44,6 +44,8 @@ Anime.inject(A_.MODULES.Topdown);
 var Player = Anime.extend({
     animSheet: "PlayerComplete.png",
     collisionResponse: "active",
+    collisionType: A_.COLLISION.Type.PLAYER,
+    collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     init: function (props) {
         this._super(props);
     },
@@ -85,7 +87,9 @@ var Agent = Anime.extend({
     collisionOffsetY: 6,
     animSheet: "AgentComplete.png",
     timer: 0,
-    collisionResponse: "active",
+    collisionResponse: "passive",
+    collisionType: A_.COLLISION.Type.ENEMY,
+    collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
     init: function (props) {
         this._super(props);
         this.maxVelocity = new SAT.Vector(64, 64);

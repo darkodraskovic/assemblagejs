@@ -192,7 +192,9 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisonType":"0"
                     },
                  "rotation":0,
                  "type":"",
@@ -238,7 +240,9 @@
                  "name":"",
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisonType":"0"
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -277,7 +281,9 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"sensor\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"sensor\"",
+                     "collisonType":"0"
                     },
                  "rotation":0,
                  "type":"",
@@ -291,7 +297,9 @@
                  "name":"",
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisonType":"0"
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -358,7 +366,9 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"sensor\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"sensor\"",
+                     "collisonType":"0"
                     },
                  "rotation":0,
                  "type":"",

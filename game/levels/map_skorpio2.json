@@ -69,8 +69,8 @@
                  "type":"",
                  "visible":true,
                  "width":1,
-                 "x":768,
-                 "y":256
+                 "x":672,
+                 "y":160
                 }, 
                 {
                  "gid":258,
@@ -334,7 +334,9 @@
                  "name":"",
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -348,7 +350,9 @@
                  "name":"",
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -362,7 +366,9 @@
                  "name":"",
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -376,7 +382,9 @@
                  "name":"",
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -415,7 +423,9 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"sensor\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"sensor\"",
+                     "collisionType":"0"
                     },
                  "rotation":0,
                  "type":"",
@@ -429,7 +439,9 @@
                  "name":"",
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
                     },
                  "rotation":0,
                  "type":"Rectangle",

@@ -119,7 +119,7 @@ A_.Game = Class.extend({
         return level;
     },
     createLevelTemplate: function () {
-        this.collider = new A_.Collider();
+        this.collider = new A_.COLLISION.Collider();
         A_.collider = this.collider;
 
         this.level = new A_.Level();
@@ -222,19 +222,6 @@ A_.Game = Class.extend({
             this.collider.collisionSprites.splice(this.collider.collisionSprites.indexOf(sprite), 1);
         }
 
-//        if (sprite.collisionType) {
-//            switch (sprite.collisionType) {
-//                case "static":
-//                    this.collider.collisionStatics.splice(this.collider.collisionStatics.indexOf(sprite), 1);
-//                    break;
-//                case "dynamic":
-//                    this.collider.collisionDynamics.splice(this.collider.collisionDynamics.indexOf(sprite), 1);
-//                    break;
-//                case "sensor":
-//                    this.collider.collisionSensors.splice(this.collider.collisionSensors.indexOf(sprite), 1);
-//                    break;
-//            }
-//        }
         if (sprite.collisionPolygon) {
             delete(sprite.collisionPolygon);
         }

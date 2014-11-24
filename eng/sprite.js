@@ -155,7 +155,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     destroyThis: false,
     init: function (props) {
         this._super(props);
-
+        
         this.prevOverlapN = new SAT.Vector(0, 0);
 
         var that = this;
@@ -243,7 +243,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             if (this.collisionResponse === "active") {
                 if (other.collisionResponse === "static") {
                     this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-                } else if (other.collisionResponse === "active") {
+                } else if (other.collisionResponse === "active" || other.collisionResponse === "passive") {
                     if (this.collisionPolygon === response.a) {
                         this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
                     }

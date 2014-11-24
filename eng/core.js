@@ -3,6 +3,7 @@ A_.UTILS = {};
 A_.SPRITES = {};
 A_.TILES = {};
 A_.SCENERY = {};
+A_.COLLISION = {};
 A_.MODULES = {};
 A_.INPUT = {};
 A_.CONFIG = {};

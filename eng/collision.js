@@ -1,4 +1,4 @@
-A_.Collider = Class.extend({
+A_.COLLISION.Collider = Class.extend({
     init: function () {
         this.debugLayer = new PIXI.DisplayObjectContainer()
         this.debugLayer.parallax = 100;
@@ -67,21 +67,23 @@ A_.Collider = Class.extend({
         };
     },
     processCollisions: function () {
-        // DYNAMIC VS DYNAMIC
         var len = this.collisionSprites.length;
         for (i = 0; i < len - 1; i++) {
             var o1 = this.collisionSprites[i];
             for (j = i + 1; j < len; j++) {
                 var o2 = this.collisionSprites[j];
-                var response = new SAT.Response();
-                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
-                if (collided) {
-                    o1.collide(o2, response);
-                    o2.collide(o1, response);
+                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
+                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
+                    var response = new SAT.Response();
+                    var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
+                    if (collided) {
+                        o1.collide(o2, response);
+                        o2.collide(o1, response);
+                    }
                 }
             }
         }
-        
+
         var lenSprites = this.collisionSprites.length;
         var lenTiles = this.collisionTiles.length;
         for (i = 0; i < lenSprites; i++) {
