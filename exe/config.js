@@ -8,6 +8,8 @@ A_.COLLISION.Type = {
     ENEMY_FIRE: 32,
 };
 
+A_.CONFIG.debug = true;
+
 A_.CONFIG.camera = {
     innerBoundOffset: 0.25,
     worldBounded: false,

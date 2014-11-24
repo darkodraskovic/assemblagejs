@@ -62,7 +62,8 @@ var Laser = A_.SPRITES.CollisionSprite.extend({
         this._super();
 //
         if (other.collisionResponse === "static") {
-            this.setWidth(A_.UTILS.distanceTo(this.getPosition(), other.getPosition()));
+//            if (!other.containsPoint(A_.game.mousePosition.level.x, A_.game.mousePosition.level.y))
+                this.setWidth(A_.UTILS.distanceTo(this.getPosition(), other.getPosition()));
         }
     },
 });

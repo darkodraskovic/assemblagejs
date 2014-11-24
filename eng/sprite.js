@@ -273,6 +273,15 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             }
         }
     },
+    containsPoint: function (x, y) {
+        var response = new SAT.Response();
+        var contains = SAT.pointInPolygon(new SAT.Vector(x, y), this.collisionPolygon);
+        if (contains) {
+            return response;
+        } else {
+            return false;
+        }
+    },
     setPosition: function (x, y) {
         this._super(x, y);
         if (this.collisionPolygon)

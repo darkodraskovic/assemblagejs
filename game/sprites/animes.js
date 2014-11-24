@@ -67,7 +67,7 @@ var Player = Anime.extend({
     },
     shootBullet: function () {
         var pos = this.getPosition();
-        var bullet = A_.game.createSprite(Bullet, this.layer, pos.x, pos.y + 8);
+        var bullet = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos.x, pos.y + 8);
         bullet.rotation = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
         bullet.setAnimation("all", 16, 0);
         bullet.velocity.y = bullet.speed * Math.sin(bullet.rotation);
@@ -76,7 +76,7 @@ var Player = Anime.extend({
     
     shootLaser: function () {
         var pos = this.getPosition();
-        A_.game.createSprite(Laser, this.layer, pos.x, pos.y, {spawner: this, collisionOffsetX: 16, collisionH: 12});
+        A_.game.createSprite(Laser, A_.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this, collisionOffsetX: 16, collisionH: 12});
     }
 });
 

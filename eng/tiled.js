@@ -199,13 +199,16 @@ function createMap(game, mapData) {
                         o.setCollision(collisionPolygon);
                         var pos = o.getPosition();
                         o.setPosition(pos.x - collisionPolygon.offset.x, pos.y - collisionPolygon.offset.y);
-                        o.updateCollisionPolygon();
 
                     } else {
                         var pos = o.getPosition();
-                        o.setPosition(pos.x, pos.y);
+//                        o.setPosition(pos.x, pos.y);
+                        o.collisionW = o.width;
+                        o.collisionH = o.height;
                         o.setCollision();
+                        o.setPosition(pos.x + o.collisionPolygon.w / 2, pos.y + o.collisionPolygon.h / 2);
                     }
+                    o.updateCollisionPolygon();
                     o.update();
 //                    game.polygons.push(o);
                 }

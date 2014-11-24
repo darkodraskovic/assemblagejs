@@ -1,5 +1,5 @@
 A_.Game = Class.extend({
-    debug: true,
+//    debug: true,
     scale: 1,
     screenW: 800,
     screenH: 600,
@@ -11,6 +11,8 @@ A_.Game = Class.extend({
         this.stage = new PIXI.Stage(this.stageColor);
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
+
+        this.debug = A_.CONFIG.debug;
 
         var that = this;
         this.stage.mousedown = function () {
