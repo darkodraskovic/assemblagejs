@@ -1,16 +1,11 @@
-A_.SPRITES.Sprite = Class.extend({
-    bounded: true,
-    outOfBounds: false,
-    collisionOffsetX: 0,
-    collisionOffsetY: 0,
-    collisionW: 0,
-    collisionH: 0,
-    collides: false,
-    destroyThis: false,
+A_.SPRITES.AnimatedSprite = Class.extend({
+    frameW: 0,
+    frameH: 0,
     init: function (props) {
         for (var prop in props) {
             this[prop] = props[prop];
         }
+        this.animations = {};
 
         if (this.image) {
             this.image = "assets/" + this.image;
@@ -21,8 +16,34 @@ A_.SPRITES.Sprite = Class.extend({
 //            this.sprite = new PIXI.Sprite(this.texture);
 //        } else if (this.baseTexture) {
 //            this.sprite = new PIXI.Sprite(new PIXI.Texture(this.baseTexture, this.rectangle));
-        } else
+        } else {
             this.sprite = new PIXI.DisplayObjectContainer();
+        }
+
+        if (this.animSheet) {
+            this.animSheet = "assets/" + this.animSheet;
+            this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
+            if (!this.frameW) {
+                this.frameW = this.baseTexture.width;
+            }
+            if (!this.frameH) {
+                this.frameH = this.baseTexture.height;
+            }
+
+            var colls = Math.round(this.baseTexture.width / this.frameW);
+            var rows = Math.round(this.baseTexture.height / this.frameH);
+
+            this.textures = [];
+            for (var i = 0; i < rows; i++) {
+                for (var j = 0; j < colls; j++)
+                    this.textures[this.textures.length] = new PIXI.Texture(this.baseTexture,
+                            new PIXI.Rectangle(j * this.frameW, i * this.frameH,
+                                    this.frameW, this.frameH));
+            }
+            this.addAnimation("default", [0], 1);
+            this.setAnimation("default");
+            this.addAnimation("all", _.range(0, this.textures.length), 0.05);
+        }
 
         this.sprite.anchor = new PIXI.Point(0.5, 0.5);
 
@@ -35,30 +56,6 @@ A_.SPRITES.Sprite = Class.extend({
 
         this.alpha = 1;
 
-        this.prevOverlapN = new SAT.Vector(0, 0);
-
-        var that = this;
-        if (this.interactive) {
-            this.sprite.interactive = true;
-            this.sprite.mousedown = function () {
-                that.leftpressed = true;
-                that.leftdown = true;
-            }
-            this.sprite.mouseup = function () {
-                that.leftreleased = true;
-                that.leftdown = false;
-            }
-            this.sprite.mouseupoutside = function () {
-                that.leftreleased = true;
-                that.leftdown = false;
-            }
-        }
-    },
-    setInteractive: function () {
-        this.sprite.interactive = true;
-    },
-    removeInteractive: function () {
-        this.sprite.interactive = false;
     },
     setPosition: function (x, y) {
         this.sprite.position.x = x;
@@ -94,12 +91,95 @@ A_.SPRITES.Sprite = Class.extend({
     },
     setScale: function (x, y) {
         this.sprite.scale = new PIXI.Point(x, y);
-        if (this.collides) {
-            this.collisionPolygon.setScale(x, y);
-        }
     },
     getScale: function () {
         return this.sprite.scale;
+    },
+    addAnimation: function (name, frames, speed) {
+        // set default speed to 1; 
+        if (!speed) {
+            speed = 1;
+        }
+
+        var textures = [];
+        for (var i = 0; i < frames.length; i++)
+            textures[i] = this.textures[frames[i]];
+
+        var animation = new PIXI.MovieClip(textures);
+
+        animation.anchor.x = 0.5;
+        animation.anchor.y = 0.5;
+        animation.visible = false;
+        // set the speed that the MovieClip will play at; higher is faster, lower is slower
+        animation.animationSpeed = speed;
+        this.sprite.addChild(animation);
+        this.animations[name] = animation;
+    },
+    setAnimation: function (name, frame, speed) {
+        // play from the start by default
+        if (typeof frame === 'undefined') {
+            if (this.currentAnimationName === name)
+                return;
+            frame = 0;
+        }
+        if (typeof speed !== 'undefined') {
+            this.animations[name].animationSpeed = speed;
+        } else {
+            this.animations[name].animationSpeed = 0.1;
+        }
+
+        // Turn off the previously playing animation
+        if (this.currentAnimation) {
+            // Stops the MovieClip
+            this.currentAnimation.stop();
+            // The visibility of the object.
+            this.currentAnimation.visible = false;
+        }
+
+        this.currentAnimation = this.animations[name];
+        this.currentAnimationName = name;
+        this.animations[name].visible = true;
+        // goes to a frame and begins playing the animation
+        this.animations[name].gotoAndPlay(frame);
+    }
+});
+
+A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
+    bounded: true,
+    outOfBounds: false,
+    collisionOffsetX: 0,
+    collisionOffsetY: 0,
+    collisionW: 0,
+    collisionH: 0,
+    collides: false,
+    destroyThis: false,
+    init: function (props) {
+        this._super(props);
+
+        this.prevOverlapN = new SAT.Vector(0, 0);
+
+        var that = this;
+        if (this.interactive) {
+            this.sprite.interactive = true;
+            this.sprite.mousedown = function () {
+                that.leftpressed = true;
+                that.leftdown = true;
+            }
+            this.sprite.mouseup = function () {
+                that.leftreleased = true;
+                that.leftdown = false;
+            }
+            this.sprite.mouseupoutside = function () {
+                that.leftreleased = true;
+                that.leftdown = false;
+            }
+        }
+    },
+    setInteractive: function () {
+        this.sprite.interactive = true;
+    },
+    removeInteractive: function () {
+        this.sprite.interactive = false;
     },
     setCollision: function (polygon) {
         if (!this.collisionW)
@@ -183,128 +263,15 @@ A_.SPRITES.Sprite = Class.extend({
             }
         }
     },
-    // COLLISION callbacks
-    collideWithStatic: function (other, response) {
-        var pos = this.getPosition();
-        this.setPosition(pos.x - response.overlapV.x, pos.y - response.overlapV.y);
-        this.prevOverlapN = response.overlapN;
-    },
-    collideWithDynamic: function (other, response) {
-//        if (this.collisionType === "static" || this.collisionType === "sensor")
-//            return;
-
-        if (this.collisionResponse === "lite" || other.collisionResponse === "lite")
-            return;
-
-        if (this.collisionResponse === "passive" && other.collisionResponse === "passive")
-            return;
-
-        var pos = this.getPosition();
-        if (this.collisionPolygon === response.a) {
-//            this.setPosition(pos.x - response.overlapV.x / 2, pos.y - response.overlapV.y / 2);
-            this.setPosition(pos.x - response.overlapV.x, pos.y - response.overlapV.y);
-        } else {
-//            this.setPosition(pos.x + response.overlapV.x / 2, pos.y + response.overlapV.y / 2);
-            this.setPosition(pos.x + response.overlapV.x, pos.y + response.overlapV.y);
+    setScale: function (x, y) {
+        this._super(x, y);
+        if (this.collides) {
+            this.collisionPolygon.setScale(x, y);
         }
-    },
-    collideWithSensor: function (other, response) {
-
     }
 });
 
-A_.SPRITES.AnimatedSprite = A_.SPRITES.Sprite.extend({
-    frameW: 0,
-    frameH: 0,
-    init: function (props) {
-        this._super(props);
-        this.animations = {};
-
-        if (this.animSheet) {
-            this.animSheet = "assets/" + this.animSheet;
-            this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
-            if (!this.frameW) {
-                this.frameW = this.baseTexture.width;
-            }
-            if (!this.frameH) {
-                this.frameH = this.baseTexture.height;
-            }
-
-            var colls = Math.round(this.baseTexture.width / this.frameW);
-            var rows = Math.round(this.baseTexture.height / this.frameH);
-
-            this.textures = [];
-            for (var i = 0; i < rows; i++) {
-                for (var j = 0; j < colls; j++)
-                    this.textures[this.textures.length] = new PIXI.Texture(this.baseTexture,
-                            new PIXI.Rectangle(j * this.frameW, i * this.frameH,
-                                    this.frameW, this.frameH));
-            }
-            this.addAnimation("default", [0], 1);
-            this.setAnimation("default");
-//            this.currentAnimationName = "default";
-            this.addAnimation("all", _.range(0, this.textures.length), 0.05);
-        }
-    },
-    addAnimation: function (name, frames, speed) {
-        // set default speed to 1; 
-        if (!speed) {
-            speed = 1;
-        }
-
-        var textures = [];
-        for (var i = 0; i < frames.length; i++)
-            textures[i] = this.textures[frames[i]];
-
-        var animation = new PIXI.MovieClip(textures);
-
-//        window.console.log(animation);
-
-        animation.anchor.x = 0.5;
-        animation.anchor.y = 0.5;
-        animation.visible = false;
-        // set the speed that the MovieClip will play at; higher is faster, lower is slower
-        animation.animationSpeed = speed;
-        this.sprite.addChild(animation);
-        this.animations[name] = animation;
-    },
-    setAnimation: function (name, frame, speed) {
-        // play from the start by default
-        if (typeof frame === 'undefined') {
-            if (this.currentAnimationName === name)
-                return;
-            frame = 0;
-        }
-        if (typeof speed !== 'undefined') {
-            this.animations[name].animationSpeed = speed;
-        } else {
-            this.animations[name].animationSpeed = 0.1;
-        }
-
-        // Turn off the previously playing animation
-        if (this.currentAnimation) {
-            // Stops the MovieClip
-            this.currentAnimation.stop();
-            // The visibility of the object.
-            this.currentAnimation.visible = false;
-        }
-
-        this.currentAnimation = this.animations[name];
-        this.currentAnimationName = name;
-        this.animations[name].visible = true;
-        // goes to a frame and begins playing the animation
-        this.animations[name].gotoAndPlay(frame);
-    }
-});
-
-
-A_.SPRITES.ArcadeSprite = A_.SPRITES.AnimatedSprite.extend({
-//    velocity: new SAT.Vector(0, 0),
-//    gravity: new SAT.Vector(0, 0),
-//    friction: new SAT.Vector(40, 40),
-//    acceleration: new SAT.Vector(0, 0),
-//    maxVelocity: new SAT.Vector(256, 256),
-//    speed: new SAT.Vector(64, 64),
+A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
     isMoving: false,
     bounciness: 0.5,
     minBounceSpeed: 64,

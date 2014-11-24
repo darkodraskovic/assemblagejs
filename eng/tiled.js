@@ -185,7 +185,7 @@ function createMap(game, mapData) {
                         args[prop] = oData[prop];
                     }
 
-                    var o = new A_.SPRITES.Sprite(args);
+                    var o = new A_.SPRITES.CollisionSprite(args);
                     
                     
                     o.setPosition(o.x, o.y);

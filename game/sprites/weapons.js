@@ -27,7 +27,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-var Computer = A_.SPRITES.Sprite.extend({
+var Computer = A_.SPRITES.CollisionSprite.extend({
     image: "Computer1.png",
     collisionResponse: "static",
     interactive: true,
