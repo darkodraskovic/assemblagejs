@@ -60,9 +60,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     setPosition: function (x, y) {
         this.sprite.position.x = x;
         this.sprite.position.y = y;
-        if (this.collides) {
-            this.updateCollisionPolygon();
-        }
     },
     setPositionRelative: function (x, y) {
         this.setPosition(this.sprite.position.x + x, this.sprite.position.y + y);
@@ -77,8 +74,8 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         return this.sprite.position.y;
     },
     setSize: function (x, y) {
-        this.width = x;
-        this.height = y;
+        this.sprite.width = x;
+        this.sprite.height = y;
     },
     getSize: function () {
         return {width: this.sprite.width, height: this.sprite.height};
@@ -86,14 +83,27 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getWidth: function () {
         return this.sprite.width;
     },
+    setWidth: function (width) {
+        this.sprite.width = width;
+    },
     getHeight: function () {
         return this.sprite.height;
+    },
+    setHeight: function (height) {
+        this.sprite.height = height;
     },
     setScale: function (x, y) {
         this.sprite.scale = new PIXI.Point(x, y);
     },
     getScale: function () {
         return this.sprite.scale;
+    },
+    update: function () {
+        
+    },
+    postupdate: function () {
+        this.sprite.rotation = this.rotation;
+        this.sprite.alpha = this.alpha;
     },
     addAnimation: function (name, frames, speed) {
         // set default speed to 1; 
@@ -151,11 +161,11 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     collisionOffsetY: 0,
     collisionW: 0,
     collisionH: 0,
-    collides: false,
+    collides: true,
     destroyThis: false,
     init: function (props) {
         this._super(props);
-        
+
         this.prevOverlapN = new SAT.Vector(0, 0);
 
         var that = this;
@@ -204,11 +214,11 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         }
     },
     update: function () {
-
+        this._super();
+        this.collided = false;
     },
     postupdate: function () {
-        this.sprite.rotation = this.rotation;
-        this.sprite.alpha = this.alpha;
+        this._super();
 
         if (this.bounded) {
             var pos = this.getPosition();
@@ -217,20 +227,20 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         } else {
             var pos = this.getPosition();
             if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
-                this.destroy();
+                this.outOfBounds = true;
             }
         }
 
-        if (this.collides) {
+        if (this.collisionPolygon) {
             this.updateCollisionPolygon();
-            this.collided = false;
         }
     },
     destroy: function () {
         A_.game.spritesToDestroy.push(this);
     },
     collideWithTile: function (other, response) {
-        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+        if (this.collisionResponse !== "sensor")
+            this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
     },
     collide: function (other, response) {
         this.collided = true;
@@ -263,10 +273,41 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             }
         }
     },
+    setPosition: function (x, y) {
+        this._super(x, y);
+        if (this.collisionPolygon)
+            this.updateCollisionPolygon();
+    },
+    setPositionRelative: function (x, y) {
+        this._super(x, y);
+        if (this.collisionPolygon)
+            this.updateCollisionPolygon();
+    },
     setScale: function (x, y) {
         this._super(x, y);
-        if (this.collides) {
+        if (this.collisionPolygon)
             this.collisionPolygon.setScale(x, y);
+    },
+    setSize: function (x, y) {
+        this._super(x, y);
+        if (this.collisionPolygon) {
+            x = x / this.frameW;
+            y = y / this.frameW;
+            this.collisionPolygon.setScale(x, y);
+        }
+    },
+    setWidth: function (x) {
+        this._super(x);
+        if (this.collisionPolygon) {
+            x /= this.frameW;
+            this.collisionPolygon.setScale(x, this.collisionPolygon.scale.y);
+        }
+    },
+    setHeight: function (y) {
+        this._super(y);
+        if (this.collisionPolygon) {
+            y = y / this.frameH;
+            this.collisionPolygon.setScale(this.collisionPolygon.scale.x, y);
         }
     }
 });

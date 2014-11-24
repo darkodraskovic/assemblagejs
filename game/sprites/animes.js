@@ -61,18 +61,22 @@ var Player = Anime.extend({
             this.facing = "up";
 
         if (A_.game.leftpressed) {
-            this.shoot();
+            this.shootLaser();
         }
         this._super();
-
     },
-    shoot: function () {
+    shootBullet: function () {
         var pos = this.getPosition();
         var bullet = A_.game.createSprite(Bullet, this.layer, pos.x, pos.y + 8);
         bullet.rotation = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
         bullet.setAnimation("all", 16, 0);
         bullet.velocity.y = bullet.speed * Math.sin(bullet.rotation);
         bullet.velocity.x = bullet.speed * Math.cos(bullet.rotation);
+    },
+    
+    shootLaser: function () {
+        var pos = this.getPosition();
+        A_.game.createSprite(Laser, this.layer, pos.x, pos.y, {spawner: this, collisionOffsetX: 16, collisionH: 12});
     }
 });
 

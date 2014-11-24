@@ -190,7 +190,6 @@ function createMap(game, mapData) {
 
                     var o = new A_.SPRITES.CollisionSprite(args);
 
-
                     o.setPosition(o.x, o.y);
 
                     if (oData.polygon) {

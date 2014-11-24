@@ -31,6 +31,14 @@ A_.Level = Class.extend({
         this.tileLayers.push(layer);
         this.addLayer(layer);
     },
+    findLayerByName: function (name) {
+        return _.find(this.layers, function (layer) {
+            return layer.name === name;
+        });
+    },
+    findLayerByNumber: function (num) {
+        return this.container.getChildAt(num);
+    },
     findSpriteByName: function (name) {
         var sprite = _.find(this.sprites, function (sprite) {
             return sprite.name === name;

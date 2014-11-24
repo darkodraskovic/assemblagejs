@@ -45,6 +45,7 @@ A_.COLLISION.Collider = Class.extend({
         o.collisionPolygon.origOffset = o.collisionPolygon.offset.clone();
         o.collisionPolygon.origW = o.collisionPolygon.w;
         o.collisionPolygon.origH = o.collisionPolygon.h;
+        o.collisionPolygon.scale = new SAT.Vector(1, 1);
 
         if (o.sprite && o.sprite.interactive)
             o.sprite.hitArea = SATPolygonToPIXIPolygon(o.collisionPolygon, false);
@@ -67,6 +68,7 @@ A_.COLLISION.Collider = Class.extend({
         };
     },
     processCollisions: function () {
+        // SPRITES
         var len = this.collisionSprites.length;
         for (i = 0; i < len - 1; i++) {
             var o1 = this.collisionSprites[i];
@@ -84,6 +86,7 @@ A_.COLLISION.Collider = Class.extend({
             }
         }
 
+        // TILES
         var lenSprites = this.collisionSprites.length;
         var lenTiles = this.collisionTiles.length;
         for (i = 0; i < lenSprites; i++) {
@@ -165,6 +168,8 @@ function SATPolygonToPIXIPolygon(SATPolygon, translated) {
 }
 
 SAT.Polygon.prototype.setScale = function (x, y) {
+    this.scale.scale(x, y);
+    
     this.points = _.map(this.origPoints, function (origPoint) {
         return origPoint.clone();
     })
@@ -175,7 +180,7 @@ SAT.Polygon.prototype.setScale = function (x, y) {
     this.w = this.origW;
     this.h = this.origH;
     this.w *= x;
-    this.h *= x;
+    this.h *= y;
 
     this.offset = this.origOffset.clone();
     this.setOffset(new SAT.Vector(this.offset.x * x, this.offset.y * y));

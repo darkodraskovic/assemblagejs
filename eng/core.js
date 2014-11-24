@@ -73,9 +73,9 @@ A_.UTILS.angleTo = function (pos1, pos2) {
     return Math.atan2(pos2.y - pos1.y, pos2.x - pos1.x);
 };
 
-A_.UTILS.distanceToPos = function (pos1, pos2) {
+A_.UTILS.distanceTo = function (pos1, pos2) {
     var xd = pos2.x - pos1.x;
-    var yd = pos2.y - pos2.y;
+    var yd = pos2.y - pos1.y;
     return Math.sqrt(xd * xd + yd * yd);
 };
 

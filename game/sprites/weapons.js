@@ -14,6 +14,12 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         this.speed = 600;
         this.bounded = false;
     },
+    update: function () {
+        this._super();
+        if (this.outOfBounds) {
+            this.destroy();
+        }
+    },
     collide: function (other, response) {
         if (other instanceof Agent) {
             other.alive = false;
@@ -22,10 +28,43 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         } else if (other.collisionResponse === "static") {
             this.destroy();
         }
-    }, 
-    collideWithTile: function (){
+    },
+    collideWithTile: function () {
         this.destroy();
     }
+});
+
+var Laser = A_.SPRITES.CollisionSprite.extend({
+//    expandSpeed: 800,
+    animSheet: "Muzzleflashes-Shots.png",
+    collisionResponse: "sensor",
+    frameW: 32,
+    frameH: 32,
+//    collides: false,
+    bounded: false,
+    init: function (props) {
+        this._super(props);
+        this.setAnimation("all", 18, 0);
+        this.currentAnimation.anchor = new PIXI.Point(0, 0.5);
+    },
+    update: function () {
+        this.setPosition(this.spawner.getPositionX(), this.spawner.getPositionY());
+//        this.setWidth(this.getWidth() + this.expandSpeed * A_.game.dt);
+
+        this.rotation = A_.UTILS.angleTo(this.spawner.getPosition(), A_.game.mousePosition.level);
+        this.setWidth(A_.UTILS.distanceTo(this.getPosition(), A_.game.mousePosition.level));
+
+        if (A_.game.leftreleased) {
+            this.destroy();
+        }
+    },
+    collide: function (other, response) {
+        this._super();
+//
+        if (other.collisionResponse === "static") {
+            this.setWidth(A_.UTILS.distanceTo(this.getPosition(), other.getPosition()));
+        }
+    },
 });
 
 var Computer = A_.SPRITES.CollisionSprite.extend({
