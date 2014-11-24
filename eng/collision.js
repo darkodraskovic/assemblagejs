@@ -3,11 +3,8 @@ A_.Collider = Class.extend({
         this.debugLayer = new PIXI.DisplayObjectContainer()
         this.debugLayer.parallax = 100;
         this.collisionSprites = [];
-        this.collisionStatics = [];
-        this.collisionDynamics = [];
-        this.collisionSensors = [];
+        this.collisionTiles = [];
         this.collisionMasks = [];
-
     },
     activateCollisionFor: function (o, polygon, w, h, offsetX, offsetY) {
         if (!w)
@@ -71,43 +68,31 @@ A_.Collider = Class.extend({
     },
     processCollisions: function () {
         // DYNAMIC VS DYNAMIC
-        for (i = 0; i < this.collisionDynamics.length - 1; i++) {
-            var o1 = this.collisionDynamics[i];
-            for (j = i + 1; j < this.collisionDynamics.length; j++) {
-                var o2 = this.collisionDynamics[j];
+        var len = this.collisionSprites.length;
+        for (i = 0; i < len - 1; i++) {
+            var o1 = this.collisionSprites[i];
+            for (j = i + 1; j < len; j++) {
+                var o2 = this.collisionSprites[j];
                 var response = new SAT.Response();
                 var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
                 if (collided) {
-                    o1.collideWithDynamic(o2, response);
-                    o2.collideWithDynamic(o1, response);
+                    o1.collide(o2, response);
+                    o2.collide(o1, response);
                 }
             }
         }
-
-        // DYNAMIC VS STATIC
-        for (i = 0; i < this.collisionDynamics.length; i++) {
-            var o1 = this.collisionDynamics[i];
-            for (j = 0; j < this.collisionStatics.length; j++) {
-                var o2 = this.collisionStatics[j];
+        
+        var lenSprites = this.collisionSprites.length;
+        var lenTiles = this.collisionTiles.length;
+        for (i = 0; i < lenSprites; i++) {
+            var o1 = this.collisionSprites[i];
+            for (j = 0; j < lenTiles; j++) {
+                var o2 = this.collisionTiles[j];
                 var response = new SAT.Response();
                 var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
                 if (collided) {
-                    o1.collideWithStatic(o2, response);
-                }
-            }
-        }
-
-
-        // DYNAMIC VS SENSORS
-        for (i = 0; i < this.collisionDynamics.length; i++) {
-            var o1 = this.collisionDynamics[i];
-            for (j = 0; j < this.collisionSensors.length; j++) {
-                var o2 = this.collisionSensors[j];
-                var response = new SAT.Response();
-                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
-                if (collided) {
-                    o1.collideWithSensor(o2, response);
-                    o2.collideWithDynamic(o1, response);
+                    o1.collideWithTile(o2, response);
+                    o2.collideWithSprite(o1, response);
                 }
             }
         }

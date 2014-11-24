@@ -62,8 +62,6 @@
                     {
                      "collisionH":"48",
                      "collisionMask":"\"Player\"",
-                     "collisionResponse":"\"active\"",
-                     "collisionType":"\"dynamic\"",
                      "collisionW":"26",
                      "followee":"true"
                     },
@@ -80,7 +78,7 @@
                  "name":"Agent",
                  "properties":
                     {
-                     "collisionType":"\"dynamic\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -95,7 +93,7 @@
                  "name":"Agent",
                  "properties":
                     {
-                     "collisionType":"\"dynamic\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -110,7 +108,7 @@
                  "name":"Agent",
                  "properties":
                     {
-                     "collisionType":"\"dynamic\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -125,7 +123,7 @@
                  "name":"Agent",
                  "properties":
                     {
-                     "collisionType":"\"dynamic\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -140,7 +138,7 @@
                  "name":"Agent",
                  "properties":
                     {
-                     "collisionType":"\"dynamic\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -155,7 +153,7 @@
                  "name":"Agent",
                  "properties":
                     {
-                     "collisionType":"\"dynamic\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -170,7 +168,7 @@
                  "name":"Agent",
                  "properties":
                     {
-                     "collisionType":"\"dynamic\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -336,7 +334,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "collisionResponse":"\"static\""
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -350,7 +348,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "collisionResponse":"\"static\""
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -364,7 +362,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "collisionResponse":"\"static\""
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -378,7 +376,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "collisionResponse":"\"static\""
                     },
                  "rotation":0,
                  "type":"Rectangle",
@@ -417,7 +415,7 @@
                         }],
                  "properties":
                     {
-
+                     "collisionResponse":"\"sensor\""
                     },
                  "rotation":0,
                  "type":"",
@@ -431,7 +429,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "collisionResponse":"\"static\""
                     },
                  "rotation":0,
                  "type":"Rectangle",

@@ -28,34 +28,36 @@ A_.SPRITES.Sprite = Class.extend({
 
         this.rotation = 0;
 
-        this.width = 1;
-        this.height = 1;
+        if (!this.width)
+            this.width = 1;
+        if (!this.height)
+            this.height = 1;
 
         this.alpha = 1;
 
         this.prevOverlapN = new SAT.Vector(0, 0);
-        
+
         var that = this;
         if (this.interactive) {
             this.sprite.interactive = true;
-            this.sprite.mousedown = function (){
+            this.sprite.mousedown = function () {
                 that.leftpressed = true;
                 that.leftdown = true;
             }
-            this.sprite.mouseup = function (){
+            this.sprite.mouseup = function () {
                 that.leftreleased = true;
                 that.leftdown = false;
             }
-            this.sprite.mouseupoutside = function (){
+            this.sprite.mouseupoutside = function () {
                 that.leftreleased = true;
                 that.leftdown = false;
             }
         }
     },
-    setInteractive: function() {
+    setInteractive: function () {
         this.sprite.interactive = true;
     },
-    removeInteractive: function() {
+    removeInteractive: function () {
         this.sprite.interactive = false;
     },
     setPosition: function (x, y) {
@@ -85,10 +87,10 @@ A_.SPRITES.Sprite = Class.extend({
         return {width: this.sprite.width, height: this.sprite.height};
     },
     getWidth: function () {
-        return this.sprite.width; 
+        return this.sprite.width;
     },
     getHeight: function () {
-        return this.sprite.height; 
+        return this.sprite.height;
     },
     setScale: function (x, y) {
         this.sprite.scale = new PIXI.Point(x, y);
@@ -113,27 +115,13 @@ A_.SPRITES.Sprite = Class.extend({
                     -this.collisionW / 2 + this.collisionOffsetX, -this.collisionH / 2 + this.collisionOffsetY);
         }
 
-        if (this.collides || this.collisionType) {
+        if (this.collides || this.collisionResponse) {
             this.collides = true;
+            if (!this.collisionResponse) {
+                this.collisionResponse = "sensor";
+            }
             A_.game.collider.collisionSprites.push(this);
-            if (this.collisionType) {
-                if (this.collisionType === "dynamic") {
-                    A_.game.collider.collisionDynamics.push(this);
-                    if (!this.collisionResponse) {
-                        this.collisionResponse = "passive";
-                    }
-                } else if (this.collisionType === "static") {
-                    A_.game.collider.collisionStatics.push(this);
-                } else if (this.collisionType === "sensor") {
-                    A_.game.collider.collisionSensors.push(this);
-                }
-            }
-            else {
-                this.collisionType = "static";
-                A_.game.collider.collisionStatics.push(this);
-            }
         }
-
     },
     update: function () {
 
@@ -155,10 +143,45 @@ A_.SPRITES.Sprite = Class.extend({
 
         if (this.collides) {
             this.updateCollisionPolygon();
+            this.collided = false;
         }
     },
     destroy: function () {
         A_.game.spritesToDestroy.push(this);
+    },
+    collideWithTile: function (other, response) {
+        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+    },
+    collide: function (other, response) {
+        this.collided = true;
+        if (this.collisionResponse === "static") {
+            return;
+        }
+        else if (this.collisionResponse === "sensor") {
+            return;
+        } else {
+            if (this.collisionResponse === "active") {
+                if (other.collisionResponse === "static") {
+                    this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+                } else if (other.collisionResponse === "active") {
+                    if (this.collisionPolygon === response.a) {
+                        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+                    }
+                    else {
+                        this.setPositionRelative(response.overlapV.x, response.overlapV.y);
+                    }
+                }
+            }
+            else if (this.collisionResponse === "passive") {
+                if (other.collisionResponse === "static")
+                    this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+                if (other.collisionResponse === "active")
+                    this.setPositionRelative(response.overlapV.x, response.overlapV.y);
+            }
+            else if (this.collisionResponse === "light") {
+                this.setPositionRelative(response.overlapV.x, response.overlapV.y);
+            }
+        }
     },
     // COLLISION callbacks
     collideWithStatic: function (other, response) {

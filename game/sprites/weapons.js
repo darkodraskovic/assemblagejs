@@ -4,7 +4,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     collisionH: 10,
     frameW: 32,
     frameH: 32,
-    collisionType: "dynamic",
+    collisionResponse: "sensor",
     init: function (props) {
         this._super(props);
         this.friction.x = 0;
@@ -12,23 +12,24 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         this.maxVelocity.x = this.maxVelocity.y = 1000;
         this.speed = 600;
         this.bounded = false;
-        this.collisionResponse = "lite";
     },
-    collideWithStatic: function () {
-        this.destroy();
-    },
-    collideWithDynamic: function (other, response) {
+    collide: function (other, response) {
         if (other instanceof Agent) {
-            this.destroy();
             other.alive = false;
             other.motionState = "idle";
-        }        
+            this.destroy();
+        } else if (other.collisionResponse === "static") {
+            this.destroy();
+        }
+    }, 
+    collideWithTile: function (){
+        this.destroy();
     }
 });
 
 var Computer = A_.SPRITES.Sprite.extend({
     image: "Computer1.png",
-    collisionType: "static",
+    collisionResponse: "static",
     interactive: true,
     update: function () {
         this._super();

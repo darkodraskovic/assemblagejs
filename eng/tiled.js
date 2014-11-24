@@ -181,21 +181,19 @@ function createMap(game, mapData) {
                         args[prop] = eval(oData["properties"][prop]);
                     }
 
-                    var o = new A_.SPRITES.Sprite();
-
                     for (var prop in oData) {
-                        o[prop] = oData[prop];
+                        args[prop] = oData[prop];
                     }
 
-                    for (var prop in args) {
-                        o[prop] = args[prop];
-                    }
-
+                    var o = new A_.SPRITES.Sprite(args);
+                    
+                    
                     o.setPosition(o.x, o.y);
 
                     if (oData.polygon) {
                         var collisionPolygon = createSATPolygonFromTiled(oData, true);
-                        o.collides = true;
+//                        o.collides = true;
+                    
                         o.setCollision(collisionPolygon);
                         var pos = o.getPosition();
                         o.setPosition(pos.x - collisionPolygon.offset.x, pos.y - collisionPolygon.offset.y);
@@ -204,7 +202,6 @@ function createMap(game, mapData) {
                     } else {
                         var pos = o.getPosition();
                         o.setPosition(pos.x, pos.y);
-                        o.collides = true;
                         o.setCollision();
                     }
                     o.update();
