@@ -7,7 +7,6 @@
          "opacity":1,
          "properties":
             {
-             "baked":"true",
              "image":"Interior-Furniture.png"
             },
          "type":"tilelayer",
@@ -23,7 +22,6 @@
          "opacity":1,
          "properties":
             {
-             "baked":"true",
              "image":"Interior-Furniture.png"
             },
          "type":"tilelayer",
@@ -39,7 +37,6 @@
          "opacity":1,
          "properties":
             {
-             "baked":"true",
              "collision":"true",
              "image":"Interior-Furniture.png"
             },
@@ -315,7 +312,6 @@
          "opacity":1,
          "properties":
             {
-             "baked":"true",
              "image":"Interior-Furniture.png"
             },
          "type":"tilelayer",

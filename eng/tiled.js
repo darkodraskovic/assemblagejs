@@ -81,8 +81,11 @@ function createMap(game, mapData) {
         if (layersData[i]["properties"]) {
             if (layersData[i]["properties"]["collision"])
                 layer.collision = true;
-            if (layersData[i]["properties"]["baked"]) {
-                layer.baked = true;
+            if (!layersData[i]["properties"]["baked"]) {
+                if (layersData[i]["type"] === "tilelayer")
+                    layer.baked = true;
+            } else {
+                layer.baked = eval(layersData[i]["properties"]["baked"]);
             }
             if (layersData[i]["properties"]["sort"]) {
                 layer.sort = true;
@@ -186,14 +189,14 @@ function createMap(game, mapData) {
                     }
 
                     var o = new A_.SPRITES.CollisionSprite(args);
-                    
-                    
+
+
                     o.setPosition(o.x, o.y);
 
                     if (oData.polygon) {
                         var collisionPolygon = createSATPolygonFromTiled(oData, true);
 //                        o.collides = true;
-                    
+
                         o.setCollision(collisionPolygon);
                         var pos = o.getPosition();
                         o.setPosition(pos.x - collisionPolygon.offset.x, pos.y - collisionPolygon.offset.y);
@@ -225,7 +228,7 @@ function createMap(game, mapData) {
                     } else {
                         collisionPolygon = null;
                     }
-                    
+
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
                     var pos = o.getPosition();
                     o.setPosition(pos.x + o.sprite.width / 2, pos.y - o.sprite.height / 2)

@@ -72,14 +72,14 @@ A_.COLLISION.Collider = Class.extend({
             var o1 = this.collisionSprites[i];
             for (j = i + 1; j < len; j++) {
                 var o2 = this.collisionSprites[j];
-                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
-                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
+//                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
+//                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
                     var response = new SAT.Response();
                     var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
                     if (collided) {
                         o1.collide(o2, response);
                         o2.collide(o1, response);
-                    }
+//                    }
                 }
             }
         }
