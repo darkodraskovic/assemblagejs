@@ -1,6 +1,6 @@
 A_.SPRITES.AnimatedSprite = Class.extend({
     // init() is called when the sprite is instantiated with new keyword.
-    init: function (props) {
+    init: function (layer, x, y, props) {
         // Add all the properties of the prop obj to this instance.
         for (var prop in props) {
             this[prop] = props[prop];
@@ -61,7 +61,12 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
         this.alpha = 1;
 
+        this.layer = layer;
+        this.layer.addChild(this.sprite);
+        this.setPosition(x, y);
     },
+    // PIXI/SAT dependent GETTERS and SETTERS.
+    // Used to keep in sync PIXI, SAT and engine sprite properties
     setPosition: function (x, y) {
         this.sprite.position.x = x;
         this.sprite.position.y = y;
@@ -109,6 +114,18 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     postupdate: function () {
         this.sprite.rotation = this.rotation;
         this.sprite.alpha = this.alpha;
+    },
+    toTopOfLayer: function () {
+        this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
+    },
+    toBottomOfLayer: function () {
+        this.layer.setChildIndex(this.sprite, 0);
+    },
+    setZ: function (n) {
+        this.layer.setChildIndex(this.sprite, n);
+    },
+    getZ: function () {
+        return this.layer.getChildIndex(this.sprite);
     },
     addAnimation: function (name, frames, speed) {
         // set default speed to 1; 
@@ -169,8 +186,8 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
 //    collisionOffset: {x: 0, y: 0},
     collides: true,
     destroyThis: false,
-    init: function (props) {
-        this._super(props);
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
 
         this.prevOverlapN = new SAT.Vector(0, 0);
 
@@ -180,15 +197,15 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.sprite.mousedown = function () {
                 that.leftpressed = true;
                 that.leftdown = true;
-            }
+            };
             this.sprite.mouseup = function () {
                 that.leftreleased = true;
                 that.leftdown = false;
-            }
+            };
             this.sprite.mouseupoutside = function () {
                 that.leftreleased = true;
                 that.leftdown = false;
-            }
+            };
         }
     },
     setInteractive: function () {
@@ -341,8 +358,8 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
     isMoving: false,
     bounciness: 0.5,
     minBounceSpeed: 64,
-    init: function (props) {
-        this._super(props);
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
         this.friction = new SAT.Vector(40, 40);
@@ -440,8 +457,8 @@ A_.MODULES.Topdown = {
     motionStates: ["moving", "idle"],
     cardinalDir: "E",
     cardinalDirs: ["N", "NW", "NE", "S", "SW", "SE"],
-    init: function (props) {
-        this._super(props);
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
     },
     update: function () {
         if (this.motionState === "moving") {
@@ -504,8 +521,8 @@ A_.MODULES.Topdown = {
 }
 
 A_.MODULES.TopdownWASD = {
-    init: function (props) {
-        this._super(props);
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("down", A_.KEY.S);
@@ -542,8 +559,8 @@ A_.MODULES.Platformer = {
     gravity: new SAT.Vector(0, 20),
     friction: new SAT.Vector(20, 0),
     maxVelocity: new SAT.Vector(400, 1000),
-    init: function (props) {
-        this._super(props);
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("jump", A_.KEY.SPACE);
@@ -588,12 +605,12 @@ A_.MODULES.Platformer = {
 };
 
 A_.EXTENSIONS.Polygon = {
-    addTo: function (sprite, pixiPolygon)  {        
+    addTo: function (sprite, pixiPolygon) {
         var graphics = new PIXI.Graphics();
 //        sprite.graphics.beginFill(0xFFFF00);
         graphics.lineStyle(4, 0x00FF00);
         graphics.drawPolygon(pixiPolygon.points);
-        
+
         sprite.sprite.addChild(graphics);
         sprite.graphics = graphics;
     }

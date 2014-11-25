@@ -43,7 +43,7 @@
                     {
                      "collisionMask":"\"Ship\"",
                      "followee":"true",
-                     "frame":"0"
+                     "frameInd":"0"
                     },
                  "rotation":0,
                  "type":"",
@@ -58,7 +58,7 @@
                  "name":"Ship",
                  "properties":
                     {
-                     "frame":"1"
+                     "frameInd":"1"
                     },
                  "rotation":0,
                  "type":"",
@@ -73,7 +73,7 @@
                  "name":"Ship",
                  "properties":
                     {
-                     "frame":"2"
+                     "frameInd":"2"
                     },
                  "rotation":0,
                  "type":"",
@@ -89,7 +89,7 @@
                  "properties":
                     {
                      "collisionMask":"\"Ship\"",
-                     "frame":"2"
+                     "frameInd":"2"
                     },
                  "rotation":0,
                  "type":"",
@@ -105,7 +105,7 @@
                  "properties":
                     {
                      "collisionMask":"\"Ship\"",
-                     "frame":"2"
+                     "frameInd":"2"
                     },
                  "rotation":0,
                  "type":"",
@@ -121,7 +121,7 @@
                  "properties":
                     {
                      "collisionMask":"\"Ship\"",
-                     "frame":"0"
+                     "frameInd":"0"
                     },
                  "rotation":0,
                  "type":"",
@@ -137,7 +137,7 @@
                  "properties":
                     {
                      "collisionMask":"\"Ship\"",
-                     "frame":"1"
+                     "frameInd":"1"
                     },
                  "rotation":0,
                  "type":"",
@@ -152,7 +152,7 @@
                  "name":"Ship",
                  "properties":
                     {
-                     "frame":"1"
+                     "frameInd":"1"
                     },
                  "rotation":0,
                  "type":"",

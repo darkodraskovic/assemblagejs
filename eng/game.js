@@ -199,7 +199,7 @@ A_.Game = Class.extend({
 //        if (!props) props = {};
 //        props["layer"] = layer;
         
-        var sprite = new SpriteClass(props);
+        var sprite = new SpriteClass(layer, x, y, props);
         if (sprite.collides)
             sprite.setCollision(collisionPolygon);
 
@@ -208,9 +208,10 @@ A_.Game = Class.extend({
             this.collider.debugLayer.addChild(sprite.debugGraphics);
         }
 
-        sprite.layer = layer;
-        layer.addChild(sprite.sprite);
-        sprite.setPosition(x, y);
+//        sprite.layer = layer;
+//        layer.addChild(sprite.sprite);
+//        sprite.z = sprite.getZ();
+//        sprite.setPosition(x, y);
 
         this.spritesToCreate.push(sprite);
 

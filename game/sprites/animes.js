@@ -7,8 +7,8 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     facing: "right",
     bounciness: 0,
     collides: true,
-    init: function (props) {
-        this._super(props);
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
 
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
@@ -47,8 +47,8 @@ var Player = Anime.extend({
     collisionResponse: "active",
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
-    init: function (props) {
-        this._super(props);
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
     },
     update: function () {
         var rot = (A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level)).toDeg();
@@ -88,8 +88,8 @@ var Agent = Anime.extend({
     collisionResponse: "passive",
     collisionType: A_.COLLISION.Type.ENEMY,
     collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
-    init: function (props) {
-        this._super(props);
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
         this.maxVelocity = new SAT.Vector(64, 64);
         this.motionState = "moving";
         this.timer = 2;

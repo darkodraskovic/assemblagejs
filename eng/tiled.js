@@ -188,32 +188,20 @@ function createMap(game, mapData) {
                         args[prop] = oData[prop];
                     }
 
-                    var o = new A_.SPRITES.CollisionSprite(args);
-
-                    o.setPosition(o.x, o.y);
-
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData, true);
-//                        o.collides = true;
-
-                        o.setCollision(collisionPolygon);
-                        var pos = o.getPosition();
-                        o.setPosition(pos.x - collisionPolygon.offset.x, pos.y - collisionPolygon.offset.y);
+                        var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args, collisionPolygon);
+                        o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
-                        var pos = o.getPosition();
-//                        o.setPosition(pos.x, pos.y);
-                        o.collisionSize = {};
-                        o.collisionSize.w = o.width;
-                        o.collisionSize.h = o.height;
-                        o.setCollision();
-                        o.setPosition(pos.x + o.collisionPolygon.w / 2, pos.y + o.collisionPolygon.h / 2);
+                        args.collisionSize = {w: args.width, h: args.height};
+                        var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args);
+                        o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
                     A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
                     o.updateCollisionPolygon();
                     o.update();
                     layer.addChild(o.sprite);
-//                    game.polygons.push(o);
                 }
                 else {
                     var args = {};
@@ -235,8 +223,7 @@ function createMap(game, mapData) {
                     }
 
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
-                    var pos = o.getPosition();
-                    o.setPosition(pos.x + o.sprite.width / 2, pos.y - o.sprite.height / 2)
+                    o.setPositionRelative(o.sprite.width / 2, -o.sprite.height / 2)
 
                     if (o.followee) {
                         game.cameraOptions.followee = o;
