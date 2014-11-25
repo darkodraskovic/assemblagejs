@@ -1,7 +1,6 @@
 var Ship = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "spaceships.png",
-    frameW: 98,
-    frameH: 75,
+    frame: {w: 98, h: 75},
     collisionResponse: "passive",
     init: function (props) {
         this._super(props);

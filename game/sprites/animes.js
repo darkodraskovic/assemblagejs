@@ -1,6 +1,7 @@
 var Anime = A_.SPRITES.ArcadeSprite.extend({
-    frameW: 64,
-    frameH: 64,
+    frame: {w: 64, h: 64},
+    collisionSize: {w: 26, h: 48},
+    collisionOffset: {x: 0, y: 6},
     animSpeed: 0.3,
     alive: true,
     facing: "right",
@@ -73,22 +74,15 @@ var Player = Anime.extend({
         bullet.velocity.y = bullet.speed * Math.sin(bullet.rotation);
         bullet.velocity.x = bullet.speed * Math.cos(bullet.rotation);
     },
-    
     shootLaser: function () {
         var pos = this.getPosition();
-        A_.game.createSprite(Laser, A_.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this, collisionOffsetX: 16, collisionH: 12});
+        A_.game.createSprite(Laser, A_.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
     }
 });
 
 Player.inject(A_.MODULES.TopdownWASD);
 
 var Agent = Anime.extend({
-    frameW: 64,
-    frameH: 64,
-    collisionW: 26,
-    collisionH: 48,
-    collisionOffsetX: 0,
-    collisionOffsetY: 6,
     animSheet: "AgentComplete.png",
     timer: 0,
     collisionResponse: "passive",

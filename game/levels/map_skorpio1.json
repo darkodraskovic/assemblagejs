@@ -60,9 +60,7 @@
                  "name":"Player",
                  "properties":
                     {
-                     "collisionH":"48",
                      "collisionMask":"\"Player\"",
-                     "collisionW":"26",
                      "followee":"true"
                     },
                  "rotation":0,
@@ -225,6 +223,18 @@
              "image":"Interior-Furniture.png"
             },
          "type":"tilelayer",
+         "visible":true,
+         "width":48,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":32,
+         "name":"Effects",
+         "objects":[],
+         "opacity":1,
+         "type":"objectgroup",
          "visible":true,
          "width":48,
          "x":0,

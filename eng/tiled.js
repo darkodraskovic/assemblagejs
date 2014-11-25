@@ -203,8 +203,9 @@ function createMap(game, mapData) {
                     } else {
                         var pos = o.getPosition();
 //                        o.setPosition(pos.x, pos.y);
-                        o.collisionW = o.width;
-                        o.collisionH = o.height;
+                        o.collisionSize = {};
+                        o.collisionSize.w = o.width;
+                        o.collisionSize.h = o.height;
                         o.setCollision();
                         o.setPosition(pos.x + o.collisionPolygon.w / 2, pos.y + o.collisionPolygon.h / 2);
                     }

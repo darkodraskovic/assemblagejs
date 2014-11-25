@@ -171,7 +171,9 @@ A_.Game = Class.extend({
         this.camera = makeCamera(A_.game.renderer.view.width, A_.game.renderer.view.height, this.cameraOptions.innerBoundOffset);
         if (this.cameraOptions.worldBounded) {
             this.camera.worldBounded = this.cameraOptions.worldBounded;
-        } else { this.camera.worldBounded = false; }
+        } else {
+            this.camera.worldBounded = false;
+        }
         if (this.cameraOptions.followee) {
             this.camera.followee = this.cameraOptions.followee;
         } else {
@@ -181,7 +183,9 @@ A_.Game = Class.extend({
         }
         if (this.camera.followType) {
             this.camera.followType = this.cameraOptions.followType;
-        } else { this.camera.followType = "centered"; }
+        } else {
+            this.camera.followType = "centered";
+        }
     },
     // SPRITE CREATION and DESTRUCTION
     createSprite: function (SpriteClass, layer, x, y, props, collisionPolygon) {
@@ -192,16 +196,19 @@ A_.Game = Class.extend({
             layer = this.level.layers[0];
         }
 
-
+        if (!props) props = {};
+        props["layer"] = layer;
+        
         var sprite = new SpriteClass(props);
-        sprite.setCollision(collisionPolygon);
+        if (sprite.collides)
+            sprite.setCollision(collisionPolygon);
 
         if (this.debug) {
             sprite.debugGraphics = new PIXI.Graphics();
             this.collider.debugLayer.addChild(sprite.debugGraphics);
         }
 
-        sprite.layer = layer;
+//        sprite.layer = layer;
         layer.addChild(sprite.sprite);
         sprite.setPosition(x, y);
 
@@ -308,9 +315,6 @@ A_.Game = Class.extend({
                 layer.children = _.sortBy(layer.children, function (child) {
                     return child.position.y;
                 });
-                _.each(layer.children, function (child, i) {
-                    layer.setChildIndex(child, i);
-                })
             }
         });
     },

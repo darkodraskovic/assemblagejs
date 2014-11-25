@@ -57,9 +57,7 @@
                  "name":"Player",
                  "properties":
                     {
-                     "collisionH":"48",
                      "collisionMask":"\"Player\"",
-                     "collisionW":"26",
                      "followee":"true"
                     },
                  "rotation":0,
