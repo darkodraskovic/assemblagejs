@@ -5,9 +5,15 @@ A_.TILES = {};
 A_.SCENERY = {};
 A_.COLLISION = {};
 A_.MODULES = {};
+A_.EXTENSIONS = {};
+A_.POLYGON = {};
 A_.INPUT = {};
 A_.CONFIG = {};
 
+
+
+
+// JS EXTENSIONS
 /** Converts numeric degrees to radians */
 if (typeof (Number.prototype.toRad) === "undefined") {
     Number.prototype.toRad = function () {
@@ -58,6 +64,11 @@ A_.UTILS.copy = function (object) {
     }
 };
 
+
+
+
+// Game dev UTILS
+
 // remove all own properties on obj,
 // effectively reverting it to a new object
 A_.UTILS.wipe = function (obj)
@@ -79,6 +90,10 @@ A_.UTILS.distanceTo = function (pos1, pos2) {
     return Math.sqrt(xd * xd + yd * yd);
 };
 
+
+
+
+// JS CLASS system
 /* Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/
  * MIT Licensed.
@@ -137,8 +152,8 @@ var inject = function (prop) {
         // Copy the properties over onto the new prototype
         for (var name in prop) {
             // Check if we're overwriting an existing function
-            prototype[name] = typeof prop[name] == "function" &&
-                    typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+            prototype[name] = typeof prop[name] === "function" &&
+                    typeof _super[name] === "function" && fnTest.test(prop[name]) ?
                     (function (name, fn) {
                         return function () {
                             var tmp = this._super;

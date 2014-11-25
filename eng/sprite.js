@@ -1,6 +1,7 @@
 A_.SPRITES.AnimatedSprite = Class.extend({
-//    frame: {w: 0, h: 0},
+    // init() is called when the sprite is instantiated with new keyword.
     init: function (props) {
+        // Add all the properties of the prop obj to this instance.
         for (var prop in props) {
             this[prop] = props[prop];
         }
@@ -19,11 +20,14 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 //        }
 
         this.animations = {};
-        if (!this.frame)
-            this.frame = {};
+        if (!this.frame) {
+            this.frame = {w: 0, h: 0};
+        }
         if (this.animSheet) {
             this.animSheet = "assets/" + this.animSheet;
             this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
+            // If the frame size is not specified in the class definition, 
+            // or the frame w/h is set to 0, use the dims of the image itself.
             if (!this.frame.w) {
                 this.frame.w = this.baseTexture.width;
             }
@@ -215,6 +219,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             A_.game.collider.activateCollisionFor(this, polygon, null, null, this.collisionOffset.x, this.collisionOffset.y);
         }
         else {
+            // Center the polygon and apply the offset.
             A_.game.collider.activateCollisionFor(this, polygon, this.collisionSize.w, this.collisionSize.h,
                     -this.collisionSize.w / 2 + this.collisionOffset.x, -this.collisionSize.h / 2 + this.collisionOffset.y);
         }
@@ -579,5 +584,17 @@ A_.MODULES.Platformer = {
                 this.velocity.y -= this.gravity.y;
             }
         }
+    }
+};
+
+A_.EXTENSIONS.Polygon = {
+    addTo: function (sprite, pixiPolygon)  {        
+        var graphics = new PIXI.Graphics();
+//        sprite.graphics.beginFill(0xFFFF00);
+        graphics.lineStyle(4, 0x00FF00);
+        graphics.drawPolygon(pixiPolygon.points);
+        
+        sprite.sprite.addChild(graphics);
+        sprite.graphics = graphics;
     }
 };

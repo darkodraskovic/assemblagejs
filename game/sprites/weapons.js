@@ -45,8 +45,10 @@ var Laser = A_.SPRITES.CollisionSprite.extend({
         this._super(props);
         this.setAnimation("all", 18, 0);
         this.currentAnimation.anchor = new PIXI.Point(0, 0.5);
+//        this.rotation = A_.UTILS.angleTo(this.spawner.getPosition(), A_.game.mousePosition.level);
         A_.game.createSprite(LaserFire, A_.level.findLayerByName("Effects"),
                 A_.game.mousePosition.level.x, A_.game.mousePosition.level.y);
+                
     },
     update: function () {
         this.setPosition(this.spawner.getPositionX(), this.spawner.getPositionY());
@@ -70,6 +72,24 @@ var Laser = A_.SPRITES.CollisionSprite.extend({
     },
 });
 
+var LaserFire = A_.SPRITES.AnimatedSprite.extend({
+    animSheet: "Fire.png",
+    frame: {w: 64, h: 64},
+    init: function (props) {
+        this._super(props);
+        this.addAnimation("burn", [0, 1, 2], 0.3);
+        this.setAnimation("burn");
+    },
+    update: function () {
+        this._super();
+        var pos = A_.game.mousePosition.level;
+        this.setPosition(pos.x, pos.y);
+        if (A_.game.leftreleased) {
+            this.destroy();
+        }
+    }
+});
+
 var Computer = A_.SPRITES.CollisionSprite.extend({
     animSheet: "Computer1.png",
     collisionResponse: "static",
@@ -89,24 +109,3 @@ var Computer = A_.SPRITES.CollisionSprite.extend({
         }
     }
 })
-
-var LaserFire = A_.SPRITES.AnimatedSprite.extend({
-    animSheet: "Fire.png",
-    frame: {w: 64, h: 64},
-    collides: false,
-    init: function (props) {
-        this._super(props);
-        this.addAnimation("burn", [0, 1, 2], 0.3);
-        this.setAnimation("burn");
-//        this.layer.setChildIndex(this, this.layer.children.length - 1);
-//        window.console.log(this.layer.children.length);
-    },
-    update: function () {
-        this._super();
-        var pos = A_.game.mousePosition.level;
-        this.setPosition(pos.x, pos.y);
-        if (A_.game.leftreleased) {
-            this.destroy();
-        }
-    }
-});

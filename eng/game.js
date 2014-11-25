@@ -196,8 +196,8 @@ A_.Game = Class.extend({
             layer = this.level.layers[0];
         }
 
-        if (!props) props = {};
-        props["layer"] = layer;
+//        if (!props) props = {};
+//        props["layer"] = layer;
         
         var sprite = new SpriteClass(props);
         if (sprite.collides)
@@ -208,7 +208,7 @@ A_.Game = Class.extend({
             this.collider.debugLayer.addChild(sprite.debugGraphics);
         }
 
-//        sprite.layer = layer;
+        sprite.layer = layer;
         layer.addChild(sprite.sprite);
         sprite.setPosition(x, y);
 

@@ -193,7 +193,7 @@ function createMap(game, mapData) {
                     o.setPosition(o.x, o.y);
 
                     if (oData.polygon) {
-                        var collisionPolygon = createSATPolygonFromTiled(oData, true);
+                        var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData, true);
 //                        o.collides = true;
 
                         o.setCollision(collisionPolygon);
@@ -209,8 +209,10 @@ function createMap(game, mapData) {
                         o.setCollision();
                         o.setPosition(pos.x + o.collisionPolygon.w / 2, pos.y + o.collisionPolygon.h / 2);
                     }
+                    A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
                     o.updateCollisionPolygon();
                     o.update();
+                    layer.addChild(o.sprite);
 //                    game.polygons.push(o);
                 }
                 else {
@@ -227,7 +229,7 @@ function createMap(game, mapData) {
                         return mask.name === args.collisionMask;
                     });
                     if (colPolyData) {
-                        var collisionPolygon = createSATPolygonFromTiled(colPolyData, true);
+                        var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData, true);
                     } else {
                         collisionPolygon = null;
                     }
@@ -277,42 +279,4 @@ function bakeLayer(layer, level) {
 //    if (layer.tilemap) { sprite.tilemap = layer.tilemap; }
 
     return sprite;
-}
-
-function createSATPolygonFromTiled(oData, centered) {
-    var xs = [];
-    var ys = [];
-
-    var vectors = _.map(oData.polygon, function (vertex) {
-        return new SAT.Vector(vertex.x, vertex.y)
-    });
-    _.each(vectors, function (vector) {
-        xs[xs.length] = vector.x;
-        ys[ys.length] = vector.y;
-    });
-
-    var minX = _.min(xs);
-    var minY = _.min(ys);
-    var maxX = _.max(xs);
-    var maxY = _.max(ys);
-    var w = maxX - minX;
-    var h = maxY - minY;
-
-    var collisionPolygon = new SAT.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
-    var offsetX = 0;
-    var offsetY = 0;
-    if (centered) {
-        offsetX = (minX + w / 2);
-        offsetY = (minY + h / 2);
-    } else {
-        offsetX = minX;
-        offsetY = minY;
-    }
-
-    var offset = new SAT.Vector(-offsetX, -offsetY);
-    collisionPolygon.setOffset(offset);
-    collisionPolygon.w = w;
-    collisionPolygon.h = h;
-
-    return collisionPolygon;
 }
