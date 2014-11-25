@@ -195,9 +195,6 @@ A_.Game = Class.extend({
         if (!layer) {
             layer = this.level.layers[0];
         }
-
-//        if (!props) props = {};
-//        props["layer"] = layer;
         
         var sprite = new SpriteClass(layer, x, y, props);
         if (sprite.collides)
@@ -207,12 +204,7 @@ A_.Game = Class.extend({
             sprite.debugGraphics = new PIXI.Graphics();
             this.collider.debugLayer.addChild(sprite.debugGraphics);
         }
-
-//        sprite.layer = layer;
-//        layer.addChild(sprite.sprite);
-//        sprite.z = sprite.getZ();
-//        sprite.setPosition(x, y);
-
+        
         this.spritesToCreate.push(sprite);
 
         return sprite;

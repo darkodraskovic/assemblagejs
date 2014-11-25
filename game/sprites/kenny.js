@@ -6,7 +6,7 @@ var Ship = A_.SPRITES.ArcadeSprite.extend({
         this._super(layer, x, y, props);
         this.setAnimation("all", this.frameInd, 0);
         this.spd = 40;
-        this.rotation = (_.random(0, 360)).toRad();
+        this.setRotation((_.random(0, 360)).toRad());
         this.k = 1;
         this.curSpd = {x: _.random(50, 150), y: _.random(50, 150)};
     },
@@ -34,7 +34,7 @@ var Ship = A_.SPRITES.ArcadeSprite.extend({
         }, this);
         this.curSpd.x += dvX * A_.game.dt;
         this.curSpd.y += dvY * A_.game.dt;
-        this.rotation = Math.atan2(this.curSpd.y, this.curSpd.x) + (90).toRad();       
+        this.setRotation(Math.atan2(this.curSpd.y, this.curSpd.x) + (90).toRad());       
         this.setPositionRelative(this.curSpd.x * A_.game.dt, this.curSpd.y * A_.game.dt);
         
     },

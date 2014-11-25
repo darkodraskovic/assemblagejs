@@ -52,7 +52,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
         this.sprite.anchor = new PIXI.Point(0.5, 0.5);
 
-        this.rotation = 0;
+        this.sprite.rotation = 0;
 
         if (!this.width)
             this.width = 1;
@@ -108,12 +108,11 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getScale: function () {
         return this.sprite.scale;
     },
-    update: function () {
-
+    setRotation: function (n) {
+        this.sprite.rotation = n;
     },
-    postupdate: function () {
-        this.sprite.rotation = this.rotation;
-        this.sprite.alpha = this.alpha;
+    getRotation: function () {
+        return this.sprite.rotation;
     },
     toTopOfLayer: function () {
         this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
@@ -126,6 +125,13 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     getZ: function () {
         return this.layer.getChildIndex(this.sprite);
+    },
+    update: function () {
+
+    },
+    postupdate: function () {
+//        this.sprite.rotation = this.rotation;
+        this.sprite.alpha = this.alpha;
     },
     addAnimation: function (name, frames, speed) {
         // set default speed to 1; 
@@ -251,7 +257,6 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     },
     update: function () {
         this._super();
-        this.collided = false;
     },
     postupdate: function () {
         this._super();
