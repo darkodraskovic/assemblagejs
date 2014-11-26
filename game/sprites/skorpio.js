@@ -37,7 +37,8 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
         else {
             if (!this.groaned) {
                 new Howl({
-                    urls: ['assets/falling_body.ogg']
+                    urls: ['assets/falling_body.ogg'],
+                    volume: 0.5
                 }).play();
                 this.groaned = true;
             }
@@ -142,7 +143,8 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         this.speed = 600;
         this.bounded = false;
         new Howl({
-            urls: ['assets/gunshot.mp3']
+            urls: ['assets/gunshot.mp3'],
+            volume: 0.5
         }).play();
     },
     update: function () {
@@ -287,7 +289,8 @@ var Explosion = A_.SPRITES.AnimatedSprite.extend({
             that.destroy();
         };
         new Howl({
-            urls: ['assets/explosion.mp3']
+            urls: ['assets/explosion.mp3'],
+            volume: 0.6
         }).play();
     },
 });

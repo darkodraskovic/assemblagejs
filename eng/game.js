@@ -14,6 +14,22 @@ A_.Game = Class.extend({
 
         this.debug = A_.CONFIG.debug;
 
+        this.initInput();
+
+        this.time = new Date().getTime();
+        this.dt = new Date().getTime();
+
+        this.assetsToLoad = null;
+        this.levels = [];
+        this.level = null;
+        this.spritesToDestroy = [];
+        this.spritesToCreate = [];
+
+        this.cameraOptions = A_.CONFIG.camera;
+
+        requestAnimFrame(runGame);
+    },
+    initInput: function () {
         var that = this;
         this.stage.mousedown = function () {
             that.leftpressed = true;
@@ -39,25 +55,23 @@ A_.Game = Class.extend({
             that.rightreleased = true;
             that.rightdown = false;
         };
-
-        this.time = new Date().getTime();
-        this.dt = new Date().getTime();
-
-        this.assetsToLoad = null;
-        this.levels = [];
-        this.level = null;
-        this.spritesToDestroy = [];
-        this.spritesToCreate = [];
-
-        this.cameraOptions = A_.CONFIG.camera;
-
-        requestAnimFrame(runGame);
     },
     // LOAD EMPTY LEVEL
-    loadEmptyLevel: function (name) {
-        var level = this.addLevel(name);
-
+//    loadEmptyLevel: function (name) {
+//        var level = this.addLevel(name);
+    loadEmptyLevel: function (level) {
+        if (!level) {
+            level = {
+                name: "empty",
+                scripts: [],
+                map: "",
+                assets: [],
+                sounds: []
+            };
+        }
+        this.levels.push(level);
         this.levelToLoad = level;
+
         if (this.level) {
             this.destroyLevel = true;
             this.createEmptyLevel = true;
@@ -81,57 +95,76 @@ A_.Game = Class.extend({
         this.startLevel();
     },
     // LOAD LEVEL from TILED
-    loadTiledLevel: function (name) {
+//    loadTiledLevel: function (name) {
+    loadTiledLevel: function (levelData) {
+//        if (!_.find(this.levels, function (level) {
+//            return level.name === name
+//        })) {
+//            this.addLevel(name, "game/levels/" + name + ".json");
+//        }
+
         if (!_.find(this.levels, function (level) {
-            return level.name === name
+            return level.name === levelData.name;
         })) {
-            this.addLevel(name, "game/levels/" + name + ".json");
-        }
-        var level = _.find(this.levels, function (level) {
-            return level.name === name;
-        });
-        if (!level) {
-            window.console.log("No level named " + name);
-            return;
+            this.levels.push(levelData);
         }
 
+//        var level = _.find(this.levels, function (level) {
+//            return level.name === name;
+//        });
+//        if (!level) {
+//            window.console.log("No level named " + name);
+//            return;
+//        }
+
         if (this.level) {
+            // Load level deferred: wait until the end of the game loop.
             this.destroyLevel = true;
             this.createTiledLevel = true;
-            this.levelToLoad = level;
+            this.levelToLoad = levelData;
             return;
         } else {
-            this.levelToLoad = level;
+            // Load level immediately.
+            this.levelToLoad = levelData;
             this.activateTiledLevelLoader();
         }
     },
     activateTiledLevelLoader: function () {
         this.levelLoader = new A_.LevelLoader();
-        this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.mapDataJSON);
+        this.levelLoader.loadScripts(this.onScriptsLoaded.bind(this), this.levelToLoad.scripts);
+    },
+    onScriptsLoaded: function () {
+        this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.map);
+        window.console.log("Loaded scripts");
     },
     onMapLoaded: function () {
-        var assetsToLoad = fetchAssetListFromMapData(this.levelLoader.mapDataParsed);
-        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), assetsToLoad);
+//        var assetsToLoad = fetchAssetListFromMapData(this.levelLoader.mapDataParsed);
+//        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), assetsToLoad);
+        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), this.levelToLoad.assets);
+        window.console.log("Loaded map");
     },
     onAssetsLoaded: function () {
-        this.onLevelLoaded();
+        this.levelLoader.loadSounds(this.onSoundsLoaded.bind(this), this.levelToLoad.sounds);
+        window.console.log("Loaded assets");
     },
-    onSpritesLoaded: function () {
-
+    onSoundsLoaded: function () {
+        this.onLevelLoaded();
+        window.console.log("Loaded sounds");
     },
     onLevelLoaded: function () {
         this.createLevelTemplate();
 
         createMap(this, this.levelLoader.mapDataParsed);
 
+        window.console.log("Loaded LEVEL :)");
         this.startLevel();
     },
     // COMMON LEVEL routines
-    addLevel: function (name, mapDataJSON) {
-        var level = {name: name, mapDataJSON: mapDataJSON};
-        this.levels.push(level);
-        return level;
-    },
+//    addLevel: function (name, mapDataJSON) {
+//        var level = {name: name, mapDataJSON: mapDataJSON};
+//        this.levels.push(level);
+//        return level;
+//    },
     createLevelTemplate: function () {
         this.collider = new A_.COLLISION.Collider();
         A_.collider = this.collider;
@@ -207,7 +240,7 @@ A_.Game = Class.extend({
         if (!layer) {
             layer = this.level.layers[0];
         }
-        
+
         var sprite = new SpriteClass(layer, x, y, props);
         if (sprite.collides)
             sprite.setCollision(collisionPolygon);
@@ -216,9 +249,9 @@ A_.Game = Class.extend({
             sprite.debugGraphics = new PIXI.Graphics();
             this.collider.debugLayer.addChild(sprite.debugGraphics);
         }
-        
+
         this.spritesToCreate.push(sprite);
-        sprite.onCreation();        
+        sprite.onCreation();
         return sprite;
     },
     createSprites: function () {

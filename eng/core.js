@@ -43,7 +43,7 @@ if (typeof (Number.prototype.lerp) === "undefined") {
 
 A_.UTILS.copy = function (object) {
     if (
-            !object || typeof (object) != 'object' ||
+            !object || typeof (object) !== 'object' ||
             object instanceof HTMLElement ||
             object instanceof Class
             ) {
@@ -52,20 +52,18 @@ A_.UTILS.copy = function (object) {
     else if (object instanceof Array) {
         var c = [];
         for (var i = 0, l = object.length; i < l; i++) {
-            c[i] = A_.copy(object[i]);
+            c[i] = A_.UTILS.copy(object[i]);
         }
         return c;
     }
     else {
         var c = {};
         for (var i in object) {
-            c[i] = A_.copy(object[i]);
+            c[i] = A_.UTILS.copy(object[i]);
         }
         return c;
     }
 };
-
-
 
 
 // Game dev UTILS

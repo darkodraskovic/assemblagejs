@@ -26,3 +26,17 @@ A_.CONFIG.renderer = {
     resolution: 1
 };
 
+var level1 = {
+    name: "level1",
+    scripts: ["skorpio"],
+    map: "map_skorpio1",
+    assets: ["AgentComplete.png", "PlayerComplete.png", "Computer1.png", 
+        "Explosion.png", "Fire.png", "Interior-Furniture.png", 
+        "Muzzleflashes-Shots.png"],
+    sounds: [["explosion.mp3"], ["falling_body.mp3"], ["fire.wav"], 
+        ["gunshot.mp3"], ["laser-beam.mp3"]]
+};
+
+var level2 = A_.UTILS.copy(level1);
+level2.name = "level2";
+level2.map = "map_skorpio2"
