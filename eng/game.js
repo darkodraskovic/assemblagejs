@@ -25,7 +25,8 @@ A_.Game = Class.extend({
         this.spritesToCreate = [];
 
         this.cameraOptions = A_.CONFIG.camera;
-
+        
+        this.sounds = [];
         requestAnimFrame(runGame);
     },
     initInput: function () {
@@ -179,7 +180,7 @@ A_.Game = Class.extend({
         this.level = null;
         A_.level = null;
 
-        this.levelLoader = null;
+        this.levelLoader = null;        
 
         delete(A_.game.level);
         delete(A_.game.collider);
@@ -187,6 +188,7 @@ A_.Game = Class.extend({
 
         this.stage.removeChildren();
 
+        this.destroySounds();
         this.destroyLevel = false;
     },
     // CAMERA
@@ -267,6 +269,17 @@ A_.Game = Class.extend({
             that.destroySprite(sprite)
         });
         this.spritesToDestroy.length = 0;
+    },
+    createSound: function (props) {
+        var sound = new Howl(props);
+        this.sounds.push(sound);
+        return sound;
+    },
+    destroySounds: function (sound) {
+        _.each(this.sounds, function (sound) {
+            sound.unload();
+        });
+        this.sounds.length = 0;
     },
     // GAME LOOP
     run: function () {
@@ -369,6 +382,8 @@ A_.Game = Class.extend({
             if (sprite.interactive) {
                 sprite.leftpressed = false;
                 sprite.leftreleased = false;
+                sprite.rightpressed = false;
+                sprite.rightreleased = false;
             }
         });
 

@@ -126,11 +126,15 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getZ: function () {
         return this.layer.getChildIndex(this.sprite);
     },
+    setAlpha: function (n) {
+        this.sprite.alpha = n;
+    },
+    getAlpha: function () {
+        return this.sprite.alpha;
+    },
     update: function () {
-
     },
     postupdate: function () {
-        this.sprite.alpha = this.alpha;
     },
     // Animation
     addAnimation: function (name, frames, speed) {
@@ -162,7 +166,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         }
         if (typeof speed !== 'undefined') {
             this.animations[name].animationSpeed = speed;
-        } 
+        }
 //        else {
 //            this.animations[name].animationSpeed = 0.1;
 //        }
@@ -182,14 +186,14 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.animations[name].gotoAndPlay(frame);
     },
     onCreation: function () {
-        
+
     },
     destroy: function () {
         A_.game.spritesToDestroy.push(this);
         this.onDestruction();
     },
     onDestruction: function () {
-        
+
     }
 });
 
@@ -219,6 +223,18 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.sprite.mouseupoutside = function () {
                 that.leftreleased = true;
                 that.leftdown = false;
+            };
+            this.sprite.rightdown = function () {
+                that.rightpressed = true;
+                that.rightdown = true;
+            };
+            this.sprite.rightup = function () {
+                that.rightreleased = true;
+                that.rightdown = false;
+            };
+            this.sprite.rightupoutside = function () {
+                that.rightreleased = true;
+                that.rightdown = false;
             };
         }
     },

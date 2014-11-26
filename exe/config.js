@@ -33,7 +33,7 @@ var level1 = {
     assets: ["AgentComplete.png", "PlayerComplete.png", "Computer1.png", 
         "Explosion.png", "Fire.png", "Interior-Furniture.png", 
         "Muzzleflashes-Shots.png"],
-    sounds: [["explosion.mp3"], ["falling_body.mp3"], ["fire.wav"], 
+    sounds: [["explosion.mp3"], ["grunt.wav"], ["fire.wav"], 
         ["gunshot.mp3"], ["laser-beam.mp3"]]
 };
 

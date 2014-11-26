@@ -36,10 +36,11 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
         }
         else {
             if (!this.groaned) {
-                new Howl({
-                    urls: ['assets/falling_body.ogg'],
+                var sound = A_.game.createSound({
+                    urls: ['assets/grunt.wav'],
                     volume: 0.5
-                }).play();
+                })
+                sound.play();
                 this.groaned = true;
             }
             this.setAnimation("death");
@@ -141,8 +142,8 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 1000;
         this.speed = 600;
-        this.bounded = false;
-        new Howl({
+        this.bounded = false;        
+        A_.game.createSound({
             urls: ['assets/gunshot.mp3'],
             volume: 0.5
         }).play();
@@ -185,11 +186,14 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
                 this.getPositionY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collisionSize: {w: 4, h: 4}});
         this.laserTip.laser = this;
-        this.sound = new Howl({
+        this.sound = A_.game.createSound({
             urls: ['assets/laser-beam.mp3'],
             loop: true,
             volume: 0.4
         }).play();
+        
+        this.origH = this.getHeight();
+        this.sine = 0;
     },
     update: function () {
         this.setPosition(this.spawner.getPositionX(), this.spawner.getPositionY());
@@ -208,6 +212,9 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
             this.sound.stop();
             this.destroy();
         }
+        
+        var varSize = Math.sin(_.random(Math.PI / 4, 3 * (Math.PI / 4)));
+        this.setHeight(this.origH * varSize);
     }
 });
 
@@ -228,7 +235,7 @@ var LaserTip = A_.SPRITES.CollisionSprite.extend({
         this._super(other, response);
         if (other.collisionResponse === "static") {
             if (!this.timer) {
-                this.timer = 1;
+                this.timer = 1.25;
             }
             else {
                 this.timer -= A_.game.dt;
@@ -254,21 +261,28 @@ var LaserFire = A_.SPRITES.AnimatedSprite.extend({
     frame: {w: 64, h: 64},
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
-        this.addAnimation("burn", [0, 1, 2], 0.3);
+        this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
-        this.sound = new Howl({
+        this.sound = A_.game.createSound({
             urls: ['assets/fire.wav'],
             loop: true,
             volume: 0.3
-        }).play();
+        });
+        this.sound.play();
+
+//        var blur = new PIXI.BlurFilter();
+//        blur.blurX = blur.blurY = 1;
+//        this.sprite.filters = [blur];
     },
     onCreate: function () {
-        this.toTopOfLayer();        
+        this.toTopOfLayer();
     },
     update: function () {
         this._super();
         this.setPosition(this.laserTip.getPositionX(), this.laserTip.getPositionY());
-    }, 
+        var scale = this.getScale();
+        this.setScale(scale.x + A_.game.dt, scale.y + A_.game.dt);
+    },
     onDestruction: function () {
         this.sound.stop();
     }
@@ -288,7 +302,7 @@ var Explosion = A_.SPRITES.AnimatedSprite.extend({
         this.animations["explode"].onComplete = function () {
             that.destroy();
         };
-        new Howl({
+        A_.game.createSound({
             urls: ['assets/explosion.mp3'],
             volume: 0.6
         }).play();
@@ -313,14 +327,14 @@ var Computer = A_.SPRITES.CollisionSprite.extend({
 //        if (this.leftdown) {
 //            window.console.log("Down");
 //        }
-        if (this.rightpressed) {
-            window.console.log("Pressed");
-        }
-        if (this.rightreleased) {
-            window.console.log("Released");
-        }
-        if (this.rightdown) {
-            window.console.log("Down");
-        }
+//        if (this.rightpressed) {
+//            window.console.log("Pressed");
+//        }
+//        if (this.rightreleased) {
+//            window.console.log("Released");
+//        }
+//        if (this.rightdown) {
+//            window.console.log("Down");
+//        }
     }
 })
