@@ -1,3 +1,7 @@
+$('body').contextmenu( function() {
+    return false;
+});
+
 A_.COLLISION.Type = {
     NONE: 0,
     ITEM: 1,

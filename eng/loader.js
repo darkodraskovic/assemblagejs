@@ -14,11 +14,13 @@ A_.LevelLoader = Class.extend({
         this.assetLoader.onComplete = callback;
         this.assetLoader.load();
     },
+    loadSounds: function (callback, soundsToLoad) {
+    },
     // WORK IN PROGRESS: automatic dependencies loading...
     resetDependencies: function () {
         this.dependencies = [];
         this.failedToLoad = [];
-    },    
+    },
     loadSprites: function (spritesToLoad, callback) {
         var that = this;
 
@@ -45,9 +47,9 @@ A_.LevelLoader = Class.extend({
         if (this.dependencies.length > 0) {
             this.dependencies = _.uniq(this.dependencies);
             this.loadSprites(this.dependencies);
-        } 
+        }
         else if (this.failedToLoad.length > 0) {
-            this.loadSprites(this.failedToLoad); 
+            this.loadSprites(this.failedToLoad);
             this.failedToLoad.length = 0;
         }
     }

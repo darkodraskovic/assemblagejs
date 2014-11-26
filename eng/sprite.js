@@ -181,8 +181,15 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         // goes to a frame and begins playing the animation
         this.animations[name].gotoAndPlay(frame);
     },
+    onCreation: function () {
+        
+    },
     destroy: function () {
         A_.game.spritesToDestroy.push(this);
+        this.onDestruction();
+    },
+    onDestruction: function () {
+        
     }
 });
 

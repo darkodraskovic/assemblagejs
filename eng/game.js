@@ -24,8 +24,20 @@ A_.Game = Class.extend({
             that.leftdown = false;
         };
         this.stage.mouseupoutside = function () {
-            that.leftreleased = true;
-            that.leftdown = false;
+            that.rightreleased = true;
+            that.rightdown = false;
+        };
+        this.stage.rightdown = function () {
+            that.rightpressed = true;
+            that.rightdown = true;
+        };
+        this.stage.rightup = function () {
+            that.rightreleased = true;
+            that.rightdown = false;
+        };
+        this.stage.rightupoutside = function () {
+            that.rightreleased = true;
+            that.rightdown = false;
         };
 
         this.time = new Date().getTime();
@@ -206,7 +218,7 @@ A_.Game = Class.extend({
         }
         
         this.spritesToCreate.push(sprite);
-
+        sprite.onCreation();        
         return sprite;
     },
     createSprites: function () {
@@ -351,6 +363,8 @@ A_.Game = Class.extend({
 
         this.leftpressed = false;
         this.leftreleased = false;
+        this.rightpressed = false;
+        this.rightreleased = false;
     },
     manageLevels: function () {
         if (this.destroyLevel) {

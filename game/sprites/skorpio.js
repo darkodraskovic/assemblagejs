@@ -35,6 +35,12 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
             this.setAnimation(this.motionState + "_" + this.facing);
         }
         else {
+            if (!this.groaned) {
+                new Howl({
+                    urls: ['assets/falling_body.ogg']
+                }).play();
+                this.groaned = true;
+            }
             this.setAnimation("death");
         }
     }
@@ -62,6 +68,9 @@ var Player = Anime.extend({
             this.facing = "up";
 
         if (A_.game.leftpressed) {
+            this.shootBullet();
+        }
+        if (A_.game.rightpressed) {
             this.shootLaser();
         }
         this._super();
@@ -174,6 +183,11 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
                 this.getPositionY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collisionSize: {w: 4, h: 4}});
         this.laserTip.laser = this;
+        this.sound = new Howl({
+            urls: ['assets/laser-beam.mp3'],
+            loop: true,
+            volume: 0.4
+        }).play();
     },
     update: function () {
         this.setPosition(this.spawner.getPositionX(), this.spawner.getPositionY());
@@ -183,12 +197,13 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
         this.tip.x = this.getPositionX() + Math.cos(this.getRotation()) * this.getWidth();
         this.tip.y = this.getPositionY() + Math.sin(this.getRotation()) * this.getWidth();
 
-        if (A_.game.leftreleased) {
+        if (A_.game.rightreleased) {
             if (this.laserTip) {
                 if (this.laserTip.fire)
                     this.laserTip.fire.destroy();
                 this.laserTip.destroy();
             }
+            this.sound.stop();
             this.destroy();
         }
     }
@@ -239,11 +254,21 @@ var LaserFire = A_.SPRITES.AnimatedSprite.extend({
         this._super(layer, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.3);
         this.setAnimation("burn");
+        this.sound = new Howl({
+            urls: ['assets/fire.wav'],
+            loop: true,
+            volume: 0.3
+        }).play();
+    },
+    onCreate: function () {
+        this.toTopOfLayer();        
     },
     update: function () {
-        this.toTopOfLayer();
         this._super();
         this.setPosition(this.laserTip.getPositionX(), this.laserTip.getPositionY());
+    }, 
+    onDestruction: function () {
+        this.sound.stop();
     }
 });
 
@@ -285,5 +310,14 @@ var Computer = A_.SPRITES.CollisionSprite.extend({
 //        if (this.leftdown) {
 //            window.console.log("Down");
 //        }
+        if (this.rightpressed) {
+            window.console.log("Pressed");
+        }
+        if (this.rightreleased) {
+            window.console.log("Released");
+        }
+        if (this.rightdown) {
+            window.console.log("Down");
+        }
     }
 })
