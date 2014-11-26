@@ -8,7 +8,7 @@ A_.LevelLoader = Class.extend({
     },
     loadScript: function () {
         var that = this;
-        $.getScript("game/sprites/" + that.scriptsToLoad[that.scriptCounter] + ".js", that.onScriptLoaded.bind(that));
+        $.getScript("game/scripts/" + that.scriptsToLoad[that.scriptCounter] + ".js", that.onScriptLoaded.bind(that));
     },
     onScriptLoaded: function () {
         this.scriptCounter++;

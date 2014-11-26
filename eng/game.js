@@ -1,5 +1,4 @@
 A_.Game = Class.extend({
-//    debug: true,
     scale: 1,
     screenW: 800,
     screenH: 600,
@@ -56,9 +55,8 @@ A_.Game = Class.extend({
             that.rightdown = false;
         };
     },
-    // LOAD EMPTY LEVEL
-//    loadEmptyLevel: function (name) {
-//        var level = this.addLevel(name);
+    // LEVEL LOADING
+    // Load empty LEVEL
     loadEmptyLevel: function (level) {
         if (!level) {
             level = {
@@ -94,28 +92,13 @@ A_.Game = Class.extend({
 
         this.startLevel();
     },
-    // LOAD LEVEL from TILED
-//    loadTiledLevel: function (name) {
+    // Load level from TILED
     loadTiledLevel: function (levelData) {
-//        if (!_.find(this.levels, function (level) {
-//            return level.name === name
-//        })) {
-//            this.addLevel(name, "game/levels/" + name + ".json");
-//        }
-
         if (!_.find(this.levels, function (level) {
             return level.name === levelData.name;
         })) {
             this.levels.push(levelData);
         }
-
-//        var level = _.find(this.levels, function (level) {
-//            return level.name === name;
-//        });
-//        if (!level) {
-//            window.console.log("No level named " + name);
-//            return;
-//        }
 
         if (this.level) {
             // Load level deferred: wait until the end of the game loop.
@@ -134,22 +117,22 @@ A_.Game = Class.extend({
         this.levelLoader.loadScripts(this.onScriptsLoaded.bind(this), this.levelToLoad.scripts);
     },
     onScriptsLoaded: function () {
-        this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.map);
         window.console.log("Loaded scripts");
+        this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.map);
     },
     onMapLoaded: function () {
 //        var assetsToLoad = fetchAssetListFromMapData(this.levelLoader.mapDataParsed);
 //        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), assetsToLoad);
-        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), this.levelToLoad.assets);
         window.console.log("Loaded map");
+        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), this.levelToLoad.assets);
     },
     onAssetsLoaded: function () {
-        this.levelLoader.loadSounds(this.onSoundsLoaded.bind(this), this.levelToLoad.sounds);
         window.console.log("Loaded assets");
+        this.levelLoader.loadSounds(this.onSoundsLoaded.bind(this), this.levelToLoad.sounds);
     },
     onSoundsLoaded: function () {
-        this.onLevelLoaded();
         window.console.log("Loaded sounds");
+        this.onLevelLoaded();
     },
     onLevelLoaded: function () {
         this.createLevelTemplate();
@@ -159,12 +142,7 @@ A_.Game = Class.extend({
         window.console.log("Loaded LEVEL :)");
         this.startLevel();
     },
-    // COMMON LEVEL routines
-//    addLevel: function (name, mapDataJSON) {
-//        var level = {name: name, mapDataJSON: mapDataJSON};
-//        this.levels.push(level);
-//        return level;
-//    },
+    // COMMON level routines
     createLevelTemplate: function () {
         this.collider = new A_.COLLISION.Collider();
         A_.collider = this.collider;
