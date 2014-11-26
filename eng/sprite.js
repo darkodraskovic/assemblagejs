@@ -130,9 +130,9 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
     },
     postupdate: function () {
-//        this.sprite.rotation = this.rotation;
         this.sprite.alpha = this.alpha;
     },
+    // Animation
     addAnimation: function (name, frames, speed) {
         // set default speed to 1; 
         if (!speed) {
@@ -162,9 +162,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         }
         if (typeof speed !== 'undefined') {
             this.animations[name].animationSpeed = speed;
-        } else {
-            this.animations[name].animationSpeed = 0.1;
-        }
+        } 
+//        else {
+//            this.animations[name].animationSpeed = 0.1;
+//        }
 
         // Turn off the previously playing animation
         if (this.currentAnimation) {

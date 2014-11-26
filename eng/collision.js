@@ -75,6 +75,7 @@ A_.COLLISION.Collider = Class.extend({
             var o1 = this.collisionSprites[i];
             for (j = i + 1; j < len; j++) {
                 var o2 = this.collisionSprites[j];
+                // Bitmasks. Currently inactive. DO NOTE DELETE!
 //                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
 //                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
                 var response = new SAT.Response();

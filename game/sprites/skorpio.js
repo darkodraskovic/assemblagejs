@@ -2,7 +2,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     frame: {w: 64, h: 64},
     collisionSize: {w: 26, h: 48},
     collisionOffset: {x: 0, y: 6},
-    animSpeed: 0.3,
+    animSpeed: 0.15,
     alive: true,
     facing: "right",
     bounciness: 0,
@@ -132,6 +132,9 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         this.maxVelocity.x = this.maxVelocity.y = 1000;
         this.speed = 600;
         this.bounded = false;
+        new Howl({
+            urls: ['assets/gunshot.mp3']
+        }).play();
     },
     update: function () {
         this._super();
@@ -160,14 +163,15 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
     bounded: false,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
+        this.alpha = 0.75;
         this.setAnimation("all", 18, 0);
         this.currentAnimation.anchor = new PIXI.Point(0, 0.5);
         this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), A_.game.mousePosition.level));
 
         this.tip = {x: this.spawner.getPositionX(), y: this.spawner.getPositionY()};
         this.laserTip = A_.game.createSprite(LaserTip, A_.level.findLayerByName("Effects"),
-                this.getPositionX() + Math.cos(this.getRotation()) * this.getWidth(), 
-                this.getPositionY() + Math.sin(this.getRotation()) * this.getWidth(), 
+                this.getPositionX() + Math.cos(this.getRotation()) * this.getWidth(),
+                this.getPositionY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collisionSize: {w: 4, h: 4}});
         this.laserTip.laser = this;
     },
@@ -190,6 +194,44 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
     }
 });
 
+var LaserTip = A_.SPRITES.CollisionSprite.extend({
+    bounded: false,
+    update: function () {
+        this._super();
+        this.setPosition(this.laser.tip.x, this.laser.tip.y);
+        if (!this.collided) {
+            if (this.fire) {
+                this.fire.destroy();
+                this.fire = null;
+            }
+            this.timer = null;
+        }
+    },
+    collide: function (other, response) {
+        this._super(other, response);
+        if (other.collisionResponse === "static") {
+            if (!this.timer) {
+                this.timer = 1;
+            }
+            else {
+                this.timer -= A_.game.dt;
+            }
+            if (this.timer < 0) {
+                A_.game.createSprite(Explosion, A_.level.findLayerByName("Effects"),
+                        other.getPositionX(), other.getPositionY());
+                other.destroy();
+                this.timer = null;
+            }
+            if (!this.fire) {
+                this.fire = A_.game.createSprite(LaserFire, A_.level.findLayerByName("Effects"),
+                        this.getPositionX(), this.getPositionY());
+                this.fire.laserTip = this;
+            }
+        }
+    }
+});
+
+
 var LaserFire = A_.SPRITES.AnimatedSprite.extend({
     animSheet: "Fire.png",
     frame: {w: 64, h: 64},
@@ -205,26 +247,24 @@ var LaserFire = A_.SPRITES.AnimatedSprite.extend({
     }
 });
 
-var LaserTip = A_.SPRITES.CollisionSprite.extend({
-    bounded: false,
-    update: function () {
-        this._super();
-        this.setPosition(this.laser.tip.x, this.laser.tip.y);
-        if (!this.collided && this.fire) {
-            this.fire.destroy();
-            this.fire = null;
-        }
+
+var Explosion = A_.SPRITES.AnimatedSprite.extend({
+    animSheet: "Explosion.png",
+    frame: {w: 128, h: 128},
+    init: function (layer, x, y, props) {
+        this._super(layer, x, y, props);
+
+        this.addAnimation("explode", _.range(0, 17), 0.2);
+        this.setAnimation("explode");
+        this.animations["explode"].loop = false;
+        var that = this;
+        this.animations["explode"].onComplete = function () {
+            that.destroy();
+        };
+        new Howl({
+            urls: ['assets/explosion.mp3']
+        }).play();
     },
-    collide: function (other, response) {
-        this._super(other, response);
-        if (other.collisionResponse === "static") {
-            if (!this.fire) {
-                this.fire = A_.game.createSprite(LaserFire, A_.level.findLayerByName("Effects"),
-                        this.getPositionX(), this.getPositionY());
-                this.fire.laserTip = this;
-            }
-        }
-    }
 });
 
 // ITEMS
@@ -236,14 +276,14 @@ var Computer = A_.SPRITES.CollisionSprite.extend({
     collidesWith: A_.COLLISION.Type.NONE,
     update: function (props) {
         this._super(props);
-        if (this.leftpressed) {
-            window.console.log("Pressed");
-        }
-        if (this.leftreleased) {
-            window.console.log("Released");
-        }
-        if (this.leftdown) {
-            window.console.log("Down");
-        }
+//        if (this.leftpressed) {
+//            window.console.log("Pressed");
+//        }
+//        if (this.leftreleased) {
+//            window.console.log("Released");
+//        }
+//        if (this.leftdown) {
+//            window.console.log("Down");
+//        }
     }
 })
