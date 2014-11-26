@@ -40,6 +40,7 @@ if (typeof (Number.prototype.lerp) === "undefined") {
     };
 }
 
+
 A_.UTILS.copy = function (object) {
     if (
             !object || typeof (object) != 'object' ||

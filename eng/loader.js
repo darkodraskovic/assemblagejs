@@ -14,43 +14,46 @@ A_.LevelLoader = Class.extend({
         this.assetLoader.onComplete = callback;
         this.assetLoader.load();
     },
+    // SOUND loader
     loadSounds: function (callback, soundsToLoad) {
+        this.soundCounter = 0;
+        this.soundsToLoad = soundsToLoad;
+        this.onSoundsLoaded = callback;
+        this.loadSound();
     },
-    // WORK IN PROGRESS: automatic dependencies loading...
-    resetDependencies: function () {
-        this.dependencies = [];
-        this.failedToLoad = [];
-    },
-    loadSprites: function (spritesToLoad, callback) {
+    loadSound: function () {
         var that = this;
-
-        this.dependencies = [];
-        _.each(spritesToLoad, function (spriteToLoad, i) {
-            $.getScript("game/sprites/" + spriteToLoad + ".js").done(function (data) {
-                if (i === spritesToLoad.length - 1) {
-                    that.onSpritesLoaded();
-                    callback();
-                }
-            }).fail(function (jqxhr) {
-                var response = jqxhr.responseText;
-                var depend = (response.substring(response.indexOf("=") + 1, response.indexOf("."))).trim();
-                that.dependencies.push(depend);
-                that.failedToLoad.unshift(spriteToLoad);
-
-                if (i === spritesToLoad.length - 1) {
-                    that.onSpritesLoaded();
-                }
-            });
-        });
+        new Howl({
+            urls: that.soundsToLoad[that.soundCounter],
+            onload: that.onSoundLoaded.bind(that)
+        })
     },
-    onSpritesLoaded: function () {
-        if (this.dependencies.length > 0) {
-            this.dependencies = _.uniq(this.dependencies);
-            this.loadSprites(this.dependencies);
+    onSoundLoaded: function () {
+        this.soundCounter++;
+        if (this.soundCounter < this.soundsToLoad.length) {
+            this.loadSound()
+        } else {
+            this.onSoundsLoaded();
         }
-        else if (this.failedToLoad.length > 0) {
-            this.loadSprites(this.failedToLoad);
-            this.failedToLoad.length = 0;
+    },
+    // CLASS loader
+    loadScripts: function (callback, scriptsToLoad) {
+        this.scriptCounter = 0;
+        this.scriptsToLoad = scriptsToLoad;
+        this.onScriptsLoaded = callback;
+        this.loadScript();
+    },
+    loadScript: function () {
+        var that = this;
+        $.getScript("game/sprites/" + that.scriptsToLoad[that.scriptCounter] + ".js", that.onScriptLoaded.bind(that));
+    },
+    onScriptLoaded: function () {
+        this.scriptCounter++;
+        if (this.scriptCounter < this.scriptsToLoad.length) {
+            this.loadScript();
+        } else {
+            this.onScriptsLoaded();
         }
-    }
+    },
+    // TODO: automatic class dependencies loading...
 }); 
