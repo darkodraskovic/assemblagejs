@@ -7,4 +7,3 @@ function runGame() {
 }
 
 A_.game = new A_.Game();
-//A_.game.setDefaultCameraOptions(A_.CONFIG.camera);

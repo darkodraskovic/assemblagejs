@@ -1,43 +1,54 @@
-function makeCamera(width, height, innerBoundOffset) {
-    var camera = {};
+A_.CAMERA.Camera = Class.extend({
+    init: function (w, h, props) {
+        for (var prop in props) {
+            this[prop] = props[prop];
+        }
 
-    camera.x = 0;
-    camera.y = 0;
-    camera.width = width;
-    camera.height = height;
+        this.x = 0;
+        this.y = 0;
+        this.width = w;
+        this.height = h;
 
-    camera.innerBoundOffset = {};
-    camera.innerBoundOffset.left = innerBoundOffset;
-    camera.innerBoundOffset.right = 1 - innerBoundOffset;
-    camera.innerBoundOffset.top = innerBoundOffset;
-    camera.innerBoundOffset.bottom = 1 - innerBoundOffset;
+        if (!this.worldBounded) {
+            this.worldBounded = false;
+        }
 
-    camera.followee = null;
-    camera.followType = "centered";
-    camera.worldBounded = false;
-    camera.clickDelta = {};
+        if (!this.followee) {
+            this.followee = null;
+        }
 
-    camera.getInnerBound = function (side) {
+        if (!this.followType) {
+            this.followType = "centered";
+        }
+        
+        if (!this.innerBoundOffset) {
+            this.innerBoundOffset = 0.25;
+        }
+        this.innerBounds = {};        
+        this.innerBounds.left = this.innerBoundOffset;
+        this.innerBounds.right = 1 - this.innerBoundOffset;
+        this.innerBounds.top = this.innerBoundOffset;
+        this.innerBounds.bottom = 1 - this.innerBoundOffset;
+    },
+    getInnerBound: function (side) {
         switch (side) {
             case "left":
-                return this.x + (this.width * this.innerBoundOffset.left);
+                return this.x + (this.width * this.innerBounds.left);
                 break;
             case "right":
-                return this.x + (this.width * this.innerBoundOffset.right);
+                return this.x + (this.width * this.innerBounds.right);
                 break;
             case "top":
-                return this.y + (this.height * this.innerBoundOffset.top);
+                return this.y + (this.height * this.innerBounds.top);
                 break;
             case "bottom":
-                return this.y + (this.height * this.innerBoundOffset.bottom);
+                return this.y + (this.height * this.innerBounds.bottom);
                 break;
             default:
                 break;
-
         }
-    };
-
-    camera.followBounded = function () {
+    },
+    followBounded: function () {
         var bounds = {};
         var colPol = this.followee.collisionPolygon;
         bounds.x = colPol.pos.x;
@@ -47,34 +58,31 @@ function makeCamera(width, height, innerBoundOffset) {
 
         if (bounds.x < this.getInnerBound("left"))
         {
-            this.x = bounds.x - this.width * this.innerBoundOffset.left;
+            this.x = bounds.x - this.width * this.innerBounds.left;
         }
         if (bounds.y < this.getInnerBound("top"))
         {
-            this.y = bounds.y - this.height * this.innerBoundOffset.top;
+            this.y = bounds.y - this.height * this.innerBounds.top;
         }
         if (bounds.x + bounds.width > this.getInnerBound("right"))
         {
-            this.x = bounds.x + bounds.width - this.width * this.innerBoundOffset.right;
+            this.x = bounds.x + bounds.width - this.width * this.innerBounds.right;
         }
         if (bounds.y + bounds.height > this.getInnerBound("bottom"))
         {
-            this.y = bounds.y + bounds.height - this.height * this.innerBoundOffset.bottom;
+            this.y = bounds.y + bounds.height - this.height * this.innerBounds.bottom;
         }
-    };
-
-    camera.followCentered = function () {
+    },
+    followCentered: function () {
         var pos = this.followee.getPosition();
-        camera.x = pos.x - camera.width / 2;
-        camera.y = pos.y - camera.height / 2;
-    };
-
-    camera.centerOn = function (center) {
-        camera.x = center.x - camera.width / 2;
-        camera.y = center.y - camera.height / 2;
-    };
-
-    camera.bound = function () {
+        this.x = pos.x - this.width / 2;
+        this.y = pos.y - this.height / 2;
+    },
+    centerOn: function (center) {
+        this.x = center.x - this.width / 2;
+        this.y = center.y - this.height / 2;
+    },
+    bind: function () {
         if (this.x < A_.level.x)
         {
             this.x = A_.level.x;
@@ -91,10 +99,9 @@ function makeCamera(width, height, innerBoundOffset) {
         {
             this.y = A_.level.y + A_.level.height - this.height;
         }
-    };
-
-    camera.update = function () {
-        if (this.followee) {            
+    },
+    update: function () {
+        if (this.followee) {
             if (this.followType === "centered") {
                 this.followCentered();
             }
@@ -104,19 +111,17 @@ function makeCamera(width, height, innerBoundOffset) {
         }
 
         if (this.worldBounded) {
-            this.bound();
-        }        
+            this.bind();
+        }
 
         var campPos = {x: this.x, y: this.y};
         A_.level.container.position.x = -campPos.x;
         A_.level.container.position.y = -campPos.y;
-        
+
         for (var i = 0; i < A_.level.container.children.length; i++) {
             var layer = A_.level.container.children[i];
             layer.position.x = campPos.x * layer.parallax / 100 - campPos.x;
             layer.position.y = campPos.y * layer.parallax / 100 - campPos.y;
         }
-    };
-
-    return camera;
-}
+    }
+});

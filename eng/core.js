@@ -7,6 +7,7 @@ A_.COLLISION = {};
 A_.MODULES = {};
 A_.EXTENSIONS = {};
 A_.POLYGON = {};
+A_.CAMERA = {};
 A_.INPUT = {};
 A_.CONFIG = {};
 

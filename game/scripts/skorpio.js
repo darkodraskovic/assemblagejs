@@ -235,7 +235,7 @@ var LaserTip = A_.SPRITES.CollisionSprite.extend({
         this._super(other, response);
         if (other.collisionResponse === "static") {
             if (!this.timer) {
-                this.timer = 1.25;
+                this.timer = 1;
             }
             else {
                 this.timer -= A_.game.dt;

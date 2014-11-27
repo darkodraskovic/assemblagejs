@@ -186,31 +186,15 @@ A_.Game = Class.extend({
         delete(A_.game.collider);
         delete(A_.game.LevelLoader);
 
+        this.destroySounds();
+        
         this.stage.removeChildren();
 
-        this.destroySounds();
         this.destroyLevel = false;
     },
     // CAMERA
     setupCamera: function () {
-        this.camera = makeCamera(A_.game.renderer.view.width, A_.game.renderer.view.height, this.cameraOptions.innerBoundOffset);
-        if (this.cameraOptions.worldBounded) {
-            this.camera.worldBounded = this.cameraOptions.worldBounded;
-        } else {
-            this.camera.worldBounded = false;
-        }
-        if (this.cameraOptions.followee) {
-            this.camera.followee = this.cameraOptions.followee;
-        } else {
-            this.camera.followee = null;
-            this.camera.x = 0;
-            this.camera.y = 0;
-        }
-        if (this.camera.followType) {
-            this.camera.followType = this.cameraOptions.followType;
-        } else {
-            this.camera.followType = "centered";
-        }
+        this.camera = new A_.CAMERA.Camera(A_.game.renderer.view.width, A_.game.renderer.view.height, this.cameraOptions);
     },
     // SPRITE CREATION and DESTRUCTION
     createSprite: function (SpriteClass, layer, x, y, props, collisionPolygon) {
@@ -275,7 +259,7 @@ A_.Game = Class.extend({
         this.sounds.push(sound);
         return sound;
     },
-    destroySounds: function (sound) {
+    destroySounds: function () {
         _.each(this.sounds, function (sound) {
             sound.unload();
         });
