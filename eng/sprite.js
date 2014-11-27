@@ -654,40 +654,46 @@ A_.EXTENSIONS.Sine = {
         for (var prop in props) {
             sprite.sine[prop] = props[prop];
         }
-        
+
         sprite.sine.angle = 0;
         sprite.sine.positive = true;
 
-        if (!sprite.sine.value)
-            sprite.sine.value = 8;
+        if (typeof sprite.sine.value === 'undefined')
+            sprite.sine.value = 12; // in units (pixels, scale, etc.)
         sprite.sine.currentValue = sprite.sine.value;
-        if (!sprite.sine.valueRand)
-            sprite.sine.valueRand = 4;
+        if (typeof sprite.sine.valueRand === 'undefined')
+            sprite.sine.valueRand = 50; // in %
 
-        if (!sprite.sine.period)
+        if (sprite.sine.period === 'undefined')
             sprite.sine.period = 2; // in sec
+        sprite.sine.currentPeriod = sprite.sine.period;
         sprite.sine.speed = (2 * Math.PI) / sprite.sine.period;
-        if (!sprite.sine.periodRand)
-            sprite.sine.periodRand = 500; // in ms
+        if (sprite.sine.periodRand === 'undefined')
+            sprite.sine.periodRand = 50; // in %
 
-        sprite.sine.getValue = function () {
-            var sin = Math.sin(this.sine.angle += this.sine.speed * A_.game.dt);
+        sprite.sine.computeValue = function () {
+            var sin = Math.sin(this.angle += this.speed * A_.game.dt);
 
             if (sin < 0) {
-                this.sine.positive = false;
+                this.positive = false;
             }
-            if (sin > 0) {
-                if (!this.sine.positive) {
-                    var periodRand = _.random(-this.sine.periodRand, this.sine.periodRand) / 1000;
-                    this.sine.speed = (2 * Math.PI) / (this.sine.period  + periodRand);
-                    var valueRand = _.random(-this.sine.valueRand, this.sine.valueRand);
-                    this.sine.currentValue = this.sine.value + valueRand;
+            else if (sin > 0) {
+                if (!this.positive) { // The new period begins...
+                    this.positive = true;
 
-                    this.sine.positive = true;
+                    var periodRand = _.random(-this.periodRand, this.periodRand);
+                    if (periodRand)
+                        periodRand /= 100;
+                    this.currentPeriod = this.period + this.period * periodRand;
+                    this.speed = (2 * Math.PI) / this.currentPeriod;
+
+                    var valueRand = _.random(-this.valueRand, this.valueRand);
+                    if (valueRand)
+                        valueRand /= 100;
+                    this.currentValue = this.value + this.value * valueRand;
                 }
             }
-
-            return this.sine.currentValue * sin;
+            return this.currentValue * sin;
         }
     }
 }
