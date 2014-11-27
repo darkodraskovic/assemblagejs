@@ -209,6 +209,9 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
 
         this.prevOverlapN = new SAT.Vector(0, 0);
 
+        this.initInput();
+    },
+    initInput: function () {
         var that = this;
         if (this.interactive) {
             this.sprite.interactive = true;
@@ -644,3 +647,47 @@ A_.EXTENSIONS.Polygon = {
         sprite.graphics = graphics;
     }
 };
+
+A_.EXTENSIONS.Sine = {
+    addTo: function (sprite, props) {
+        sprite.sine = {};
+        for (var prop in props) {
+            sprite.sine[prop] = props[prop];
+        }
+        
+        sprite.sine.angle = 0;
+        sprite.sine.positive = true;
+
+        if (!sprite.sine.value)
+            sprite.sine.value = 8;
+        sprite.sine.currentValue = sprite.sine.value;
+        if (!sprite.sine.valueRand)
+            sprite.sine.valueRand = 4;
+
+        if (!sprite.sine.period)
+            sprite.sine.period = 2; // in sec
+        sprite.sine.speed = (2 * Math.PI) / sprite.sine.period;
+        if (!sprite.sine.periodRand)
+            sprite.sine.periodRand = 500; // in ms
+
+        sprite.sine.getValue = function () {
+            var sin = Math.sin(this.sine.angle += this.sine.speed * A_.game.dt);
+
+            if (sin < 0) {
+                this.sine.positive = false;
+            }
+            if (sin > 0) {
+                if (!this.sine.positive) {
+                    var periodRand = _.random(-this.sine.periodRand, this.sine.periodRand) / 1000;
+                    this.sine.speed = (2 * Math.PI) / (this.sine.period  + periodRand);
+                    var valueRand = _.random(-this.sine.valueRand, this.sine.valueRand);
+                    this.sine.currentValue = this.sine.value + valueRand;
+
+                    this.sine.positive = true;
+                }
+            }
+
+            return this.sine.currentValue * sin;
+        }
+    }
+}

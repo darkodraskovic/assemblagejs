@@ -180,10 +180,14 @@ A_.Game = Class.extend({
         this.level = null;
         A_.level = null;
 
+        this.camera = null;
+        A_.camera = null;
+
         this.levelLoader = null;        
 
         delete(A_.game.level);
         delete(A_.game.collider);
+        delete(A_.game.camera);
         delete(A_.game.LevelLoader);
 
         this.destroySounds();
@@ -195,6 +199,7 @@ A_.Game = Class.extend({
     // CAMERA
     setupCamera: function () {
         this.camera = new A_.CAMERA.Camera(A_.game.renderer.view.width, A_.game.renderer.view.height, this.cameraOptions);
+        A_.camera = this.camera;
     },
     // SPRITE CREATION and DESTRUCTION
     createSprite: function (SpriteClass, layer, x, y, props, collisionPolygon) {

@@ -193,7 +193,15 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
         }).play();
         
         this.origH = this.getHeight();
-        this.sine = 0;
+        this.periodAngle = 0;
+        this.periodTime = 2;
+        this.periodSpeed = (2 * Math.PI) / this.periodTime;
+        this.periodSpeedCurrent = this.periodSpeed;
+        this.periodSpeedRand = 500;
+        this.periodValue = 8;
+        this.periodValueCurrent = this.periodValue;
+        this.periodValueRandom = 4;
+        this.sinPositive = true;
     },
     update: function () {
         this.setPosition(this.spawner.getPositionX(), this.spawner.getPositionY());
@@ -211,10 +219,23 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
             }
             this.sound.stop();
             this.destroy();
-        }
+        }                
         
-        var varSize = Math.sin(_.random(Math.PI / 4, 3 * (Math.PI / 4)));
-        this.setHeight(this.origH * varSize);
+        var sin = Math.sin(this.periodAngle += this.periodSpeedCurrent * A_.game.dt);
+        this.setHeight(this.origH + this.periodValueCurrent * sin);
+        if (sin < 0) {
+            this.sinPositive = false;
+        }
+        if (sin > 0) {
+            if (!this.sinPositive) {
+                var periodSpeedRand = _.random(-this.periodSpeedRand, this.periodSpeedRand) / 1000;
+                this.periodSpeedCurrent = this.periodSpeed + periodSpeedRand;
+                var periodValueRand = _.random(-this.periodValueRandom, this.periodValueRandom);
+                this.periodValueCurrent = this.periodValue + periodValueRand;
+                
+                this.sinPositive = true;
+            }
+        }
     }
 });
 
