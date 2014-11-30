@@ -71,7 +71,8 @@ function createMap(game, mapData) {
     });
 
     for (i = 0; i < layersData.length; i++) {
-        var layer = new PIXI.DisplayObjectContainer();
+//        var layer = new PIXI.DisplayObjectContainer();
+        var layer = game.level.createEmptyLayer();
         for (var prop in layersData[i]) {
             layer[prop] = layersData[i][prop];
         }
@@ -108,8 +109,8 @@ function createMap(game, mapData) {
                 img = img.substring(img.lastIndexOf("/") + 1);
             }
             var tiledSprite = new A_.SCENERY.TiledSprite({image: img, width: game.level.width, height: game.level.height});
-            layer.addChild(tiledSprite.sprite);
-            game.level.container.addChild(layer);
+            layer.addChild(tiledSprite.sprite);            
+            game.level.addImageLayer(layer);
         }
 
         // if current layer is TILE LAYER

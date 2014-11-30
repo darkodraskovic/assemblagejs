@@ -2,7 +2,7 @@
  "layers":[
         {
          "height":64,
-         "image":"..\/..\/assets\/blue.png",
+         "image":"..\/..\/..\/graphics\/kenny\/blue.png",
          "name":"Bg",
          "opacity":1,
          "properties":
@@ -17,7 +17,7 @@
         }, 
         {
          "height":64,
-         "image":"..\/..\/assets\/blue.png",
+         "image":"..\/..\/..\/graphics\/kenny\/blue.png",
          "name":"Bg",
          "opacity":0.5,
          "properties":
@@ -225,7 +225,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/..\/assets\/spaceships.png",
+         "image":"..\/..\/..\/graphics\/kenny\/spaceships.png",
          "imageheight":75,
          "imagewidth":294,
          "margin":0,

@@ -9,6 +9,7 @@ A_.Level = Class.extend({
         this.sprites = [];
         this.tileLayers = [];
         this.spriteLayers = [];
+        this.imageLayers = [];
         this.layers = [];
     },
     createEmptyLayer: function (){
@@ -21,6 +22,10 @@ A_.Level = Class.extend({
     },
     addLayer: function (layer) {
         this.layers.push(layer);
+        this.container.addChild(layer);
+    },
+    addImageLayer: function (layer) {
+        this.imageLayers.push(layer);
         this.container.addChild(layer);
     },
     addSpriteLayer: function (layer) {

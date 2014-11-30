@@ -5,7 +5,7 @@ A_.SCENERY.TiledSprite = Class.extend({
         }
 
         if (this.image) {
-            this.image = "assets/" + this.image;
+            this.image = "graphics/" + A_.level.directoryPrefix + this.image;
         }
         var texture = new PIXI.Texture.fromImage(this.image);
         this.sprite = new PIXI.TilingSprite(texture, this.width, this.height);

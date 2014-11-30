@@ -24,7 +24,7 @@ A_.Game = Class.extend({
         this.spritesToCreate = [];
 
         this.cameraOptions = A_.CONFIG.camera;
-        
+
         this.sounds = [];
         requestAnimFrame(runGame);
     },
@@ -61,6 +61,7 @@ A_.Game = Class.extend({
         if (!level) {
             level = {
                 name: "empty",
+                directoryPrefix: "",
                 scripts: [],
                 map: "",
                 graphics: [],
@@ -75,10 +76,13 @@ A_.Game = Class.extend({
             this.createEmptyLevel = true;
             return;
         } else {
-            this.activateEmptyLevelLoader();
+            this.onLevelLoaded = this.onEmptyLevelLoaded;
+            this.activateLevelLoader();
         }
     },
-    activateEmptyLevelLoader: function () {
+    onEmptyLevelLoaded: function () {
+        window.console.log("Loaded EMPTY LEVEL :)");
+        
         this.createLevelTemplate();
 
         var layer = this.level.createEmptyLayer();
@@ -109,10 +113,11 @@ A_.Game = Class.extend({
         } else {
             // Load level immediately.
             this.levelToLoad = levelData;
-            this.activateTiledLevelLoader();
+            this.onLevelLoaded = this.onTiledLevelLoaded;
+            this.activateLevelLoader();
         }
     },
-    activateTiledLevelLoader: function () {
+    activateLevelLoader: function () {
         this.levelLoader = new A_.LevelLoader(this.levelToLoad.directoryPrefix);
         this.levelLoader.loadScripts(this.onScriptsLoaded.bind(this), this.levelToLoad.scripts);
     },
@@ -132,12 +137,13 @@ A_.Game = Class.extend({
         window.console.log("Loaded sounds");
         this.onLevelLoaded();
     },
-    onLevelLoaded: function () {
+    onTiledLevelLoaded: function () {
+        window.console.log("Loaded TILED LEVEL :)");
+        
         this.createLevelTemplate();
 
         createMap(this, this.levelLoader.mapDataParsed);
 
-        window.console.log("Loaded LEVEL :)");
         this.startLevel();
     },
     // COMMON level routines
@@ -146,7 +152,13 @@ A_.Game = Class.extend({
         A_.collider = this.collider;
 
         this.level = new A_.Level();
-        this.level.directoryPrefix = this.levelLoader.directoryPrefix;
+        
+        // If the level was loaded
+        if (this.levelLoader)
+            this.level.directoryPrefix = this.levelLoader.directoryPrefix;
+        // If the empty level was created
+        else this.level.directoryPrefix = "";
+        
         A_.level = this.level;
     },
     startLevel: function () {
@@ -161,12 +173,17 @@ A_.Game = Class.extend({
 
         this.stage.addChild(this.level.container);
 
-        this.levelName = this.levelToLoad.name;
+        this.level.name = this.levelToLoad.name;
         this.createTiledLevel = false;
         this.levelToLoad = null;
+        this.onLevelLoaded = null;
 
         this.createSprites();
         this.isRunning = true;
+        this.onLevelStarted();
+    },
+    onLevelStarted: function () {
+        window.console.log("Level STARTS...");
     },
     unloadLevel: function () {
         this.destroyLevel = true;
@@ -181,7 +198,7 @@ A_.Game = Class.extend({
         this.camera = null;
         A_.camera = null;
 
-        this.levelLoader = null;        
+        this.levelLoader = null;
 
         delete(A_.game.level);
         delete(A_.game.collider);
@@ -189,7 +206,7 @@ A_.Game = Class.extend({
         delete(A_.game.LevelLoader);
 
         this.destroySounds();
-        
+
         this.stage.removeChildren();
 
         this.destroyLevel = false;
@@ -275,7 +292,6 @@ A_.Game = Class.extend({
     run: function () {
         if (!this.isRunning)
             return;
-
         var now = new Date().getTime();
         this.dt = now - this.time;
         this.time = now;
@@ -387,9 +403,9 @@ A_.Game = Class.extend({
             this.isRunning = false;
             this.clearLevel();
             if (this.createTiledLevel) {
-                this.activateTiledLevelLoader();
+                this.activateLevelLoader();
             } else if (this.createEmptyLevel) {
-                this.activateEmptyLevelLoader();
+                this.onEmptyLevelLoaded();
             }
         }
     },
