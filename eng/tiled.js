@@ -155,7 +155,7 @@ function createMap(game, mapData) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, "assets/" + img, tileW, tileH);
+            var tilemap = new A_.TILES.Tilemap(layer, "graphics/" + game.level.directoryPrefix + img, tileW, tileH);
             tilemap.createTilelayer(tileData2D);
 
             layer.baked = baked;

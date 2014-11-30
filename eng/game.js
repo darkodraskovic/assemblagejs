@@ -18,7 +18,6 @@ A_.Game = Class.extend({
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
 
-        this.assetsToLoad = null;
         this.levels = [];
         this.level = null;
         this.spritesToDestroy = [];
@@ -64,7 +63,7 @@ A_.Game = Class.extend({
                 name: "empty",
                 scripts: [],
                 map: "",
-                assets: [],
+                graphics: [],
                 sounds: []
             };
         }
@@ -114,7 +113,7 @@ A_.Game = Class.extend({
         }
     },
     activateTiledLevelLoader: function () {
-        this.levelLoader = new A_.LevelLoader();
+        this.levelLoader = new A_.LevelLoader(this.levelToLoad.directoryPrefix);
         this.levelLoader.loadScripts(this.onScriptsLoaded.bind(this), this.levelToLoad.scripts);
     },
     onScriptsLoaded: function () {
@@ -122,13 +121,11 @@ A_.Game = Class.extend({
         this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.map);
     },
     onMapLoaded: function () {
-//        var assetsToLoad = fetchAssetListFromMapData(this.levelLoader.mapDataParsed);
-//        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), assetsToLoad);
         window.console.log("Loaded map");
-        this.levelLoader.loadAssets(this.onAssetsLoaded.bind(this), this.levelToLoad.assets);
+        this.levelLoader.loadGraphics(this.onGraphicsLoaded.bind(this), this.levelToLoad.graphics);
     },
-    onAssetsLoaded: function () {
-        window.console.log("Loaded assets");
+    onGraphicsLoaded: function () {
+        window.console.log("Loaded graphics");
         this.levelLoader.loadSounds(this.onSoundsLoaded.bind(this), this.levelToLoad.sounds);
     },
     onSoundsLoaded: function () {
@@ -149,6 +146,7 @@ A_.Game = Class.extend({
         A_.collider = this.collider;
 
         this.level = new A_.Level();
+        this.level.directoryPrefix = this.levelLoader.directoryPrefix;
         A_.level = this.level;
     },
     startLevel: function () {
@@ -260,6 +258,9 @@ A_.Game = Class.extend({
         this.spritesToDestroy.length = 0;
     },
     createSound: function (props) {
+        _.each(props["urls"], function (url, i, list) {
+            list[i] = "sounds/" + this.level.directoryPrefix + url;
+        }, this);
         var sound = new Howl(props);
         this.sounds.push(sound);
         return sound;

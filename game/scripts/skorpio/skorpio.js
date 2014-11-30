@@ -37,7 +37,7 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
         else {
             if (!this.groaned) {
                 var sound = A_.game.createSound({
-                    urls: ['assets/grunt.wav'],
+                    urls: ['grunt.wav'],
                     volume: 0.5
                 })
                 sound.play();
@@ -144,7 +144,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         this.speed = 600;
         this.bounded = false;        
         A_.game.createSound({
-            urls: ['assets/gunshot.mp3'],
+            urls: ['gunshot.mp3'],
             volume: 0.5
         }).play();
     },
@@ -187,7 +187,7 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
                 {collisionSize: {w: 4, h: 4}});
         this.laserTip.laser = this;
         this.sound = A_.game.createSound({
-            urls: ['assets/laser-beam.mp3'],
+            urls: ['laser-beam.mp3'],
             loop: true,
             volume: 0.4
         }).play();
@@ -263,7 +263,7 @@ var LaserFire = A_.SPRITES.AnimatedSprite.extend({
         this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
         this.sound = A_.game.createSound({
-            urls: ['assets/fire.wav'],
+            urls: ['fire.wav'],
             loop: true,
             volume: 0.3
         });
@@ -302,7 +302,7 @@ var Explosion = A_.SPRITES.AnimatedSprite.extend({
             that.destroy();
         };
         A_.game.createSound({
-            urls: ['assets/explosion.mp3'],
+            urls: ['explosion.mp3'],
             volume: 0.6
         }).play();
     },
@@ -312,13 +312,13 @@ var Explosion = A_.SPRITES.AnimatedSprite.extend({
 var Computer = A_.SPRITES.CollisionSprite.extend({
     animSheet: "Computer1.png",
     collisionResponse: "static",
-    interactive: true,
-    collisionType: A_.COLLISION.Type.ITEM,
-    collidesWith: A_.COLLISION.Type.NONE,
+//    interactive: true,
+//    collisionType: A_.COLLISION.Type.ITEM,
+//    collidesWith: A_.COLLISION.Type.NONE,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         
-//        A_.EXTENSIONS.Sine.addTo(this, {period: 2, periodRand: 0, value: 0.3, valueRand: 50});
+//        A_.EXTENSIONS.Sine.addTo(this, {period: 3, periodRand: 0, value: 0.5, valueRand: 50});
     },
     update: function (props) {
         this._super(props);

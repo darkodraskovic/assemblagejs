@@ -28,9 +28,10 @@ A_.CONFIG.renderer = {
 
 var level1 = {
     name: "level1",
+    directoryPrefix: "skorpio",
     scripts: ["skorpio"],
     map: "map_skorpio1",
-    assets: ["AgentComplete.png", "PlayerComplete.png", "Computer1.png", 
+    graphics: ["AgentComplete.png", "PlayerComplete.png", "Computer1.png", 
         "Explosion.png", "Fire.png", "Interior-Furniture.png", 
         "Muzzleflashes-Shots.png"],
     sounds: [["explosion.mp3"], ["grunt.wav"], ["fire.wav"], 
@@ -39,4 +40,4 @@ var level1 = {
 
 var level2 = A_.UTILS.copy(level1);
 level2.name = "level2";
-level2.map = "map_skorpio2"
+level2.map = "map_skorpio2";

@@ -24,7 +24,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             this.frame = {w: 0, h: 0};
         }
         if (this.animSheet) {
-            this.animSheet = "assets/" + this.animSheet;
+            this.animSheet = "graphics/" + A_.level.directoryPrefix + this.animSheet;
             this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
             // If the frame size is not specified in the class definition, 
             // or the frame w/h is set to 0, use the dims of the image itself.

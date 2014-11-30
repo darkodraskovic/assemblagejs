@@ -1,5 +1,11 @@
 A_.LevelLoader = Class.extend({
     // SCRIPT loader
+    init: function (dirPref) {
+        if (dirPref)
+            this.directoryPrefix = dirPref + "/";
+        else 
+            this.directoryPrefix = "";
+    },
     loadScripts: function (callback, scriptsToLoad) {
         this.scriptCounter = 0;
         this.scriptsToLoad = scriptsToLoad;
@@ -8,7 +14,7 @@ A_.LevelLoader = Class.extend({
     },
     loadScript: function () {
         var that = this;
-        $.getScript("game/scripts/" + that.scriptsToLoad[that.scriptCounter] + ".js", that.onScriptLoaded.bind(that));
+        $.getScript("game/scripts/" + this.directoryPrefix + that.scriptsToLoad[that.scriptCounter] + ".js", that.onScriptLoaded.bind(that));
     },
     onScriptLoaded: function () {
         this.scriptCounter++;
@@ -21,29 +27,31 @@ A_.LevelLoader = Class.extend({
     // MAP loader
     loadMap: function (callback, mapData) {
         var that = this;
-        $.getJSON("game/levels/" + mapData + ".json", function (data) {
+        $.getJSON("game/levels/"  + this.directoryPrefix + mapData + ".json", function (data) {
             that.mapDataParsed = data;
             callback();
         });
     },
     // ASSET loader
-    loadAssets: function (callback, assetsToLoad) {
-        assetsToLoad = _.map(assetsToLoad, function (asset) {
-            return "assets/" + asset;
+    loadGraphics: function (callback, graphicsToLoad) {
+        var that = this;
+        graphicsToLoad = _.map(graphicsToLoad, function (asset) {
+            return "graphics/"  + that.directoryPrefix + asset;
         });
-        this.assetsToLoad = assetsToLoad;
-        this.assetLoader = new PIXI.AssetLoader(assetsToLoad);
+        this.assetLoader = new PIXI.AssetLoader(graphicsToLoad);
         this.assetLoader.onComplete = callback;
         this.assetLoader.load();
     },
     // SOUND loader
     loadSounds: function (callback, soundsToLoad) {
         this.soundCounter = 0;
+        var that = this;
         soundsToLoad = _.each(soundsToLoad, function (sound, i) {
             soundsToLoad[i] = _.map(sound, function (name) {
-                if (name.indexOf("assets/") < 0)
-                    return "assets/" + name;
-                else return name;
+                if (name.indexOf("sounds/") < 0)
+                    return "sounds/" + that.directoryPrefix  + name;
+                else
+                    return name;
             })
         });
         this.soundsToLoad = soundsToLoad;

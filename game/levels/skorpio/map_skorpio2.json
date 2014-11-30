@@ -229,7 +229,7 @@
                  "type":"",
                  "visible":true,
                  "width":1,
-                 "x":672,
+                 "x":864,
                  "y":256
                 }, 
                 {
@@ -520,7 +520,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/..\/assets\/Interior-Furniture.png",
+         "image":"..\/..\/..\/graphics\/skorpio\/Interior-Furniture.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -535,7 +535,7 @@
         }, 
         {
          "firstgid":257,
-         "image":"..\/..\/assets\/Tiled_Sprites.png",
+         "image":"..\/..\/..\/graphics\/skorpio\/Tiled_Sprites.png",
          "imageheight":640,
          "imagewidth":640,
          "margin":0,
