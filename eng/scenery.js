@@ -8,6 +8,13 @@ A_.SCENERY.TiledSprite = Class.extend({
             this.image = "graphics/" + A_.level.directoryPrefix + this.image;
         }
         var texture = new PIXI.Texture.fromImage(this.image);
+        
+        if (!this.width) {
+            this.width = 512;
+        }
+        if (!this.height) {
+            this.height = 512;
+        }
         this.sprite = new PIXI.TilingSprite(texture, this.width, this.height);
     },
     setPosition: function (x, y) {

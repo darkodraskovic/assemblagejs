@@ -55,6 +55,6 @@ farer1 = {
     directoryPrefix: "",
     scripts: ["farer"],
     map: "",
-    graphics: ["player.png"],
+    graphics: ["player.png", "starfield.png"],
     sounds: []
 };

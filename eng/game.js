@@ -70,19 +70,19 @@ A_.Game = Class.extend({
         }
         this.levels.push(level);
         this.levelToLoad = level;
+        this.onLevelLoaded = this.onEmptyLevelLoaded;
 
         if (this.level) {
             this.destroyLevel = true;
-            this.createEmptyLevel = true;
+            this.activateLevelLoaderDeferred = true;
             return;
         } else {
-            this.onLevelLoaded = this.onEmptyLevelLoaded;
             this.activateLevelLoader();
         }
     },
     onEmptyLevelLoaded: function () {
         window.console.log("Loaded EMPTY LEVEL :)");
-        
+
         this.createLevelTemplate();
 
         var layer = this.level.createEmptyLayer();
@@ -104,16 +104,17 @@ A_.Game = Class.extend({
             this.levels.push(levelData);
         }
 
+        this.onLevelLoaded = this.onTiledLevelLoaded;
+
         if (this.level) {
             // Load level deferred: wait until the end of the game loop.
             this.destroyLevel = true;
-            this.createTiledLevel = true;
+            this.activateLevelLoaderDeferred = true;
             this.levelToLoad = levelData;
             return;
         } else {
             // Load level immediately.
             this.levelToLoad = levelData;
-            this.onLevelLoaded = this.onTiledLevelLoaded;
             this.activateLevelLoader();
         }
     },
@@ -139,7 +140,7 @@ A_.Game = Class.extend({
     },
     onTiledLevelLoaded: function () {
         window.console.log("Loaded TILED LEVEL :)");
-        
+
         this.createLevelTemplate();
 
         createMap(this, this.levelLoader.mapDataParsed);
@@ -152,29 +153,32 @@ A_.Game = Class.extend({
         A_.collider = this.collider;
 
         this.level = new A_.Level();
-        
+
         // If the level was loaded
         if (this.levelLoader)
             this.level.directoryPrefix = this.levelLoader.directoryPrefix;
         // If the empty level was created
-        else this.level.directoryPrefix = "";
-        
+        else
+            this.level.directoryPrefix = "";
+
         A_.level = this.level;
     },
     startLevel: function () {
         this.setupCamera();
 
-        if (this.debug) {
-            this.collider.setDebug();
-            this.level.container.addChild(this.collider.debugLayer);
-        }
 
         this.setScale(this.scale);
 
         this.stage.addChild(this.level.container);
+        // Debug layer must be added on top of the level container.
+        if (this.debug) {
+            this.collider.setDebug();
+            this.level.addDebugLayer(this.collider.debugLayer);
+//            this.level.container.addChild(this.collider.debugLayer);            
+        }
 
         this.level.name = this.levelToLoad.name;
-        this.createTiledLevel = false;
+        this.activateLevelLoaderDeferred = false;
         this.levelToLoad = null;
         this.onLevelLoaded = null;
 
@@ -402,10 +406,8 @@ A_.Game = Class.extend({
         if (this.destroyLevel) {
             this.isRunning = false;
             this.clearLevel();
-            if (this.createTiledLevel) {
+            if (this.activateLevelLoaderDeferred) {
                 this.activateLevelLoader();
-            } else if (this.createEmptyLevel) {
-                this.onEmptyLevelLoaded();
             }
         }
     },

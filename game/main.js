@@ -2,12 +2,17 @@
 //A_.game.loadTiledLevel(level1);
 //A_.game.loadTiledLevel(level2);
 //A_.game.loadTiledLevel(ships);
-//
+
+var player;
 A_.game.loadEmptyLevel(farer1);
 A_.game.onLevelStarted = function () {
-    this.level.width = 1024;
-    this.level.height = 1024;
-    this.camera.followee = this.createSprite(Ship, A_.level.layers[0], 128, 128);
+    this.level.width = 2048;
+    this.level.height = 2048;
+    
+    this.level.createImageLayer({image: "starfield.png"});
+    
+    var layer = this.level.createSpriteLayer();
+    player = this.camera.followee = this.createSprite(Ship, layer, this.level.width / 2, this.level.height / 2);
 }
 
 // LOGIC
