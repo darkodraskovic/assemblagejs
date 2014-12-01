@@ -143,20 +143,21 @@ function createMap(game, mapData) {
             for (var j = 0; j < mapW; j++) {
                 tileData2D[j] = [];
                 for (var k = 0; k < mapH; k++) {
-                    tileData2D[j][k] = -1;
+//                    tileData2D[j][k] = -1;
+                    tileData2D[j][k] = 0;
                 }
             }
             for (var j = 0; j < tileData.length; j++) {
                 if (tileData[j] !== 0) {
-                    tileData[j] = tileData[j] - tileset.firstgid;
+                    tileData[j] = tileData[j] - tileset.firstgid + 1;
                     var gid = tileData[j];
                     var mapX = j % game.level.mapWidth;
                     var mapY = Math.floor(j / game.level.mapWidth);
                     tileData2D[mapX][mapY] = gid;
                 }
             }
-
-            var tilemap = new A_.TILES.Tilemap(layer, "graphics/" + game.level.directoryPrefix + img, tileW, tileH);
+            
+            var tilemap = new A_.TILES.Tilemap(layer, img, tileW, tileH);
             tilemap.createTilelayer(tileData2D);
 
             layer.baked = baked;

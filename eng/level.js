@@ -39,6 +39,13 @@ A_.Level = Class.extend({
         this.addSpriteLayer(layer);
         return layer;
     },
+    createTileLayer: function (image, tileW, tileH) {
+        var layer = this.createEmptyLayer();
+        var tilemap = new A_.TILES.Tilemap(layer, image, tileW, tileH);
+        layer.tilemap = tilemap;
+        this.addTileLayer(layer);
+        return layer;
+    },
     addLayer: function (layer) {
         this.layers.push(layer);
         this.container.addChild(layer);
@@ -60,6 +67,7 @@ A_.Level = Class.extend({
     },
     addDebugLayer: function (layer) {
         this.debugLayer = layer;
+        this.debugLayer.name = "debug";
         this.addLayer(layer);
     },
     // Layer Z POSITION

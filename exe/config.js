@@ -58,3 +58,11 @@ farer1 = {
     graphics: ["player.png", "starfield.png"],
     sounds: []
 };
+rot1 = {
+    name: "rot1",
+    directoryPrefix: "",
+    scripts: ["rot"],
+    map: "",
+    graphics: ["ball.png", "tilemap.png"],
+    sounds: []
+};

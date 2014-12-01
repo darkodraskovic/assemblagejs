@@ -92,7 +92,7 @@ A_.LevelLoader = Class.extend({
                     return "sounds/" + that.directoryPrefix + name;
                 else
                     return name;
-            })
+            });
         });
         this.soundsToLoad = soundsToLoad;
         this.onSoundsLoaded = callback;
@@ -103,15 +103,15 @@ A_.LevelLoader = Class.extend({
         new Howl({
             urls: that.soundsToLoad[that.soundCounter],
             onload: that.onSoundLoaded.bind(that)
-        })
+        });
     },
     onSoundLoaded: function () {
         this.soundCounter++;
         if (this.soundCounter < this.soundsToLoad.length) {
-            this.loadSound()
+            this.loadSound();
         } else {
             this.onSoundsLoaded();
         }
-    },
+    }
     // TODO: automatic class dependencies loading...
 }); 

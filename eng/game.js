@@ -93,6 +93,7 @@ A_.Game = Class.extend({
         text.anchor = new PIXI.Point(0.5, 0.5);
         text.position.x = this.renderer.width / 2;
         text.position.y = this.renderer.height / 2;
+        this.level.addLayer(layer);
 
         this.startLevel();
     },

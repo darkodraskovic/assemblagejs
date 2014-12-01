@@ -304,10 +304,14 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         }
     },
     collideWithTile: function (other, response) {
+        this.prevOverlapN = response.overlapN;
+        
         if (this.collisionResponse !== "sensor")
             this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
     },
     collide: function (other, response) {
+        this.prevOverlapN = response.overlapN;
+        
         this.collided = true;
         if (this.collisionResponse === "static") {
             return;
@@ -465,19 +469,23 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
 
     },
     collideWithStatic: function (other, response) {
-        var pon = this.prevOverlapN.clone();
+        this.processBounce(response.overlapN);
+        this._super(other, response);
+    },
+    collideWithTile: function (other, response) {
+        this.processBounce(response.overlapN);
         this._super(other, response);
 
+    },
+    processBounce: function (currentOverlapN) {
         // BUG: the sprite does not bounce in tilemap corners
-        if (this.bounciness > 0) {
-            if (response.overlapN.x !== 0 && Math.abs(this.velocity.x) > this.speed.x) {
-                if (pon.y === 0)
-                    this.bounced.horizontal = true;
-            }
-            if (response.overlapN.y !== 0 && Math.abs(this.velocity.y) > this.speed.y) {
-                if (pon.x === 0)
-                    this.bounced.vertical = true;
-            }
+        if (currentOverlapN.x !== 0 && Math.abs(this.velocity.x) > this.speed.x) {
+            if (this.prevOverlapN.y === 0)
+                this.bounced.horizontal = true;
+        }
+        if (currentOverlapN.y !== 0 && Math.abs(this.velocity.y) > this.speed.y) {
+            if (this.prevOverlapN.x === 0)
+                this.bounced.vertical = true;
         }
     }
 });
