@@ -16,7 +16,7 @@ A_.CONFIG.debug = true;
 
 A_.CONFIG.camera = {
     innerBoundOffset: 0.25,
-    worldBounded: false,
+    worldBounded: true,
     followType: "centered"
 };
 
@@ -52,15 +52,15 @@ var ships = {
 
 farer1 = {
     name: "farer1",
-    directoryPrefix: "",
+    directoryPrefix: "farer",
     scripts: ["farer"],
     map: "",
-    graphics: ["player.png", "starfield.png"],
+    graphics: ["laser.png", "nebula.png", "player.png", "rotor.png", "starfield.png"],
     sounds: []
 };
 rot1 = {
     name: "rot1",
-    directoryPrefix: "",
+    directoryPrefix: "rot",
     scripts: ["rot"],
     map: "",
     graphics: ["ball.png", "tilemap.png"],

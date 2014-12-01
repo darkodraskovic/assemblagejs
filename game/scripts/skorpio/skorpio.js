@@ -1,3 +1,4 @@
+// CLASSES
 var Anime = A_.SPRITES.ArcadeSprite.extend({
     frame: {w: 64, h: 64},
     collisionSize: {w: 26, h: 48},
@@ -346,3 +347,19 @@ var Computer = A_.SPRITES.CollisionSprite.extend({
 //        }
     }
 })
+
+// GAME LOGIC
+A_.game.preupdate = function () {
+    if (!A_.level.findSpriteByClass(Agent) && !A_.level.findSpriteByClass(Computer)) {
+        if (this.level.name === "level1") {
+            A_.game.loadTiledLevel(level2);
+        } else {
+            A_.game.loadTiledLevel(level1);
+        }
+    }    
+};
+
+A_.game.postupdate = function () {
+
+};
+

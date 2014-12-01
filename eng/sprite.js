@@ -2,8 +2,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     // init() is called when the sprite is instantiated with new keyword.
     init: function (layer, x, y, props) {
         // Add all the properties of the prop obj to this instance.
-        for (var prop in props) {
-            this[prop] = props[prop];
+        if (props) {
+            for (var prop in props) {
+                this[prop] = props[prop];
+            }
         }
 
 //        if (this.image) {
@@ -131,6 +133,12 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     getAlpha: function () {
         return this.sprite.alpha;
+    },
+    setPivot: function (x, y) {
+        this.sprite.pivot = new PIXI.Point(x, y);
+    },
+    getPivot: function (x, y) {
+        return this.sprite.pivot;
     },
     update: function () {
     },
@@ -305,13 +313,13 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     },
     collideWithTile: function (other, response) {
         this.prevOverlapN = response.overlapN;
-        
+
         if (this.collisionResponse !== "sensor")
             this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
     },
     collide: function (other, response) {
         this.prevOverlapN = response.overlapN;
-        
+
         this.collided = true;
         if (this.collisionResponse === "static") {
             return;
@@ -319,27 +327,23 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         else if (this.collisionResponse === "sensor") {
             return;
         } else {
-            if (this.collisionResponse === "active") {
-                if (other.collisionResponse === "static") {
+            if (other.collisionResponse === "static" || other.collisionResponse === "active") {
+                if (this.collisionPolygon === response.a) {
                     this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-                } else if (other.collisionResponse === "active" || other.collisionResponse === "passive") {
+                } else {
+                    this.setPositionRelative(response.overlapV.x, response.overlapV.y);
+                }
+            }   
+            else if (other.collisionResponse === "passive") {
+                if (this.collisionResponse === "light") {
                     if (this.collisionPolygon === response.a) {
                         this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-                    }
-                    else {
+                    } else {
                         this.setPositionRelative(response.overlapV.x, response.overlapV.y);
                     }
                 }
             }
-            else if (this.collisionResponse === "passive") {
-                if (other.collisionResponse === "static")
-                    this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-                if (other.collisionResponse === "active")
-                    this.setPositionRelative(response.overlapV.x, response.overlapV.y);
-            }
-            else if (this.collisionResponse === "light") {
-                this.setPositionRelative(response.overlapV.x, response.overlapV.y);
-            }
+
         }
     },
     containsPoint: function (x, y) {
@@ -394,6 +398,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
     isMoving: false,
     bounciness: 0.5,
     minBounceSpeed: 64,
+    angularSpeed: 0,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
@@ -461,6 +466,8 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         var y = startPos.y + vel.y;
         this.setPosition(x, y);
 
+        this.setRotation(this.getRotation() + this.angularSpeed * A_.game.dt);
+
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.isMoving = true;
         } else {
@@ -478,6 +485,8 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
 
     },
     processBounce: function (currentOverlapN) {
+        // This method must be called before the collide* _super in order
+        // to fetch the correct this.previousOverlapN
         // BUG: the sprite does not bounce in tilemap corners
         if (currentOverlapN.x !== 0 && Math.abs(this.velocity.x) > this.speed.x) {
             if (this.prevOverlapN.y === 0)

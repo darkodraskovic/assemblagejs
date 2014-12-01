@@ -120,8 +120,8 @@ A_.CAMERA.Camera = Class.extend({
 
         for (var i = 0; i < A_.level.container.children.length; i++) {
             var layer = A_.level.container.children[i];
-            layer.position.x = campPos.x * layer.parallax / 100 - campPos.x;
-            layer.position.y = campPos.y * layer.parallax / 100 - campPos.y;
+            layer.position.x = campPos.x - campPos.x * layer.parallax / 100 ;
+            layer.position.y = campPos.y - campPos.y * layer.parallax / 100;
         }
     }
 });

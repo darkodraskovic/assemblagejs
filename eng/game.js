@@ -358,6 +358,12 @@ A_.Game = Class.extend({
             }
         });
     },
+    preupdate: function () {
+        
+    },
+    postupdate: function () {
+        
+    },
     manageSprites: function () {
         this.destroySprites();
         this.createSprites();
