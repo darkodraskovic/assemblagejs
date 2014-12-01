@@ -56,7 +56,7 @@ farer1 = {
     scripts: ["farer"],
     map: "",
     graphics: ["laser.png", "nebula.png", "player.png", "rotor.png", "starfield.png"],
-    sounds: []
+    sounds: [["laser-beam.mp3"]]
 };
 rot1 = {
     name: "rot1",

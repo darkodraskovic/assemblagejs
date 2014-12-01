@@ -1,6 +1,8 @@
 // START
 var player;
 
+//A_.game.loadEmptyLevel();
+
 //A_.game.loadTiledLevel(level1);
 
 //A_.game.loadTiledLevel(ships);

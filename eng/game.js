@@ -156,11 +156,14 @@ A_.Game = Class.extend({
         this.level = new A_.Level();
 
         // If the level was loaded
-        if (this.levelLoader)
+        if (this.levelLoader.directoryPrefix)
             this.level.directoryPrefix = this.levelLoader.directoryPrefix;
         // If the empty level was created
         else
             this.level.directoryPrefix = "";
+        
+        this.level.width = 0;
+        this.level.height = 0;
 
         A_.level = this.level;
     },

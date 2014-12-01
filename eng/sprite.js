@@ -327,23 +327,42 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         else if (this.collisionResponse === "sensor") {
             return;
         } else {
-            if (other.collisionResponse === "static" || other.collisionResponse === "active") {
+            if (other.collisionResponse === "static") {
                 if (this.collisionPolygon === response.a) {
                     this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
                 } else {
                     this.setPositionRelative(response.overlapV.x, response.overlapV.y);
                 }
-            }   
-            else if (other.collisionResponse === "passive") {
-                if (this.collisionResponse === "light") {
+            }
+            else if (other.collisionResponse === "active") {
+                if (this.collisionResponse === "active" || this.collisionResponse === "passive") {
+                    if (this.collisionPolygon === response.a) {
+                        this.setPositionRelative(-response.overlapV.x * 0.5,
+                                -response.overlapV.y * 0.5);
+                    } else {
+                        this.setPositionRelative(response.overlapV.x * 0.5,
+                                response.overlapV.y * 0.5);
+                    }
+                }
+                else if (this.collisionResponse === "light") {
                     if (this.collisionPolygon === response.a) {
                         this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
                     } else {
                         this.setPositionRelative(response.overlapV.x, response.overlapV.y);
                     }
                 }
+            } 
+            else if (other.collisionResponse === "passive") {
+                if (this.collisionResponse === "active") {
+                    if (this.collisionPolygon === response.a) {
+                        this.setPositionRelative(-response.overlapV.x * 0.5,
+                                -response.overlapV.y * 0.5);
+                    } else {
+                        this.setPositionRelative(response.overlapV.x * 0.5,
+                                response.overlapV.y * 0.5);
+                    }
+                }
             }
-
         }
     },
     containsPoint: function (x, y) {
