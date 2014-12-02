@@ -130,6 +130,11 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getPivot: function () {
         return this.sprite.pivot;
     },
+    setAnchor: function (x, y){
+        _.each(this.animations, function (animation) {
+            animation.anchor = new PIXI.Point(x, y);
+        }) 
+    },
     // Z order
     toTopOfLayer: function () {
         this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
@@ -156,7 +161,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             var rotVec = this.point.clone().rotate(that.getRotation());
             this.calcPoint.x += rotVec.x;
             this.calcPoint.y += rotVec.y;
-        }
+        };
         this.spritePoints.push(sprPt);
         return sprPt;
     },
@@ -215,9 +220,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         if (typeof speed !== 'undefined') {
             this.animations[name].animationSpeed = speed;
         }
-//        else {
-//            this.animations[name].animationSpeed = 0.1;
-//        }
 
         // Turn off the previously playing animation
         if (this.currentAnimation) {
@@ -238,10 +240,9 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     bounded: true,
     outOfBounds: false,
-//    collisionSize: {w: 0, h: 0},
-//    collisionOffset: {x: 0, y: 0},
     collides: true,
     destroyThis: false,
+    drawDebugGraphics: true,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
 
@@ -439,6 +440,14 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         if (this.collisionPolygon) {
             y = y / this.frame.h;
             this.collisionPolygon.setScale(this.collisionPolygon.scale.x, y);
+        }
+    },
+    setAnchor: function (x, y) {
+        this._super(x, y);
+        if (this.collisionPolygon) {
+            var colPol = this.collisionPolygon;
+            var offset = new SAT.Vector(colPol.w * x, -colPol.h * y);
+            this.collisionPolygon.setOffset(offset);
         }
     }
 });

@@ -55,8 +55,9 @@ farer1 = {
     directoryPrefix: "farer",
     scripts: ["farer"],
     map: "",
-    graphics: ["laser.png", "nebula.png", "player.png", "rotor.png", "starfield.png"],
-    sounds: [["laser-beam.mp3"]]
+    graphics: ["bullet.png", "Explosion.png", "laser.png", 
+        "nebula.png", "player.png", "rotor.png", "starfield.png"],
+    sounds: [["bullet.wav"], ["explosion.mp3"],["laser-beam.mp3"]]
 };
 rot1 = {
     name: "rot1",

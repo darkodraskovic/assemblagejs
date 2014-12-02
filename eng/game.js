@@ -1,7 +1,7 @@
 A_.Game = Class.extend({
     scale: 1,
-    screenW: 800,
-    screenH: 600,
+    screenW: 1024,
+    screenH: 768,
     stageColor: 0x757575,
     isRunning: false,
     mousePosition: {stage: {x: 0, y: 0}, level: {x: 0, y: 0}},

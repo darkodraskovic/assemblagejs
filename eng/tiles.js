@@ -6,12 +6,18 @@ A_.TILES.Tile = Class.extend({
         this.mapPosition.x = x;
         this.mapPosition.y = y;
         this.tilemap = tilemap;
-    },   
+    },
+    setCollision: function () {
+        A_.collider.activateCollisionFor(this, null, this.tilemap.tileW, this.tilemap.tileH, 0, 0);
+        this.collisionResponse = "static";
+        A_.collider.collisionStatics.push(this);
+        A_.collider.collisionTiles.push(this);
+    },
     collideWithStatic: function (other, response) {
-        
+
     },
     collideWithDynamic: function (other, response) {
-        
+
     },
     getPosition: function () {
         return this.sprite.position;
@@ -92,10 +98,7 @@ A_.TILES.Tilemap = Class.extend({
         this.layer.addChild(tileSprite);
 
         if (this.layer.collision) {
-            A_.collider.activateCollisionFor(tile, null, this.tileW, this.tileH, 0, 0);
-            tile.collisionResponse = "static";
-            A_.collider.collisionStatics.push(tile);
-            A_.collider.collisionTiles.push(tile);
+            tile.setCollision();
         }
     },
     unsetTile: function (x, y) {
@@ -134,7 +137,7 @@ A_.TILES.Tilemap = Class.extend({
         return tileSprite;
     },
     createTile: function (gid, x, y) {
-        var sprite = this.createTileSprite(gid - 1);        
+        var sprite = this.createTileSprite(gid - 1);
         return new A_.TILES.Tile(gid, sprite, x, y, this);
     },
 });

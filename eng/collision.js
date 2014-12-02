@@ -123,14 +123,16 @@ A_.COLLISION.Collider = Class.extend({
     drawDebug: function () {
         for (i = 0; i < this.collisionSprites.length; i++) {
             var o = this.collisionSprites[i];
-            var debugGraphics = o.debugGraphics;
-            var colPol = this.collisionSprites[i].collisionPolygon;
+            if (o.drawDebugGraphics) {                
+                var debugGraphics = o.debugGraphics;
+                var colPol = this.collisionSprites[i].collisionPolygon;
 
-            debugGraphics.clear();
-            A_.POLYGON.Utils.drawSATPolygon(debugGraphics, colPol);
-            // draw circle in the center of the sprite
+                debugGraphics.clear();
+                A_.POLYGON.Utils.drawSATPolygon(debugGraphics, colPol);
+                // draw circle in the center of the sprite
 //            debugGraphics.lineStyle(2, 0xFF0000);
 //            debugGraphics.drawCircle(colPol.pos.x, colPol.pos.y, 3);
+            }
         }
     }
 });
