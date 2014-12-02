@@ -16,11 +16,11 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
         var effectsLayer = A_.level.findLayerByName("Effects");
         this.laser1 = A_.game.createSprite(Laser, effectsLayer,
                 this.getPositionX(), this.getPositionY(),
-                {pinTo: {parent: this, name: "laser1", x: 20, y: -12}});
+                {pinTo: {parent: this, name: "laser1", offsetX: 20, offsetY: -12}});
 
         this.laser2 = A_.game.createSprite(Laser, effectsLayer,
                 this.getPositionX(), this.getPositionY(),
-                {pinTo: {parent: this, name: "laser2", x: 20, y: 12}});
+                {pinTo: {parent: this, name: "laser2", offsetX: 20, offsetY: 12}});
     },
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);

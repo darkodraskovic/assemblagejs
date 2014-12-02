@@ -157,14 +157,9 @@ A_.MODULES.pinTo = {
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.pinTo.point = this.pinTo.parent.addSpritePoint(this.pinTo.name,
-                this.pinTo.x, this.pinTo.y);
-
-//        this.parentSpritePoint = this.parentSprite.addSpritePoint(this.parentSpritePointName,
-//                this.parentSpritePointX, this.parentSpritePointY);
+                this.pinTo.offsetX, this.pinTo.offsetY);
     },
     postupdate: function () {
-//        this.setRotation(this.parentSprite.getRotation());
-//        this.setPosition(this.parentSpritePoint.calcPoint.x, this.parentSpritePoint.calcPoint.y);
         this.setRotation(this.pinTo.parent.getRotation());
         this.setPosition(this.pinTo.point.calcPoint.x, this.pinTo.point.calcPoint.y);
 

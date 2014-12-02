@@ -94,17 +94,17 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getSize: function () {
         return {width: this.sprite.width, height: this.sprite.height};
     },
-    getWidth: function () {
-        return this.sprite.width;
-    },
     setWidth: function (width) {
         this.sprite.width = width;
     },
-    getHeight: function () {
-        return this.sprite.height;
+    getWidth: function () {
+        return this.sprite.width;
     },
     setHeight: function (height) {
         this.sprite.height = height;
+    },
+    getHeight: function () {
+        return this.sprite.height;
     },
     setScale: function (x, y) {
         this.sprite.scale = new PIXI.Point(x, y);
@@ -118,18 +118,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getRotation: function () {
         return this.sprite.rotation;
     },
-    toTopOfLayer: function () {
-        this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
-    },
-    toBottomOfLayer: function () {
-        this.layer.setChildIndex(this.sprite, 0);
-    },
-    setZ: function (n) {
-        this.layer.setChildIndex(this.sprite, n);
-    },
-    getZ: function () {
-        return this.layer.getChildIndex(this.sprite);
-    },
     setAlpha: function (n) {
         this.sprite.alpha = n;
     },
@@ -141,6 +129,19 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     getPivot: function () {
         return this.sprite.pivot;
+    },
+    // Z order
+    toTopOfLayer: function () {
+        this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
+    },
+    toBottomOfLayer: function () {
+        this.layer.setChildIndex(this.sprite, 0);
+    },
+    setZ: function (n) {
+        this.layer.setChildIndex(this.sprite, n);
+    },
+    getZ: function () {
+        return this.layer.getChildIndex(this.sprite);
     },
     // SPRITE POINTS
     addSpritePoint: function (name, x, y) {
