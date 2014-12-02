@@ -15,14 +15,12 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     onCreation: function () {
         var effectsLayer = A_.level.findLayerByName("Effects");
         this.laser1 = A_.game.createSprite(Laser, effectsLayer,
-                this.getPositionX(), this.getPositionY());
-        this.laser1.laserSource = this;
-        this.laser1.parentSpritePoint = this.addSpritePoint("laser1", 20, -12);
-        
+                this.getPositionX(), this.getPositionY(),
+                {pinTo: {parent: this, name: "laser1", x: 20, y: -12}});
+
         this.laser2 = A_.game.createSprite(Laser, effectsLayer,
-                this.getPositionX(), this.getPositionY());
-        this.laser2.laserSource = this;
-        this.laser2.parentSpritePoint = this.addSpritePoint("laser2", 20, 12);
+                this.getPositionX(), this.getPositionY(),
+                {pinTo: {parent: this, name: "laser2", x: 20, y: 12}});
     },
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
@@ -105,15 +103,9 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
 
             this.sound.fade(0.75, 0, 450, null, this.soundId);
         }
-    },
-    postupdate: function () {
-        var sourceRot = this.laserSource.getRotation();
-        this.setRotation(sourceRot);
-        this.setPosition(this.parentSpritePoint.calcPoint.x, this.parentSpritePoint.calcPoint.y);        
-
-        this._super();        
     }
 });
+Laser.inject(A_.MODULES.pinTo);
 
 var Rotor = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "rotor.png",
@@ -152,4 +144,4 @@ A_.game.onLevelStarted = function () {
     for (var i = 0; i < numRotors; i++) {
         this.createSprite(Rotor, spriteLayer, _.random(0, this.level.width), _.random(0, this.level.height));
     }
-}
+};
