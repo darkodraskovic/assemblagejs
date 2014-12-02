@@ -1,5 +1,5 @@
 // CLASSES
-var Ship = A_.SPRITES.ArcadeSprite.extend({
+var Player = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "player.png",
     collisionResponse: "active",
     init: function (layer, x, y, props) {
@@ -11,17 +11,18 @@ var Ship = A_.SPRITES.ArcadeSprite.extend({
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("down", A_.KEY.S);
         A_.INPUT.addMapping("up", A_.KEY.W);
-
-
     },
     onCreation: function () {
         var effectsLayer = A_.level.findLayerByName("Effects");
         this.laser1 = A_.game.createSprite(Laser, effectsLayer,
-                this.getPositionX(), this.getPositionY(), {pivotOffset: {x: 20, y: -12}});
+                this.getPositionX(), this.getPositionY());
         this.laser1.laserSource = this;
+        this.laser1.parentSpritePoint = this.addSpritePoint("laser1", 20, -12);
+        
         this.laser2 = A_.game.createSprite(Laser, effectsLayer,
-                this.getPositionX(), this.getPositionY(), {pivotOffset: {x: 20, y: 12}});
+                this.getPositionX(), this.getPositionY());
         this.laser2.laserSource = this;
+        this.laser2.parentSpritePoint = this.addSpritePoint("laser2", 20, 12);
     },
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
@@ -34,13 +35,18 @@ var Ship = A_.SPRITES.ArcadeSprite.extend({
             this.velocity.y = -this.speed.y / 3 * Math.sin(rot);
             this.velocity.x = -this.speed.x / 3 * Math.cos(rot);
         }
+        var speedSign = 0;
+        if (this.getRotation() < 0)
+            speedSign = -1;
+        else
+            speedSign = 1;
         if (A_.INPUT.down["left"]) {
-            this.velocity.y = -this.speed.y * Math.sin(rot + Math.PI / 2);
-            this.velocity.x = -this.speed.x * Math.cos(rot + Math.PI / 2);
+            this.velocity.y = speedSign * this.speed.y * Math.sin(rot + Math.PI / 2);
+            this.velocity.x = speedSign * this.speed.x * Math.cos(rot + Math.PI / 2);
         }
         if (A_.INPUT.down["right"]) {
-            this.velocity.y = +this.speed.y * Math.sin(rot + Math.PI / 2);
-            this.velocity.x = +this.speed.x * Math.cos(rot + Math.PI / 2);
+            this.velocity.y = -speedSign * this.speed.y * Math.sin(rot + Math.PI / 2);
+            this.velocity.x = -speedSign * this.speed.x * Math.cos(rot + Math.PI / 2);
         }
         this._super();
     }
@@ -51,8 +57,6 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.currentAnimation.anchor.x = 0;
-        this.deltaRotation = A_.UTILS.angleTo({x: 0, y: 0}, this.pivotOffset);
-        this.deltaPosition = A_.UTILS.distanceTo({x: 0, y: 0}, this.pivotOffset);
         this.setAlpha(0.4);
         this.setScale(0.25, 1);
         this.baseScale = {x: 0.3, y: 1};
@@ -94,7 +98,6 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
                 this.soundId = id;
             }.bind(this));
             this.sound.fade(0, 0.75, 250, null, this.soundId);
-
         }
         if (state === "off") {
             this.setAlpha(0.4);
@@ -104,13 +107,11 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
         }
     },
     postupdate: function () {
-        this._super();
         var sourceRot = this.laserSource.getRotation();
         this.setRotation(sourceRot);
-        this.setPosition(this.laserSource.getPositionX(), this.laserSource.getPositionY());
-        this.setPositionRelative(this.deltaPosition * Math.cos(this.deltaRotation + sourceRot),
-                this.deltaPosition * Math.sin(this.deltaRotation + sourceRot));
+        this.setPosition(this.parentSpritePoint.calcPoint.x, this.parentSpritePoint.calcPoint.y);        
 
+        this._super();        
     }
 });
 
@@ -127,7 +128,6 @@ var Rotor = A_.SPRITES.ArcadeSprite.extend({
         this._super();
     }
 });
-
 
 // VARS & CONSTS
 var numRotors = 30;
@@ -147,7 +147,7 @@ A_.game.onLevelStarted = function () {
     var effectsLayer = this.level.createSpriteLayer();
     effectsLayer.name = "Effects";
 
-    player = this.camera.followee = this.createSprite(Ship, spriteLayer, this.level.width / 2, this.level.height / 2);
+    player = this.camera.followee = this.createSprite(Player, spriteLayer, this.level.width / 2, this.level.height / 2);
     for (var i = 0; i < numRotors; i++) {
         this.createSprite(Rotor, spriteLayer, _.random(0, this.level.width), _.random(0, this.level.height));
     }

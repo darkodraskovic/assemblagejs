@@ -66,6 +66,8 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.layer = layer;
         this.layer.addChild(this.sprite);
         this.setPosition(x, y);
+
+        this.spritePoints = [];
     },
     // PIXI/SAT dependent GETTERS and SETTERS.
     // Used to keep in sync PIXI, SAT and engine sprite properties
@@ -137,14 +139,51 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     setPivot: function (x, y) {
         this.sprite.pivot = new PIXI.Point(x, y);
     },
-    getPivot: function (x, y) {
+    getPivot: function () {
         return this.sprite.pivot;
     },
+    // SPRITE POINTS
+    addSpritePoint: function (name, x, y) {
+        var sprPt = {};
+        sprPt.point = new SAT.Vector(x, y);
+        sprPt.calcPoint = new SAT.Vector(x, y);
+        sprPt.name = name;
+        var that = this;
+        sprPt.update = function () {
+            this.calcPoint.x = that.getPositionX();
+            this.calcPoint.y = that.getPositionY();
+            var rotVec = this.point.clone().rotate(that.getRotation());
+            this.calcPoint.x += rotVec.x;
+            this.calcPoint.y += rotVec.y;
+        }
+        this.spritePoints.push(sprPt);
+        return sprPt;
+    },
+    getSpritePoint: function (name) {
+        return _.find(this.spritePoints, function (sprPt) {
+            return sprPt.name === name;
+        })
+    },
+    // CREATION/DESTRUCTION & UPDATE
     update: function () {
+
     },
     postupdate: function () {
+        _.each(this.spritePoints, function (sprPt) {
+            sprPt.update();
+        });
     },
-    // Animation
+    onCreation: function () {
+
+    },
+    destroy: function () {
+        A_.game.spritesToDestroy.push(this);
+        this.onDestruction();
+    },
+    onDestruction: function () {
+
+    },
+    // ANIMATION
     addAnimation: function (name, frames, speed) {
         // set default speed to 1; 
         if (!speed) {
@@ -192,16 +231,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.animations[name].visible = true;
         // goes to a frame and begins playing the animation
         this.animations[name].gotoAndPlay(frame);
-    },
-    onCreation: function () {
-
-    },
-    destroy: function () {
-        A_.game.spritesToDestroy.push(this);
-        this.onDestruction();
-    },
-    onDestruction: function () {
-
     }
 });
 
@@ -351,7 +380,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
                         this.setPositionRelative(response.overlapV.x, response.overlapV.y);
                     }
                 }
-            } 
+            }
             else if (other.collisionResponse === "passive") {
                 if (this.collisionResponse === "active") {
                     if (this.collisionPolygon === response.a) {
@@ -485,12 +514,18 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         var y = startPos.y + vel.y;
         this.setPosition(x, y);
 
-        this.setRotation(this.getRotation() + this.angularSpeed * A_.game.dt);
 
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.isMoving = true;
         } else {
             this.isMoving = false;
+        }
+
+        if (this.angularSpeed) {
+            this.setRotation(this.getRotation() + this.angularSpeed * A_.game.dt);
+            this.isRotating = true;
+        } else {
+            this.isRotating = false;
         }
 
     },
