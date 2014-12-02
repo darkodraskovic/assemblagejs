@@ -1,6 +1,4 @@
 // START
-var player;
-
 //A_.game.loadEmptyLevel();
 
 //A_.game.loadTiledLevel(level1);

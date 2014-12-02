@@ -130,6 +130,7 @@ var Rotor = A_.SPRITES.ArcadeSprite.extend({
 });
 
 // VARS & CONSTS
+var player;
 var numRotors = 30;
 
 // PROCEDURES

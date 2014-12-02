@@ -1,11 +1,4 @@
-// Vars & Consts
-var tileW = 48;
-var tileH = 48;
-
-var mapDataFloors = [];
-var mapDataWalls = [];
-
-// Classes
+// CLASSES
 var Ball = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "ball.png",
     collisionResponse: "dynamic",
@@ -17,7 +10,16 @@ var Ball = A_.SPRITES.ArcadeSprite.extend({
 Ball.inject(A_.MODULES.Topdown);
 Ball.inject(A_.MODULES.TopdownWASD);
 
-// Procedures
+// VARS & CONSTS
+var tileW = 48;
+var tileH = 48;
+
+var mapDataFloors = [];
+var mapDataWalls = [];
+
+var player;
+
+// PROCEDURES
 function createRoguelikeMap() {
     var mapW = A_.level.width / tileW;
     var mapH = A_.level.height / tileH;
