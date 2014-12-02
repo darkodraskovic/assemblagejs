@@ -123,7 +123,7 @@ var Rotor = A_.SPRITES.ArcadeSprite.extend({
 
 // VARS & CONSTS
 var player;
-var numRotors = 30;
+var numRotors = 40;
 
 // PROCEDURES
 A_.game.onLevelStarted = function () {

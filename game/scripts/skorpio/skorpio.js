@@ -155,7 +155,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
             this.destroy();
         }
     },
-    collide: function (other, response) {
+    collideWithDynamic: function (other, response) {
         if (other instanceof Agent) {
             other.alive = false;
             other.motionState = "idle";
@@ -164,7 +164,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
             this.destroy();
         }
     },
-    collideWithTile: function () {
+    collideWithStatic: function (other, response) {
         this.destroy();
     }
 });
@@ -231,7 +231,7 @@ var LaserTip = A_.SPRITES.CollisionSprite.extend({
             this.timer = null;
         }
     },
-    collide: function (other, response) {
+    collideWithStatic: function (other, response) {
         this._super(other, response);
         if (other.collisionResponse === "static") {
             if (!this.timer) {

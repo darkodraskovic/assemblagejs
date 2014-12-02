@@ -7,7 +7,10 @@ A_.TILES.Tile = Class.extend({
         this.mapPosition.y = y;
         this.tilemap = tilemap;
     },   
-    collideWithSprite: function (other, response) {
+    collideWithStatic: function (other, response) {
+        
+    },
+    collideWithDynamic: function (other, response) {
         
     },
     getPosition: function () {
@@ -87,14 +90,11 @@ A_.TILES.Tilemap = Class.extend({
         tileSprite.position.y = y;
 
         this.layer.addChild(tileSprite);
-//        if (this.layer.collision) {
-//            A_.collider.activateCollisionFor(tileSprite, null, this.tileW, this.tileH, 0, 0);
-//            tileSprite.collisionResponse = "static";
-//            A_.collider.collisionTiles.push(tileSprite);
-//        }
+
         if (this.layer.collision) {
             A_.collider.activateCollisionFor(tile, null, this.tileW, this.tileH, 0, 0);
             tile.collisionResponse = "static";
+            A_.collider.collisionStatics.push(tile);
             A_.collider.collisionTiles.push(tile);
         }
     },
@@ -109,14 +109,11 @@ A_.TILES.Tilemap = Class.extend({
             // REMOVE FROM
             // Pixi
             this.layer.removeChild(sprite);
-            // Statics
-//            if (this.layer.collision) {
-//                var ind = A_.collider.collisionTiles.indexOf(sprite);
-//                A_.collider.collisionTiles.splice(ind, 1);
-//            }
+            // Collisions
             if (this.layer.collision) {
                 var ind = A_.collider.collisionTiles.indexOf(tile);
                 A_.collider.collisionTiles.splice(ind, 1);
+                A_.collider.collisionStatics.splice(ind, 1);
             }
             // Tilemap
             this.tiles[x][y] = null;

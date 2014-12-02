@@ -316,6 +316,12 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.collides = true;
             if (!this.collisionResponse) {
                 this.collisionResponse = "sensor";
+                A_.game.collider.collisionDynamics.push(this);
+            } else {
+                if (this.collisionResponse === "static")
+                    A_.game.collider.collisionStatics.push(this);
+                else
+                    A_.game.collider.collisionDynamics.push(this);
             }
             A_.game.collider.collisionSprites.push(this);
         }
@@ -341,30 +347,24 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.updateCollisionPolygon();
         }
     },
-    collideWithTile: function (other, response) {
+    collideWithStatic: function (other, response) {
         this.prevOverlapN = response.overlapN;
+        this.collided = true;
 
         if (this.collisionResponse !== "sensor")
             this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
     },
-    collide: function (other, response) {
+    collideWithDynamic: function (other, response) {
         this.prevOverlapN = response.overlapN;
-
         this.collided = true;
+        
         if (this.collisionResponse === "static") {
             return;
         }
         else if (this.collisionResponse === "sensor") {
             return;
         } else {
-            if (other.collisionResponse === "static") {
-                if (this.collisionPolygon === response.a) {
-                    this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-                } else {
-                    this.setPositionRelative(response.overlapV.x, response.overlapV.y);
-                }
-            }
-            else if (other.collisionResponse === "active") {
+            if (other.collisionResponse === "active") {
                 if (this.collisionResponse === "active" || this.collisionResponse === "passive") {
                     if (this.collisionPolygon === response.a) {
                         this.setPositionRelative(-response.overlapV.x * 0.5,

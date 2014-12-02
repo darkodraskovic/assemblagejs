@@ -4,6 +4,8 @@ A_.COLLISION.Collider = Class.extend({
         this.debugLayer.parallax = 100;
         this.collisionSprites = [];
         this.collisionTiles = [];
+        this.collisionStatics = [];
+        this.collisionDynamics = [];
         this.collisionMasks = [];
     },
     activateCollisionFor: function (o, polygon, w, h, offsetX, offsetY) {
@@ -68,41 +70,49 @@ A_.COLLISION.Collider = Class.extend({
         };
     },
     processCollisions: function () {
-        // SPRITES        
-        _.each(this.collisionSprites, function (sprite) {sprite.collided = false});
-        var len = this.collisionSprites.length;        
+        _.each(this.collisionSprites, function (sprite) {
+            sprite.collided = false;
+        });
+
+        // DYNAMICS
+        var len = this.collisionDynamics.length;
         for (i = 0; i < len - 1; i++) {
-            var o1 = this.collisionSprites[i];
+            var o1 = this.collisionDynamics[i];
             for (j = i + 1; j < len; j++) {
-                var o2 = this.collisionSprites[j];
+                var o2 = this.collisionDynamics[j];
                 // Bitmasks. Currently inactive. DO NOTE DELETE!
 //                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
 //                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
                 var response = new SAT.Response();
                 var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
                 if (collided) {
-                    o1.collide(o2, response);
-                    o2.collide(o1, response);
+                    o1.collideWithDynamic(o2, response);
+                    o2.collideWithDynamic(o1, response);
 //                    }
-                } 
-            }
-        }
-
-        // TILES
-        var lenSprites = this.collisionSprites.length;
-        var lenTiles = this.collisionTiles.length;
-        for (i = 0; i < lenSprites; i++) {
-            var o1 = this.collisionSprites[i];
-            for (j = 0; j < lenTiles; j++) {
-                var o2 = this.collisionTiles[j];
-                var response = new SAT.Response();
-                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
-                if (collided) {
-                    o1.collideWithTile(o2, response);
-                    o2.collideWithSprite(o1, response);
                 }
             }
         }
+        
+        // STATICS
+        var lenDyn = this.collisionDynamics.length;
+        var lenStat = this.collisionStatics.length;
+        for (i = 0; i < lenDyn; i++) {
+            var o1 = this.collisionDynamics[i];
+            for (j = 0; j < lenStat; j++) {
+                var o2 = this.collisionStatics[j];
+                // Bitmasks. Currently inactive. DO NOTE DELETE!
+//                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
+//                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
+                var response = new SAT.Response();
+                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
+                if (collided) {
+                    o1.collideWithStatic(o2, response);
+                    o2.collideWithDynamic(o1, response);
+//                    }
+                }
+            }
+        }
+
     },
     setDebug: function () {
         for (i = 0; i < this.collisionSprites.length; i++) {

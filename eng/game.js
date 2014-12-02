@@ -260,6 +260,12 @@ A_.Game = Class.extend({
         if (_.contains(this.collider.collisionSprites, sprite)) {
             this.collider.collisionSprites.splice(this.collider.collisionSprites.indexOf(sprite), 1);
         }
+        if (_.contains(this.collider.collisionDynamics, sprite)) {
+            this.collider.collisionDynamics.splice(this.collider.collisionDynamics.indexOf(sprite), 1);
+        }
+        if (_.contains(this.collider.collisionStatics, sprite)) {
+            this.collider.collisionStatics.splice(this.collider.collisionStatics.indexOf(sprite), 1);
+        }
 
         if (sprite.collisionPolygon) {
             delete(sprite.collisionPolygon);
