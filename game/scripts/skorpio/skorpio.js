@@ -275,7 +275,7 @@ var LaserFire = A_.SPRITES.AnimatedSprite.extend({
 //        this.sprite.filters = [blur];
     },
     onCreate: function () {
-        this.toTopOfLayer();
+        this.setZ("top");
     },
     update: function () {
         this._super();

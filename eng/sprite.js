@@ -169,22 +169,27 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         return this.sprite.pivot;
     },
     // Z order
-    toTopOfLayer: function () {
+    setZ: function(position) {
         if (this.getContainer())
             return;
-        this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
-    },
-    toBottomOfLayer: function () {
-        if (this.getContainer())
-            return;
-        this.layer.setChildIndex(this.sprite, 0);
-    },
-    setZ: function (n) {
-        this.layer.setChildIndex(this.sprite, n);
+        if (typeof position === "string") {
+            if (position === "top") {
+                this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
+                return;
+            } else if (position === "bottom") {                
+                this.layer.setChildIndex(this.sprite, 0);
+                return;
+            }
+        } else if (typeof position === "number") {
+            this.layer.setChildIndex(this.sprite, n);
+        }
     },
     getZ: function () {
+        if (this.getContainer())
+            return;
         return this.layer.getChildIndex(this.sprite);
     },
+    // ANCHOR
     setAnchor: function (x, y) {
         _.each(this.animations, function (animation) {
             animation.anchor = new PIXI.Point(x, y);
