@@ -7,7 +7,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                 this[prop] = props[prop];
             }
         }
-
+        
 //        if (this.image) {
 //            this.image = "assets/" + this.image;
 //            this.sprite = new PIXI.Sprite.fromImage(this.image);
@@ -70,9 +70,9 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.alpha = 1;
 
         if (layer instanceof A_.SPRITES.AnimatedSprite) {
-            window.console.log("bingo");
             layer.addSprite(this);
-            this.parent = layer;
+            this.container = layer;
+            this.layer = this.container.layer;
         }
         else {
             this.layer = layer;
@@ -88,6 +88,17 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     getSpriteAt: function (i) {
         return this.sprites[i];
+    },
+    getContainer: function (){
+        return this.container;
+    },
+    // TODO
+    toTopOfContainer: function () {
+        
+    },
+    // TODO
+    toBottomOfContainer: function () {
+        
     },
     getLevelPosition: function () {
         return A_.level.container.toLocal(A_.game.origin, this.sprite);
@@ -133,7 +144,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.sprite.scale = new PIXI.Point(x, y);
         _.each(this.spritePoints, function (sp) {
             sp.point.x = sp.origPoint.x * x;
-            sp.point.y = sp.origPoint.x * y;
+            sp.point.y = sp.origPoint.y * y;
         });
     },
     getScale: function () {
@@ -159,9 +170,13 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     // Z order
     toTopOfLayer: function () {
+        if (this.getContainer())
+            return;
         this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
     },
     toBottomOfLayer: function () {
+        if (this.getContainer())
+            return;
         this.layer.setChildIndex(this.sprite, 0);
     },
     setZ: function (n) {
@@ -170,7 +185,12 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getZ: function () {
         return this.layer.getChildIndex(this.sprite);
     },
-    // ANCHOR & SPRITE POINTS
+    setAnchor: function (x, y) {
+        _.each(this.animations, function (animation) {
+            animation.anchor = new PIXI.Point(x, y);
+        });
+    },
+     // SPRITE POINTS
     addSpritePoint: function (name, x, y) {
         var sprPt = {};
         sprPt.origPoint = new SAT.Vector(x, y);
@@ -185,6 +205,15 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             this.calcPoint.x += rotVec.x;
             this.calcPoint.y += rotVec.y;
         };
+        sprPt.getPosition = function () {
+            return this.calcPoint;
+        };
+        sprPt.getPositionX = function () {
+            return this.calcPoint.x;
+        };
+        sprPt.getPositionY = function () {
+            return this.calcPoint.y;
+        };
         this.spritePoints.push(sprPt);
         return sprPt;
     },
@@ -193,22 +222,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             return sprPt.name === name;
         })
     },
-    setAnchor: function (x, y) {
-        _.each(this.animations, function (animation) {
-            animation.anchor = new PIXI.Point(x, y);
-        });
-        _.each(this.sprites, function (sprite) {
-            sprite.anchor = new PIXI.Point(sprite.spx, y);
-        });
-//        var that = this;
-//        _.each(this.spritePoints, function (sp) {
-//            // The sprite has a (0.5, 0.5) anchor by default.
-//            // Otherwise, we would scale simply by x and y.
-//            var scale = that.getScale();
-//            sp.point.x = sp.origPoint.x * scale.x - that.getWidth() * (x - 0.5);
-//            sp.point.y = sp.origPoint.y * scale.y - that.getHeight() * (y - 0.5);
-//        });
-    },
+
     // CREATION/DESTRUCTION & UPDATE
     update: function () {
 
@@ -481,17 +495,6 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.collisionPolygon.setScale(this.collisionPolygon.scale.x, y);
         }
     },
-    setAnchor: function (x, y) {
-        this._super(x, y);
-        if (this.collisionPolygon) {
-            var colPol = this.collisionPolygon;
-            // TODO: Factor in the original offset; Currently, this works only for centered polygons, probably.
-//            var offset = new SAT.Vector(-this.getWidth() * x, -this.getHeight() * y);
-            var offset = new SAT.Vector(-this.getWidth() * (x - 0.5) + colPol.origOffset.x
-                    , -this.getHeight() * (y - 0.5) + colPol.origOffset.y);
-            colPol.setOffset(offset);
-        }
-    }
 });
 
 A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({

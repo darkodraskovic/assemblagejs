@@ -16,6 +16,8 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     onCreation: function () {
         this.laser1 = A_.game.createSprite(Laser, this, 18, -12);
         this.laser2 = A_.game.createSprite(Laser, this, 18, 12);
+        this.addSpritePoint("bullet1", 32, -12);
+        this.addSpritePoint("bullet2", 32, 12);
     },
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
@@ -48,12 +50,15 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
         }
     },
     shootBullet: function () {
-        var pos1 = this.getSpriteAt(0).getLevelPosition();
+//        var pos1 = this.getSpriteAt(0).getLevelPosition();
+        var pos1 = this.getSpritePoint("bullet1").getPosition();
         var bullet1 = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos1.x, pos1.y);
         bullet1.setRotation(this.getRotation());
         bullet1.velocity.y = bullet1.speed * Math.sin(bullet1.getRotation());
         bullet1.velocity.x = bullet1.speed * Math.cos(bullet1.getRotation());
-        var pos2 = this.getSpriteAt(1).getLevelPosition();
+        
+//        var pos2 = this.getSpriteAt(1).getLevelPosition();
+        var pos2 = this.getSpritePoint("bullet2").getPosition();
         var bullet2 = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos2.x, pos2.y);
         bullet2.setRotation(this.getRotation());
         bullet2.velocity.y = bullet1.speed * Math.sin(bullet1.getRotation());
@@ -65,8 +70,8 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
     animSheet: "laser.png",
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
-        this.setAnchor(0, 0.5);
         this.setAlpha(0.4);
+        this.setAnchor(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
         this.sound = A_.game.createSound({
             urls: ['laser-beam.mp3'],
@@ -79,6 +84,10 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
         this.origH = this.getHeight();
         A_.EXTENSIONS.Sine.addTo(this, {period: 0.5, periodRand: 25, value: 3, valueRand: 25});
     },
+    onCreation: function () {
+        this.origPositionX = this.getPositionX();
+        window.console.log(this.origPosition);
+    },
     update: function () {
         if (A_.game.rightpressed) {
             this.toggleFire("on");
@@ -87,11 +96,11 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
             this.toggleFire("off");
         }
         if (A_.game.rightdown) {
-            this.setWidth(A_.UTILS.distanceTo(this.getLevelPosition(), A_.game.mousePosition.level));
+            this.setWidth(A_.UTILS.distanceTo(this.container.getLevelPosition(), A_.game.mousePosition.level));
         }
-//        else
-//            this.setWidth(A_.UTILS.distanceTo(this.getPosition(), A_.game.mousePosition.level) * 0.2);
 
+//        this.setPosition((this.getWidth() / 2 + this.origPositionX) * Math.cos(this.getRotation()), this.getPositionY())
+        
         this._super();
         var val = this.sine.computeValue();
 
@@ -138,7 +147,6 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     },
     onCreation: function () {
         this.setAlpha(0.75);
-        this.setAnchor(0, 0.5);
     },
     update: function () {
         this._super();
@@ -183,7 +191,7 @@ var Explosion = A_.SPRITES.AnimatedSprite.extend({
         };
         A_.game.createSound({
             urls: ['explosion.mp3'],
-            volume: 0.6
+            volume: 0.35
         }).play();
     },
 });
