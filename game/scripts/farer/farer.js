@@ -99,8 +99,6 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
             this.setWidth(A_.UTILS.distanceTo(this.container.getLevelPosition(), A_.game.mousePosition.level));
         }
 
-//        this.setPosition((this.getWidth() / 2 + this.origPositionX) * Math.cos(this.getRotation()), this.getPositionY())
-        
         this._super();
         var val = this.sine.computeValue();
 

@@ -5,7 +5,7 @@
 
 //A_.game.loadTiledLevel(ships);
 
-//A_.game.loadEmptyLevel(farer1);
+A_.game.loadEmptyLevel(farer1);
 
 //A_.game.loadEmptyLevel(rot1);
 

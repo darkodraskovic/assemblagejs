@@ -7,7 +7,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                 this[prop] = props[prop];
             }
         }
-        
+
 //        if (this.image) {
 //            this.image = "assets/" + this.image;
 //            this.sprite = new PIXI.Sprite.fromImage(this.image);
@@ -89,17 +89,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getSpriteAt: function (i) {
         return this.sprites[i];
     },
-    getContainer: function (){
-        return this.container;
-    },
-    // TODO
-    toTopOfContainer: function () {
-        
-    },
-    // TODO
-    toBottomOfContainer: function () {
-        
-    },
     getLevelPosition: function () {
         return A_.level.container.toLocal(A_.game.origin, this.sprite);
     },
@@ -168,15 +157,17 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getPivot: function () {
         return this.sprite.pivot;
     },
-    // Z order
-    setZ: function(position) {
-        if (this.getContainer())
+    // Z ORDER
+    setZ: function (position) {
+        // TODO
+        if (this.getContainer()) {
             return;
+        }
         if (typeof position === "string") {
             if (position === "top") {
                 this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
                 return;
-            } else if (position === "bottom") {                
+            } else if (position === "bottom") {
                 this.layer.setChildIndex(this.sprite, 0);
                 return;
             }
@@ -185,8 +176,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         }
     },
     getZ: function () {
-        if (this.getContainer())
+        // TODO
+        if (this.getContainer()) {
             return;
+        }
         return this.layer.getChildIndex(this.sprite);
     },
     // ANCHOR
@@ -195,7 +188,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             animation.anchor = new PIXI.Point(x, y);
         });
     },
-     // SPRITE POINTS
+    // SPRITE POINTS
     addSpritePoint: function (name, x, y) {
         var sprPt = {};
         sprPt.origPoint = new SAT.Vector(x, y);
@@ -227,7 +220,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             return sprPt.name === name;
         })
     },
-
     // CREATION/DESTRUCTION & UPDATE
     update: function () {
 
