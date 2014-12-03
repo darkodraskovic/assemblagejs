@@ -1,5 +1,6 @@
 // SAT EXTENSION
 SAT.Polygon.prototype.setScale = function (x, y) {
+    // The first .scale is a SAT vector. The second is its scale() method.
     this.scale.scale(x, y);
     
     this.points = _.map(this.origPoints, function (origPoint) {

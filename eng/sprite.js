@@ -48,7 +48,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                                     this.frame.w, this.frame.h));
             }
             var animations = new PIXI.DisplayObjectContainer();
-//            animations.anchor = new PIXI.Point(0.5, 0.5);
             this.sprite.addChild(animations);
 
             this.addAnimation("default", [0], 1);
@@ -82,6 +81,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
         this.spritePoints = [];
     },
+    // SPRITE CHILDREN
     addSprite: function (child) {
         this.sprites.push(child);
         this.sprite.children[1].addChild(child.sprite);
@@ -89,11 +89,11 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getSpriteAt: function (i) {
         return this.sprites[i];
     },
+    // PIXI/SAT dependent GETTERS and SETTERS.
+    // Used to keep in sync PIXI, SAT and engine sprite properties
     getLevelPosition: function () {
         return A_.level.container.toLocal(A_.game.origin, this.sprite);
     },
-    // PIXI/SAT dependent GETTERS and SETTERS.
-    // Used to keep in sync PIXI, SAT and engine sprite properties
     setPosition: function (x, y) {
         this.sprite.position.x = x;
         this.sprite.position.y = y;
@@ -152,7 +152,12 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         return this.sprite.alpha;
     },
     setPivot: function (x, y) {
-        this.sprite.pivot = new PIXI.Point(x, y);
+        this.sprite.pivot = new PIXI.Point(x, y);    
+        // TODO Factor in the scaling!
+        _.each(this.spritePoints, function (sprPt) {
+            sprPt.point.x = sprPt.origPoint.x - x;
+            sprPt.point.y = sprPt.origPoint.y - y;
+        });
     },
     getPivot: function () {
         return this.sprite.pivot;
@@ -172,7 +177,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                 return;
             }
         } else if (typeof position === "number") {
-            this.layer.setChildIndex(this.sprite, n);
+            this.layer.setChildIndex(this.sprite, position);
         }
     },
     getZ: function () {
@@ -184,6 +189,8 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     // ANCHOR
     setAnchor: function (x, y) {
+        // Currently, affects only the animations of the sprite.
+        // Contained children, sprite points and polys are not affected. 
         _.each(this.animations, function (animation) {
             animation.anchor = new PIXI.Point(x, y);
         });
@@ -492,6 +499,14 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.collisionPolygon.setScale(this.collisionPolygon.scale.x, y);
         }
     },
+    setPivot: function (x, y) {
+        this._super(x, y);
+        // TODO Factor in the scaling!
+        var colPol = this.collisionPolygon;
+        colPol.offset.x = colPol.origOffset.x - x;
+        colPol.offset.y = colPol.origOffset.x - y;
+        colPol.recalc();
+    }
 });
 
 A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
