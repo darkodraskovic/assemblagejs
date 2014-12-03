@@ -47,12 +47,18 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                             new PIXI.Rectangle(j * this.frame.w, i * this.frame.h,
                                     this.frame.w, this.frame.h));
             }
+            var animations = new PIXI.DisplayObjectContainer();
+//            animations.anchor = new PIXI.Point(0.5, 0.5);
+            this.sprite.addChild(animations);
+
             this.addAnimation("default", [0], 1);
             this.setAnimation("default");
             this.addAnimation("all", _.range(0, this.textures.length), 0.05);
         }
 
-        this.sprite.anchor = new PIXI.Point(0.5, 0.5);
+        var sprites = new PIXI.DisplayObjectContainer();
+        this.sprite.addChild(sprites);
+        this.sprites = [];
 
         this.sprite.rotation = 0;
 
@@ -63,11 +69,28 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
         this.alpha = 1;
 
-        this.layer = layer;
-        this.layer.addChild(this.sprite);
+        if (layer instanceof A_.SPRITES.AnimatedSprite) {
+            window.console.log("bingo");
+            layer.addSprite(this);
+            this.parent = layer;
+        }
+        else {
+            this.layer = layer;
+            this.layer.addChild(this.sprite);
+        }
         this.setPosition(x, y);
 
         this.spritePoints = [];
+    },
+    addSprite: function (child) {
+        this.sprites.push(child);
+        this.sprite.children[1].addChild(child.sprite);
+    },
+    getSpriteAt: function (i) {
+        return this.sprites[i];
+    },
+    getLevelPosition: function () {
+        return A_.level.container.toLocal(A_.game.origin, this.sprite);
     },
     // PIXI/SAT dependent GETTERS and SETTERS.
     // Used to keep in sync PIXI, SAT and engine sprite properties
@@ -108,6 +131,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     setScale: function (x, y) {
         this.sprite.scale = new PIXI.Point(x, y);
+        _.each(this.spritePoints, function (sp) {
+            sp.point.x = sp.origPoint.x * x;
+            sp.point.y = sp.origPoint.x * y;
+        });
     },
     getScale: function () {
         return this.sprite.scale;
@@ -130,11 +157,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getPivot: function () {
         return this.sprite.pivot;
     },
-    setAnchor: function (x, y){
-        _.each(this.animations, function (animation) {
-            animation.anchor = new PIXI.Point(x, y);
-        }) 
-    },
     // Z order
     toTopOfLayer: function () {
         this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
@@ -148,9 +170,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getZ: function () {
         return this.layer.getChildIndex(this.sprite);
     },
-    // SPRITE POINTS
+    // ANCHOR & SPRITE POINTS
     addSpritePoint: function (name, x, y) {
         var sprPt = {};
+        sprPt.origPoint = new SAT.Vector(x, y);
         sprPt.point = new SAT.Vector(x, y);
         sprPt.calcPoint = new SAT.Vector(x, y);
         sprPt.name = name;
@@ -169,6 +192,22 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         return _.find(this.spritePoints, function (sprPt) {
             return sprPt.name === name;
         })
+    },
+    setAnchor: function (x, y) {
+        _.each(this.animations, function (animation) {
+            animation.anchor = new PIXI.Point(x, y);
+        });
+        _.each(this.sprites, function (sprite) {
+            sprite.anchor = new PIXI.Point(sprite.spx, y);
+        });
+//        var that = this;
+//        _.each(this.spritePoints, function (sp) {
+//            // The sprite has a (0.5, 0.5) anchor by default.
+//            // Otherwise, we would scale simply by x and y.
+//            var scale = that.getScale();
+//            sp.point.x = sp.origPoint.x * scale.x - that.getWidth() * (x - 0.5);
+//            sp.point.y = sp.origPoint.y * scale.y - that.getHeight() * (y - 0.5);
+//        });
     },
     // CREATION/DESTRUCTION & UPDATE
     update: function () {
@@ -207,7 +246,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         animation.visible = false;
         // set the speed that the MovieClip will play at; higher is faster, lower is slower
         animation.animationSpeed = speed;
-        this.sprite.addChild(animation);
+        this.sprite.children[0].addChild(animation);
         this.animations[name] = animation;
     },
     setAnimation: function (name, frame, speed) {
@@ -358,7 +397,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     collideWithDynamic: function (other, response) {
         this.prevOverlapN = response.overlapN;
         this.collided = true;
-        
+
         if (this.collisionResponse === "static") {
             return;
         }
@@ -446,8 +485,11 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         this._super(x, y);
         if (this.collisionPolygon) {
             var colPol = this.collisionPolygon;
-            var offset = new SAT.Vector(colPol.w * x, -colPol.h * y);
-            this.collisionPolygon.setOffset(offset);
+            // TODO: Factor in the original offset; Currently, this works only for centered polygons, probably.
+//            var offset = new SAT.Vector(-this.getWidth() * x, -this.getHeight() * y);
+            var offset = new SAT.Vector(-this.getWidth() * (x - 0.5) + colPol.origOffset.x
+                    , -this.getHeight() * (y - 0.5) + colPol.origOffset.y);
+            colPol.setOffset(offset);
         }
     }
 });

@@ -10,7 +10,7 @@ A_.Game = Class.extend({
         this.stage = new PIXI.Stage(this.stageColor);
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
-
+        this.origin = new PIXI.Point(0, 0);
         this.debug = A_.CONFIG.debug;
 
         this.initInput();
