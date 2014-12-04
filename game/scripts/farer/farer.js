@@ -2,12 +2,15 @@
 var Player = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "player.png",
     collisionResponse: "active",
+    moveAtAngle: true,
 //    collisionOffset: {x: 12, y: 12},
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
-        this.speed.x = 512;
-        this.speed.y = 512;
-
+        this.speed.x = 64;
+        this.speed.y = 64;
+        this.maxSpeed = 512;
+        this.friction.x = 32;
+        this.friction.y = 32;
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("down", A_.KEY.S);
@@ -23,12 +26,13 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
         var rot = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
         this.setRotation(rot);
         if (A_.INPUT.down["up"]) {
-            this.velocity.y = this.speed.y * Math.sin(rot);
-            this.velocity.x = this.speed.x * Math.cos(rot);
-        }
+            this.forceAngle = 0;
+            this.isMoving = true;
+        } else
+            this.isMoving = false;
         if (A_.INPUT.down["down"]) {
-            this.velocity.y = -this.speed.y * Math.sin(rot);
-            this.velocity.x = -this.speed.x * Math.cos(rot);
+            this.forceAngle = Math.PI;
+            this.isMoving = true;
         }
         var speedSign = 0;
         if (this.getRotation() < 0)
@@ -36,32 +40,29 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
         else
             speedSign = 1;
         if (A_.INPUT.down["left"]) {
-            this.velocity.y = speedSign * this.speed.y * Math.sin(rot + Math.PI / 2);
-            this.velocity.x = speedSign * this.speed.x * Math.cos(rot + Math.PI / 2);
+            this.forceAngle = Math.PI / 2 * speedSign;
+            this.isMoving = true;
         }
         if (A_.INPUT.down["right"]) {
-            this.velocity.y = -speedSign * this.speed.y * Math.sin(rot + Math.PI / 2);
-            this.velocity.x = -speedSign * this.speed.x * Math.cos(rot + Math.PI / 2);
+            this.forceAngle = -Math.PI / 2 * speedSign;
+            this.isMoving = true;
         }
-        this._super();
-
+        
         if (A_.game.leftpressed) {
             this.shootBullet();
         }
+
+        this._super();
     },
     shootBullet: function () {
         var pos1 = this.getSpritePoint("bullet1").getPosition();
         var bullet1 = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos1.x, pos1.y);
         bullet1.setRotation(this.getRotation());
-        bullet1.velocity.y = bullet1.speed * Math.sin(bullet1.getRotation());
-        bullet1.velocity.x = bullet1.speed * Math.cos(bullet1.getRotation());
-        
+
         var pos2 = this.getSpritePoint("bullet2").getPosition();
         var bullet2 = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos2.x, pos2.y);
         bullet2.setRotation(this.getRotation());
-        bullet2.velocity.y = bullet1.speed * Math.sin(bullet1.getRotation());
-        bullet2.velocity.x = bullet1.speed * Math.cos(bullet1.getRotation());        
-    },
+    }
 });
 
 var Laser = A_.SPRITES.AnimatedSprite.extend({
@@ -103,7 +104,8 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
         this.setHeight(this.origH + val);
         if (this.on)
             this.setWidth(this.getWidth() + val);
-        else this.setWidth(this.origW + val);
+        else
+            this.setWidth(this.origW + val);
     },
     toggleFire: function (state) {
         if (state === "on") {
@@ -129,12 +131,13 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
 var Bullet = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "bullet.png",
     collisionResponse: "sensor",
+    moveAtAngle: true,
 //    drawDebugGraphics: false,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.friction.x = this.friction.y = 0;
-        this.maxVelocity.x = this.maxVelocity.y = 1750;        
-        this.speed = 750;
+        this.speed.x = this.speed.y = 650;
+        this.maxSpeed = 1200;
         this.bounded = false;
         A_.game.createSound({
             urls: ['bullet.wav'],
@@ -143,7 +146,8 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     },
     onCreation: function () {
         this.setOrigin(0, 0.5);
-        this.setAlpha(0.75);
+        this.setAlpha(0.75);        
+        this.isMoving = true;
     },
     update: function () {
         this._super();
@@ -215,5 +219,5 @@ A_.game.onLevelStarted = function () {
     player = this.camera.followee = this.createSprite(Player, spriteLayer, this.level.width / 2, this.level.height / 2);
     for (var i = 0; i < numRotors; i++) {
         this.createSprite(Rotor, spriteLayer, _.random(0, this.level.width), _.random(0, this.level.height));
-    }        
+    }
 };

@@ -196,8 +196,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         var deltaX = x - this.sprite.anchor.x;
         var deltaY = y - this.sprite.anchor.y;
         var scale = this.getScale();
-        // Currently, affects only the animations of the sprite.
-        // Contained children, sprite points and polys are not affected. 
+
         var anchor = new PIXI.Point(x, y);
         this.sprite.anchor = anchor;
         _.each(this.animations, function (animation) {
@@ -539,14 +538,16 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
     bounciness: 0.5,
     minBounceSpeed: 64,
     angularSpeed: 0,
+    forceAngle: 0,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
-        this.friction = new SAT.Vector(40, 40);
+        this.friction = new SAT.Vector(32, 32);
         this.acceleration = new SAT.Vector(0, 0);
         this.maxVelocity = new SAT.Vector(256, 256);
         this.speed = new SAT.Vector(64, 64);
+        this.maxSpeed = this.maxVelocity.len();
         this.bounced = {horizontal: false, vertical: false};
     },
     update: function () {
@@ -596,8 +597,19 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         }
         this.bounced.horizontal = this.bounced.vertical = false;
 
-        this.velocity.x = this.velocity.x.clamp(-this.maxVelocity.x, this.maxVelocity.x);
-        this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
+        if (!this.moveAtAngle) {
+            this.velocity.x = this.velocity.x.clamp(-this.maxVelocity.x, this.maxVelocity.x);
+            this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
+        }
+        else if (this.isMoving) {
+            var rot = this.getRotation() + this.forceAngle;   
+            this.velocity.x += this.speed.x * Math.cos(rot);
+            this.velocity.y += this.speed.y * Math.sin(rot);
+            var spd = this.velocity.len();
+            if (spd > this.maxSpeed) {
+                this.velocity.scale(this.maxSpeed / spd, this.maxSpeed / spd);
+            }
+        }
 
         var vel = this.velocity.clone();
         vel.scale(A_.game.dt, A_.game.dt);
