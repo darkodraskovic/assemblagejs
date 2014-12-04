@@ -18,7 +18,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 //        } else if (this.baseTexture) {
 //            this.sprite = new PIXI.Sprite(new PIXI.Texture(this.baseTexture, this.rectangle));
 //        } else {
-        this.sprite = new PIXI.DisplayObjectContainer();
+//        this.sprite = new PIXI.DisplayObjectContainer();
 //        }
 
         this.animations = {};
@@ -47,6 +47,14 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                             new PIXI.Rectangle(j * this.frame.w, i * this.frame.h,
                                     this.frame.w, this.frame.h));
             }
+
+            var graphic = new PIXI.Graphics()
+            graphic.beginFill(0xFFFFFF, 0.3);
+            graphic.drawRect(0, 0, this.frame.w, this.frame.h);
+            graphic.endFill();
+            this.sprite = new PIXI.Sprite(graphic.generateTexture(false));
+            this.sprite.anchor = new PIXI.Point(0.5, 0.5);
+
             var animations = new PIXI.DisplayObjectContainer();
             this.sprite.addChild(animations);
 
@@ -131,9 +139,11 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     setScale: function (x, y) {
         this.sprite.scale = new PIXI.Point(x, y);
+        var anchor = this.getAnchor();
+        var that = this;
         _.each(this.spritePoints, function (sp) {
-            sp.point.x = sp.origPoint.x * x;
-            sp.point.y = sp.origPoint.y * y;
+            sp.point.x = sp.origPoint.x * x + (that.getWidth() * (0.5 - anchor.x));
+            sp.point.y = sp.origPoint.y * y + (that.getHeight() * (0.5 - anchor.y));
         });
     },
     getScale: function () {
@@ -150,17 +160,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     getAlpha: function () {
         return this.sprite.alpha;
-    },
-    setPivot: function (x, y) {
-        this.sprite.pivot = new PIXI.Point(x, y);    
-        // TODO Factor in the scaling!
-        _.each(this.spritePoints, function (sprPt) {
-            sprPt.point.x = sprPt.origPoint.x - x;
-            sprPt.point.y = sprPt.origPoint.y - y;
-        });
-    },
-    getPivot: function () {
-        return this.sprite.pivot;
     },
     // Z ORDER
     setZ: function (position) {
@@ -188,12 +187,38 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         return this.layer.getChildIndex(this.sprite);
     },
     // ANCHOR
+    getAnchor: function () {
+        return this.sprite.anchor;
+    },
     setAnchor: function (x, y) {
+        var w = this.getWidth();
+        var h = this.getHeight();
+        var deltaX = x - this.sprite.anchor.x;
+        var deltaY = y - this.sprite.anchor.y;
+        var scale = this.getScale();
         // Currently, affects only the animations of the sprite.
         // Contained children, sprite points and polys are not affected. 
+        var anchor = new PIXI.Point(x, y);
+        this.sprite.anchor = anchor;
         _.each(this.animations, function (animation) {
-            animation.anchor = new PIXI.Point(x, y);
+            animation.anchor = anchor;
         });
+
+        _.each(this.sprites, function (sprite) {
+            sprite.setPositionRelative(-deltaX * w / scale.x, -deltaY * h / scale.y);
+        });
+
+        _.each(this.spritePoints, function (sp) {
+            sp.point.x -= deltaX * w;
+            sp.point.y -= deltaY * h;
+        });
+
+        var colPol = this.collisionPolygon;
+        if (colPol) {
+            var offset = new SAT.Vector(colPol.offset.x - deltaX * w, colPol.offset.y - deltaY * h);
+            colPol.setOffset(offset);
+        }
+
     },
     // SPRITE POINTS
     addSpritePoint: function (name, x, y) {
@@ -225,9 +250,12 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getSpritePoint: function (name) {
         return _.find(this.spritePoints, function (sprPt) {
             return sprPt.name === name;
-        })
+        });
     },
     // CREATION/DESTRUCTION & UPDATE
+    preupdate: function () {
+
+    },
     update: function () {
 
     },
@@ -474,8 +502,13 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     },
     setScale: function (x, y) {
         this._super(x, y);
-        if (this.collisionPolygon)
+        if (this.collisionPolygon) {
             this.collisionPolygon.setScale(x, y);
+            var offset = new SAT.Vector(this.getWidth() * (0.5 - this.getAnchor().x),
+                    this.getHeight() * (0.5 - this.getAnchor().y));
+            this.collisionPolygon.offset.add(offset);
+            this.collisionPolygon.recalc();
+        }
     },
     setSize: function (x, y) {
         this._super(x, y);
@@ -498,14 +531,6 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             y = y / this.frame.h;
             this.collisionPolygon.setScale(this.collisionPolygon.scale.x, y);
         }
-    },
-    setPivot: function (x, y) {
-        this._super(x, y);
-        // TODO Factor in the scaling!
-        var colPol = this.collisionPolygon;
-        colPol.offset.x = colPol.origOffset.x - x;
-        colPol.offset.y = colPol.origOffset.x - y;
-        colPol.recalc();
     }
 });
 

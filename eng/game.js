@@ -343,9 +343,13 @@ A_.Game = Class.extend({
         this.mousePosition.level.y += this.camera.y;
     },
     update: function () {
-        // User-defined function.
+        // User-defined global routine.
         this.preupdate();
 
+        // Sprites' updates.
+        _.each(this.level.sprites, function (sprite) {
+            sprite.preupdate();
+        });
         _.each(this.level.sprites, function (sprite) {
             sprite.update();
         });
@@ -356,16 +360,8 @@ A_.Game = Class.extend({
             sprite.postupdate();
         });
 
-        // User-defined function.
+        // User-defined global routine.
         this.postupdate();
-
-        _.each(this.level.layers, function (layer) {
-            if (layer["sort"]) {
-                layer.children = _.sortBy(layer.children, function (child) {
-                    return child.position.y;
-                });
-            }
-        });
     },
     preupdate: function () {
         
@@ -378,6 +374,14 @@ A_.Game = Class.extend({
         this.createSprites();
     },
     render: function () {
+        _.each(this.level.spriteLayers, function (layer) {
+            if (layer["sort"]) {
+                layer.children = _.sortBy(layer.children, function (child) {
+                    return child.position.y;
+                });
+            }
+        });
+        
         if (this.debug) {
             this.collider.drawDebug();
         }

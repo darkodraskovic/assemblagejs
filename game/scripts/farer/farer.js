@@ -16,8 +16,8 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     onCreation: function () {
         this.laser1 = A_.game.createSprite(Laser, this, 18, -12);
         this.laser2 = A_.game.createSprite(Laser, this, 18, 12);
-        this.addSpritePoint("bullet1", 32, -12);
-        this.addSpritePoint("bullet2", 32, 12);
+        this.addSpritePoint("bullet1", 18, -12);
+        this.addSpritePoint("bullet2", 18, 12);
     },
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
@@ -71,6 +71,7 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.setAlpha(0.4);
+//        this.sprite.anchor = new PIXI.Point(0, 0.5);
         this.setAnchor(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
         this.sound = A_.game.createSound({
@@ -134,9 +135,10 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
 //    drawDebugGraphics: false,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
+//        this.sprite.anchor = new PIXI.Point(0, 0.5);
         this.friction.x = this.friction.y = 0;
-        this.maxVelocity.x = this.maxVelocity.y = 2000;
-        this.speed = 1000;
+        this.maxVelocity.x = this.maxVelocity.y = 200;        
+        this.speed = 100;
         this.bounded = false;
         A_.game.createSound({
             urls: ['bullet.wav'],
@@ -144,6 +146,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         }).play();
     },
     onCreation: function () {
+        this.setAnchor(0, 0.5);
         this.setAlpha(0.75);
     },
     update: function () {
