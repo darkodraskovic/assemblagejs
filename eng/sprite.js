@@ -138,12 +138,11 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         return this.sprite.height;
     },
     setScale: function (x, y) {
+        var prevScale = this.getScale();
         this.sprite.scale = new PIXI.Point(x, y);
-        var origin = this.getOrigin();
-        var that = this;
         _.each(this.spritePoints, function (sp) {
-            sp.point.x = sp.origPoint.x * x + (that.getWidth() * (0.5 - origin.x));
-            sp.point.y = sp.origPoint.y * y + (that.getHeight() * (0.5 - origin.y));
+                sp.point.x = sp.point.x * (x / prevScale.x);
+                sp.point.y = sp.point.y * (y / prevScale.y);
         });
     },
     getScale: function () {
@@ -222,7 +221,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     // SPRITE POINTS
     addSpritePoint: function (name, x, y) {
         var sprPt = {};
-        sprPt.origPoint = new SAT.Vector(x, y);
+//        sprPt.origPoint = new SAT.Vector(x, y);
         sprPt.point = new SAT.Vector(x, y);
         sprPt.calcPoint = new SAT.Vector(x, y);
         sprPt.name = name;
@@ -503,10 +502,6 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         this._super(x, y);
         if (this.collisionPolygon) {
             this.collisionPolygon.setScale(x, y);
-            var offset = new SAT.Vector(this.getWidth() * (0.5 - this.getOrigin().x),
-                    this.getHeight() * (0.5 - this.getOrigin().y));
-            this.collisionPolygon.offset.add(offset);
-            this.collisionPolygon.recalc();
         }
     },
     setSize: function (x, y) {
@@ -602,7 +597,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
             this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
         }
         else if (this.isMoving) {
-            var rot = this.getRotation() + this.forceAngle;   
+            var rot = this.getRotation() + this.forceAngle;
             this.velocity.x += this.speed.x * Math.cos(rot);
             this.velocity.y += this.speed.y * Math.sin(rot);
             var spd = this.velocity.len();

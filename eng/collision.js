@@ -43,10 +43,10 @@ A_.COLLISION.Collider = Class.extend({
         o.collisionPolygon.origPoints = _.map(o.collisionPolygon.points, function (point) {
             return point.clone();
         });
-
         o.collisionPolygon.origOffset = o.collisionPolygon.offset.clone();
         o.collisionPolygon.origW = o.collisionPolygon.w;
         o.collisionPolygon.origH = o.collisionPolygon.h;
+        
         o.collisionPolygon.scale = new SAT.Vector(1, 1);
 
         if (o.sprite && o.sprite.interactive)
