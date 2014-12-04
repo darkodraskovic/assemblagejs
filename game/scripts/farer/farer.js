@@ -50,14 +50,12 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
         }
     },
     shootBullet: function () {
-//        var pos1 = this.getSpriteAt(0).getLevelPosition();
         var pos1 = this.getSpritePoint("bullet1").getPosition();
         var bullet1 = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos1.x, pos1.y);
         bullet1.setRotation(this.getRotation());
         bullet1.velocity.y = bullet1.speed * Math.sin(bullet1.getRotation());
         bullet1.velocity.x = bullet1.speed * Math.cos(bullet1.getRotation());
         
-//        var pos2 = this.getSpriteAt(1).getLevelPosition();
         var pos2 = this.getSpritePoint("bullet2").getPosition();
         var bullet2 = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos2.x, pos2.y);
         bullet2.setRotation(this.getRotation());
@@ -71,8 +69,7 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.setAlpha(0.4);
-//        this.sprite.anchor = new PIXI.Point(0, 0.5);
-        this.setAnchor(0, 0.5);
+        this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
         this.sound = A_.game.createSound({
             urls: ['laser-beam.mp3'],
@@ -135,10 +132,9 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
 //    drawDebugGraphics: false,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
-//        this.sprite.anchor = new PIXI.Point(0, 0.5);
         this.friction.x = this.friction.y = 0;
-        this.maxVelocity.x = this.maxVelocity.y = 200;        
-        this.speed = 100;
+        this.maxVelocity.x = this.maxVelocity.y = 1750;        
+        this.speed = 750;
         this.bounded = false;
         A_.game.createSound({
             urls: ['bullet.wav'],
@@ -146,7 +142,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         }).play();
     },
     onCreation: function () {
-        this.setAnchor(0, 0.5);
+        this.setOrigin(0, 0.5);
         this.setAlpha(0.75);
     },
     update: function () {
@@ -194,7 +190,7 @@ var Explosion = A_.SPRITES.AnimatedSprite.extend({
             urls: ['explosion.mp3'],
             volume: 0.35
         }).play();
-    },
+    }
 });
 
 // VARS & CONSTS

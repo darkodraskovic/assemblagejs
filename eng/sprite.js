@@ -49,7 +49,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             }
 
             var graphic = new PIXI.Graphics()
-            graphic.beginFill(0xFFFFFF, 0.3);
+            graphic.beginFill(0xFFFFFF, 0);
             graphic.drawRect(0, 0, this.frame.w, this.frame.h);
             graphic.endFill();
             this.sprite = new PIXI.Sprite(graphic.generateTexture(false));
@@ -139,11 +139,11 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     setScale: function (x, y) {
         this.sprite.scale = new PIXI.Point(x, y);
-        var anchor = this.getAnchor();
+        var origin = this.getOrigin();
         var that = this;
         _.each(this.spritePoints, function (sp) {
-            sp.point.x = sp.origPoint.x * x + (that.getWidth() * (0.5 - anchor.x));
-            sp.point.y = sp.origPoint.y * y + (that.getHeight() * (0.5 - anchor.y));
+            sp.point.x = sp.origPoint.x * x + (that.getWidth() * (0.5 - origin.x));
+            sp.point.y = sp.origPoint.y * y + (that.getHeight() * (0.5 - origin.y));
         });
     },
     getScale: function () {
@@ -187,10 +187,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         return this.layer.getChildIndex(this.sprite);
     },
     // ANCHOR
-    getAnchor: function () {
+    getOrigin: function () {
         return this.sprite.anchor;
     },
-    setAnchor: function (x, y) {
+    setOrigin: function (x, y) {
         var w = this.getWidth();
         var h = this.getHeight();
         var deltaX = x - this.sprite.anchor.x;
@@ -504,8 +504,8 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         this._super(x, y);
         if (this.collisionPolygon) {
             this.collisionPolygon.setScale(x, y);
-            var offset = new SAT.Vector(this.getWidth() * (0.5 - this.getAnchor().x),
-                    this.getHeight() * (0.5 - this.getAnchor().y));
+            var offset = new SAT.Vector(this.getWidth() * (0.5 - this.getOrigin().x),
+                    this.getHeight() * (0.5 - this.getOrigin().y));
             this.collisionPolygon.offset.add(offset);
             this.collisionPolygon.recalc();
         }
