@@ -90,6 +90,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             this.layer = layer;
             this.layer.addChild(this.sprite);
         }
+        this.parent = layer;
         this.setPosition(x, y);
 
         this.spritePoints = [];
@@ -110,6 +111,9 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     setPosition: function (x, y) {
         this.sprite.position.x = x;
         this.sprite.position.y = y;
+        _.each(this.spritePoints, function (sp) {
+            sp.setPosition(x, y);
+        });
     },
     setPositionRelative: function (x, y) {
         this.setPosition(this.sprite.position.x + x, this.sprite.position.y + y);
@@ -123,6 +127,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getPositionY: function () {
         return this.sprite.position.y;
     },
+    // TODO: setSize/width/height should affect spritepoints
     setSize: function (x, y) {
         this.sprite.width = x;
         this.sprite.height = y;
@@ -146,8 +151,9 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         var prevScale = this.getScale();
         this.sprite.scale = new PIXI.Point(x, y);
         _.each(this.spritePoints, function (sp) {
-            sp.point.x = sp.point.x * (x / prevScale.x);
-            sp.point.y = sp.point.y * (y / prevScale.y);
+            sp.setScale(x / prevScale.x, y / prevScale.y);
+//            sp.point.x = sp.point.x * (x / prevScale.x);
+//            sp.point.y = sp.point.y * (y / prevScale.y);
         });
     },
     getScale: function () {
@@ -155,6 +161,9 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     setRotation: function (n) {
         this.sprite.rotation = n;
+        _.each(this.spritePoints, function (sp) {
+            sp.setRotation(n);
+        });
     },
     getRotation: function () {
         return this.sprite.rotation;
@@ -230,14 +239,20 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         sprPt.point = new SAT.Vector(x, y);
         sprPt.calcPoint = new SAT.Vector(x, y);
         sprPt.name = name;
-        var that = this;
-        sprPt.update = function () {
-            this.calcPoint.x = that.getPositionX();
-            this.calcPoint.y = that.getPositionY();
-            var rotVec = this.point.clone().rotate(that.getRotation());
+//        var that = this;
+        sprPt.setPosition = function (x, y) {
+            this.calcPoint.x = x;
+            this.calcPoint.y = y;
+        };
+        sprPt.setRotation = function (rotation) {
+            var rotVec = this.point.clone().rotate(rotation);
             this.calcPoint.x += rotVec.x;
             this.calcPoint.y += rotVec.y;
         };
+        sprPt.setScale = function (x, y) {
+            this.point.x *= x;
+            this.point.y *= y;
+        }
         sprPt.getPosition = function () {
             return this.calcPoint;
         };
@@ -263,9 +278,9 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
     },
     postupdate: function () {
-        _.each(this.spritePoints, function (sprPt) {
-            sprPt.update();
-        });
+//        _.each(this.spritePoints, function (sprPt) {
+//            sprPt.update();
+//        });
     },
     onCreation: function () {
 
@@ -431,10 +446,6 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
                 this.outOfBounds = true;
             }
         }
-
-        if (this.collisionPolygon) {
-            this.updateCollisionPolygon();
-        }
     },
     collideWithStatic: function (other, response) {
         this.prevOverlapN = response.overlapN;
@@ -495,13 +506,10 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     },
     setPosition: function (x, y) {
         this._super(x, y);
-        if (this.collisionPolygon)
-            this.updateCollisionPolygon();
-    },
-    setPositionRelative: function (x, y) {
-        this._super(x, y);
-        if (this.collisionPolygon)
-            this.updateCollisionPolygon();
+        if (this.collisionPolygon) {
+            this.collisionPolygon.pos.x = this.getPositionX();
+            this.collisionPolygon.pos.y = this.getPositionY();
+        }
     },
     setScale: function (x, y) {
         this._super(x, y);
@@ -530,6 +538,11 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             y = y / this.frame.h;
             this.collisionPolygon.setScale(this.collisionPolygon.scale.x, y);
         }
+    },
+    setRotation: function (n) {
+        this._super(n);
+        if (this.collisionPolygon)
+            this.collisionPolygon.setAngle(this.getRotation());
     }
 });
 
@@ -554,12 +567,12 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         this._super();
 
         // ARCADE PHYSICS
-        // MOVEMENT
         var startPos = this.getPosition();
 
         if (this.moveForward) {
             this.movementAngle = this.getRotation();
         }
+
         var friction = this.friction.clone();
         if (this.moveAtAngle) {
             friction.x = Math.abs(friction.x * Math.cos(this.movementAngle));
@@ -644,11 +657,6 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
     collideWithStatic: function (other, response) {
         this.processBounce(response.overlapN);
         this._super(other, response);
-    },
-    collideWithTile: function (other, response) {
-        this.processBounce(response.overlapN);
-        this._super(other, response);
-
     },
     processBounce: function (currentOverlapN) {
         // This method must be called before the collide* _super in order

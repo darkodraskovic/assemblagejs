@@ -52,7 +52,7 @@ function createMap(game, mapData) {
 
     var layersData = mapData["layers"];
     var collisionLayer = _.find(layersData, function (layerData) {
-        return layerData["name"] === "CollisionMasks"
+        return layerData["name"] === "CollisionMasks";
     });
 
     if (collisionLayer) {
@@ -67,11 +67,10 @@ function createMap(game, mapData) {
         _.each(layerData["objects"], function (o) {
             if (!o["polygon"] && !_.contains(objectNames, o.name) && o.name !== "")
                 objectNames[objectNames.length] = o.name;
-        })
+        });
     });
 
     for (i = 0; i < layersData.length; i++) {
-//        var layer = new PIXI.DisplayObjectContainer();
         var layer = game.level.createEmptyLayer();
         for (var prop in layersData[i]) {
             layer[prop] = layersData[i][prop];
@@ -116,7 +115,6 @@ function createMap(game, mapData) {
         // if current layer is TILE LAYER
         else if (layersData[i]["type"] === "tilelayer") {
 
-//            window.console.log(layer.baked);
             var baked = layer.baked;
             layer.baked = false;
 
@@ -143,7 +141,6 @@ function createMap(game, mapData) {
             for (var j = 0; j < mapW; j++) {
                 tileData2D[j] = [];
                 for (var k = 0; k < mapH; k++) {
-//                    tileData2D[j][k] = -1;
                     tileData2D[j][k] = 0;
                 }
             }
@@ -201,7 +198,6 @@ function createMap(game, mapData) {
                         o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
                     A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
-                    o.updateCollisionPolygon();
                     o.update();
                     layer.addChild(o.sprite);
                 }
@@ -225,7 +221,7 @@ function createMap(game, mapData) {
                     }
 
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
-                    o.setPositionRelative(o.sprite.width / 2, -o.sprite.height / 2)
+                    o.setPositionRelative(o.sprite.width / 2, -o.sprite.height / 2);
 
                     if (o.followee) {
                         game.cameraOptions.followee = o;
@@ -237,7 +233,7 @@ function createMap(game, mapData) {
                 layer = bakeLayer(layer, game.level);
             }
 
-            game.level.addSpriteLayer(layer)
+            game.level.addSpriteLayer(layer);
         }
     }
 }

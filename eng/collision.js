@@ -54,20 +54,20 @@ A_.COLLISION.Collider = Class.extend({
 
 //        o.collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
 
-        o.updateCollisionPolygon = function () {
-            var colPol = this.collisionPolygon;
-            // We don't need to worry about transforming from positive y axis of SAT.js
-            // to negative y axis of Pixi.js since polygons are moved in Pixi.js coordinate system. 
-            // In other words, we have flipped the whole SAT.js system upside down and
-            // put it in the Pixi.js coordinate system. When the object is going down in 
-            // the Pixi.js, it will go up in the SAT.js and vice versa.
-            var pos = this.getPosition();
-            colPol.pos.x = pos.x;
-            colPol.pos.y = pos.y;
-
-            // #docs: Sets the rotation angle 
-            colPol.setAngle(this.getRotation());
-        };
+//        o.updateCollisionPolygon = function () {
+//            var colPol = this.collisionPolygon;
+//            // We don't need to worry about transforming from positive y axis of SAT.js
+//            // to negative y axis of Pixi.js since polygons are moved in Pixi.js coordinate system. 
+//            // In other words, we have flipped the whole SAT.js system upside down and
+//            // put it in the Pixi.js coordinate system. When the object is going down in 
+//            // the Pixi.js, it will go up in the SAT.js and vice versa.
+//            var pos = this.getPosition();
+//            colPol.pos.x = pos.x;
+//            colPol.pos.y = pos.y;
+//
+//            // #docs: Sets the rotation angle 
+//            colPol.setAngle(this.getRotation());
+//        };
     },
     processCollisions: function () {
         _.each(this.collisionSprites, function (sprite) {
