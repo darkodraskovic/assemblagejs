@@ -1,6 +1,6 @@
 A_.SPRITES.AnimatedSprite = Class.extend({
     // init() is called when the sprite is instantiated with new keyword.
-    init: function (layer, x, y, props) {
+    init: function (parent, x, y, props) {
         // Add all the properties of the prop obj to this instance.
         if (props) {
             for (var prop in props) {
@@ -65,6 +65,9 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             graphic.drawRect(0, 0, 1, 1);
             graphic.endFill();
             this.sprite = new PIXI.Sprite(graphic.generateTexture(false));
+
+            var animations = new PIXI.DisplayObjectContainer();
+            this.sprite.addChild(animations);
         }
         this.sprite.anchor = new PIXI.Point(0.5, 0.5);
 
@@ -81,19 +84,19 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
         this.alpha = 1;
 
-        if (layer instanceof A_.SPRITES.AnimatedSprite) {
-            layer.addSprite(this);
-            this.container = layer;
+        if (parent instanceof A_.SPRITES.AnimatedSprite) {
+            parent.addSprite(this);
+            this.container = parent;
             this.layer = this.container.layer;
         }
         else {
-            this.layer = layer;
+            this.layer = parent;
             this.layer.addChild(this.sprite);
         }
-        this.parent = layer;
+        this.parent = parent;
         this.setPosition(x, y);
 
-        this.spritePoints = [];        
+        this.spritePoints = [];
     },
     // SPRITE CHILDREN
     addSprite: function (child) {
@@ -166,25 +169,26 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         }
     },
     setFlipped: function (axis, flip) {
-        if (this.getFlipped(axis) && flip || !this.getFlipped(axis) && !flip ) {
+        if (this.getFlipped(axis) && flip || !this.getFlipped(axis) && !flip) {
             return;
         }
-        else this.flip(axis);
+        else
+            this.flip(axis);
     },
     getFlipped: function (axis) {
         if (axis === "x") {
             if (this.getScale().x < 0)
                 return true;
             else
-                return false;            
+                return false;
         }
         else if (axis === "y") {
             if (this.getScale().y < 0)
                 return true;
             else
-                return false;            
+                return false;
         }
-    },    
+    },
     setRotation: function (n) {
         this.sprite.rotation = n;
         _.each(this.spritePoints, function (sp) {
@@ -203,27 +207,33 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     // Z ORDER
     setZ: function (position) {
         // TODO
-        if (this.getContainer()) {
-            return;
-        }
+        var parent;
+        if (this.container) {
+            parent = this.container.sprite.children[1];
+        } else
+            parent = this.layer;
+
         if (typeof position === "string") {
             if (position === "top") {
-                this.layer.setChildIndex(this.sprite, this.layer.children.length - 1);
+                parent.setChildIndex(this.sprite, this.layer.children.length - 1);
                 return;
             } else if (position === "bottom") {
-                this.layer.setChildIndex(this.sprite, 0);
+                parent.setChildIndex(this.sprite, 0);
                 return;
             }
         } else if (typeof position === "number") {
-            this.layer.setChildIndex(this.sprite, position);
+            parent.setChildIndex(this.sprite, position);
         }
     },
     getZ: function () {
-        // TODO
-        if (this.getContainer()) {
-            return;
-        }
-        return this.layer.getChildIndex(this.sprite);
+        var parent;
+        
+        if (this.container) {
+            parent = this.container.sprite.children[1];
+        } else
+            parent = this.layer;
+
+        return parent.getChildIndex(this.sprite);
     },
     // ANCHOR
     getOrigin: function () {
@@ -372,8 +382,8 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     collides: true,
     destroyThis: false,
     drawDebugGraphics: true,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
 
         this.prevOverlapN = new SAT.Vector(0, 0);
 
@@ -578,8 +588,8 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
     minBounceSpeed: 64,
     angularSpeed: 0,
     movementAngle: 0,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
         this.friction = new SAT.Vector(32, 32);

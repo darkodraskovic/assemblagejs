@@ -4,8 +4,8 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     collisionResponse: "active",
     moveAtAngle: true,
 //    collisionOffset: {x: 12, y: 12},
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.speed.x = 64;
         this.speed.y = 64;
         this.maxSpeed = 512;
@@ -28,7 +28,7 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
         if (A_.INPUT.down["up"]) {
             this.movementAngle = this.getRotation();
             this.applyForce = true;
-        } 
+        }
         if (A_.INPUT.down["down"]) {
             this.movementAngle = this.getRotation() + Math.PI;
             this.applyForce = true;
@@ -46,11 +46,11 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
             this.movementAngle = this.getRotation() + -Math.PI / 2 * speedSign;
             this.applyForce = true;
         }
-        
+
         if (A_.game.leftpressed) {
             this.shootBullet();
         }
-        
+
         this._super();
     },
     shootBullet: function () {
@@ -66,8 +66,8 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
 
 var Laser = A_.SPRITES.AnimatedSprite.extend({
     animSheet: "laser.png",
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.setAlpha(0.4);
         this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
@@ -84,9 +84,8 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
     },
     onCreation: function () {
         this.origPositionX = this.getPositionX();
-        window.console.log(this.origPosition);
     },
-    update: function () {
+    update: function () {        
         if (A_.game.rightpressed) {
             this.toggleFire("on");
         }
@@ -132,8 +131,8 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     collisionResponse: "sensor",
     moveAtAngle: true,
 //    drawDebugGraphics: false,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 0;
         this.speed.x = this.speed.y = 1000;
         this.maxSpeed = 1000;
@@ -145,7 +144,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     },
     onCreation: function () {
         this.setOrigin(0, 0.5);
-        this.setAlpha(0.75);   
+        this.setAlpha(0.75);
         this.applyForce = true;
         this.moveAtAngle = true;
         this.moveForward = true;
@@ -169,8 +168,8 @@ var Rotor = A_.SPRITES.ArcadeSprite.extend({
     frame: {w: 45, h: 45},
     collisionResponse: "static",
     angularSpeed: Math.PI / 2,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.025);
     },
     update: function () {
@@ -181,8 +180,8 @@ var Rotor = A_.SPRITES.ArcadeSprite.extend({
 var Explosion = A_.SPRITES.AnimatedSprite.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
 
         this.addAnimation("explode", _.range(0, 17), 0.3);
         this.setAnimation("explode");

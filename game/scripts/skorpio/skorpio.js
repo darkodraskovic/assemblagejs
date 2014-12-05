@@ -8,8 +8,8 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     facing: "right",
     bounciness: 0,
     collides: true,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
 
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
@@ -56,8 +56,8 @@ var Player = Anime.extend({
     collisionResponse: "active",
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
     },
     update: function () {
         var rot = (A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level)).toDeg();
@@ -100,8 +100,8 @@ var Agent = Anime.extend({
     collisionResponse: "passive",
     collisionType: A_.COLLISION.Type.ENEMY,
     collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.maxVelocity = new SAT.Vector(64, 64);
         this.motionState = "moving";
         this.timer = 2;
@@ -137,8 +137,8 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     collisionSize: {w: 12, h: 10},
     collisionResponse: "sensor",
     collidesWith: A_.COLLISION.Type.ENEMY,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.friction.x = 0;
         this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 1000;
@@ -174,8 +174,8 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
     collides: false,
     frame: {w: 32, h: 32},
     bounded: false,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.alpha = 0.75;
         this.setAnimation("all", 18, 0);
         this.currentAnimation.anchor = new PIXI.Point(0, 0.5);
@@ -259,8 +259,8 @@ var LaserTip = A_.SPRITES.CollisionSprite.extend({
 var LaserFire = A_.SPRITES.AnimatedSprite.extend({
     animSheet: "Fire.png",
     frame: {w: 64, h: 64},
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
         this.sound = A_.game.createSound({
@@ -292,8 +292,8 @@ var LaserFire = A_.SPRITES.AnimatedSprite.extend({
 var Explosion = A_.SPRITES.AnimatedSprite.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
 
         this.addAnimation("explode", _.range(0, 17), 0.2);
         this.setAnimation("explode");
@@ -316,8 +316,8 @@ var Computer = A_.SPRITES.CollisionSprite.extend({
 //    interactive: true,
 //    collisionType: A_.COLLISION.Type.ITEM,
 //    collidesWith: A_.COLLISION.Type.NONE,
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
         
 //        A_.EXTENSIONS.Sine.addTo(this, {period: 3, periodRand: 0, value: 0.5, valueRand: 50});
     },
