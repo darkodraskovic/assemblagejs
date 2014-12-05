@@ -51,7 +51,6 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
             this.shootBullet();
         }
         
-//        window.console.log(this.applyForce);
         this._super();
     },
     shootBullet: function () {

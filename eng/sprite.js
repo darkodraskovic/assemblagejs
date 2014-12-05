@@ -20,7 +20,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 //        } else {
 //        this.sprite = new PIXI.DisplayObjectContainer();
 //        }
-        var graphic = new PIXI.Graphics()
+        var graphic = new PIXI.Graphics();
         graphic.beginFill(0xFFFFFF, 0);
 
         this.animations = {};
@@ -93,7 +93,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.parent = layer;
         this.setPosition(x, y);
 
-        this.spritePoints = [];
+        this.spritePoints = [];        
     },
     // SPRITE CHILDREN
     addSprite: function (child) {
@@ -152,13 +152,39 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.sprite.scale = new PIXI.Point(x, y);
         _.each(this.spritePoints, function (sp) {
             sp.setScale(x / prevScale.x, y / prevScale.y);
-//            sp.point.x = sp.point.x * (x / prevScale.x);
-//            sp.point.y = sp.point.y * (y / prevScale.y);
         });
     },
     getScale: function () {
         return this.sprite.scale;
     },
+    flip: function (axis) {
+        var prevScale = this.getScale();
+        if (axis === "x") {
+            this.setScale(prevScale.x * -1, prevScale.y);
+        } else if (axis === "y") {
+            this.setScale(prevScale.x, prevScale.y * -1);
+        }
+    },
+    setFlipped: function (axis, flip) {
+        if (this.getFlipped(axis) && flip || !this.getFlipped(axis) && !flip ) {
+            return;
+        }
+        else this.flip(axis);
+    },
+    getFlipped: function (axis) {
+        if (axis === "x") {
+            if (this.getScale().x < 0)
+                return true;
+            else
+                return false;            
+        }
+        else if (axis === "y") {
+            if (this.getScale().y < 0)
+                return true;
+            else
+                return false;            
+        }
+    },    
     setRotation: function (n) {
         this.sprite.rotation = n;
         _.each(this.spritePoints, function (sp) {
@@ -252,7 +278,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         sprPt.setScale = function (x, y) {
             this.point.x *= x;
             this.point.y *= y;
-        }
+        };
         sprPt.getPosition = function () {
             return this.calcPoint;
         };

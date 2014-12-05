@@ -8,8 +8,8 @@ SAT.Polygon.prototype.setScale = function (x, y) {
         return point.scale(x / prevScale.x, y / prevScale.y);
     });
 
-    this.w *= x / prevScale.x;
-    this.h *= y / prevScale.y;
+    this.w *= Math.abs(x / prevScale.x);
+    this.h *= Math.abs(y / prevScale.y);
 
     this.offset.scale(x / prevScale.x, y / prevScale.y);
     this.recalc();
