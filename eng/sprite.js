@@ -86,14 +86,14 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
         if (parent instanceof A_.SPRITES.AnimatedSprite) {
             parent.addSprite(this);
-            this.container = parent;
-            this.layer = this.container.layer;
+//            this.container = parent;
+//            this.layer = this.container.layer;
         }
         else {
             this.layer = parent;
             this.layer.addChild(this.sprite);
         }
-        this.parent = parent;
+//        this.parent = parent;
         this.setPosition(x, y);
 
         this.spritePoints = [];
@@ -102,11 +102,15 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     addSprite: function (sprite) {
         this.sprites.push(sprite);
         this.sprite.children[1].addChild(sprite.sprite);
+        sprite.container = this;
+        sprite.layer = this.layer;
         return sprite;
     },
     removeSprite: function (sprite) {
         this.sprites.splice(this.sprites.indexOf(sprite), 1);
         this.sprite.children[1].removeChild(sprite.sprite);
+        sprite.container = null;
+        sprite.layer = null;
         return sprite;
     },
     // PIXI/SAT dependent GETTERS and SETTERS.
@@ -207,7 +211,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     getAlpha: function () {
         return this.sprite.alpha;
     },
-    // Z ORDER
+    // Z ORDER & LAYERS
     setZ: function (position) {
         // TODO
         var parent;
@@ -238,6 +242,31 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             parent = this.layer;
 
         return parent.getChildIndex(this.sprite);
+    },
+    getLayerName: function () {
+        return this.layer.name;
+    },
+    getLayerNumber: function () {
+        return this.layer.parent.getChildIndex(this.layer);
+    },
+    moveToLayer: function (layer) {
+        if (typeof layer === "string") {
+            var dest = A_.level.findLayerByName(layer);
+        } else if (typeof layer === "number") {
+            var dest = A_.level.findLayerByNumber(layer);
+        }
+        if (dest) {
+            if (this.container) {
+                this.container.removeSprite(this);
+            } else
+                this.layer.removeChild(this.sprite);
+            
+            dest.addChild(this.sprite);
+            this.layer = dest;
+            _.each(this.sprites, function (sprite) {
+                sprite.layer = layer;
+            });
+        }        
     },
     // ANCHOR
     getOrigin: function () {
@@ -329,7 +358,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         _.each(this.sprites, function (sprite) {
             sprite.destroy();
         })
-        
+
         A_.game.spritesToDestroy.push(this);
         this.onDestruction();
     },

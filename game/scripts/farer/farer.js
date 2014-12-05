@@ -166,7 +166,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
 var Rotor = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "rotor.png",
     frame: {w: 45, h: 45},
-    collisionResponse: "static",
+    collisionResponse: "sensor",
     angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -206,15 +206,15 @@ A_.game.onLevelStarted = function () {
     this.level.width = 2048;
     this.level.height = 2048;
 
-    var layer = this.level.createImageLayer({image: "starfield.png"});
+    var layer = this.level.createImageLayer("Starfield", {image: "starfield.png"});
     layer.parallax = 10;
 
-    var layer = this.level.createImageLayer({image: "nebula.png"});
+    var layer = this.level.createImageLayer("Nebula", {image: "nebula.png"});
     layer.parallax = 20;
 
-    var spriteLayer = this.level.createSpriteLayer();
-    var effectsLayer = this.level.createSpriteLayer();
-    effectsLayer.name = "Effects";
+    var spriteLayer = this.level.createSpriteLayer("Sprites");
+    var effectsLayer = this.level.createSpriteLayer("Effects");
+//    effectsLayer.name = "Effects";
 
     player = this.camera.followee = this.createSprite(Player, spriteLayer, this.level.width / 2, this.level.height / 2);
     for (var i = 0; i < numRotors; i++) {

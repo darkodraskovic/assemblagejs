@@ -11,15 +11,17 @@ A_.Level = Class.extend({
         this.layers = [];
         this.debugLayer = null;
     },
-    createEmptyLayer: function () {
+    createEmptyLayer: function (name) {
         var layer = new PIXI.DisplayObjectContainer();
         layer.baked = false;
         layer.collision = false;
         layer.parallax = 100;
+        if (name)
+            layer.name = name;
         return layer;
     },
-    createImageLayer: function (props) {
-        var layer = this.createEmptyLayer();
+    createImageLayer: function (name, props) {
+        var layer = this.createEmptyLayer(name);
 
         if (!props.width) {
             props.width = this.width;
@@ -32,13 +34,13 @@ A_.Level = Class.extend({
         this.addImageLayer(layer);
         return layer;
     },
-    createSpriteLayer: function (props) {
-        var layer = this.createEmptyLayer();
+    createSpriteLayer: function (name) {
+        var layer = this.createEmptyLayer(name);
         this.addSpriteLayer(layer);
         return layer;
     },
-    createTileLayer: function (image, tileW, tileH) {
-        var layer = this.createEmptyLayer();
+    createTileLayer: function (name, image, tileW, tileH) {
+        var layer = this.createEmptyLayer(name);
         var tilemap = new A_.TILES.Tilemap(layer, image, tileW, tileH);
         layer.tilemap = tilemap;
         this.addTileLayer(layer);
