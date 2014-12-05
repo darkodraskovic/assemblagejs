@@ -20,6 +20,8 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 //        } else {
 //        this.sprite = new PIXI.DisplayObjectContainer();
 //        }
+        var graphic = new PIXI.Graphics()
+        graphic.beginFill(0xFFFFFF, 0);
 
         this.animations = {};
         if (!this.frame) {
@@ -48,12 +50,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                                     this.frame.w, this.frame.h));
             }
 
-            var graphic = new PIXI.Graphics()
-            graphic.beginFill(0xFFFFFF, 0);
+
             graphic.drawRect(0, 0, this.frame.w, this.frame.h);
             graphic.endFill();
             this.sprite = new PIXI.Sprite(graphic.generateTexture(false));
-            this.sprite.anchor = new PIXI.Point(0.5, 0.5);
 
             var animations = new PIXI.DisplayObjectContainer();
             this.sprite.addChild(animations);
@@ -61,7 +61,12 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             this.addAnimation("default", [0], 1);
             this.setAnimation("default");
             this.addAnimation("all", _.range(0, this.textures.length), 0.05);
+        } else {
+            graphic.drawRect(0, 0, 1, 1);
+            graphic.endFill();
+            this.sprite = new PIXI.Sprite(graphic.generateTexture(false));
         }
+        this.sprite.anchor = new PIXI.Point(0.5, 0.5);
 
         var sprites = new PIXI.DisplayObjectContainer();
         this.sprite.addChild(sprites);
@@ -141,8 +146,8 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         var prevScale = this.getScale();
         this.sprite.scale = new PIXI.Point(x, y);
         _.each(this.spritePoints, function (sp) {
-                sp.point.x = sp.point.x * (x / prevScale.x);
-                sp.point.y = sp.point.y * (y / prevScale.y);
+            sp.point.x = sp.point.x * (x / prevScale.x);
+            sp.point.y = sp.point.y * (y / prevScale.y);
         });
     },
     getScale: function () {
@@ -221,7 +226,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     // SPRITE POINTS
     addSpritePoint: function (name, x, y) {
         var sprPt = {};
-//        sprPt.origPoint = new SAT.Vector(x, y);
+        sprPt.origPoint = new SAT.Vector(x, y);
         sprPt.point = new SAT.Vector(x, y);
         sprPt.calcPoint = new SAT.Vector(x, y);
         sprPt.name = name;
@@ -533,7 +538,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
     bounciness: 0.5,
     minBounceSpeed: 64,
     angularSpeed: 0,
-    forceAngle: 0,
+    movementAngle: 0,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
@@ -552,15 +557,24 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         // MOVEMENT
         var startPos = this.getPosition();
 
+        if (this.moveForward) {
+            this.movementAngle = this.getRotation();
+        }
+        var friction = this.friction.clone();
+        if (this.moveAtAngle) {
+            friction.x = Math.abs(friction.x * Math.cos(this.movementAngle));
+            friction.y = Math.abs(friction.y * Math.sin(this.movementAngle));
+        }
+
         if (this.gravity.x === 0) {
             if (this.velocity.x > 0) {
-                this.velocity.x -= this.friction.x;
+                this.velocity.x -= friction.x;
                 if (this.velocity.x < 0) {
                     this.velocity.x = 0;
                 }
             }
             if (this.velocity.x < 0) {
-                this.velocity.x += this.friction.x;
+                this.velocity.x += friction.x;
                 if (this.velocity.x > 0) {
                     this.velocity.x = 0;
                 }
@@ -568,13 +582,13 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         }
         if (this.gravity.y === 0) {
             if (this.velocity.y > 0) {
-                this.velocity.y -= this.friction.y;
+                this.velocity.y -= friction.y;
                 if (this.velocity.y < 0) {
                     this.velocity.y = 0;
                 }
             }
             if (this.velocity.y < 0) {
-                this.velocity.y += this.friction.y;
+                this.velocity.y += friction.y;
                 if (this.velocity.y > 0) {
                     this.velocity.y = 0;
                 }
@@ -596,14 +610,14 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
             this.velocity.x = this.velocity.x.clamp(-this.maxVelocity.x, this.maxVelocity.x);
             this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
         }
-        else if (this.isMoving) {
-            var rot = this.getRotation() + this.forceAngle;
-            this.velocity.x += this.speed.x * Math.cos(rot);
-            this.velocity.y += this.speed.y * Math.sin(rot);
+        else if (this.moveAtAngle && this.applyForce) {
+            this.velocity.x += this.speed.x * Math.cos(this.movementAngle);
+            this.velocity.y += this.speed.y * Math.sin(this.movementAngle);
             var spd = this.velocity.len();
             if (spd > this.maxSpeed) {
                 this.velocity.scale(this.maxSpeed / spd, this.maxSpeed / spd);
             }
+            this.applyForce = false;
         }
 
         var vel = this.velocity.clone();
@@ -626,7 +640,6 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         } else {
             this.isRotating = false;
         }
-
     },
     collideWithStatic: function (other, response) {
         this.processBounce(response.overlapN);

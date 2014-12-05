@@ -1,41 +1,21 @@
 // SAT EXTENSION
 SAT.Polygon.prototype.setScale = function (x, y) {
-    // The first .scale is a SAT vector. The second is its scale() method.
-//    this.scale.scale(x, y);
     var prevScale = this.scale.clone();
-//    window.console.log(this.scale);
-//    window.console.log(prevScale);
-//    this.scale.scale(x, y);
     this.scale.x = x; 
     this.scale.y = y; 
     
-//    this.points = _.map(this.origPoints, function (origPoint) {
-//        return origPoint.clone();
-//    })
-//    _.each(this.points, function (point) {
-//        return point.scale(x, y)
-//    });
-//    window.console.log(x + " " + y);
     _.each(this.points, function (point) {
         return point.scale(x / prevScale.x, y / prevScale.y);
     });
 
-//    this.w = this.origW;
-//    this.h = this.origH;
-//    this.w *= x;
-//    this.h *= y;
     this.w *= x / prevScale.x;
     this.h *= y / prevScale.y;
-
-//    this.offset = this.origOffset.clone();
-//    this.setOffset(new SAT.Vector(this.offset.x * x, this.offset.y * y));
 
     this.offset.scale(x / prevScale.x, y / prevScale.y);
     this.recalc();
 };
 
-// Engine polygon UTILS
-
+// ENGINE polygon UTILS
 A_.POLYGON.Utils = {};
 
 A_.POLYGON.Utils.createSATPolygonFromTiled = function (oData, centered) {
