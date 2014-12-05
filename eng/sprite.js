@@ -99,12 +99,15 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.spritePoints = [];
     },
     // SPRITE CHILDREN
-    addSprite: function (child) {
-        this.sprites.push(child);
-        this.sprite.children[1].addChild(child.sprite);
+    addSprite: function (sprite) {
+        this.sprites.push(sprite);
+        this.sprite.children[1].addChild(sprite.sprite);
+        return sprite;
     },
-    getSpriteAt: function (i) {
-        return this.sprites[i];
+    removeSprite: function (sprite) {
+        this.sprites.splice(this.sprites.indexOf(sprite), 1);
+        this.sprite.children[1].removeChild(sprite.sprite);
+        return sprite;
     },
     // PIXI/SAT dependent GETTERS and SETTERS.
     // Used to keep in sync PIXI, SAT and engine sprite properties
@@ -222,12 +225,13 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                 return;
             }
         } else if (typeof position === "number") {
-            parent.setChildIndex(this.sprite, position);
+            if (position >= 0 && position < parent.children.length)
+                parent.setChildIndex(this.sprite, position);
         }
     },
     getZ: function () {
         var parent;
-        
+
         if (this.container) {
             parent = this.container.sprite.children[1];
         } else
@@ -322,6 +326,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
     },
     destroy: function () {
+        _.each(this.sprites, function (sprite) {
+            sprite.destroy();
+        })
+        
         A_.game.spritesToDestroy.push(this);
         this.onDestruction();
     },

@@ -256,7 +256,7 @@ A_.Game = Class.extend({
     destroySprite: function (sprite) {
         if (!_.contains(this.level.sprites, sprite))
             return;
-
+        
         if (_.contains(this.collider.collisionSprites, sprite)) {
             this.collider.collisionSprites.splice(this.collider.collisionSprites.indexOf(sprite), 1);
         }
@@ -277,7 +277,7 @@ A_.Game = Class.extend({
 
         if (sprite.debugGraphics) {
             sprite.debugGraphics.parent.removeChild(sprite.debugGraphics);
-        }
+        }        
         sprite.sprite.parent.removeChild(sprite.sprite);
         this.level.sprites.splice(this.level.sprites.indexOf(sprite), 1);
     },
