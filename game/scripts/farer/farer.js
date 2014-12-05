@@ -166,7 +166,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
 var Rotor = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "rotor.png",
     frame: {w: 45, h: 45},
-    collisionResponse: "sensor",
+    collisionResponse: "static",
     angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);

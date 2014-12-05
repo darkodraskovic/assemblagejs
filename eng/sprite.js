@@ -233,6 +233,26 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                 parent.setChildIndex(this.sprite, position);
         }
     },
+    moveToSprite: function (sprite, position) {
+        var parent;
+        if (this.getLayerName() !== sprite.getLayerName())
+            return;
+        else
+            parent = this.layer;
+        if (this.container) {
+            if (this.container !== sprite.container)
+                return;
+            else
+                parent = this.container.sprite.children[1];
+        }
+        if (position === "back" || position === "front") {
+            parent.removeChild(this.sprite);
+            parent.addChildAt(this.sprite, parent.getChildIndex(sprite.sprite));
+            if (position === "front") {
+                parent.swapChildren(this.sprite, sprite.sprite);
+            }
+        }
+    },
     getZ: function () {
         var parent;
 
@@ -260,13 +280,13 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                 this.container.removeSprite(this);
             } else
                 this.layer.removeChild(this.sprite);
-            
+
             dest.addChild(this.sprite);
             this.layer = dest;
             _.each(this.sprites, function (sprite) {
                 sprite.layer = layer;
             });
-        }        
+        }
     },
     // ANCHOR
     getOrigin: function () {
@@ -308,15 +328,13 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         sprPt.point = new SAT.Vector(x, y);
         sprPt.calcPoint = new SAT.Vector(x, y);
         sprPt.name = name;
-//        var that = this;
         sprPt.setPosition = function (x, y) {
-            this.calcPoint.x = x;
-            this.calcPoint.y = y;
+            this.calcPoint.x = x + this.point.x;
+            this.calcPoint.y = y + this.point.y;
         };
         sprPt.setRotation = function (rotation) {
-            var rotVec = this.point.clone().rotate(rotation);
-            this.calcPoint.x += rotVec.x;
-            this.calcPoint.y += rotVec.y;
+            var rotVec = this.point.clone().rotate(rotation).sub(this.point);            
+            this.calcPoint.add(rotVec);
         };
         sprPt.setScale = function (x, y) {
             this.point.x *= x;

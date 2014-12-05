@@ -58,6 +58,13 @@ var Player = Anime.extend({
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
+
+    },
+    onCreation: function () {
+        window.console.log(A_.level.findLayerByName(this.layer.name));
+        this.rifle = A_.game.createSprite(Rifle, this.layer,
+                this.getPositionX(), this.getPositionY(),
+                {holder: this});
     },
     update: function () {
         var rot = (A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level)).toDeg();
@@ -79,8 +86,10 @@ var Player = Anime.extend({
         this._super();
     },
     shootBullet: function () {
-        var pos = this.getPosition();
-        var bullet = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos.x, pos.y + 8);
+//        var pos = this.getPosition();
+//        var bullet = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos.x, pos.y + 8);
+        var sprPt = this.rifle.getSpritePoint(this.facing);
+        var bullet = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), sprPt.getPositionX(), sprPt.getPositionY());
         bullet.setRotation(A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level));
         bullet.setAnimation("all", 16, 0);
         bullet.velocity.y = bullet.speed * Math.sin(bullet.getRotation());
@@ -130,6 +139,31 @@ var Agent = Anime.extend({
     }
 });
 
+var Rifle = A_.SPRITES.AnimatedSprite.extend({
+    animSheet: "AssaultRifle.png",
+    frame: {w: 64, h: 64},
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
+        this.addAnimation("up", [0], 0);
+        this.addAnimation("left", [9], 0);
+        this.addAnimation("down", [18], 0);
+        this.addAnimation("right", [27], 0);
+        this.addSpritePoint("up", 14, -18);
+        this.addSpritePoint("down", -10, 28);
+        this.addSpritePoint("left", -24, 6);
+        this.addSpritePoint("right", 24, 6);
+    },
+    postupdate: function () {
+        this.setAnimation(this.holder.facing);
+        this.setPosition(this.holder.getPositionX(), this.holder.getPositionY());
+        if (this.holder.facing === "up") {
+            this.moveToSprite(this.holder, "back");
+        } else {
+
+            this.moveToSprite(this.holder, "front");
+        }
+    }
+});
 // WEAPONS & AMMO
 var Bullet = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "Muzzleflashes-Shots.png",
@@ -143,7 +177,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
         this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 1000;
         this.speed = 600;
-        this.bounded = false;        
+        this.bounded = false;
         A_.game.createSound({
             urls: ['gunshot.mp3'],
             volume: 0.5
@@ -192,7 +226,7 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
             loop: true,
             volume: 0.4
         }).play();
-        
+
         this.origH = this.getHeight();
         A_.EXTENSIONS.Sine.addTo(this, {period: 1, periodRand: 50, value: 8, valueRand: 4});
     },
@@ -212,8 +246,8 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
             }
             this.sound.stop();
             this.destroy();
-        }                
-        
+        }
+
         this.setHeight(this.origH + this.sine.computeValue());
     }
 });
@@ -318,12 +352,12 @@ var Computer = A_.SPRITES.CollisionSprite.extend({
 //    collidesWith: A_.COLLISION.Type.NONE,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        
+
 //        A_.EXTENSIONS.Sine.addTo(this, {period: 3, periodRand: 0, value: 0.5, valueRand: 50});
     },
     update: function (props) {
         this._super(props);
-        
+
 //        var val = this.sine.computeValue();
 //        this.setScale(1 + val, 1 + val);
 //        
@@ -356,7 +390,7 @@ A_.game.preupdate = function () {
         } else {
             A_.game.loadTiledLevel(level1);
         }
-    }    
+    }
 };
 
 A_.game.postupdate = function () {

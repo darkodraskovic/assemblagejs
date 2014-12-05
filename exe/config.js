@@ -31,7 +31,7 @@ var level1 = {
     directoryPrefix: "skorpio",
     scripts: ["skorpio"],
     map: "map_skorpio1",
-    graphics: ["AgentComplete.png", "PlayerComplete.png", "Computer1.png",
+    graphics: ["AgentComplete.png", "AssaultRifle.png", "PlayerComplete.png", "Computer1.png",
         "Explosion.png", "Fire.png", "Interior-Furniture.png",
         "Muzzleflashes-Shots.png"],
     sounds: [["explosion.mp3"], ["grunt.wav"], ["fire.wav"],
