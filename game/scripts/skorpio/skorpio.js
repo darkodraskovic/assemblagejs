@@ -64,7 +64,7 @@ var Player = Anime.extend({
         window.console.log(A_.level.findLayerByName(this.layer.name));
         this.rifle = A_.game.createSprite(Rifle, this.layer,
                 this.getPositionX(), this.getPositionY(),
-                {holder: this});
+                {holder: this, animSpeed: this.animSpeed});
     },
     update: function () {
         var rot = (A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level)).toDeg();
@@ -144,17 +144,31 @@ var Rifle = A_.SPRITES.AnimatedSprite.extend({
     frame: {w: 64, h: 64},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.addAnimation("up", [0], 0);
-        this.addAnimation("left", [9], 0);
-        this.addAnimation("down", [18], 0);
-        this.addAnimation("right", [27], 0);
+        this.addAnimation("idle_up", [0], 1);
+        this.addAnimation("idle_down", [18], 1);
+        this.addAnimation("idle_left", [9], 1);
+        this.addAnimation("idle_right", [27], 1);
+
+        this.addAnimation("moving_up", _.range(1, 9), this.animSpeed);
+        this.addAnimation("moving_down", _.range(19, 27), this.animSpeed);
+        this.addAnimation("moving_left", _.range(10, 18), this.animSpeed);
+        this.addAnimation("moving_right", _.range(28, 36), this.animSpeed);
+
         this.addSpritePoint("up", 14, -18);
         this.addSpritePoint("down", -10, 28);
         this.addSpritePoint("left", -24, 6);
         this.addSpritePoint("right", 24, 6);
     },
     postupdate: function () {
-        this.setAnimation(this.holder.facing);
+//        var rot = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
+//        switch (this.holder.facing) {
+//            case "left": rot -= Math.PI; break;
+//            case "up": rot += Math.PI / 2; break;
+//            case "down": rot -= Math.PI / 2; break;
+//        };
+//        this.setRotation(rot);
+
+        this.setAnimation(this.holder.motionState + "_" + this.holder.facing);
         this.setPosition(this.holder.getPositionX(), this.holder.getPositionY());
         if (this.holder.facing === "up") {
             this.moveToSprite(this.holder, "back");
@@ -231,7 +245,9 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
         A_.EXTENSIONS.Sine.addTo(this, {period: 1, periodRand: 50, value: 8, valueRand: 4});
     },
     update: function () {
-        this.setPosition(this.spawner.getPositionX(), this.spawner.getPositionY());
+        var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
+//        this.setPosition(this.spawner.getPositionX(), this.spawner.getPositionY());
+        this.setPosition(sprPt.getPositionX(), sprPt.getPositionY());
 
         this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), A_.game.mousePosition.level));
         this.setWidth(A_.UTILS.distanceTo(this.getPosition(), A_.game.mousePosition.level));

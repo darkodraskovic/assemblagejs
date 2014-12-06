@@ -5,17 +5,17 @@
             <url>eng/sprite.js</url>
             <bookmark id="6">
                 <name/>
-                <line>214</line>
+                <line>218</line>
                 <key/>
             </bookmark>
             <bookmark id="5">
                 <name/>
-                <line>286</line>
+                <line>334</line>
                 <key/>
             </bookmark>
             <bookmark id="3">
                 <name/>
-                <line>559</line>
+                <line>606</line>
                 <key/>
             </bookmark>
         </file>
@@ -30,11 +30,12 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/exe/config.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/skorpio/skorpio.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/farer/farer.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/farer/farer.js</file>
         </group>
     </open-files>
 </project-private>

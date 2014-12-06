@@ -25,26 +25,30 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), A_.game.mousePosition.level);
         this.setRotation(rot);
-        if (A_.INPUT.down["up"]) {
-            this.movementAngle = this.getRotation();
-            this.applyForce = true;
-        }
-        if (A_.INPUT.down["down"]) {
-            this.movementAngle = this.getRotation() + Math.PI;
-            this.applyForce = true;
-        }
         var speedSign = 0;
         if (this.getRotation() < 0)
             speedSign = -1;
         else
             speedSign = 1;
-        if (A_.INPUT.down["left"]) {
-            this.movementAngle = this.getRotation() + Math.PI / 2 * speedSign;
-            this.applyForce = true;
+
+        if (A_.INPUT.down["up"]) {
+            this.movementAngle = this.getRotation();
+            this.acceleration.x = this.acceleration.y = 64;
         }
-        if (A_.INPUT.down["right"]) {
+        else if (A_.INPUT.down["down"]) {
+            this.movementAngle = this.getRotation() + Math.PI;
+            this.acceleration.x = this.acceleration.y = 64;
+        }
+        else if (A_.INPUT.down["left"]) {
+            this.movementAngle = this.getRotation() + Math.PI / 2 * speedSign;
+            this.acceleration.x = this.acceleration.y = 64;
+        }
+        else if (A_.INPUT.down["right"]) {
             this.movementAngle = this.getRotation() + -Math.PI / 2 * speedSign;
-            this.applyForce = true;
+            this.acceleration.x = this.acceleration.y = 64;
+        }
+        else {
+            this.acceleration.x = this.acceleration.y = 0;            
         }
 
         if (A_.game.leftpressed) {
@@ -85,7 +89,7 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
     onCreation: function () {
         this.origPositionX = this.getPositionX();
     },
-    update: function () {        
+    update: function () {
         if (A_.game.rightpressed) {
             this.toggleFire("on");
         }
@@ -134,8 +138,8 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 0;
-        this.speed.x = this.speed.y = 1000;
-        this.maxSpeed = 1000;
+        this.acceleration.x = this.acceleration.y = 600;
+        this.maxSpeed = 1200;
         this.bounded = false;
         A_.game.createSound({
             urls: ['bullet.wav'],
@@ -145,7 +149,6 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     onCreation: function () {
         this.setOrigin(0, 0.5);
         this.setAlpha(0.75);
-        this.applyForce = true;
         this.moveAtAngle = true;
         this.moveForward = true;
     },

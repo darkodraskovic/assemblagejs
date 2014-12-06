@@ -665,9 +665,16 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         }
 
         var friction = this.friction.clone();
+        var acceleration = this.acceleration.clone();
         if (this.moveAtAngle) {
-            friction.x = Math.abs(friction.x * Math.cos(this.movementAngle));
-            friction.y = Math.abs(friction.y * Math.sin(this.movementAngle));
+            var sin = Math.sin(this.movementAngle);
+            var cos = Math.cos(this.movementAngle);
+            
+            friction.x = Math.abs(friction.x * cos);
+            friction.y = Math.abs(friction.y * sin);
+            
+            acceleration.x *= cos;
+            acceleration.y *= sin;
         }
 
         if (this.gravity.x === 0) {
@@ -699,7 +706,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
             }
         }
 
-        this.velocity.add(this.acceleration);
+        this.velocity.add(acceleration);
         this.velocity.add(this.gravity);
 
         if (this.bounced.horizontal) {
@@ -710,18 +717,15 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         }
         this.bounced.horizontal = this.bounced.vertical = false;
 
-        if (!this.moveAtAngle) {
-            this.velocity.x = this.velocity.x.clamp(-this.maxVelocity.x, this.maxVelocity.x);
-            this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
-        }
-        else if (this.moveAtAngle && this.applyForce) {
-            this.velocity.x += this.speed.x * Math.cos(this.movementAngle);
-            this.velocity.y += this.speed.y * Math.sin(this.movementAngle);
+        if (this.moveAtAngle) {
             var spd = this.velocity.len();
             if (spd > this.maxSpeed) {
                 this.velocity.scale(this.maxSpeed / spd, this.maxSpeed / spd);
             }
-            this.applyForce = false;
+        }
+        else {
+            this.velocity.x = this.velocity.x.clamp(-this.maxVelocity.x, this.maxVelocity.x);
+            this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
         }
 
         var vel = this.velocity.clone();
