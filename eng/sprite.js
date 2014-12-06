@@ -1,6 +1,6 @@
 A_.SPRITES.AnimatedSprite = Class.extend({
     // init() is called when the sprite is instantiated with new keyword.
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         // Add all the properties of the prop obj to this instance.
         if (props) {
             for (var prop in props) {
@@ -82,31 +82,29 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         if (!this.height)
             this.height = 1;
 
-        this.alpha = 1;
+        this.alpha(1);
 
         if (parent instanceof A_.SPRITES.AnimatedSprite) {
             parent.addSprite(this);
-//            this.container = parent;
-//            this.layer = this.container.layer;
         }
         else {
             this.layer = parent;
             this.layer.addChild(this.sprite);
         }
 //        this.parent = parent;
-        this.setPosition(x, y);
+        this.position(x, y);
 
         this.spritePoints = [];
     },
     // SPRITE CHILDREN
-    addSprite: function (sprite) {
+    addSprite: function(sprite) {
         this.sprites.push(sprite);
         this.sprite.children[1].addChild(sprite.sprite);
         sprite.container = this;
         sprite.layer = this.layer;
         return sprite;
     },
-    removeSprite: function (sprite) {
+    removeSprite: function(sprite) {
         this.sprites.splice(this.sprites.indexOf(sprite), 1);
         this.sprite.children[1].removeChild(sprite.sprite);
         sprite.container = null;
@@ -115,74 +113,99 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     // PIXI/SAT dependent GETTERS and SETTERS.
     // Used to keep in sync PIXI, SAT and engine sprite properties
-    getLevelPosition: function () {
+    x: function(x) {
+        if (x)
+            this.position(x, this.y());
+        else
+            return this.sprite.position.x;
+    },
+    y: function(y) {
+        if (y)
+            this.position(this.x(), y);
+        else
+            return this.sprite.position.y;
+    },
+    position: function(x, y) {
+        if (x && y) {
+            this.sprite.position.x = x;
+            this.sprite.position.y = y;
+            _.each(this.spritePoints, function(sp) {
+                sp.position(x, y);
+            });
+        } else {
+            return this.sprite.position;
+        }
+    },
+    positionRelative: function(x, y) {
+        this.position(this.x() + x, this.y() + y);
+    },
+    levelPosition: function() {
         return A_.level.container.toLocal(A_.game.origin, this.sprite);
     },
-    setPosition: function (x, y) {
-        this.sprite.position.x = x;
-        this.sprite.position.y = y;
-        _.each(this.spritePoints, function (sp) {
-            sp.setPosition(x, y);
-        });
-    },
-    setPositionRelative: function (x, y) {
-        this.setPosition(this.sprite.position.x + x, this.sprite.position.y + y);
-    },
-    getPosition: function () {
-        return this.sprite.position;
-    },
-    getPositionX: function () {
-        return this.sprite.position.x;
-    },
-    getPositionY: function () {
-        return this.sprite.position.y;
-    },
     // TODO: setSize/width/height should affect spritepoints
-    setSize: function (x, y) {
+    size: function(x, y) {
+        if (typeof x !== "number" || typeof y !== "number")
+            return {width: this.sprite.width, height: this.sprite.height};
+
         this.sprite.width = x;
         this.sprite.height = y;
     },
-    getSize: function () {
-        return {width: this.sprite.width, height: this.sprite.height};
+    width: function(w) {
+        if (typeof w !== "number")
+            return this.sprite.width;
+        var prevWidth = this.sprite.width;
+        this.sprite.width = w;
+        _.each(this.spritePoints, function(sp) {
+            sp.scale(w / prevWidth, this.scale().y);
+        }, this);
     },
-    setWidth: function (width) {
-        this.sprite.width = width;
+    height: function(h) {
+        if (typeof h !== "number")
+            return this.sprite.height;
+        var prevHeight = this.sprite.height;
+        this.sprite.height = h;
+        _.each(this.spritePoints, function(sp) {
+            sp.scale(this.scale().x, h / prevHeight);
+        }, this);
     },
-    getWidth: function () {
-        return this.sprite.width;
-    },
-    setHeight: function (height) {
-        this.sprite.height = height;
-    },
-    getHeight: function () {
-        return this.sprite.height;
-    },
-    setScale: function (x, y) {
+    setScale: function(x, y) {
         var prevScale = this.getScale();
         this.sprite.scale = new PIXI.Point(x, y);
-        _.each(this.spritePoints, function (sp) {
+        _.each(this.spritePoints, function(sp) {
             sp.setScale(x / prevScale.x, y / prevScale.y);
         });
     },
-    getScale: function () {
+    getScale: function() {
         return this.sprite.scale;
     },
-    flip: function (axis) {
-        var prevScale = this.getScale();
-        if (axis === "x") {
-            this.setScale(prevScale.x * -1, prevScale.y);
-        } else if (axis === "y") {
-            this.setScale(prevScale.x, prevScale.y * -1);
-        }
-    },
-    setFlipped: function (axis, flip) {
-        if (this.getFlipped(axis) && flip || !this.getFlipped(axis) && !flip) {
-            return;
+    scale: function(x, y) {
+        if (x && y) {
+            var prevScaleX = this.sprite.scale.x;
+            var prevScaleY = this.sprite.scale.y;
+            this.sprite.scale = new PIXI.Point(x, y);
+            _.each(this.spritePoints, function(sp) {
+                sp.scale(x / prevScaleX, y / prevScaleY);
+            });
         }
         else
-            this.flip(axis);
+            return this.sprite.scale;
     },
-    getFlipped: function (axis) {
+    flip: function(axis) {
+        var prevScale = this.scale();
+        if (axis === "x") {
+            this.scale(prevScale.x * -1, prevScale.y);
+        } else if (axis === "y") {
+            this.scale(prevScale.x, prevScale.y * -1);
+        }
+    },
+//    setFlipped: function(axis, flip) {
+//        if (this.getFlipped(axis) && flip || !this.getFlipped(axis) && !flip) {
+//            return;
+//        }
+//        else
+//            this.flip(axis);
+//    },
+    flipped: function(axis) {
         if (axis === "x") {
             if (this.getScale().x < 0)
                 return true;
@@ -196,46 +219,48 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                 return false;
         }
     },
-    setRotation: function (n) {
-        this.sprite.rotation = n;
-        _.each(this.spritePoints, function (sp) {
-            sp.setRotation(n);
-        });
+    rotation: function(n) {
+        if (n) {
+            this.sprite.rotation = n;
+            _.each(this.spritePoints, function(sp) {
+                sp.rotation(n);
+            });
+        } else
+            return this.sprite.rotation;
     },
-    getRotation: function () {
-        return this.sprite.rotation;
-    },
-    setAlpha: function (n) {
+    alpha: function (n) {
+        if (typeof n !== "number") {
+            return this.sprite.alpha;
+        } 
         this.sprite.alpha = n;
     },
-    getAlpha: function () {
-        return this.sprite.alpha;
-    },
     // Z ORDER & LAYERS
-    setZ: function (position) {
-        // TODO
+    z: function(position) {
         var parent;
         if (this.container) {
             parent = this.container.sprite.children[1];
         } else
             parent = this.layer;
 
-        if (typeof position === "string") {
-            if (position === "top") {
-                parent.setChildIndex(this.sprite, this.layer.children.length - 1);
-                return;
-            } else if (position === "bottom") {
-                parent.setChildIndex(this.sprite, 0);
-                return;
+        if (position) {
+            if (typeof position === "string") {
+                if (position === "top") {
+                    parent.setChildIndex(this.sprite, this.layer.children.length - 1);
+                    return;
+                } else if (position === "bottom") {
+                    parent.setChildIndex(this.sprite, 0);
+                    return;
+                }
+            } else if (typeof position === "number") {
+                if (position >= 0 && position < parent.children.length)
+                    parent.setChildIndex(this.sprite, position);
             }
-        } else if (typeof position === "number") {
-            if (position >= 0 && position < parent.children.length)
-                parent.setChildIndex(this.sprite, position);
-        }
+        } else
+            return parent.getChildIndex(this.sprite);
     },
-    moveToSprite: function (sprite, position) {
+    moveToSprite: function(sprite, position) {
         var parent;
-        if (this.getLayerName() !== sprite.getLayerName())
+        if (this.layerName() !== sprite.layerName())
             return;
         else
             parent = this.layer;
@@ -253,23 +278,19 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             }
         }
     },
-    getZ: function () {
-        var parent;
-
-        if (this.container) {
-            parent = this.container.sprite.children[1];
+    layerName: function(name) {
+        if (!name)
+            return this.layer.name;
+        else
+            this.moveToLayer(name);
+    },
+    layerNumber: function(n) {
+        if (typeof n !== "number") {
+            return this.layer.parent.getChildIndex(this.layer);
         } else
-            parent = this.layer;
-
-        return parent.getChildIndex(this.sprite);
+            this.moveToLayer(n);
     },
-    getLayerName: function () {
-        return this.layer.name;
-    },
-    getLayerNumber: function () {
-        return this.layer.parent.getChildIndex(this.layer);
-    },
-    moveToLayer: function (layer) {
+    moveToLayer: function(layer) {
         if (typeof layer === "string") {
             var dest = A_.level.findLayerByName(layer);
         } else if (typeof layer === "number") {
@@ -283,33 +304,32 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
             dest.addChild(this.sprite);
             this.layer = dest;
-            _.each(this.sprites, function (sprite) {
+            _.each(this.sprites, function(sprite) {
                 sprite.layer = layer;
             });
         }
     },
     // ANCHOR
-    getOrigin: function () {
-        return this.sprite.anchor;
-    },
-    setOrigin: function (x, y) {
-        var w = this.getWidth();
-        var h = this.getHeight();
+    origin: function(x, y) {
+        if (typeof x === 'undefined' || typeof y === 'undefined')
+            return this.sprite.anchor;
+        var w = this.width();
+        var h = this.height();
         var deltaX = x - this.sprite.anchor.x;
         var deltaY = y - this.sprite.anchor.y;
-        var scale = this.getScale();
+        var scale = this.scale();
 
         var anchor = new PIXI.Point(x, y);
         this.sprite.anchor = anchor;
-        _.each(this.animations, function (animation) {
+        _.each(this.animations, function(animation) {
             animation.anchor = anchor;
         });
 
-        _.each(this.sprites, function (sprite) {
-            sprite.setPositionRelative(-deltaX * w / scale.x, -deltaY * h / scale.y);
+        _.each(this.sprites, function(sprite) {
+            sprite.positionRelative(-deltaX * w / scale.x, -deltaY * h / scale.y);
         });
 
-        _.each(this.spritePoints, function (sp) {
+        _.each(this.spritePoints, function(sp) {
             sp.point.x -= deltaX * w;
             sp.point.y -= deltaY * h;
         });
@@ -322,69 +342,87 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
     },
     // SPRITE POINTS
-    addSpritePoint: function (name, x, y) {
+    spritePoint: function(name, x, y) {
+        if (!x || !y) {
+            return _.find(this.spritePoints, function(sprPt) {
+                return sprPt.name === name;
+            });
+        }
         var sprPt = {};
         sprPt.origPoint = new SAT.Vector(x, y);
         sprPt.point = new SAT.Vector(x, y);
         sprPt.calcPoint = new SAT.Vector(x, y);
         sprPt.name = name;
-        sprPt.setPosition = function (x, y) {
-            this.calcPoint.x = x + this.point.x;
-            this.calcPoint.y = y + this.point.y;
+        sprPt.position = function(x, y) {
+            if (x && y) {
+                this.calcPoint.x = x + this.point.x;
+                this.calcPoint.y = y + this.point.y;
+            }
+            else
+                return this.calcPoint;
         };
-        sprPt.setRotation = function (rotation) {
-            var rotVec = this.point.clone().rotate(rotation).sub(this.point);            
-            this.calcPoint.add(rotVec);
+        sprPt.rotation = function(rotation) {
+            if (rotation) {
+                var rotVec = this.point.clone().rotate(rotation).sub(this.point);
+                this.calcPoint.add(rotVec);
+            } else
+                return this.rotation;
         };
-        sprPt.setScale = function (x, y) {
-            this.point.x *= x;
-            this.point.y *= y;
+        sprPt.scale = function(x, y) {
+            if (x && y) {
+                this.point.x *= x;
+                this.point.y *= y;
+            } else
+                return;
         };
-        sprPt.getPosition = function () {
-            return this.calcPoint;
+        sprPt.x = function(x) {
+            if (x)
+                this.calcPoint.x = x;
+            else
+                return this.calcPoint.x;
         };
-        sprPt.getPositionX = function () {
-            return this.calcPoint.x;
-        };
-        sprPt.getPositionY = function () {
-            return this.calcPoint.y;
+        sprPt.y = function(y) {
+            if (y)
+                this.calcPoint.y = y;
+            else
+                return this.calcPoint.y;
         };
         this.spritePoints.push(sprPt);
         return sprPt;
     },
-    getSpritePoint: function (name) {
-        return _.find(this.spritePoints, function (sprPt) {
-            return sprPt.name === name;
-        });
-    },
+//    spritePoint: function(name) {
+//        return _.find(this.spritePoints, function(sprPt) {
+//            return sprPt.name === name;
+//        });
+//    },
     // CREATION/DESTRUCTION & UPDATE
-    preupdate: function () {
+    preupdate: function() {
 
     },
-    update: function () {
+    update: function() {
 
     },
-    postupdate: function () {
+    postupdate: function() {
 //        _.each(this.spritePoints, function (sprPt) {
 //            sprPt.update();
 //        });
     },
-    onCreation: function () {
+    onCreation: function() {
 
     },
-    destroy: function () {
-        _.each(this.sprites, function (sprite) {
+    destroy: function() {
+        _.each(this.sprites, function(sprite) {
             sprite.destroy();
         })
 
         A_.game.spritesToDestroy.push(this);
         this.onDestruction();
     },
-    onDestruction: function () {
+    onDestruction: function() {
 
     },
     // ANIMATION
-    addAnimation: function (name, frames, speed) {
+    addAnimation: function(name, frames, speed) {
         // set default speed to 1; 
         if (!speed) {
             speed = 1;
@@ -404,7 +442,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.sprite.children[0].addChild(animation);
         this.animations[name] = animation;
     },
-    setAnimation: function (name, frame, speed) {
+    setAnimation: function(name, frame, speed) {
         // play from the start by default
         if (typeof frame === 'undefined') {
             if (this.currentAnimationName === name)
@@ -437,50 +475,49 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     collides: true,
     destroyThis: false,
     drawDebugGraphics: true,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
         this.prevOverlapN = new SAT.Vector(0, 0);
 
         this.initInput();
     },
-    initInput: function () {
+    initInput: function() {
         var that = this;
         if (this.interactive) {
             this.sprite.interactive = true;
-            this.sprite.mousedown = function () {
+            this.sprite.mousedown = function() {
                 that.leftpressed = true;
                 that.leftdown = true;
             };
-            this.sprite.mouseup = function () {
+            this.sprite.mouseup = function() {
                 that.leftreleased = true;
                 that.leftdown = false;
             };
-            this.sprite.mouseupoutside = function () {
+            this.sprite.mouseupoutside = function() {
                 that.leftreleased = true;
                 that.leftdown = false;
             };
-            this.sprite.rightdown = function () {
+            this.sprite.rightdown = function() {
                 that.rightpressed = true;
                 that.rightdown = true;
             };
-            this.sprite.rightup = function () {
+            this.sprite.rightup = function() {
                 that.rightreleased = true;
                 that.rightdown = false;
             };
-            this.sprite.rightupoutside = function () {
+            this.sprite.rightupoutside = function() {
                 that.rightreleased = true;
                 that.rightdown = false;
             };
         }
     },
-    setInteractive: function () {
-        this.sprite.interactive = true;
+    interactive: function(interactive) {
+        if (typeof interactive === "undefined")
+            return this.sprite.interactive;
+        this.sprite.interactive = interactive;
     },
-    removeInteractive: function () {
-        this.sprite.interactive = false;
-    },
-    setCollision: function (polygon) {
+    setCollision: function(polygon) {
         if (!this.collisionSize)
             this.collisionSize = {};
         if (!this.collisionSize.w)
@@ -521,31 +558,31 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             A_.game.collider.collisionSprites.push(this);
         }
     },
-    update: function () {
+    update: function() {
         this._super();
     },
-    postupdate: function () {
+    postupdate: function() {
         this._super();
 
         if (this.bounded) {
-            var pos = this.getPosition();
-            this.setPosition(Math.max(this.collisionPolygon.w / 2, Math.min(pos.x, A_.game.level.width - this.collisionPolygon.w / 2)),
+            var pos = this.position();
+            this.position(Math.max(this.collisionPolygon.w / 2, Math.min(pos.x, A_.game.level.width - this.collisionPolygon.w / 2)),
                     Math.max(this.collisionPolygon.h / 2, Math.min(pos.y, A_.game.level.height - this.collisionPolygon.h / 2)));
         } else {
-            var pos = this.getPosition();
+            var pos = this.position();
             if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
                 this.outOfBounds = true;
             }
         }
     },
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
         this.prevOverlapN = response.overlapN;
         this.collided = true;
 
         if (this.collisionResponse !== "sensor")
-            this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+            this.positionRelative(-response.overlapV.x, -response.overlapV.y);
     },
-    collideWithDynamic: function (other, response) {
+    collideWithDynamic: function(other, response) {
         this.prevOverlapN = response.overlapN;
         this.collided = true;
 
@@ -558,35 +595,35 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             if (other.collisionResponse === "active") {
                 if (this.collisionResponse === "active" || this.collisionResponse === "passive") {
                     if (this.collisionPolygon === response.a) {
-                        this.setPositionRelative(-response.overlapV.x * 0.5,
+                        this.positionRelative(-response.overlapV.x * 0.5,
                                 -response.overlapV.y * 0.5);
                     } else {
-                        this.setPositionRelative(response.overlapV.x * 0.5,
+                        this.positionRelative(response.overlapV.x * 0.5,
                                 response.overlapV.y * 0.5);
                     }
                 }
                 else if (this.collisionResponse === "light") {
                     if (this.collisionPolygon === response.a) {
-                        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+                        this.positionRelative(-response.overlapV.x, -response.overlapV.y);
                     } else {
-                        this.setPositionRelative(response.overlapV.x, response.overlapV.y);
+                        this.positionRelative(response.overlapV.x, response.overlapV.y);
                     }
                 }
             }
             else if (other.collisionResponse === "passive") {
                 if (this.collisionResponse === "active") {
                     if (this.collisionPolygon === response.a) {
-                        this.setPositionRelative(-response.overlapV.x * 0.5,
+                        this.positionRelative(-response.overlapV.x * 0.5,
                                 -response.overlapV.y * 0.5);
                     } else {
-                        this.setPositionRelative(response.overlapV.x * 0.5,
+                        this.positionRelative(response.overlapV.x * 0.5,
                                 response.overlapV.y * 0.5);
                     }
                 }
             }
         }
     },
-    containsPoint: function (x, y) {
+    containsPoint: function(x, y) {
         var response = new SAT.Response();
         var contains = SAT.pointInPolygon(new SAT.Vector(x, y), this.collisionPolygon);
         if (contains) {
@@ -595,20 +632,30 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             return false;
         }
     },
-    setPosition: function (x, y) {
-        this._super(x, y);
-        if (this.collisionPolygon) {
-            this.collisionPolygon.pos.x = this.getPositionX();
-            this.collisionPolygon.pos.y = this.getPositionY();
+    position: function(x, y) {
+        if (x && y) {
+            this._super(x, y);
+            if (this.collisionPolygon) {
+                this.collisionPolygon.pos.x = x;
+                this.collisionPolygon.pos.y = y;
+            }
         }
+        else
+            return this._super();
     },
-    setScale: function (x, y) {
-        this._super(x, y);
-        if (this.collisionPolygon) {
-            this.collisionPolygon.setScale(x, y);
+    scale: function(x, y) {
+        if (x && y) {
+            this._super(x, y);
+            if (this.collisionPolygon) {
+                this.collisionPolygon.setScale(x, y);
+            }
         }
+        else
+            return this._super();
     },
-    setSize: function (x, y) {
+    size: function(x, y) {
+        if (typeof x !== "number" || typeof y !== "number")
+            return this._super();
         this._super(x, y);
         if (this.collisionPolygon) {
             x = x / this.frame.w;
@@ -616,24 +663,31 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.collisionPolygon.setScale(x, y);
         }
     },
-    setWidth: function (x) {
-        this._super(x);
+    width: function(w) {
+        if (typeof w !== "number")
+            return this._super();
+        this._super(w);
         if (this.collisionPolygon) {
-            x /= this.frame.w;
-            this.collisionPolygon.setScale(x, this.collisionPolygon.scale.y);
+            w /= this.frame.w;
+            this.collisionPolygon.setScale(w, this.collisionPolygon.scale.y);
         }
     },
-    setHeight: function (y) {
-        this._super(y);
+    height: function(h) {
+        if (typeof h !== "number")
+            return this._super();
+        this._super(h);
         if (this.collisionPolygon) {
-            y = y / this.frame.h;
-            this.collisionPolygon.setScale(this.collisionPolygon.scale.x, y);
+            h = h / this.frame.h;
+            this.collisionPolygon.setScale(this.collisionPolygon.scale.x, h);
         }
     },
-    setRotation: function (n) {
-        this._super(n);
-        if (this.collisionPolygon)
-            this.collisionPolygon.setAngle(this.getRotation());
+    rotation: function(n) {
+        if (n) {
+            this._super(n);
+            if (this.collisionPolygon)
+                this.collisionPolygon.setAngle(this.rotation());
+        } else
+            return this._super();
     }
 });
 
@@ -643,7 +697,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
     minBounceSpeed: 64,
     angularSpeed: 0,
     movementAngle: 0,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
@@ -654,14 +708,14 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         this.maxSpeed = this.maxVelocity.len();
         this.bounced = {horizontal: false, vertical: false};
     },
-    update: function () {
+    update: function() {
         this._super();
 
         // ARCADE PHYSICS
-        var startPos = this.getPosition();
+        var startPos = this.position();
 
         if (this.moveForward) {
-            this.movementAngle = this.getRotation();
+            this.movementAngle = this.rotation();
         }
 
         var friction = this.friction.clone();
@@ -669,10 +723,10 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         if (this.moveAtAngle) {
             var sin = Math.sin(this.movementAngle);
             var cos = Math.cos(this.movementAngle);
-            
+
             friction.x = Math.abs(friction.x * cos);
             friction.y = Math.abs(friction.y * sin);
-            
+
             acceleration.x *= cos;
             acceleration.y *= sin;
         }
@@ -733,8 +787,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
 
         var x = startPos.x + vel.x;
         var y = startPos.y + vel.y;
-        this.setPosition(x, y);
-
+        this.position(x, y);
 
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.isMoving = true;
@@ -743,17 +796,17 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         }
 
         if (this.angularSpeed) {
-            this.setRotation(this.getRotation() + this.angularSpeed * A_.game.dt);
+            this.rotation(this.rotation() + this.angularSpeed * A_.game.dt);
             this.isRotating = true;
         } else {
             this.isRotating = false;
         }
     },
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
         this.processBounce(response.overlapN);
         this._super(other, response);
     },
-    processBounce: function (currentOverlapN) {
+    processBounce: function(currentOverlapN) {
         // This method must be called before the collide* _super in order
         // to fetch the correct this.previousOverlapN
         // BUG: the sprite does not bounce in tilemap corners

@@ -234,7 +234,7 @@ A_.Game = Class.extend({
         }
 
         var sprite = new SpriteClass(layer, x, y, props);
-        if (sprite.collides)
+        if (sprite instanceof A_.SPRITES.CollisionSprite)
             sprite.setCollision(collisionPolygon);
 
         if (this.debug) {

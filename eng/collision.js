@@ -19,7 +19,7 @@ A_.COLLISION.Collider = Class.extend({
             offsetY = h / 2;
 
         if (!polygon) {
-            var pos = o.getPosition();
+            var pos = o.position();
             var box = new SAT.Box(new SAT.Vector(pos.x, pos.y), w, h)
             o.collisionPolygon = box.toPolygon();
             o.collisionPolygon.w = box.w;

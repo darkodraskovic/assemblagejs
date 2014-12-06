@@ -17,10 +17,10 @@ A_.SCENERY.TiledSprite = Class.extend({
         }
         this.sprite = new PIXI.TilingSprite(texture, this.width, this.height);
     },
-    setPosition: function (x, y) {
+    position: function (x, y) {
         this.position.x = x;
         this.position.y = y;
-    }
+    }    
 });
 
 

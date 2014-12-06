@@ -21,7 +21,27 @@ A_.TILES.Tile = Class.extend({
     },
     getPosition: function () {
         return this.sprite.position;
-    }
+    },
+    x: function(x) {
+        if (x)
+            this.position(x, this.y());
+        else
+            return this.sprite.position.x;
+    },
+    y: function(y) {
+        if (y)
+            this.position(this.x(), y);
+        else
+            return this.sprite.position.y;
+    },
+    position: function(x, y) {
+        if (x && y) {
+            this.sprite.position.x = x;
+            this.sprite.position.y = y;
+        } else {
+            return this.sprite.position;
+        }
+    },
 });
 
 A_.TILES.Tilemap = Class.extend({

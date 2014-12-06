@@ -8,13 +8,27 @@ SAT.Polygon.prototype.setScale = function (x, y) {
         return point.scale(x / prevScale.x, y / prevScale.y);
     });
 
-    this.w *= Math.abs(x / prevScale.x);
-    this.h *= Math.abs(y / prevScale.y);
-
     this.offset.scale(x / prevScale.x, y / prevScale.y);
     this.recalc();
+    this.recalcSize();
 };
 
+SAT.Polygon.prototype.recalcSize = function() {        
+    var xs = [];
+    var ys = [];
+    
+    _.each(this.points, function (point) {
+        xs[xs.length] = point.x;
+        ys[ys.length] = point.y;
+    });
+    
+    var minX = _.min(xs);
+    var minY = _.min(ys);
+    var maxX = _.max(xs);
+    var maxY = _.max(ys);
+    this.w = maxX - minX;
+    this.h = maxY - minY;    
+}
 // ENGINE polygon UTILS
 A_.POLYGON.Utils = {};
 

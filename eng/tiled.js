@@ -1,6 +1,6 @@
 function fetchAssetListFromMapData(mapData) {
     var assetsToLoad = [];
-    _.each(mapData["tilesets"], function (tileset) {
+    _.each(mapData["tilesets"], function(tileset) {
         var img = tileset["image"];
         if (img.indexOf("/") > -1) {
             img = img.substring(img.lastIndexOf("/") + 1);
@@ -19,7 +19,7 @@ function fetchAssetListFromMapData(mapData) {
             }
             assetsToLoad.push("assets/" + img);
         } else if (layersData[i]["type"] === "objectgroup") {
-            _.each(layersData[i]["objects"], function (o) {
+            _.each(layersData[i]["objects"], function(o) {
                 if (!o["polygon"] && o["type"] !== "Rectangle") {
                     classes.push(o["name"]);
                 }
@@ -28,7 +28,7 @@ function fetchAssetListFromMapData(mapData) {
     }
     classes = _.uniq(classes);
 
-    _.each(classes, function (c) {
+    _.each(classes, function(c) {
         var asset = eval(c).prototype.animSheet;
         if (!asset) {
             asset = eval(c).prototype.image;
@@ -51,7 +51,7 @@ function createMap(game, mapData) {
     game.level.mapHeight = mapData["height"];
 
     var layersData = mapData["layers"];
-    var collisionLayer = _.find(layersData, function (layerData) {
+    var collisionLayer = _.find(layersData, function(layerData) {
         return layerData["name"] === "CollisionMasks";
     });
 
@@ -63,8 +63,8 @@ function createMap(game, mapData) {
     }
 
     var objectNames = [];
-    _.each(layersData, function (layerData) {
-        _.each(layerData["objects"], function (o) {
+    _.each(layersData, function(layerData) {
+        _.each(layerData["objects"], function(o) {
             if (!o["polygon"] && !_.contains(objectNames, o.name) && o.name !== "")
                 objectNames[objectNames.length] = o.name;
         });
@@ -108,7 +108,7 @@ function createMap(game, mapData) {
                 img = img.substring(img.lastIndexOf("/") + 1);
             }
             var tiledSprite = new A_.SCENERY.TiledSprite({image: img, width: game.level.width, height: game.level.height});
-            layer.addChild(tiledSprite.sprite);            
+            layer.addChild(tiledSprite.sprite);
             game.level.addImageLayer(layer);
         }
 
@@ -153,7 +153,7 @@ function createMap(game, mapData) {
                     tileData2D[mapX][mapY] = gid;
                 }
             }
-            
+
             var tilemap = new A_.TILES.Tilemap(layer, img, tileW, tileH);
             tilemap.createTilelayer(tileData2D);
 
@@ -173,45 +173,36 @@ function createMap(game, mapData) {
             // loop through all objects conained in the layer
             for (var j = 0; j < layersData[i]["objects"].length; j++) {
                 // copy object data into temp var
+                var args = {};
                 var oData = layersData[i]["objects"][j];
+                for (var prop in oData["properties"]) {
+                    args[prop] = eval(oData["properties"][prop]);
+                }
+                for (var prop in oData) {
+                    if (prop !== "x" && prop !== "y")
+                    args[prop] = oData[prop];
+                }
 
                 // POLY || RECT
                 // TODO: write Game.createPolygon()
                 if (oData.polygon || oData.type === "Rectangle") {
-                    var args = {};
-                    for (var prop in oData["properties"]) {
-                        args[prop] = eval(oData["properties"][prop]);
-                    }
-
-                    for (var prop in oData) {
-                        args[prop] = oData[prop];
-                    }
 
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData, true);
                         var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args, collisionPolygon);
-                        o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
+                        o.positionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
                         args.collisionSize = {w: args.width, h: args.height};
                         var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args);
-                        o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
+                        o.positionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
                     A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
                     o.update();
                     layer.addChild(o.sprite);
                 }
                 else {
-                    var args = {};
-                    for (var prop in oData["properties"]) {
-                        args[prop] = eval(oData["properties"][prop]);
-                    }
-
-                    for (var prop in oData) {
-                        args[prop] = oData[prop];
-                    }
-
-                    var colPolyData = _.find(collider.collisionMasks, function (mask) {
+                    var colPolyData = _.find(collider.collisionMasks, function(mask) {
                         return mask.name === args.collisionMask;
                     });
                     if (colPolyData) {
@@ -221,7 +212,7 @@ function createMap(game, mapData) {
                     }
 
                     var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
-                    o.setPositionRelative(o.sprite.width / 2, -o.sprite.height / 2);
+                    o.positionRelative(o.sprite.width / 2, -o.sprite.height / 2);
 
                     if (o.followee) {
                         game.cameraOptions.followee = o;

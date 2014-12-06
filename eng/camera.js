@@ -74,7 +74,7 @@ A_.CAMERA.Camera = Class.extend({
         }
     },
     followCentered: function () {
-        var pos = this.followee.getPosition();
+        var pos = this.followee.position();
         this.x = pos.x - this.width / 2;
         this.y = pos.y - this.height / 2;
     },

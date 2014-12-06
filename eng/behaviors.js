@@ -160,8 +160,8 @@ A_.MODULES.pinTo = {
                 this.pinTo.offsetX, this.pinTo.offsetY);
     },
     postupdate: function () {
-        this.setRotation(this.pinTo.parent.getRotation());
-        this.setPosition(this.pinTo.point.calcPoint.x, this.pinTo.point.calcPoint.y);
+        this.rotation(this.pinTo.parent.rotation());
+        this.position(this.pinTo.point.calcPoint.x, this.pinTo.point.calcPoint.y);
 
         this._super();
     }
