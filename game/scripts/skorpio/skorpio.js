@@ -1,8 +1,8 @@
 // CLASSES
 var Anime = A_.SPRITES.ArcadeSprite.extend({
     frame: {w: 64, h: 64},
-    collisionSize: {w: 26, h: 48},
-    collisionOffset: {x: 0, y: 6},
+//    collisionSize: {w: 26, h: 48},
+//    collisionOffset: {x: 0, y: 6},
     animSpeed: 0.15,
     alive: true,
     facing: "right",
@@ -10,7 +10,9 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     collides: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-
+        
+        this.collisionOffset = {x: 0, y: 6};
+        this.collisionSize = {w: 26, h: 48};
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
         this.addAnimation("idle_left", [9], 1);

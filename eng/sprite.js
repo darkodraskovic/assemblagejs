@@ -228,10 +228,10 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         } else
             return this.sprite.rotation;
     },
-    alpha: function (n) {
+    alpha: function(n) {
         if (typeof n !== "number") {
             return this.sprite.alpha;
-        } 
+        }
         this.sprite.alpha = n;
     },
     // Z ORDER & LAYERS
@@ -406,7 +406,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     destroy: function() {
         _.each(this.sprites, function(sprite) {
             sprite.destroy();
-        })
+        });
 
         A_.game.spritesToDestroy.push(this);
         this.onDestruction();
@@ -528,14 +528,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.collisionOffset.y = 0;
         }
 
-        if (polygon) {
-            A_.game.collider.activateCollisionFor(this, polygon, null, null, this.collisionOffset.x, this.collisionOffset.y);
-        }
-        else {
-            // Center the polygon and apply the offset.
-            A_.game.collider.activateCollisionFor(this, polygon, this.collisionSize.w, this.collisionSize.h,
-                    -this.collisionSize.w / 2 + this.collisionOffset.x, -this.collisionSize.h / 2 + this.collisionOffset.y);
-        }
+        A_.game.collider.activateCollisionFor(this, polygon);
 
         if (this.collides || this.collisionResponse) {
             this.collides = true;
@@ -716,7 +709,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         this.calcFriction.y = this.friction.y;
         this.calcAcceleration.x = this.acceleration.x;
         this.calcAcceleration.y = this.acceleration.y;
-        
+
         if (this.moveAtAngle) {
             var sin = Math.sin(this.movementAngle);
             var cos = Math.cos(this.movementAngle);

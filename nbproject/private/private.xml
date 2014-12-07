@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="6">
-        <file>
-            <url>eng/sprite.js</url>
-            <bookmark id="6">
-                <name/>
-                <line>218</line>
-                <key/>
-            </bookmark>
-            <bookmark id="5">
-                <name/>
-                <line>334</line>
-                <key/>
-            </bookmark>
-            <bookmark id="3">
-                <name/>
-                <line>606</line>
-                <key/>
-            </bookmark>
-        </file>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="12">
         <file>
             <url>eng/Sprite.js</url>
             <bookmark id="2">
@@ -27,14 +9,36 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>eng/sprite.js</url>
+            <bookmark id="12">
+                <name/>
+                <line>229</line>
+                <key/>
+            </bookmark>
+            <bookmark id="6">
+                <name/>
+                <line>240</line>
+                <key/>
+            </bookmark>
+            <bookmark id="5">
+                <name/>
+                <line>354</line>
+                <key/>
+            </bookmark>
+            <bookmark id="10">
+                <name/>
+                <line>638</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/exe/config.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/skorpio/skorpio.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/collision.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/polygon.js</file>
         </group>
     </open-files>
 </project-private>

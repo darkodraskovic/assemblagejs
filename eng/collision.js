@@ -1,5 +1,5 @@
 A_.COLLISION.Collider = Class.extend({
-    init: function () {
+    init: function() {
         this.debugLayer = new PIXI.DisplayObjectContainer()
         this.debugLayer.parallax = 100;
         this.collisionSprites = [];
@@ -8,17 +8,16 @@ A_.COLLISION.Collider = Class.extend({
         this.collisionDynamics = [];
         this.collisionMasks = [];
     },
-    activateCollisionFor: function (o, polygon, w, h, offsetX, offsetY) {
-        if (!w)
-            w = o.width;
-        if (!h)
-            h = o.height;
-        if (typeof offsetX === 'undefined')
-            offsetX = w / 2;
-        if (typeof offsetY === 'undefined')
-            offsetY = h / 2;
+    activateCollisionFor: function(o, polygon) {
+        var w = o.collisionSize.w;
+        var h = o.collisionSize.h;
+
+        var offsetX = o.collisionOffset.x;
+        var offsetY = o.collisionOffset.y;
 
         if (!polygon) {
+            offsetX -= o.collisionSize.w / 2;
+            offsetY -= o.collisionSize.h / 2;
             var pos = o.position();
             var box = new SAT.Box(new SAT.Vector(pos.x, pos.y), w, h)
             o.collisionPolygon = box.toPolygon();
@@ -32,13 +31,13 @@ A_.COLLISION.Collider = Class.extend({
         var offset = new SAT.Vector(offsetX, offsetY);
         o.collisionPolygon.setOffset(offset);
 
-        o.collisionPolygon.origPoints = _.map(o.collisionPolygon.points, function (point) {
+        o.collisionPolygon.origPoints = _.map(o.collisionPolygon.points, function(point) {
             return point.clone();
         });
         o.collisionPolygon.origOffset = o.collisionPolygon.offset.clone();
         o.collisionPolygon.origW = o.collisionPolygon.w;
         o.collisionPolygon.origH = o.collisionPolygon.h;
-        
+
         o.collisionPolygon.scale = new SAT.Vector(1, 1);
 
         if (o.sprite && o.sprite.interactive)
@@ -46,8 +45,8 @@ A_.COLLISION.Collider = Class.extend({
 
 //        o.collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
     },
-    processCollisions: function () {
-        _.each(this.collisionSprites, function (sprite) {
+    processCollisions: function() {
+        _.each(this.collisionSprites, function(sprite) {
             sprite.collided = false;
         });
 
@@ -69,7 +68,7 @@ A_.COLLISION.Collider = Class.extend({
                 }
             }
         }
-        
+
         // STATICS
         var lenDyn = this.collisionDynamics.length;
         var lenStat = this.collisionStatics.length;
@@ -91,16 +90,16 @@ A_.COLLISION.Collider = Class.extend({
         }
 
     },
-    setDebug: function () {
+    setDebug: function() {
         for (i = 0; i < this.collisionSprites.length; i++) {
             this.collisionSprites[i].debugGraphics = new PIXI.Graphics();
             this.debugLayer.addChild(this.collisionSprites[i].debugGraphics);
         }
     },
-    drawDebug: function () {
+    drawDebug: function() {
         for (i = 0; i < this.collisionSprites.length; i++) {
             var o = this.collisionSprites[i];
-            if (o.drawDebugGraphics) {                
+            if (o.drawDebugGraphics) {
                 var debugGraphics = o.debugGraphics;
                 var colPol = this.collisionSprites[i].collisionPolygon;
 
