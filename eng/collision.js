@@ -24,14 +24,6 @@ A_.COLLISION.Collider = Class.extend({
             o.collisionPolygon = box.toPolygon();
             o.collisionPolygon.w = box.w;
             o.collisionPolygon.h = box.h;
-            // The y axis of the SAT.js polygon local coordinate system points upwards.
-            // Negative value translation moves the polygon leftwards and downwards.
-            // 
-            // #docs: Translate the original points of this polygin (relative to the 
-            // local coordinate system) by the specified amounts.
-            // o.collisionPolygon.translate(-w / 2, -h / 2);
-            //
-            //  #docs: Sets the offset, a translation to apply to the polygon before the angle rotation
         } else {
             o.collisionPolygon = polygon;
             offsetX += o.collisionPolygon.offset.x;
@@ -53,21 +45,6 @@ A_.COLLISION.Collider = Class.extend({
             o.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
 
 //        o.collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
-
-//        o.updateCollisionPolygon = function () {
-//            var colPol = this.collisionPolygon;
-//            // We don't need to worry about transforming from positive y axis of SAT.js
-//            // to negative y axis of Pixi.js since polygons are moved in Pixi.js coordinate system. 
-//            // In other words, we have flipped the whole SAT.js system upside down and
-//            // put it in the Pixi.js coordinate system. When the object is going down in 
-//            // the Pixi.js, it will go up in the SAT.js and vice versa.
-//            var pos = this.getPosition();
-//            colPol.pos.x = pos.x;
-//            colPol.pos.y = pos.y;
-//
-//            // #docs: Sets the rotation angle 
-//            colPol.setAngle(this.getRotation());
-//        };
     },
     processCollisions: function () {
         _.each(this.collisionSprites, function (sprite) {

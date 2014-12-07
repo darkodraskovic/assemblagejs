@@ -4,6 +4,7 @@ var Ball = A_.SPRITES.ArcadeSprite.extend({
     collisionResponse: "dynamic",
     update: function () {
         this._super();
+        this.bounciness = 0.75;
     }
 });
 

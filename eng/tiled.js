@@ -190,7 +190,7 @@ function createMap(game, mapData) {
                 if (oData.polygon || oData.type === "Rectangle") {
 
                     if (oData.polygon) {
-                        var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData, true);
+                        var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
                         var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args, collisionPolygon);
                         o.positionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
@@ -208,7 +208,7 @@ function createMap(game, mapData) {
                         return mask.name === args.collisionMask;
                     });
                     if (colPolyData) {
-                        var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData, true);
+                        var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData);
                     } else {
                         collisionPolygon = null;
                     }

@@ -6,8 +6,6 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
 //    collisionOffset: {x: 12, y: 12},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.speed.x = 64;
-        this.speed.y = 64;
         this.maxSpeed = 512;
         this.friction.x = 24;
         this.friction.y = 24;
@@ -216,8 +214,7 @@ A_.game.onLevelStarted = function () {
     layer.parallax = 20;
 
     var spriteLayer = this.level.createSpriteLayer("Sprites");
-    var effectsLayer = this.level.createSpriteLayer("Effects");
-//    effectsLayer.name = "Effects";
+    this.level.createSpriteLayer("Effects");
 
     player = this.camera.followee = this.createSprite(Player, spriteLayer, this.level.width / 2, this.level.height / 2);
     for (var i = 0; i < numRotors; i++) {

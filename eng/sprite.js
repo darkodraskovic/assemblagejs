@@ -695,9 +695,10 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
         this.friction = new SAT.Vector(32, 32);
+        this.calcFriction = new SAT.Vector(32, 32);
         this.acceleration = new SAT.Vector(0, 0);
+        this.calcAcceleration = new SAT.Vector(0, 0);
         this.maxVelocity = new SAT.Vector(256, 256);
-        this.speed = new SAT.Vector(64, 64);
         this.maxSpeed = this.maxVelocity.len();
         this.bounced = {horizontal: false, vertical: false};
     },
@@ -711,28 +712,31 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
             this.movementAngle = this.rotation();
         }
 
-        var friction = this.friction.clone();
-        var acceleration = this.acceleration.clone();
+        this.calcFriction.x = this.friction.x;
+        this.calcFriction.y = this.friction.y;
+        this.calcAcceleration.x = this.acceleration.x;
+        this.calcAcceleration.y = this.acceleration.y;
+        
         if (this.moveAtAngle) {
             var sin = Math.sin(this.movementAngle);
             var cos = Math.cos(this.movementAngle);
 
-            friction.x = Math.abs(friction.x * cos);
-            friction.y = Math.abs(friction.y * sin);
+            this.calcFriction.x = Math.abs(this.calcFriction.x * cos);
+            this.calcFriction.y = Math.abs(this.calcFriction.y * sin);
 
-            acceleration.x *= cos;
-            acceleration.y *= sin;
+            this.calcAcceleration.x *= cos;
+            this.calcAcceleration.y *= sin;
         }
 
         if (this.gravity.x === 0) {
             if (this.velocity.x > 0) {
-                this.velocity.x -= friction.x;
+                this.velocity.x -= this.calcFriction.x;
                 if (this.velocity.x < 0) {
                     this.velocity.x = 0;
                 }
             }
             if (this.velocity.x < 0) {
-                this.velocity.x += friction.x;
+                this.velocity.x += this.calcFriction.x;
                 if (this.velocity.x > 0) {
                     this.velocity.x = 0;
                 }
@@ -740,20 +744,20 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         }
         if (this.gravity.y === 0) {
             if (this.velocity.y > 0) {
-                this.velocity.y -= friction.y;
+                this.velocity.y -= this.calcFriction.y;
                 if (this.velocity.y < 0) {
                     this.velocity.y = 0;
                 }
             }
             if (this.velocity.y < 0) {
-                this.velocity.y += friction.y;
+                this.velocity.y += this.calcFriction.y;
                 if (this.velocity.y > 0) {
                     this.velocity.y = 0;
                 }
             }
         }
 
-        this.velocity.add(acceleration);
+        this.velocity.add(this.calcAcceleration);
         this.velocity.add(this.gravity);
 
         if (this.bounced.horizontal) {
@@ -803,11 +807,11 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
         // This method must be called before the collide* _super in order
         // to fetch the correct this.previousOverlapN
         // BUG: the sprite does not bounce in tilemap corners
-        if (currentOverlapN.x !== 0 && Math.abs(this.velocity.x) > this.speed.x) {
+        if (currentOverlapN.x !== 0 && Math.abs(this.velocity.x) > this.calcAcceleration.x) {
             if (this.prevOverlapN.y === 0)
                 this.bounced.horizontal = true;
         }
-        if (currentOverlapN.y !== 0 && Math.abs(this.velocity.y) > this.speed.y) {
+        if (currentOverlapN.y !== 0 && Math.abs(this.velocity.y) > this.calcAcceleration.y) {
             if (this.prevOverlapN.x === 0)
                 this.bounced.vertical = true;
         }
