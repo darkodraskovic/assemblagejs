@@ -139,7 +139,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     positionRelative: function(x, y) {
         this.position(this.x() + x, this.y() + y);
     },
-    levelPosition: function() {
+    positionLevel: function() {
         return A_.level.container.toLocal(A_.game.origin, this.sprite);
     },
     // TODO: setSize/width/height should affect spritepoints
@@ -390,11 +390,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         this.spritePoints.push(sprPt);
         return sprPt;
     },
-//    spritePoint: function(name) {
-//        return _.find(this.spritePoints, function(sprPt) {
-//            return sprPt.name === name;
-//        });
-//    },
     // CREATION/DESTRUCTION & UPDATE
     preupdate: function() {
 
@@ -403,9 +398,7 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
     },
     postupdate: function() {
-//        _.each(this.spritePoints, function (sprPt) {
-//            sprPt.update();
-//        });
+
     },
     onCreation: function() {
 

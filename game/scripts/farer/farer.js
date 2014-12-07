@@ -97,7 +97,7 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
             this.toggleFire("off");
         }
         if (A_.game.rightdown) {
-            this.width(A_.UTILS.distanceTo(this.levelPosition(), A_.game.mousePosition.level));
+            this.width(A_.UTILS.distanceTo(this.positionLevel(), A_.game.mousePosition.level));
         }
 
         this._super();
@@ -113,7 +113,7 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
         if (state === "on") {
             this.on = true;
             this.alpha(0.75);
-            this.width(A_.UTILS.distanceTo(this.levelPosition(), A_.game.mousePosition.level));
+            this.width(A_.UTILS.distanceTo(this.positionLevel(), A_.game.mousePosition.level));
 
             this.sound.play(function (id) {
                 this.soundId = id;

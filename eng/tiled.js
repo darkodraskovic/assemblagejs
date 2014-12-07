@@ -178,10 +178,12 @@ function createMap(game, mapData) {
                 for (var prop in oData["properties"]) {
                     args[prop] = eval(oData["properties"][prop]);
                 }
-                for (var prop in oData) {
-                    if (prop !== "x" && prop !== "y")
-                    args[prop] = oData[prop];
-                }
+//                for (var prop in oData) {
+//                    if (prop !== "x" && prop !== "y" &&
+//                            prop !== "width" && prop !== "height")
+//                    args[prop] = oData[prop];
+//                }
+                args["name"] = oData["name"];
 
                 // POLY || RECT
                 // TODO: write Game.createPolygon()
@@ -193,7 +195,7 @@ function createMap(game, mapData) {
                         o.positionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
-                        args.collisionSize = {w: args.width, h: args.height};
+                        args.collisionSize = {w: oData["width"], h: oData["height"]};
                         var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args);
                         o.positionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
@@ -218,6 +220,7 @@ function createMap(game, mapData) {
                         game.cameraOptions.followee = o;
                     }
                 }
+                o.rotation(oData["rotation"].toRad());
             }
 
             if (layer.baked) {
