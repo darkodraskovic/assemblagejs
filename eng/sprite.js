@@ -398,7 +398,16 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 
     },
     postupdate: function() {
-
+        if (this.bounded) {
+            var pos = this.position();
+            this.position(Math.max(this.width() / 2, Math.min(pos.x, A_.game.level.width - this.width() / 2)),
+                    Math.max(this.height() / 2, Math.min(pos.y, A_.game.level.height - this.height() / 2)));
+        } else {
+            var pos = this.position();
+            if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
+                this.outOfBounds = true;
+            }
+        }
     },
     onCreation: function() {
 
@@ -527,21 +536,44 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
         if (!this.collisionOffset.y) {
             this.collisionOffset.y = 0;
         }
-
-        A_.game.collider.activateCollisionFor(this, polygon);
-
+        
+        var collider = A_.collider;
+        collider.activateCollisionFor(this, polygon);
         if (this.collides || this.collisionResponse) {
             this.collides = true;
             if (!this.collisionResponse) {
                 this.collisionResponse = "sensor";
-                A_.game.collider.collisionDynamics.push(this);
+                collider.collisionDynamics.push(this);
             } else {
                 if (this.collisionResponse === "static")
-                    A_.game.collider.collisionStatics.push(this);
+                    collider.collisionStatics.push(this);
                 else
-                    A_.game.collider.collisionDynamics.push(this);
+                    collider.collisionDynamics.push(this);
             }
-            A_.game.collider.collisionSprites.push(this);
+            collider.collisionSprites.push(this);
+        }
+        if (this.drawDebugGraphics && A_.game.debug) {
+            this.debugGraphics = new PIXI.Graphics();
+            collider.debugLayer.addChild(this.debugGraphics);
+        }
+    },
+    removeCollision: function () {
+        var collider = A_.collider;
+        if (_.contains(collider.collisionSprites, this)) {
+            collider.collisionSprites.splice(collider.collisionSprites.indexOf(this), 1);
+        }
+        if (_.contains(collider.collisionDynamics, this)) {
+            collider.collisionDynamics.splice(collider.collisionDynamics.indexOf(this), 1);
+        }
+        if (_.contains(collider.collisionStatics, this)) {
+            collider.collisionStatics.splice(collider.collisionStatics.indexOf(this), 1);
+        }
+        if (this.collisionPolygon) {
+            delete(this.collisionPolygon);
+        }
+        if (this.debugGraphics) {
+            collider.debugLayer.removeChild(this.debugGraphics);
+            this.debugGraphics = null;
         }
     },
     update: function() {
@@ -549,17 +581,6 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     },
     postupdate: function() {
         this._super();
-
-        if (this.bounded) {
-            var pos = this.position();
-            this.position(Math.max(this.collisionPolygon.w / 2, Math.min(pos.x, A_.game.level.width - this.collisionPolygon.w / 2)),
-                    Math.max(this.collisionPolygon.h / 2, Math.min(pos.y, A_.game.level.height - this.collisionPolygon.h / 2)));
-        } else {
-            var pos = this.position();
-            if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
-                this.outOfBounds = true;
-            }
-        }
     },
     collideWithStatic: function(other, response) {
         this.prevOverlapN = response.overlapN;

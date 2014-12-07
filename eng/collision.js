@@ -8,7 +8,7 @@ A_.COLLISION.Collider = Class.extend({
         this.collisionDynamics = [];
         this.collisionMasks = [];
     },
-    activateCollisionFor: function(o, polygon) {
+    activateCollisionFor: function(o, polygon) {        
         var w = o.collisionSize.w;
         var h = o.collisionSize.h;
 
@@ -90,16 +90,10 @@ A_.COLLISION.Collider = Class.extend({
         }
 
     },
-    setDebug: function() {
-        for (i = 0; i < this.collisionSprites.length; i++) {
-            this.collisionSprites[i].debugGraphics = new PIXI.Graphics();
-            this.debugLayer.addChild(this.collisionSprites[i].debugGraphics);
-        }
-    },
     drawDebug: function() {
         for (i = 0; i < this.collisionSprites.length; i++) {
             var o = this.collisionSprites[i];
-            if (o.drawDebugGraphics) {
+            if (o.drawDebugGraphics && o.debugGraphics) {
                 var debugGraphics = o.debugGraphics;
                 var colPol = this.collisionSprites[i].collisionPolygon;
 
