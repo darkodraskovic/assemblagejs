@@ -1,5 +1,5 @@
 A_.TILES.Tile = Class.extend({
-    init: function (gid, sprite, x, y, tilemap) {
+    init: function(gid, sprite, x, y, tilemap) {
         this.gid = gid;
         this.sprite = sprite;
         this.mapPosition = {};
@@ -7,28 +7,36 @@ A_.TILES.Tile = Class.extend({
         this.mapPosition.y = y;
         this.tilemap = tilemap;
     },
-    setCollision: function () {
+    setCollision: function() {
         this.collision = {};
         this.collision.size = {};
         this.collision.size.w = this.tilemap.tileW;
         this.collision.size.h = this.tilemap.tileH;
-        this.collision.offset = {};
-        this.collision.offset.x = this.tilemap.tileW / 2;
-        this.collision.offset.y = this.tilemap.tileH / 2;
-        this.collisionPolygon = A_.collider.activateCollisionFor(this.collision);
+
+        var w = this.collision.size.w;
+        var h = this.collision.size.h;
+
+        var collisionPolygon;
+
+        var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
+        collisionPolygon = box.toPolygon();
+        collisionPolygon.w = box.w;
+        collisionPolygon.h = box.h;
+
+        this.collisionPolygon = collisionPolygon;
         this.collisionPolygon.pos.x = this.x();
         this.collisionPolygon.pos.y = this.y();
         this.collision.response = "static";
         A_.collider.collisionStatics.push(this);
         A_.collider.collisionTiles.push(this);
     },
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
 
     },
-    collideWithDynamic: function (other, response) {
-        
+    collideWithDynamic: function(other, response) {
+
     },
-    getPosition: function () {
+    getPosition: function() {
         return this.sprite.position;
     },
     x: function(x) {
@@ -54,7 +62,7 @@ A_.TILES.Tile = Class.extend({
 });
 
 A_.TILES.Tilemap = Class.extend({
-    init: function (layer, img, tileW, tileH) {
+    init: function(layer, img, tileW, tileH) {
         this.layer = layer;
         this.baked = false;
 
@@ -70,7 +78,7 @@ A_.TILES.Tilemap = Class.extend({
 
         this.tiles = [];
     },
-    createTilelayer: function (layerData) {
+    createTilelayer: function(layerData) {
         this.mapW = layerData.length;
         this.mapH = layerData[0].length;
         for (var i = 0; i < this.mapW; i++) {
@@ -91,10 +99,10 @@ A_.TILES.Tilemap = Class.extend({
 
         this.layer.tilemap = this;
     },
-    getTile: function (x, y) {
+    getTile: function(x, y) {
         return this.tiles[x][y];
     },
-    setTile: function (gid, x, y) {
+    setTile: function(gid, x, y) {
         if (this.layer.baked)
             return;
         if (typeof gid === "undefined" || typeof x === "undefined" || typeof y === "undefined")
@@ -116,10 +124,10 @@ A_.TILES.Tilemap = Class.extend({
         var worldCoords = this.mapToWorld(x, y);
         this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
     },
-    setTileInMap: function (tile, x, y) {
+    setTileInMap: function(tile, x, y) {
         this.tiles[x][y] = tile;
     },
-    setTileInWorld: function (tile, x, y) {
+    setTileInWorld: function(tile, x, y) {
         var tileSprite = tile.sprite;
         tileSprite.position.x = x;
         tileSprite.position.y = y;
@@ -130,7 +138,7 @@ A_.TILES.Tilemap = Class.extend({
             tile.setCollision();
         }
     },
-    unsetTile: function (x, y) {
+    unsetTile: function(x, y) {
         if (this.layer.baked)
             return;
 
@@ -151,13 +159,13 @@ A_.TILES.Tilemap = Class.extend({
             this.tiles[x][y] = null;
         }
     },
-    worldToMap: function (x, y) {
+    worldToMap: function(x, y) {
         return [Math.round(x / this.tileW), Math.round(y / this.tileH)];
     },
-    mapToWorld: function (x, y) {
+    mapToWorld: function(x, y) {
         return [x * this.tileW, y * this.tileH];
     },
-    createTileSprite: function (frameInd) {
+    createTileSprite: function(frameInd) {
         var frame = new PIXI.Rectangle((frameInd % this.imgCols) * this.tileW,
                 Math.floor(frameInd / this.imgCols) * this.tileH, this.tileW, this.tileH);
         var tileTexture = new PIXI.Texture(this.bTxt, frame);
@@ -165,7 +173,7 @@ A_.TILES.Tilemap = Class.extend({
 
         return tileSprite;
     },
-    createTile: function (gid, x, y) {
+    createTile: function(gid, x, y) {
         var sprite = this.createTileSprite(gid - 1);
         return new A_.TILES.Tile(gid, sprite, x, y, this);
     },

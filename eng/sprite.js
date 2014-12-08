@@ -519,7 +519,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             return this.sprite.interactive;
         this.sprite.interactive = interactive;
     },
-    setCollision: function(polygon) {
+    createCollisionPolygon: function(polygon) {
         if (!this.collision)
             this.collision = {};
 
@@ -540,8 +540,58 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             this.collision.offset.y = 0;
         }
 
-        this.collisionPolygon = A_.collider.activateCollisionFor(this.collision, polygon);
+        if (!this.collisionPolygons) {
+            this.collisionPolygons = [];
+        }
+        var w = this.collision.size.w;
+        var h = this.collision.size.h;
 
+        var offsetX = this.collision.offset.x;
+        var offsetY = this.collision.offset.y;
+
+        var collisionPolygon;
+
+        if (!polygon) {
+            offsetX -= w / 2;
+            offsetY -= h / 2;
+            var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
+            collisionPolygon = box.toPolygon();
+            collisionPolygon.w = box.w;
+            collisionPolygon.h = box.h;
+        } else {
+            collisionPolygon = polygon;
+            offsetX += collisionPolygon.offset.x;
+            offsetY += collisionPolygon.offset.y;
+        }
+        var offset = new SAT.Vector(offsetX, offsetY);
+        collisionPolygon.setOffset(offset);
+
+        collisionPolygon.origPoints = _.map(collisionPolygon.points, function(point) {
+            return point.clone();
+        });
+        collisionPolygon.origOffset = collisionPolygon.offset.clone();
+        collisionPolygon.origW = collisionPolygon.w;
+        collisionPolygon.origH = collisionPolygon.h;
+
+        collisionPolygon.scale = new SAT.Vector(1, 1);
+
+        if (this.sprite && this.sprite.interactive)
+            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
+
+//        collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
+        
+        this.collisionPolygons.push(collisionPolygon);
+        return collisionPolygon;
+    },
+    destroyCollisionPolygon: function (collisionPolygon) {
+        if (_.contains(this.collisionPolygons, collisionPolygon)) {
+            this.collisionPolygons.splice(this.collisionPolygons.indexOf(collisionPolygon), 1);
+        }
+        if (this.collisionPolygon === collisionPolygon)
+            this.collisionPolygon = null;
+    },
+    setCollision: function(polygon) {
+        this.collisionPolygon = this.createCollisionPolygon(polygon);
         this.setCollisionResponse();
         this.setCollisionDebug();
     },
@@ -571,9 +621,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     removeCollision: function() {
         this.removeCollisionResponse();
         this.removeCollisionDebug();
-        if (this.collisionPolygon) {
-            delete(this.collisionPolygon);
-        }
+        this.destroyCollisionPolygon(this.collisionPolygon)
     },
     removeCollisionResponse: function() {
         var collider = A_.collider;
