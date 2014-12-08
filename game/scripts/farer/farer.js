@@ -1,7 +1,7 @@
 // CLASSES
 var Player = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "player.png",
-    collisionResponse: "active",
+    collision: {response: "active"},
     moveAtAngle: true,
 //    collisionOffset: {x: 12, y: 12},
     init: function (parent, x, y, props) {
@@ -130,7 +130,7 @@ var Laser = A_.SPRITES.AnimatedSprite.extend({
 
 var Bullet = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "bullet.png",
-    collisionResponse: "sensor",
+    collision: {response: "sensor"},
     moveAtAngle: true,
 //    drawDebugGraphics: false,
     init: function (parent, x, y, props) {
@@ -167,7 +167,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
 var Rotor = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "rotor.png",
     frame: {w: 45, h: 45},
-    collisionResponse: "static",
+    collision: {response: "static"},
     angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);

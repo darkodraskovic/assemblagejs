@@ -188,6 +188,8 @@ function createMap(game, mapData) {
                 // POLY || RECT
                 // TODO: write Game.createPolygon()
                 if (oData.polygon || oData.type === "Rectangle") {
+                    args.collision = {};
+                    args.collision.response = args.collisionResponse;
 
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
@@ -195,7 +197,7 @@ function createMap(game, mapData) {
                         o.positionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
-                        args.collisionSize = {w: oData["width"], h: oData["height"]};
+                        args.collision.size = {w: oData["width"], h: oData["height"]};
                         var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args);
                         o.positionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }

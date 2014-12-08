@@ -1,8 +1,7 @@
 // CLASSES
 var Anime = A_.SPRITES.ArcadeSprite.extend({
     frame: {w: 64, h: 64},
-//    collisionSize: {w: 26, h: 48},
-//    collisionOffset: {x: 0, y: 6},
+    collision: {response: "passive", offset: {x: 0, y: 6}, size: {w: 26, h: 48}},
     animSpeed: 0.15,
     alive: true,
     facing: "right",
@@ -11,8 +10,6 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         
-        this.collisionOffset = {x: 0, y: 6};
-        this.collisionSize = {w: 26, h: 48};
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
         this.addAnimation("idle_left", [9], 1);
@@ -55,12 +52,13 @@ Anime.inject(A_.MODULES.Topdown);
 
 var Player = Anime.extend({
     animSheet: "PlayerComplete.png",
-    collisionResponse: "active",
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-
+        
+        this.collision = A_.UTILS.copy(this.collision);
+        this.collision.response = "active";
     },
     onCreation: function() {
         this.rifle = A_.game.createSprite(Rifle, this.layer,
@@ -103,7 +101,6 @@ Player.inject(A_.MODULES.TopdownWASD);
 var Agent = Anime.extend({
     animSheet: "AgentComplete.png",
     timer: 0,
-    collisionResponse: "passive",
     collisionType: A_.COLLISION.Type.ENEMY,
     collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
     init: function(parent, x, y, props) {
@@ -179,8 +176,7 @@ var Rifle = A_.SPRITES.AnimatedSprite.extend({
 var Bullet = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "Muzzleflashes-Shots.png",
     frame: {w: 32, h: 32},
-    collisionSize: {w: 12, h: 10},
-    collisionResponse: "sensor",
+    collision : {size: {w: 12, h: 10}, response: "sensor"},
     collidesWith: A_.COLLISION.Type.ENEMY,    
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -209,7 +205,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
             other.alive = false;
             other.motionState = "idle";
             this.destroy();
-        } else if (other.collisionResponse === "static") {
+        } else if (other.collision.response === "static") {
             this.destroy();
         }
     },
@@ -237,7 +233,7 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
         this.laserTip = A_.game.createSprite(LaserTip, A_.level.findLayerByName("Effects"),
                 this.x() + Math.cos(this.rotation()) * this.width(),
                 this.y() + Math.sin(this.rotation()) * this.width(),
-                {collisionSize: {w: 4, h: 4}});
+                {collision : {size: {w: 4, h: 4}}});
         this.laserTip.laser = this;
         this.sound = A_.game.createSound({
             urls: ['laser-beam.mp3'],
@@ -290,7 +286,7 @@ var LaserTip = A_.SPRITES.CollisionSprite.extend({
     },
     collideWithStatic: function(other, response) {
         this._super(other, response);
-        if (other.collisionResponse === "static") {
+        if (other.collision.response === "static") {
             if (!this.timer) {
                 this.timer = 1;
             }
@@ -369,7 +365,7 @@ var Explosion = A_.SPRITES.AnimatedSprite.extend({
 // ITEMS
 var Computer = A_.SPRITES.CollisionSprite.extend({
     animSheet: "Computer1.png",
-    collisionResponse: "static",
+    collision: {response: "static"},
 //    interactive: true,
 //    collisionType: A_.COLLISION.Type.ITEM,
 //    collidesWith: A_.COLLISION.Type.NONE,

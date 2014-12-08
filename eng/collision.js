@@ -8,40 +8,42 @@ A_.COLLISION.Collider = Class.extend({
         this.collisionDynamics = [];
         this.collisionMasks = [];
     },
-    activateCollisionFor: function(o, polygon) {        
-        var w = o.collisionSize.w;
-        var h = o.collisionSize.h;
+    activateCollisionFor: function(collision, polygon) {        
+        var w = collision.size.w;
+        var h = collision.size.h;
 
-        var offsetX = o.collisionOffset.x;
-        var offsetY = o.collisionOffset.y;
+        var offsetX = collision.offset.x;
+        var offsetY = collision.offset.y;
 
+        var collisionPolygon;
+        
         if (!polygon) {
-            offsetX -= o.collisionSize.w / 2;
-            offsetY -= o.collisionSize.h / 2;
-            var pos = o.position();
-            var box = new SAT.Box(new SAT.Vector(pos.x, pos.y), w, h)
-            o.collisionPolygon = box.toPolygon();
-            o.collisionPolygon.w = box.w;
-            o.collisionPolygon.h = box.h;
+            offsetX -= w / 2;
+            offsetY -= h / 2;
+            var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
+            collisionPolygon = box.toPolygon();
+            collisionPolygon.w = box.w;
+            collisionPolygon.h = box.h;
         } else {
-            o.collisionPolygon = polygon;
-            offsetX += o.collisionPolygon.offset.x;
-            offsetY += o.collisionPolygon.offset.y;
+            collisionPolygon = polygon;
+            offsetX += collisionPolygon.offset.x;
+            offsetY += collisionPolygon.offset.y;
         }
         var offset = new SAT.Vector(offsetX, offsetY);
-        o.collisionPolygon.setOffset(offset);
+        collisionPolygon.setOffset(offset);
 
-        o.collisionPolygon.origPoints = _.map(o.collisionPolygon.points, function(point) {
+        collisionPolygon.origPoints = _.map(collisionPolygon.points, function(point) {
             return point.clone();
         });
-        o.collisionPolygon.origOffset = o.collisionPolygon.offset.clone();
-        o.collisionPolygon.origW = o.collisionPolygon.w;
-        o.collisionPolygon.origH = o.collisionPolygon.h;
+        collisionPolygon.origOffset = collisionPolygon.offset.clone();
+        collisionPolygon.origW = collisionPolygon.w;
+        collisionPolygon.origH = collisionPolygon.h;
 
-        o.collisionPolygon.scale = new SAT.Vector(1, 1);
+        collisionPolygon.scale = new SAT.Vector(1, 1);
 
-        if (o.sprite && o.sprite.interactive)
-            o.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
+        return collisionPolygon;
+//        if (o.sprite && o.sprite.interactive)
+//            o.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
 
 //        o.collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
     },
@@ -86,22 +88,6 @@ A_.COLLISION.Collider = Class.extend({
                     o2.collideWithDynamic(o1, response);
 //                    }
                 }
-            }
-        }
-
-    },
-    drawDebug: function() {
-        for (i = 0; i < this.collisionSprites.length; i++) {
-            var o = this.collisionSprites[i];
-            if (o.drawDebugGraphics && o.debugGraphics) {
-                var debugGraphics = o.debugGraphics;
-                var colPol = this.collisionSprites[i].collisionPolygon;
-
-                debugGraphics.clear();
-                A_.POLYGON.Utils.drawSATPolygon(debugGraphics, colPol);
-                // draw circle in the center of the sprite
-//            debugGraphics.lineStyle(2, 0xFF0000);
-//            debugGraphics.drawCircle(colPol.pos.x, colPol.pos.y, 3);
             }
         }
     }

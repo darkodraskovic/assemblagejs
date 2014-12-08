@@ -8,15 +8,17 @@ A_.TILES.Tile = Class.extend({
         this.tilemap = tilemap;
     },
     setCollision: function () {
-        this.collisionSize = {};
-        this.collisionSize.w = this.tilemap.tileW;
-        this.collisionSize.h = this.tilemap.tileH;
-        this.collisionOffset = {};
-        this.collisionOffset.x = 0;
-        this.collisionOffset.y = 0;
-//        A_.collider.activateCollisionFor(this, null, this.tilemap.tileW, this.tilemap.tileH, 0, 0);
-        A_.collider.activateCollisionFor(this);
-        this.collisionResponse = "static";
+        this.collision = {};
+        this.collision.size = {};
+        this.collision.size.w = this.tilemap.tileW;
+        this.collision.size.h = this.tilemap.tileH;
+        this.collision.offset = {};
+        this.collision.offset.x = this.tilemap.tileW / 2;
+        this.collision.offset.y = this.tilemap.tileH / 2;
+        this.collisionPolygon = A_.collider.activateCollisionFor(this.collision);
+        this.collisionPolygon.pos.x = this.x();
+        this.collisionPolygon.pos.y = this.y();
+        this.collision.response = "static";
         A_.collider.collisionStatics.push(this);
         A_.collider.collisionTiles.push(this);
     },
@@ -24,7 +26,7 @@ A_.TILES.Tile = Class.extend({
 
     },
     collideWithDynamic: function (other, response) {
-
+        
     },
     getPosition: function () {
         return this.sprite.position;

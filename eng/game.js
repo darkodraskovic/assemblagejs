@@ -370,7 +370,9 @@ A_.Game = Class.extend({
         });
 
         if (this.debug) {
-            this.collider.drawDebug();
+            _.each(this.collider.collisionSprites, function(sprite) {
+                sprite.drawDebug();
+            })
         }
 
         this.camera.update();
