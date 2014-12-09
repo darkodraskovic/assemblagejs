@@ -133,7 +133,7 @@ var Agent = Anime.extend({
     }
 });
 
-var Rifle = A_.SPRITES.AnimatedSprite.extend({
+var Rifle = A_.SPRITES.Sprite.extend({
     animSheet: "AssaultRifle.png",
     frame: {w: 64, h: 64},
     init: function(parent, x, y, props) {
@@ -214,7 +214,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-var LaserBeam = A_.SPRITES.CollisionSprite.extend({
+var LaserBeam = A_.SPRITES.ResponsiveSprite.extend({
     animSheet: "Muzzleflashes-Shots.png",
     collides: false,
     frame: {w: 32, h: 32},
@@ -268,7 +268,7 @@ var LaserBeam = A_.SPRITES.CollisionSprite.extend({
     }
 });
 
-var LaserTip = A_.SPRITES.CollisionSprite.extend({
+var LaserTip = A_.SPRITES.ResponsiveSprite.extend({
     bounded: false,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -309,7 +309,7 @@ var LaserTip = A_.SPRITES.CollisionSprite.extend({
 });
 
 
-var LaserFire = A_.SPRITES.AnimatedSprite.extend({
+var LaserFire = A_.SPRITES.Sprite.extend({
     animSheet: "Fire.png",
     frame: {w: 64, h: 64},
     init: function(parent, x, y, props) {
@@ -342,7 +342,7 @@ var LaserFire = A_.SPRITES.AnimatedSprite.extend({
 });
 
 
-var Explosion = A_.SPRITES.AnimatedSprite.extend({
+var Explosion = A_.SPRITES.Sprite.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
     init: function(parent, x, y, props) {
@@ -363,7 +363,7 @@ var Explosion = A_.SPRITES.AnimatedSprite.extend({
 });
 
 // ITEMS
-var Computer = A_.SPRITES.CollisionSprite.extend({
+var Computer = A_.SPRITES.ResponsiveSprite.extend({
     animSheet: "Computer1.png",
     collision: {response: "static"},
 //    interactive: true,

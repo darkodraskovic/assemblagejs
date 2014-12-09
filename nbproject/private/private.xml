@@ -20,7 +20,7 @@
             </bookmark>
             <bookmark id="10">
                 <name/>
-                <line>652</line>
+                <line>726</line>
                 <key/>
             </bookmark>
         </file>
@@ -35,12 +35,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/exe/config.js</file>
             <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles.js</file>
             <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
             <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/game.js</file>
             <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite.js</file>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/skorpio/skorpio.js</file>
             <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/collision.js</file>
         </group>
     </open-files>

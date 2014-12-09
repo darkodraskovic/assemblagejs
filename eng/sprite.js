@@ -1,5 +1,6 @@
-A_.SPRITES.AnimatedSprite = Class.extend({
+A_.SPRITES.Sprite = Class.extend({
     // init() is called when the sprite is instantiated with new keyword.
+    // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
     init: function(parent, x, y, props) {
         // Add all the properties of the prop obj to this instance.
         if (props) {
@@ -8,26 +9,13 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             }
         }
 
-//        if (this.image) {
-//            this.image = "assets/" + this.image;
-//            this.sprite = new PIXI.Sprite.fromImage(this.image);
-//        } else if (this.frame) {
-//            this.sprite = new PIXI.Sprite.fromFrame(this.frame);
-//        } else if (this.texture) {
-//            this.sprite = new PIXI.Sprite(this.texture);
-//        } else if (this.baseTexture) {
-//            this.sprite = new PIXI.Sprite(new PIXI.Texture(this.baseTexture, this.rectangle));
-//        } else {
-//        this.sprite = new PIXI.DisplayObjectContainer();
-//        }
-        var graphic = new PIXI.Graphics();
-        graphic.beginFill(0xFFFFFF, 0);
-
-        this.animations = {};
-        if (!this.frame) {
-            this.frame = {w: 0, h: 0};
-        }
+        // If this sprite displays an image or features animations...
         if (this.animSheet) {
+            if (!this.frame) {
+                this.frame = {w: 0, h: 0};
+            }
+            // A texture stores the information that represents an image. 
+            // All textures have a base texture. (PIXI doc)
             this.animSheet = "graphics/" + A_.level.directoryPrefix + this.animSheet;
             this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
             // If the frame size is not specified in the class definition, 
@@ -42,6 +30,8 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             var colls = Math.round(this.baseTexture.width / this.frame.w);
             var rows = Math.round(this.baseTexture.height / this.frame.h);
 
+            // An array of textures that we'll use to make up different sprite animations, ie. MovieClips.
+            // PIXI's MovieClip is an object used to display an animation depicted by a list of textures.
             this.textures = [];
             for (var i = 0; i < rows; i++) {
                 for (var j = 0; j < colls; j++)
@@ -50,41 +40,25 @@ A_.SPRITES.AnimatedSprite = Class.extend({
                                     this.frame.w, this.frame.h));
             }
 
+            this.createSprite(this.frame.w, this.frame.h);
 
-            graphic.drawRect(0, 0, this.frame.w, this.frame.h);
-            graphic.endFill();
-            this.sprite = new PIXI.Sprite(graphic.generateTexture(false));
-
-            var animations = new PIXI.DisplayObjectContainer();
-            this.sprite.addChild(animations);
-
+            this.defaultAnimationSpeed = 0.05;
+            // Every animated sprite has two animations (MovieClips):
+            // A default one, which displays the first frame (Texture) and
+            // An animation (MovieClip) which plays all frames (Texture-s).
             this.addAnimation("default", [0], 1);
+            this.addAnimation("all", _.range(0, this.textures.length), this.defaultAnimationSpeed);
             this.setAnimation("default");
-            this.addAnimation("all", _.range(0, this.textures.length), 0.05);
         } else {
-            graphic.drawRect(0, 0, 1, 1);
-            graphic.endFill();
-            this.sprite = new PIXI.Sprite(graphic.generateTexture(false));
-
-            var animations = new PIXI.DisplayObjectContainer();
-            this.sprite.addChild(animations);
+            this.createSprite(1, 1);
         }
-        this.sprite.anchor = new PIXI.Point(0.5, 0.5);
 
-        var sprites = new PIXI.DisplayObjectContainer();
-        this.sprite.addChild(sprites);
-        this.sprites = [];
+        this.spritePoints = [];
 
-        this.sprite.rotation = 0;
+//        this.rotation(0);
+//        this.alpha(1);
 
-        if (!this.width)
-            this.width = 1;
-        if (!this.height)
-            this.height = 1;
-
-        this.alpha(1);
-
-        if (parent instanceof A_.SPRITES.AnimatedSprite) {
+        if (parent instanceof A_.SPRITES.Sprite) {
             parent.addSprite(this);
         }
         else {
@@ -94,7 +68,91 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 //        this.parent = parent;
         this.position(x, y);
 
-        this.spritePoints = [];
+    },
+    // Create a transparent PIXI.Sprite that will store, as a parent,
+    // all animations, ie. PIXI.MovieClip-s and all PIXI.Sprite-s.
+    createSprite: function(w, h) {
+        // We'll use the graphics PIXI obj to render an invisible texture,
+        // which we'll pass to PIXI.Sprite's constructor.
+        var graphic = new PIXI.Graphics();
+        // Specifies a simple one-color fill that subsequent calls to other 
+        // Graphics methods use when drawing. Second argument specifies the alpha. 
+        graphic.beginFill(0xFFFFFF, 0);
+        graphic.drawRect(0, 0, w, h);
+        graphic.endFill();
+        // A texture stores the information that represents an image or part 
+        // of an image. It cannot be added to the display list directly. 
+        // Instead we use it as the texture for a PIXI.Sprite. 
+        // If no frame is provided then the whole image is used. (PIXI doc)
+        // generateTexture() is a function that returns a texture of the 
+        // graphics object that can then be used to create sprites (PIXI doc)
+        var sprite = new PIXI.Sprite(graphic.generateTexture(false));
+        sprite.anchor = new PIXI.Point(0.5, 0.5);
+
+        // animations DOC stores MovieClip objects.
+        var animations = new PIXI.DisplayObjectContainer();
+        sprite.addChild(animations);
+        // A hashmap of all animations, ie. MovieClips for easy reference.
+        this.animations = {};
+
+        // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
+        var sprites = new PIXI.DisplayObjectContainer();
+        sprite.addChild(sprites);
+        // An array of all sprite children (instances of A_.SPRITES.Sprite) of this object 
+        this.sprites = [];
+
+        this.sprite = sprite;
+    },
+    // ANIMATION
+    // frames is an array of nums refering to the index of texture in this.textures
+    addAnimation: function(name, frames, speed) {
+        // set default speed to 1; 
+        if (!speed) {
+            speed = this.defaultAnimationSpeed;
+        }
+
+        var textures = [];
+        for (var i = 0; i < frames.length; i++)
+            textures[i] = this.textures[frames[i]];
+        
+        var animation = new PIXI.MovieClip(textures);
+        
+        animation.anchor.x = 0.5;
+        animation.anchor.y = 0.5;
+        // MovieClip is the child of the transparent this.sprite and is invisible by default.
+        animation.visible = false;
+        // set the speed that the MovieClip will play at; higher is faster, lower is slower
+        animation.animationSpeed = speed;
+        // The first child of this.sprite is the DOC containing MovieClips.
+        this.sprite.children[0].addChild(animation);
+        // Set the animations' key/value pair for easy reference.
+        this.animations[name] = animation;
+    },
+    setAnimation: function(name, frame, speed) {
+        // Play from the start by default.
+        if (typeof frame === 'undefined') {
+            if (this.currentAnimationName === name)
+                return;
+            frame = 0;
+        }
+        // The speed
+        if (typeof speed !== 'undefined') {
+            this.animations[name].animationSpeed = speed;
+        }
+
+        // Turn off the previously playing animation.
+        if (this.currentAnimation) {
+            // Stop the MovieClip.
+            this.currentAnimation.stop();
+            // Set the MovieClip unvisible.
+            this.currentAnimation.visible = false;
+        }
+
+        this.animations[name].visible = true;
+        this.currentAnimation = this.animations[name];
+        this.currentAnimationName = name;
+        // Goes to a frame and begins playing the animation.
+        this.animations[name].gotoAndPlay(frame);
     },
     // SPRITE CHILDREN
     addSprite: function(sprite) {
@@ -111,8 +169,62 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         sprite.layer = null;
         return sprite;
     },
-    // PIXI/SAT dependent GETTERS and SETTERS.
-    // Used to keep in sync PIXI, SAT and engine sprite properties
+    // SPRITE POINTS
+    spritePoint: function(name, x, y) {
+        // Getter
+        if (!x || !y) {
+            return _.find(this.spritePoints, function(sprPt) {
+                return sprPt.name === name;
+            });
+        }
+        // Setter
+        var sprPt = {};
+        sprPt.name = name;
+        sprPt.origPoint = new SAT.Vector(x, y);
+        // .point refers to the position in the sprite's local coordinate system.
+        sprPt.point = new SAT.Vector(x, y);
+        // .calcPoint refers to the position in the sprite's parent coordinate system.
+        sprPt.calcPoint = new SAT.Vector(x, y);
+        sprPt.position = function(x, y) {
+            if (x && y) {
+                this.calcPoint.x = x + this.point.x;
+                this.calcPoint.y = y + this.point.y;
+            }
+            else
+                return this.calcPoint;
+        };
+        sprPt.rotation = function(rotation) {
+            if (rotation) {
+                // Calculate the vector from the point to the rotated point.
+                var rotVec = this.point.clone().rotate(rotation).sub(this.point);
+                this.calcPoint.add(rotVec);
+            } else
+                return this.rotation;
+        };
+        sprPt.scale = function(x, y) {
+            if (x && y) {
+                this.point.x *= x;
+                this.point.y *= y;
+            } else
+                return;
+        };
+        sprPt.x = function(x) {
+            if (x)
+                this.calcPoint.x = x;
+            else
+                return this.calcPoint.x;
+        };
+        sprPt.y = function(y) {
+            if (y)
+                this.calcPoint.y = y;
+            else
+                return this.calcPoint.y;
+        };
+        this.spritePoints.push(sprPt);
+        return sprPt;
+    },
+    // TRANSFORMATIONS
+    // PIXI/SAT dependent setters/getters, used to keep in sync PIXI, SAT and engine.-
     x: function(x) {
         if (x)
             this.position(x, this.y());
@@ -142,7 +254,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     positionLevel: function() {
         return A_.level.container.toLocal(A_.game.origin, this.sprite);
     },
-    // TODO: setSize/width/height should affect spritepoints
     size: function(x, y) {
         if (typeof x !== "number" || typeof y !== "number")
             return {width: this.sprite.width, height: this.sprite.height};
@@ -167,16 +278,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         _.each(this.spritePoints, function(sp) {
             sp.scale(this.scale().x, h / prevHeight);
         }, this);
-    },
-    setScale: function(x, y) {
-        var prevScale = this.getScale();
-        this.sprite.scale = new PIXI.Point(x, y);
-        _.each(this.spritePoints, function(sp) {
-            sp.setScale(x / prevScale.x, y / prevScale.y);
-        });
-    },
-    getScale: function() {
-        return this.sprite.scale;
     },
     scale: function(x, y) {
         if (x && y) {
@@ -207,13 +308,13 @@ A_.SPRITES.AnimatedSprite = Class.extend({
 //    },
     flipped: function(axis) {
         if (axis === "x") {
-            if (this.getScale().x < 0)
+            if (this.scale().x < 0)
                 return true;
             else
                 return false;
         }
         else if (axis === "y") {
-            if (this.getScale().y < 0)
+            if (this.scale().y < 0)
                 return true;
             else
                 return false;
@@ -228,6 +329,39 @@ A_.SPRITES.AnimatedSprite = Class.extend({
         } else
             return this.sprite.rotation;
     },
+    // Transformation ORIGIN (ANCHOR)
+    origin: function(x, y) {
+        if (typeof x === 'undefined' || typeof y === 'undefined')
+            return this.sprite.anchor;
+        var w = this.width();
+        var h = this.height();
+        var deltaX = x - this.sprite.anchor.x;
+        var deltaY = y - this.sprite.anchor.y;
+        var scale = this.scale();
+
+        var anchor = new PIXI.Point(x, y);
+        this.sprite.anchor = anchor;
+        _.each(this.animations, function(animation) {
+            animation.anchor = anchor;
+        });
+
+        _.each(this.sprites, function(sprite) {
+            sprite.positionRelative(-deltaX * w / scale.x, -deltaY * h / scale.y);
+        });
+
+        _.each(this.spritePoints, function(sp) {
+            sp.point.x -= deltaX * w;
+            sp.point.y -= deltaY * h;
+        });
+
+        var colPol = this.collisionPolygon;
+        if (colPol) {
+            var offset = new SAT.Vector(colPol.offset.x - deltaX * w, colPol.offset.y - deltaY * h);
+            colPol.setOffset(offset);
+        }
+
+    },
+    // TRANSPARENCY
     alpha: function(n) {
         if (typeof n !== "number") {
             return this.sprite.alpha;
@@ -309,87 +443,6 @@ A_.SPRITES.AnimatedSprite = Class.extend({
             });
         }
     },
-    // ANCHOR
-    origin: function(x, y) {
-        if (typeof x === 'undefined' || typeof y === 'undefined')
-            return this.sprite.anchor;
-        var w = this.width();
-        var h = this.height();
-        var deltaX = x - this.sprite.anchor.x;
-        var deltaY = y - this.sprite.anchor.y;
-        var scale = this.scale();
-
-        var anchor = new PIXI.Point(x, y);
-        this.sprite.anchor = anchor;
-        _.each(this.animations, function(animation) {
-            animation.anchor = anchor;
-        });
-
-        _.each(this.sprites, function(sprite) {
-            sprite.positionRelative(-deltaX * w / scale.x, -deltaY * h / scale.y);
-        });
-
-        _.each(this.spritePoints, function(sp) {
-            sp.point.x -= deltaX * w;
-            sp.point.y -= deltaY * h;
-        });
-
-        var colPol = this.collisionPolygon;
-        if (colPol) {
-            var offset = new SAT.Vector(colPol.offset.x - deltaX * w, colPol.offset.y - deltaY * h);
-            colPol.setOffset(offset);
-        }
-
-    },
-    // SPRITE POINTS
-    spritePoint: function(name, x, y) {
-        if (!x || !y) {
-            return _.find(this.spritePoints, function(sprPt) {
-                return sprPt.name === name;
-            });
-        }
-        var sprPt = {};
-        sprPt.origPoint = new SAT.Vector(x, y);
-        sprPt.point = new SAT.Vector(x, y);
-        sprPt.calcPoint = new SAT.Vector(x, y);
-        sprPt.name = name;
-        sprPt.position = function(x, y) {
-            if (x && y) {
-                this.calcPoint.x = x + this.point.x;
-                this.calcPoint.y = y + this.point.y;
-            }
-            else
-                return this.calcPoint;
-        };
-        sprPt.rotation = function(rotation) {
-            if (rotation) {
-                var rotVec = this.point.clone().rotate(rotation).sub(this.point);
-                this.calcPoint.add(rotVec);
-            } else
-                return this.rotation;
-        };
-        sprPt.scale = function(x, y) {
-            if (x && y) {
-                this.point.x *= x;
-                this.point.y *= y;
-            } else
-                return;
-        };
-        sprPt.x = function(x) {
-            if (x)
-                this.calcPoint.x = x;
-            else
-                return this.calcPoint.x;
-        };
-        sprPt.y = function(y) {
-            if (y)
-                this.calcPoint.y = y;
-            else
-                return this.calcPoint.y;
-        };
-        this.spritePoints.push(sprPt);
-        return sprPt;
-    },
     // CREATION/DESTRUCTION & UPDATE
     preupdate: function() {
 
@@ -422,59 +475,14 @@ A_.SPRITES.AnimatedSprite = Class.extend({
     },
     onDestruction: function() {
 
-    },
-    // ANIMATION
-    addAnimation: function(name, frames, speed) {
-        // set default speed to 1; 
-        if (!speed) {
-            speed = 1;
-        }
-
-        var textures = [];
-        for (var i = 0; i < frames.length; i++)
-            textures[i] = this.textures[frames[i]];
-
-        var animation = new PIXI.MovieClip(textures);
-
-        animation.anchor.x = 0.5;
-        animation.anchor.y = 0.5;
-        animation.visible = false;
-        // set the speed that the MovieClip will play at; higher is faster, lower is slower
-        animation.animationSpeed = speed;
-        this.sprite.children[0].addChild(animation);
-        this.animations[name] = animation;
-    },
-    setAnimation: function(name, frame, speed) {
-        // play from the start by default
-        if (typeof frame === 'undefined') {
-            if (this.currentAnimationName === name)
-                return;
-            frame = 0;
-        }
-        if (typeof speed !== 'undefined') {
-            this.animations[name].animationSpeed = speed;
-        }
-
-        // Turn off the previously playing animation
-        if (this.currentAnimation) {
-            // Stops the MovieClip
-            this.currentAnimation.stop();
-            // The visibility of the object.
-            this.currentAnimation.visible = false;
-        }
-
-        this.currentAnimation = this.animations[name];
-        this.currentAnimationName = name;
-        this.animations[name].visible = true;
-        // goes to a frame and begins playing the animation
-        this.animations[name].gotoAndPlay(frame);
     }
 });
 
-A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
+A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
     bounded: true,
     outOfBounds: false,
     collides: true,
+    interactive: false,
     destroyThis: false,
     drawDebugGraphics: true,
     init: function(parent, x, y, props) {
@@ -519,71 +527,71 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
             return this.sprite.interactive;
         this.sprite.interactive = interactive;
     },
-    createCollisionPolygon: function(polygon) {
-        if (!this.collision)
-            this.collision = {};
+            createCollisionPolygon: function(polygon) {
+                if (!this.collision)
+                    this.collision = {};
 
-        if (!this.collision.size)
-            this.collision.size = {};
-        if (!this.collision.size.w)
-            this.collision.size.w = this.sprite.width;
-        if (!this.collision.size.h)
-            this.collision.size.h = this.sprite.height;
+                if (!this.collision.size)
+                    this.collision.size = {};
+                if (!this.collision.size.w)
+                    this.collision.size.w = this.sprite.width;
+                if (!this.collision.size.h)
+                    this.collision.size.h = this.sprite.height;
 
-        if (!this.collision.offset) {
-            this.collision.offset = {};
-        }
-        if (!this.collision.offset.x) {
-            this.collision.offset.x = 0;
-        }
-        if (!this.collision.offset.y) {
-            this.collision.offset.y = 0;
-        }
+                if (!this.collision.offset) {
+                    this.collision.offset = {};
+                }
+                if (!this.collision.offset.x) {
+                    this.collision.offset.x = 0;
+                }
+                if (!this.collision.offset.y) {
+                    this.collision.offset.y = 0;
+                }
 
-        if (!this.collisionPolygons) {
-            this.collisionPolygons = [];
-        }
-        var w = this.collision.size.w;
-        var h = this.collision.size.h;
+                if (!this.collisionPolygons) {
+                    this.collisionPolygons = [];
+                }
+                var w = this.collision.size.w;
+                var h = this.collision.size.h;
 
-        var offsetX = this.collision.offset.x;
-        var offsetY = this.collision.offset.y;
+                var offsetX = this.collision.offset.x;
+                var offsetY = this.collision.offset.y;
 
-        var collisionPolygon;
+                var collisionPolygon;
 
-        if (!polygon) {
-            offsetX -= w / 2;
-            offsetY -= h / 2;
-            var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
-            collisionPolygon = box.toPolygon();
-            collisionPolygon.w = box.w;
-            collisionPolygon.h = box.h;
-        } else {
-            collisionPolygon = polygon;
-            offsetX += collisionPolygon.offset.x;
-            offsetY += collisionPolygon.offset.y;
-        }
-        var offset = new SAT.Vector(offsetX, offsetY);
-        collisionPolygon.setOffset(offset);
+                if (!polygon) {
+                    offsetX -= w / 2;
+                    offsetY -= h / 2;
+                    var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
+                    collisionPolygon = box.toPolygon();
+                    collisionPolygon.w = box.w;
+                    collisionPolygon.h = box.h;
+                } else {
+                    collisionPolygon = polygon;
+                    offsetX += collisionPolygon.offset.x;
+                    offsetY += collisionPolygon.offset.y;
+                }
+                var offset = new SAT.Vector(offsetX, offsetY);
+                collisionPolygon.setOffset(offset);
 
-        collisionPolygon.origPoints = _.map(collisionPolygon.points, function(point) {
-            return point.clone();
-        });
-        collisionPolygon.origOffset = collisionPolygon.offset.clone();
-        collisionPolygon.origW = collisionPolygon.w;
-        collisionPolygon.origH = collisionPolygon.h;
+                collisionPolygon.origPoints = _.map(collisionPolygon.points, function(point) {
+                    return point.clone();
+                });
+                collisionPolygon.origOffset = collisionPolygon.offset.clone();
+                collisionPolygon.origW = collisionPolygon.w;
+                collisionPolygon.origH = collisionPolygon.h;
 
-        collisionPolygon.scale = new SAT.Vector(1, 1);
+                collisionPolygon.scale = new SAT.Vector(1, 1);
 
-        if (this.sprite && this.sprite.interactive)
-            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
+                if (this.sprite && this.sprite.interactive)
+                    this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
 //        collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
-        
-        this.collisionPolygons.push(collisionPolygon);
-        return collisionPolygon;
-    },
-    destroyCollisionPolygon: function (collisionPolygon) {
+
+                this.collisionPolygons.push(collisionPolygon);
+                return collisionPolygon;
+            },
+    destroyCollisionPolygon: function(collisionPolygon) {
         if (_.contains(this.collisionPolygons, collisionPolygon)) {
             this.collisionPolygons.splice(this.collisionPolygons.indexOf(collisionPolygon), 1);
         }
@@ -772,7 +780,7 @@ A_.SPRITES.CollisionSprite = A_.SPRITES.AnimatedSprite.extend({
     }
 });
 
-A_.SPRITES.ArcadeSprite = A_.SPRITES.CollisionSprite.extend({
+A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
     isMoving: false,
     bounciness: 0.5,
     minBounceSpeed: 64,

@@ -66,7 +66,7 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-var Laser = A_.SPRITES.AnimatedSprite.extend({
+var Laser = A_.SPRITES.Sprite.extend({
     animSheet: "laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -178,7 +178,7 @@ var Rotor = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-var Explosion = A_.SPRITES.AnimatedSprite.extend({
+var Explosion = A_.SPRITES.Sprite.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
     init: function (parent, x, y, props) {

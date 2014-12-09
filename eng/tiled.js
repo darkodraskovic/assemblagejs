@@ -193,12 +193,12 @@ function createMap(game, mapData) {
 
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
-                        var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args, collisionPolygon);
+                        var o = game.createSprite(A_.SPRITES.ResponsiveSprite, layer, oData["x"], oData["y"], args, collisionPolygon);
                         o.positionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
                         args.collision.size = {w: oData["width"], h: oData["height"]};
-                        var o = game.createSprite(A_.SPRITES.CollisionSprite, layer, oData["x"], oData["y"], args);
+                        var o = game.createSprite(A_.SPRITES.ResponsiveSprite, layer, oData["x"], oData["y"], args);
                         o.positionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
                     A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
