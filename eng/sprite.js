@@ -1,4 +1,7 @@
 A_.SPRITES.Sprite = Class.extend({
+    bounded: true,
+    outOfBounds: false,
+    destroyThis: false,
     // init() is called when the sprite is instantiated with new keyword.
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
     init: function(parent, x, y, props) {
@@ -114,9 +117,9 @@ A_.SPRITES.Sprite = Class.extend({
         var textures = [];
         for (var i = 0; i < frames.length; i++)
             textures[i] = this.textures[frames[i]];
-        
+
         var animation = new PIXI.MovieClip(textures);
-        
+
         animation.anchor.x = 0.5;
         animation.anchor.y = 0.5;
         // MovieClip is the child of the transparent this.sprite and is invisible by default.
@@ -157,8 +160,11 @@ A_.SPRITES.Sprite = Class.extend({
     // SPRITE CHILDREN
     addSprite: function(sprite) {
         this.sprites.push(sprite);
+        // The second child of this PIXI sprite is the parent of sprites added to this PIXI sprite.
         this.sprite.children[1].addChild(sprite.sprite);
+        // .container is A_ sprite containing this A_ sprite.
         sprite.container = this;
+        // .layer is PIXI DOC containing this PIXI sprite.
         sprite.layer = this.layer;
         return sprite;
     },
@@ -197,6 +203,7 @@ A_.SPRITES.Sprite = Class.extend({
             if (rotation) {
                 // Calculate the vector from the point to the rotated point.
                 var rotVec = this.point.clone().rotate(rotation).sub(this.point);
+                // Add the vector to the position in parent's coord sys.
                 this.calcPoint.add(rotVec);
             } else
                 return this.rotation;
@@ -224,7 +231,7 @@ A_.SPRITES.Sprite = Class.extend({
         return sprPt;
     },
     // TRANSFORMATIONS
-    // PIXI/SAT dependent setters/getters, used to keep in sync PIXI, SAT and engine.-
+    // PIXI/SAT dependent setters/getters, used to keep in sync PIXI, SAT and A_.
     x: function(x) {
         if (x)
             this.position(x, this.y());
@@ -299,13 +306,6 @@ A_.SPRITES.Sprite = Class.extend({
             this.scale(prevScale.x, prevScale.y * -1);
         }
     },
-//    setFlipped: function(axis, flip) {
-//        if (this.getFlipped(axis) && flip || !this.getFlipped(axis) && !flip) {
-//            return;
-//        }
-//        else
-//            this.flip(axis);
-//    },
     flipped: function(axis) {
         if (axis === "x") {
             if (this.scale().x < 0)
@@ -329,7 +329,7 @@ A_.SPRITES.Sprite = Class.extend({
         } else
             return this.sprite.rotation;
     },
-    // Transformation ORIGIN (ANCHOR)
+    // ORIGIN (ANCHOR)
     origin: function(x, y) {
         if (typeof x === 'undefined' || typeof y === 'undefined')
             return this.sprite.anchor;
@@ -451,15 +451,16 @@ A_.SPRITES.Sprite = Class.extend({
 
     },
     postupdate: function() {
-        if (this.bounded) {
+        if (!this.container) {
             var pos = this.position();
-            this.position(Math.max(this.width() / 2, Math.min(pos.x, A_.game.level.width - this.width() / 2)),
-                    Math.max(this.height() / 2, Math.min(pos.y, A_.game.level.height - this.height() / 2)));
-        } else {
-            var pos = this.position();
-            if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
-                this.outOfBounds = true;
-            }
+            if (this.bounded) {
+                this.position(Math.max(this.width() / 2, Math.min(pos.x, A_.game.level.width - this.width() / 2)),
+                        Math.max(this.height() / 2, Math.min(pos.y, A_.game.level.height - this.height() / 2)));
+            } else {
+                if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
+                    this.outOfBounds = true;
+                }
+            }            
         }
     },
     onCreation: function() {
@@ -470,8 +471,8 @@ A_.SPRITES.Sprite = Class.extend({
             sprite.destroy();
         });
 
-        A_.game.spritesToDestroy.push(this);
         this.onDestruction();
+        A_.game.spritesToDestroy.push(this);
     },
     onDestruction: function() {
 
@@ -479,11 +480,8 @@ A_.SPRITES.Sprite = Class.extend({
 });
 
 A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
-    bounded: true,
-    outOfBounds: false,
     collides: true,
-    interactive: false,
-    destroyThis: false,
+    interacts: false,
     drawDebugGraphics: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -494,7 +492,7 @@ A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
     },
     initInput: function() {
         var that = this;
-        if (this.interactive) {
+        if (this.interacts) {
             this.sprite.interactive = true;
             this.sprite.mousedown = function() {
                 that.leftpressed = true;
@@ -526,71 +524,72 @@ A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
         if (typeof interactive === "undefined")
             return this.sprite.interactive;
         this.sprite.interactive = interactive;
+        this.interacts = interactive;
     },
-            createCollisionPolygon: function(polygon) {
-                if (!this.collision)
-                    this.collision = {};
+    createCollisionPolygon: function(polygon) {
+        if (!this.collision)
+            this.collision = {};
 
-                if (!this.collision.size)
-                    this.collision.size = {};
-                if (!this.collision.size.w)
-                    this.collision.size.w = this.sprite.width;
-                if (!this.collision.size.h)
-                    this.collision.size.h = this.sprite.height;
+        if (!this.collision.size)
+            this.collision.size = {};
+        if (!this.collision.size.w)
+            this.collision.size.w = this.sprite.width;
+        if (!this.collision.size.h)
+            this.collision.size.h = this.sprite.height;
 
-                if (!this.collision.offset) {
-                    this.collision.offset = {};
-                }
-                if (!this.collision.offset.x) {
-                    this.collision.offset.x = 0;
-                }
-                if (!this.collision.offset.y) {
-                    this.collision.offset.y = 0;
-                }
+        if (!this.collision.offset) {
+            this.collision.offset = {};
+        }
+        if (!this.collision.offset.x) {
+            this.collision.offset.x = 0;
+        }
+        if (!this.collision.offset.y) {
+            this.collision.offset.y = 0;
+        }
 
-                if (!this.collisionPolygons) {
-                    this.collisionPolygons = [];
-                }
-                var w = this.collision.size.w;
-                var h = this.collision.size.h;
+        if (!this.collisionPolygons) {
+            this.collisionPolygons = [];
+        }
+        var w = this.collision.size.w;
+        var h = this.collision.size.h;
 
-                var offsetX = this.collision.offset.x;
-                var offsetY = this.collision.offset.y;
+        var offsetX = this.collision.offset.x;
+        var offsetY = this.collision.offset.y;
 
-                var collisionPolygon;
+        var collisionPolygon;
 
-                if (!polygon) {
-                    offsetX -= w / 2;
-                    offsetY -= h / 2;
-                    var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
-                    collisionPolygon = box.toPolygon();
-                    collisionPolygon.w = box.w;
-                    collisionPolygon.h = box.h;
-                } else {
-                    collisionPolygon = polygon;
-                    offsetX += collisionPolygon.offset.x;
-                    offsetY += collisionPolygon.offset.y;
-                }
-                var offset = new SAT.Vector(offsetX, offsetY);
-                collisionPolygon.setOffset(offset);
+        if (!polygon) {
+            offsetX -= w / 2;
+            offsetY -= h / 2;
+            var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
+            collisionPolygon = box.toPolygon();
+            collisionPolygon.w = box.w;
+            collisionPolygon.h = box.h;
+        } else {
+            collisionPolygon = polygon;
+            offsetX += collisionPolygon.offset.x;
+            offsetY += collisionPolygon.offset.y;
+        }
+        var offset = new SAT.Vector(offsetX, offsetY);
+        collisionPolygon.setOffset(offset);
 
-                collisionPolygon.origPoints = _.map(collisionPolygon.points, function(point) {
-                    return point.clone();
-                });
-                collisionPolygon.origOffset = collisionPolygon.offset.clone();
-                collisionPolygon.origW = collisionPolygon.w;
-                collisionPolygon.origH = collisionPolygon.h;
+        collisionPolygon.origPoints = _.map(collisionPolygon.points, function(point) {
+            return point.clone();
+        });
+        collisionPolygon.origOffset = collisionPolygon.offset.clone();
+        collisionPolygon.origW = collisionPolygon.w;
+        collisionPolygon.origH = collisionPolygon.h;
 
-                collisionPolygon.scale = new SAT.Vector(1, 1);
+        collisionPolygon.scale = new SAT.Vector(1, 1);
 
-                if (this.sprite && this.sprite.interactive)
-                    this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
+        if (this.sprite && this.sprite.interactive)
+            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
 //        collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
-                this.collisionPolygons.push(collisionPolygon);
-                return collisionPolygon;
-            },
+        this.collisionPolygons.push(collisionPolygon);
+        return collisionPolygon;
+    },
     destroyCollisionPolygon: function(collisionPolygon) {
         if (_.contains(this.collisionPolygons, collisionPolygon)) {
             this.collisionPolygons.splice(this.collisionPolygons.indexOf(collisionPolygon), 1);
