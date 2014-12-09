@@ -1,6 +1,4 @@
 A_.SPRITES.Sprite = Class.extend({
-    bounded: true,
-    outOfBounds: false,
     destroyThis: false,
     // init() is called when the sprite is instantiated with new keyword.
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
@@ -451,17 +449,7 @@ A_.SPRITES.Sprite = Class.extend({
 
     },
     postupdate: function() {
-        if (!this.container) {
-            var pos = this.position();
-            if (this.bounded) {
-                this.position(Math.max(this.width() / 2, Math.min(pos.x, A_.game.level.width - this.width() / 2)),
-                        Math.max(this.height() / 2, Math.min(pos.y, A_.game.level.height - this.height() / 2)));
-            } else {
-                if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
-                    this.outOfBounds = true;
-                }
-            }            
-        }
+
     },
     onCreation: function() {
 
@@ -480,6 +468,8 @@ A_.SPRITES.Sprite = Class.extend({
 });
 
 A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
+    bounded: true,
+    outOfBounds: false,
     collides: true,
     interacts: false,
     drawDebugGraphics: true,
@@ -660,6 +650,17 @@ A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
     },
     postupdate: function() {
         this._super();
+        if (!this.container) {
+            var pos = this.position();
+            if (this.bounded) {
+                this.position(Math.max(this.width() / 2, Math.min(pos.x, A_.game.level.width - this.width() / 2)),
+                        Math.max(this.height() / 2, Math.min(pos.y, A_.game.level.height - this.height() / 2)));
+            } else {
+                if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
+                    this.outOfBounds = true;
+                }
+            }
+        }
     },
     collideWithStatic: function(other, response) {
         this.prevOverlapN = response.overlapN;
