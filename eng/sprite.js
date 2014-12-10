@@ -201,7 +201,7 @@ A_.SPRITES.Sprite = Class.extend({
             if (rotation) {
                 // Calculate the vector from the point to the rotated point.
                 var rotVec = this.point.clone().rotate(rotation).sub(this.point);
-                // Add the vector to the position in parent's coord sys.
+                // Add the vector to the position in the parent's coord sys.
                 this.calcPoint.add(rotVec);
             } else
                 return this.rotation;
@@ -244,8 +244,10 @@ A_.SPRITES.Sprite = Class.extend({
     },
     position: function(x, y) {
         if (x && y) {
+            // Translate the PIXI sprite.
             this.sprite.position.x = x;
             this.sprite.position.y = y;
+            // Translate sprite points.
             _.each(this.spritePoints, function(sp) {
                 sp.position(x, y);
             });
@@ -259,20 +261,27 @@ A_.SPRITES.Sprite = Class.extend({
     positionLevel: function() {
         return A_.level.container.toLocal(A_.game.origin, this.sprite);
     },
-    size: function(x, y) {
-        if (typeof x !== "number" || typeof y !== "number")
+    size: function(w, h) {
+        if (typeof w !== "number" || typeof h !== "number")
             return {width: this.sprite.width, height: this.sprite.height};
-
-        this.sprite.width = x;
-        this.sprite.height = y;
+        
+        var prevWidth = this.sprite.width;
+        var prevHeight = this.sprite.height;
+        this.sprite.width = w;
+        this.sprite.height = h;
+        // We scale proportionally sprite points.
+        _.each(this.spritePoints, function(sp) {
+            sp.scale(w / prevWidth, h / prevHeight);
+        });
     },
     width: function(w) {
         if (typeof w !== "number")
             return this.sprite.width;
         var prevWidth = this.sprite.width;
         this.sprite.width = w;
+        // We scale proportionally sprite points on the x axis.
         _.each(this.spritePoints, function(sp) {
-            sp.scale(w / prevWidth, this.scale().y);
+            sp.scale(w / prevWidth, 1);
         }, this);
     },
     height: function(h) {
@@ -280,15 +289,18 @@ A_.SPRITES.Sprite = Class.extend({
             return this.sprite.height;
         var prevHeight = this.sprite.height;
         this.sprite.height = h;
+        // We scale proportionally sprite points on the y axis.
         _.each(this.spritePoints, function(sp) {
-            sp.scale(this.scale().x, h / prevHeight);
+            sp.scale(1, h / prevHeight);
         }, this);
     },
     scale: function(x, y) {
         if (x && y) {
             var prevScaleX = this.sprite.scale.x;
             var prevScaleY = this.sprite.scale.y;
-            this.sprite.scale = new PIXI.Point(x, y);
+            this.sprite.scale.x = x;
+            this.sprite.scale.y = y;
+            // We scale proportionally sprite points.
             _.each(this.spritePoints, function(sp) {
                 sp.scale(x / prevScaleX, y / prevScaleY);
             });
@@ -296,6 +308,7 @@ A_.SPRITES.Sprite = Class.extend({
         else
             return this.sprite.scale;
     },
+    // Flip is a scaling with a negative factor.
     flip: function(axis) {
         var prevScale = this.scale();
         if (axis === "x") {
@@ -337,13 +350,19 @@ A_.SPRITES.Sprite = Class.extend({
         var deltaY = y - this.sprite.anchor.y;
         var scale = this.scale();
 
-        var anchor = new PIXI.Point(x, y);
-        this.sprite.anchor = anchor;
+        this.sprite.anchor.x = x;
+        this.sprite.anchor.y = y;
         _.each(this.animations, function(animation) {
-            animation.anchor = anchor;
+            animation.anchor.x = x;
+            animation.anchor.y = y;
         });
-
+        
+        // Translate sprite children, sprite points and collision polygon (if any)
+        // by -(delta * dim).
+        
         _.each(this.sprites, function(sprite) {
+            // Since the child coord sys is scaled, its positionRelative() 
+            // is fed with the original parent's width.
             sprite.positionRelative(-deltaX * w / scale.x, -deltaY * h / scale.y);
         });
 
@@ -354,10 +373,10 @@ A_.SPRITES.Sprite = Class.extend({
 
         var colPol = this.collisionPolygon;
         if (colPol) {
-            var offset = new SAT.Vector(colPol.offset.x - deltaX * w, colPol.offset.y - deltaY * h);
-            colPol.setOffset(offset);
+            colPol.offset.x -= deltaX * w;
+            colPol.offset.y -= deltaY * h;
+            colPol.recalc();
         }
-
     },
     // TRANSPARENCY
     alpha: function(n) {
@@ -369,15 +388,20 @@ A_.SPRITES.Sprite = Class.extend({
     // Z ORDER & LAYERS
     z: function(position) {
         var parent;
+        // If the sprite is the child of some other sprite...
         if (this.container) {
+            // this.container is the instance of A_ sprite.
             parent = this.container.sprite.children[1];
-        } else
+        } else {
+            // this.layer is the instance of PIXI DOC.
             parent = this.layer;
+        }
 
         if (position) {
             if (typeof position === "string") {
                 if (position === "top") {
-                    parent.setChildIndex(this.sprite, this.layer.children.length - 1);
+                    // Changes the position of an existing child in the display object container (PIXI doc).
+                    parent.setChildIndex(this.sprite, parent.children.length - 1);
                     return;
                 } else if (position === "bottom") {
                     parent.setChildIndex(this.sprite, 0);
@@ -387,8 +411,10 @@ A_.SPRITES.Sprite = Class.extend({
                 if (position >= 0 && position < parent.children.length)
                     parent.setChildIndex(this.sprite, position);
             }
-        } else
+        } else {
+            // Returns the index position of a child DisplayObject instance (PIXI doc).
             return parent.getChildIndex(this.sprite);
+        }
     },
     moveToSprite: function(sprite, position) {
         var parent;
@@ -403,9 +429,12 @@ A_.SPRITES.Sprite = Class.extend({
                 parent = this.container.sprite.children[1];
         }
         if (position === "back" || position === "front") {
+            // Removes a child from the PIXI DOC.
             parent.removeChild(this.sprite);
+            // Adds a child to the PIXI DOC.
             parent.addChildAt(this.sprite, parent.getChildIndex(sprite.sprite));
             if (position === "front") {
+                // Swaps the position of 2 PIXI DO within this PIXI DOC.
                 parent.swapChildren(this.sprite, sprite.sprite);
             }
         }
