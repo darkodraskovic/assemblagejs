@@ -366,7 +366,6 @@ var Explosion = A_.SPRITES.Sprite.extend({
 var Computer = A_.SPRITES.ResponsiveSprite.extend({
     animSheet: "Computer1.png",
     collision: {response: "static"},
-//    interactive: true,
 //    collisionType: A_.COLLISION.Type.ITEM,
 //    collidesWith: A_.COLLISION.Type.NONE,
     init: function(parent, x, y, props) {

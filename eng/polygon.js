@@ -1,11 +1,13 @@
 // SAT EXTENSION
 SAT.Polygon.prototype.setScale = function(x, y) {
     var prevScale = this.scale.clone();
+    var scaleX = x / prevScale.x;
+    var scaleY = y / prevScale.y;    
     this.scale.x = x;
     this.scale.y = y;
 
     _.each(this.points, function(point) {
-        return point.scale(x / prevScale.x, y / prevScale.y);
+        return point.scale(scaleX, scaleY);
     }, this);
 
     this.w *= x / prevScale.x;
@@ -25,44 +27,29 @@ SAT.Polygon.prototype.calcSize = function() {
         ys[ys.length] = point.y;
     });
 
-    var minX = _.min(xs);
-    var minY = _.min(ys);
-    var maxX = _.max(xs);
-    var maxY = _.max(ys);
-    this.w = maxX - minX;
-    this.h = maxY - minY;
+    this.minX = _.min(xs);
+    this.minY = _.min(ys);
+    this.maxX = _.max(xs);
+    this.maxY = _.max(ys);
+    this.w = this.maxX - this.minX;
+    this.h = this.maxY - this.minY;
 }
 // ENGINE polygon UTILS
 A_.POLYGON.Utils = {};
 
-A_.POLYGON.Utils.createSATPolygonFromTiled = function(oData, centered) {
-    var xs = [];
-    var ys = [];
-
+A_.POLYGON.Utils.createSATPolygonFromTiled = function(oData) {
     var vectors = _.map(oData.polygon, function(vertex) {
         return new SAT.Vector(vertex.x, vertex.y)
     });
-    _.each(vectors, function(vector) {
-        xs[xs.length] = vector.x;
-        ys[ys.length] = vector.y;
-    });
-
-    var minX = _.min(xs);
-    var minY = _.min(ys);
-    var maxX = _.max(xs);
-    var maxY = _.max(ys);
-    var w = maxX - minX;
-    var h = maxY - minY;
 
     var collisionPolygon = new SAT.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
+    collisionPolygon.calcSize();
 
-    var offsetX = (minX + w / 2);
-    var offsetY = (minY + h / 2);
+    var offsetX = (collisionPolygon.minX + collisionPolygon.w / 2);
+    var offsetY = (collisionPolygon.minY + collisionPolygon.h / 2);
 
     var offset = new SAT.Vector(-offsetX, -offsetY);
     collisionPolygon.setOffset(offset);
-    collisionPolygon.w = w;
-    collisionPolygon.h = h;
 
     return collisionPolygon;
 };
