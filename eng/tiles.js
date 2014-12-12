@@ -1,5 +1,5 @@
 A_.TILES.Tile = Class.extend({
-    init: function(gid, sprite, x, y, tilemap) {
+    init: function (gid, sprite, x, y, tilemap) {
         this.gid = gid;
         this.sprite = sprite;
         this.mapPosition = {};
@@ -7,15 +7,7 @@ A_.TILES.Tile = Class.extend({
         this.mapPosition.y = y;
         this.tilemap = tilemap;
     },
-    setCollision: function() {
-        this.collision = {};
-        this.collision.size = {};
-        this.collision.size.w = this.tilemap.tileW;
-        this.collision.size.h = this.tilemap.tileH;
-
-        var w = this.collision.size.w;
-        var h = this.collision.size.h;
-
+    setCollision: function (w, h) {
         var collisionPolygon;
 
         var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
@@ -26,32 +18,31 @@ A_.TILES.Tile = Class.extend({
         this.collisionPolygon = collisionPolygon;
         this.collisionPolygon.pos.x = this.x();
         this.collisionPolygon.pos.y = this.y();
-        this.collision.response = "static";
         A_.collider.collisionStatics.push(this);
         A_.collider.collisionTiles.push(this);
     },
-    collideWithStatic: function(other, response) {
+    collideWithStatic: function (other, response) {
 
     },
-    collideWithDynamic: function(other, response) {
+    collideWithDynamic: function (other, response) {
 
     },
-    getPosition: function() {
+    getPosition: function () {
         return this.sprite.position;
     },
-    x: function(x) {
+    x: function (x) {
         if (x)
             this.position(x, this.y());
         else
             return this.sprite.position.x;
     },
-    y: function(y) {
+    y: function (y) {
         if (y)
             this.position(this.x(), y);
         else
             return this.sprite.position.y;
     },
-    position: function(x, y) {
+    position: function (x, y) {
         if (x && y) {
             this.sprite.position.x = x;
             this.sprite.position.y = y;
@@ -62,9 +53,12 @@ A_.TILES.Tile = Class.extend({
 });
 
 A_.TILES.Tilemap = Class.extend({
-    init: function(layer, img, tileW, tileH) {
+    init: function (layer, img, tileW, tileH, collides) {
         this.layer = layer;
         this.baked = false;
+        if (collides) {
+            this.layer.collision = true;
+        }
 
         this.img = "graphics/" + A_.level.directoryPrefix + img;
         this.bTxt = new PIXI.BaseTexture.fromImage(this.img, PIXI.scaleModes.LINEAR);
@@ -77,8 +71,16 @@ A_.TILES.Tilemap = Class.extend({
         this.tileH = tileH;
 
         this.tiles = [];
+
+        if (this.layer.collision) {
+            this.collision = {};
+            this.collision.size = {};
+            this.collision.size.w = this.tileW;
+            this.collision.size.h = this.tileH;
+            this.collision.response = "static";
+        }
     },
-    createTilelayer: function(layerData) {
+    createTilelayer: function (layerData) {
         this.mapW = layerData.length;
         this.mapH = layerData[0].length;
         for (var i = 0; i < this.mapW; i++) {
@@ -90,19 +92,28 @@ A_.TILES.Tilemap = Class.extend({
 
         for (var j = 0; j < layerData.length; j++) {
             for (var k = 0; k < layerData[j].length; k++) {
-//                if (layerData[j][k] > -1) {
                 if (layerData[j][k] > 0) {
                     this.setTile(layerData[j][k], j, k);
                 }
             }
         }
+        if (this.layer.collision) {
+            var w = this.tileW;
+            var h = this.tileH;
+            _.each(this.tiles, function (tileCol) {
+                _.each(tileCol, function (tile) {
+                    if (tile)
+                        tile.setCollision(w, h);
+                });
+            });
+        }
 
         this.layer.tilemap = this;
     },
-    getTile: function(x, y) {
+    getTile: function (x, y) {
         return this.tiles[x][y];
     },
-    setTile: function(gid, x, y) {
+    setTile: function (gid, x, y) {
         if (this.layer.baked)
             return;
         if (typeof gid === "undefined" || typeof x === "undefined" || typeof y === "undefined")
@@ -123,22 +134,19 @@ A_.TILES.Tilemap = Class.extend({
         this.setTileInMap(tile, x, y);
         var worldCoords = this.mapToWorld(x, y);
         this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
+        return tile;
     },
-    setTileInMap: function(tile, x, y) {
+    setTileInMap: function (tile, x, y) {
         this.tiles[x][y] = tile;
     },
-    setTileInWorld: function(tile, x, y) {
+    setTileInWorld: function (tile, x, y) {
         var tileSprite = tile.sprite;
         tileSprite.position.x = x;
         tileSprite.position.y = y;
 
         this.layer.addChild(tileSprite);
-
-        if (this.layer.collision) {
-            tile.setCollision();
-        }
     },
-    unsetTile: function(x, y) {
+    unsetTile: function (x, y) {
         if (this.layer.baked)
             return;
 
@@ -153,19 +161,20 @@ A_.TILES.Tilemap = Class.extend({
             if (this.layer.collision) {
                 var ind = A_.collider.collisionTiles.indexOf(tile);
                 A_.collider.collisionTiles.splice(ind, 1);
+                ind = A_.collider.collisionStatics.indexOf(tile);
                 A_.collider.collisionStatics.splice(ind, 1);
             }
             // Tilemap
             this.tiles[x][y] = null;
         }
     },
-    worldToMap: function(x, y) {
+    worldToMap: function (x, y) {
         return [Math.round(x / this.tileW), Math.round(y / this.tileH)];
     },
-    mapToWorld: function(x, y) {
+    mapToWorld: function (x, y) {
         return [x * this.tileW, y * this.tileH];
     },
-    createTileSprite: function(frameInd) {
+    createTileSprite: function (frameInd) {
         var frame = new PIXI.Rectangle((frameInd % this.imgCols) * this.tileW,
                 Math.floor(frameInd / this.imgCols) * this.tileH, this.tileW, this.tileH);
         var tileTexture = new PIXI.Texture(this.bTxt, frame);
@@ -173,7 +182,7 @@ A_.TILES.Tilemap = Class.extend({
 
         return tileSprite;
     },
-    createTile: function(gid, x, y) {
+    createTile: function (gid, x, y) {
         var sprite = this.createTileSprite(gid - 1);
         return new A_.TILES.Tile(gid, sprite, x, y, this);
     },

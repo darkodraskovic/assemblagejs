@@ -1,7 +1,7 @@
 // CLASSES
 var Ball = A_.SPRITES.ArcadeSprite.extend({
     animSheet: "ball.png",
-    collisionResponse: "dynamic",
+    collision: {response: "dynamic"},
     update: function () {
         this._super();
         this.bounciness = 0.75;
@@ -49,8 +49,8 @@ function createRoguelikeMap() {
 function createRotLayers() {
     var layerFloors = A_.level.createTileLayer("Floor","tilemap.png", tileW, tileH);
     layerFloors.tilemap.createTilelayer(mapDataFloors);
-    var layerWalls = A_.level.createTileLayer("Walls", "tilemap.png", tileW, tileH);
-    layerWalls.collision = true;
+    var layerWalls = A_.level.createTileLayer("Walls", "tilemap.png", tileW, tileH, true);
+//    layerWalls.collision = true;    
     layerWalls.tilemap.createTilelayer(mapDataWalls);
 
 

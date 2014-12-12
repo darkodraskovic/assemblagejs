@@ -39,9 +39,9 @@ A_.Level = Class.extend({
         this.addSpriteLayer(layer);
         return layer;
     },
-    createTileLayer: function (name, image, tileW, tileH) {
+    createTileLayer: function (name, image, tileW, tileH, collides) {
         var layer = this.createEmptyLayer(name);
-        var tilemap = new A_.TILES.Tilemap(layer, image, tileW, tileH);
+        var tilemap = new A_.TILES.Tilemap(layer, image, tileW, tileH, collides);
         layer.tilemap = tilemap;
         this.addTileLayer(layer);
         return layer;
