@@ -263,7 +263,7 @@ A_.SPRITES.Sprite = Class.extend({
     },
     size: function (w, h) {
         if (typeof w !== "number" || typeof h !== "number")
-            return {width: this.sprite.width, height: this.sprite.height};
+            return {width: Math.abs(this.sprite.width), height: Math.abs(this.sprite.height)};
 
         var prevWidth = this.sprite.width;
         var prevHeight = this.sprite.height;
@@ -276,7 +276,7 @@ A_.SPRITES.Sprite = Class.extend({
     },
     width: function (w) {
         if (typeof w !== "number")
-            return this.sprite.width;
+            return Math.abs(this.sprite.width);
         var prevWidth = this.sprite.width;
         this.sprite.width = w;
         // We scale proportionally sprite points on the x axis.
@@ -286,7 +286,7 @@ A_.SPRITES.Sprite = Class.extend({
     },
     height: function (h) {
         if (typeof h !== "number")
-            return this.sprite.height;
+            return Math.abs(this.sprite.height);
         var prevHeight = this.sprite.height;
         this.sprite.height = h;
         // We scale proportionally sprite points on the y axis.

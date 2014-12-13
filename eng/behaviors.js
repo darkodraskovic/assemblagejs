@@ -119,8 +119,8 @@ A_.MODULES.Platformer = {
         this._super(layer, x, y, props);
         this.gravity = new SAT.Vector(0, 20);
         this.friction = new SAT.Vector(64, 0);
-        this.maxVelocity = new SAT.Vector(200, 600);
-        this.force = new SAT.Vector(64, 64);
+        this.maxVelocity = new SAT.Vector(300, 600);
+        this.force = new SAT.Vector(100, 100);
         if (this.controlled) {
             A_.INPUT.addMapping("left", A_.KEY.A);
             A_.INPUT.addMapping("right", A_.KEY.D);
@@ -152,10 +152,10 @@ A_.MODULES.Platformer = {
 
         if (this.applyForce) {
             if (this.facing === "right") {
-                this.acceleration.x += this.force.x;
+                this.acceleration.x = this.force.x;
             }
             else if (this.facing === "left") {
-                this.acceleration.x -= this.force.x;
+                this.acceleration.x = -this.force.x;
             }
         }
         else {
