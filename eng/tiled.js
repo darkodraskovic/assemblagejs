@@ -178,12 +178,14 @@ function createMap(game, mapData) {
                 for (var prop in oData["properties"]) {
                     args[prop] = eval(oData["properties"][prop]);
                 }
+                window.console.log(args);
 //                for (var prop in oData) {
 //                    if (prop !== "x" && prop !== "y" &&
 //                            prop !== "width" && prop !== "height")
 //                    args[prop] = oData[prop];
 //                }
                 args["name"] = oData["name"];
+                args["type"] = oData["type"];
 
                 // POLY || RECT
                 // TODO: write Game.createPolygon()
@@ -201,7 +203,7 @@ function createMap(game, mapData) {
                         var o = game.createSprite(A_.SPRITES.ResponsiveSprite, layer, oData["x"], oData["y"], args);
                         o.positionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
-                    A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
+//                    A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
                     o.update();
                     layer.addChild(o.sprite);
                 }

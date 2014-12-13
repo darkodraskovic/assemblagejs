@@ -110,6 +110,7 @@ A_.MODULES.TopdownWASD = {
 /* PLATFORMER */
 A_.MODULES.Platformer = {
     platformerState: "grounded",
+    movingState: "idle",
     jumpForce: 500,
     bounciness: 0,
     controlled: false,
@@ -118,6 +119,7 @@ A_.MODULES.Platformer = {
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.gravity = new SAT.Vector(0, 20);
+        this.origGravityY = this.gravity.y;
         this.friction = new SAT.Vector(64, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
@@ -166,11 +168,23 @@ A_.MODULES.Platformer = {
             if (this.platformerState === "grounded") {
                 this.velocity.y = -this.jumpForce;
                 this.bounced.vertical = false;
+                // Process SLOPE.
+                if (this.onSlope) {
+                    this.gravity.y = this.origGravityY;
+                    this.onSlope = false;
+                }
             }
             this.tryJump = false;
         }
 
         this._super();
+
+        // Process SLOPE.
+        if (this.onSlope) {
+            this.velocity.y = 0;
+            this.onSlope = false;
+        }
+        this.gravity.y = this.origGravityY;
 
         // STATES
         if (this.velocity.y > this.gravity.y) {
@@ -218,6 +232,12 @@ A_.MODULES.Platformer = {
                         }
                     }
                 }
+            }
+            // Process SLOPE.
+            if (other.type === "slope" && (this.platformerState !== "falling" || this.platformerState !== "jumping")) {
+                this.x(this.x() + response.overlapV.x);
+                this.onSlope = true;
+                this.gravity.y *= this.gravity.y;
             }
         }
         else if (response.overlapN.x !== 0) {

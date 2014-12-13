@@ -11,7 +11,7 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
         this._super(parent, x, y, props);
         this.controlled = true;
         this.addAnimation("idle", [0], 0);
-        this.addAnimation("walk", _.range(1, 7), 0.15);
+        this.addAnimation("moving", _.range(1, 7), 0.15);
         this.addAnimation("jumping", [17], 0);
         this.addAnimation("falling", [18], 0);
 //        this.bounciness = 0.5;
@@ -19,11 +19,7 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     update: function () {
         this._super();
         if (this.platformerState === "grounded") {
-            if (this.movingState === "moving") {
-                this.setAnimation("walk");
-            } else {
-                this.setAnimation("idle");
-            }            
+            this.setAnimation(this.movingState);
         } else {
             this.setAnimation(this.platformerState);
         }

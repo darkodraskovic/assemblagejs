@@ -513,7 +513,6 @@ A_.SPRITES.Sprite = Class.extend({
                 }
             }
         }
-
     },
     onCreation: function () {
 
