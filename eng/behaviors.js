@@ -1,6 +1,8 @@
 /******************************************************************************/
 /* MODULES */
 /******************************************************************************/
+
+/* TOPDOWN */
 A_.MODULES.Topdown = {
     motionState: "idle",
     motionStates: ["moving", "idle"],
@@ -105,19 +107,21 @@ A_.MODULES.TopdownWASD = {
     }
 };
 
+/* PLATFORMER */
 A_.MODULES.Platformer = {
     platformerState: "grounded",
-    jumpForce: 600,
+    jumpForce: 500,
     bounciness: 0,
     controlled: false,
     facing: "right",
+    autoFlip: true,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.gravity = new SAT.Vector(0, 20);
         this.friction = new SAT.Vector(64, 0);
         this.maxVelocity = new SAT.Vector(200, 600);
         this.force = new SAT.Vector(64, 64);
-        if (this.controlled) {            
+        if (this.controlled) {
             A_.INPUT.addMapping("left", A_.KEY.A);
             A_.INPUT.addMapping("right", A_.KEY.D);
             A_.INPUT.addMapping("jump", A_.KEY.SPACE);
@@ -167,7 +171,7 @@ A_.MODULES.Platformer = {
         }
 
         this._super();
-        
+
         // STATES
         if (this.velocity.y > this.gravity.y) {
             this.platformerState = "falling";
@@ -175,6 +179,19 @@ A_.MODULES.Platformer = {
             this.platformerState = "jumping";
         } else if (this.platformerState !== "jumping") {
             this.platformerState = "grounded";
+        }
+
+        // FLIP
+        if (this.autoFlip) {
+            if (this.facing === "right") {
+                if (this.flipped("x")) {
+                    this.flip("x");
+                }
+            } else if (this.facing === "left") {
+                if (!this.flipped("x")) {
+                    this.flip("x");
+                }
+            }
         }
     },
     collideWithStatic: function (other, response) {
@@ -185,7 +202,7 @@ A_.MODULES.Platformer = {
             this.platformerState = "grounded";
             if (this.bounciness === 0) {
                 this.velocity.y = 0;
-            } 
+            }
 //            else {
 //                this.velocity.y -= this.gravity.y;
 //            }

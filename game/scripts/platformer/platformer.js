@@ -13,22 +13,12 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
 //        this.bounciness = 0.5;
     },    
     update: function () {
-        if (this.facing === "right") {
-            if (this.flipped("x")) {
-                this.flip("x");
-            }
-        } else if (this.facing === "left") {
-            if (!this.flipped("x")) {
-                this.flip("x");
-            }
-        }
-        
+        this._super();
         if (this.velocity.x !== 0) {
             this.setAnimation("run");
         } else {
             this.setAnimation("idle");
         }
-        this._super();
     }
 });
 

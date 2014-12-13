@@ -687,6 +687,8 @@ A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
             } else {
                 if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
                     this.outOfBounds = true;
+                } else {
+                    this.outOfBounds = false;
                 }
             }
         }
