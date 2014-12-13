@@ -121,11 +121,11 @@ A_.MODULES.Platformer = {
         this.friction = new SAT.Vector(64, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
-        if (this.controlled) {
+//        if (this.controlled) {
             A_.INPUT.addMapping("left", A_.KEY.A);
             A_.INPUT.addMapping("right", A_.KEY.D);
             A_.INPUT.addMapping("jump", A_.KEY.SPACE);
-        }
+//        }
     },
     update: function () {
         if (this.controlled) {
@@ -180,6 +180,12 @@ A_.MODULES.Platformer = {
         } else if (this.platformerState !== "jumping") {
             this.platformerState = "grounded";
         }
+        
+        if (this.velocity.x > this.force.x || this.velocity.x < -this.force.x) {
+            this.movingState = "moving";
+        } else {
+            this.movingState = "idle";
+        }
 
         // FLIP
         if (this.autoFlip) {
@@ -195,18 +201,31 @@ A_.MODULES.Platformer = {
         }
     },
     collideWithStatic: function (other, response) {
-        // BUG: When jumping and going left/right into the wall, the jump is capped
         this._super(other, response);
 
         if (response.overlapN.y !== 0) {
-            this.platformerState = "grounded";
-            if (this.bounciness === 0) {
-                this.velocity.y = 0;
+            if (response.overlapN.y === 1) {
+                this.platformerState = "grounded";
+                if (this.bounciness === 0) {
+                    this.velocity.y = 0;
+                }
+            } else {
+                if (this.bounciness === 0) {
+                    if (this.platformerState !== "grounded") {
+                        this.velocity.y = this.gravity.y;
+                        this.y(this.y() + this.velocity.y * A_.game.dt);
+                    }
+                }
             }
-//            else {
-//                this.velocity.y -= this.gravity.y;
-//            }
         }
+        else if (response.overlapN.x !== 0) {
+            if (this.bounciness === 0) {
+                this.velocity.x = 0;
+            }
+        }
+    },
+    postupdate: function () {
+        this._super();
     }
 };
 

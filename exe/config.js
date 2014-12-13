@@ -17,7 +17,7 @@ A_.CONFIG.debug = true;
 A_.CONFIG.camera = {
     innerBoundOffset: 0.25,
     worldBounded: true,
-    followType: "centered"
+    followType: "bounded"
 };
 
 A_.CONFIG.renderer = {
@@ -61,10 +61,10 @@ rot1 = {
 };
 
 platformer_level1 = {
-    name: "platformer_level1",
+    name: "level1",
     directoryPrefix: "platformer",
     scripts: ["platformer"],
-    map: "platformer_level1",
-    graphics: ["bg_sky.png", "player.png", "thickGrass.png"],
+    map: "level1",
+    graphics: ["sci-fi-platformer-tiles-32x32.png", "player.png"],
     sounds: []
 };

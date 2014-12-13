@@ -1,5 +1,8 @@
 A_.SPRITES.Sprite = Class.extend({
     destroyThis: false,
+    bounded: true,
+    wrap: false,
+    outOfBounds: false,
     // init() is called when the sprite is instantiated with new keyword.
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
     init: function (parent, x, y, props) {
@@ -478,6 +481,38 @@ A_.SPRITES.Sprite = Class.extend({
 
     },
     postupdate: function () {
+        if (!this.container) {
+            var x = this.x();
+            var y = this.y();
+            var halfW = this.width() / 2;
+            var halfH = this.height() / 2;
+            if (this.collisionPolygon) {
+                halfW = this.collisionPolygon.w / 2;
+                halfH = this.collisionPolygon.h / 2;
+            }
+            if (this.bounded) {
+                this.position(Math.max(halfW, Math.min(x, A_.game.level.width - halfW)),
+                        Math.max(halfH, Math.min(y, A_.game.level.height - halfH)));
+            } else if (this.wrap) {
+                if (x + halfW < 0) {
+                    this.x(A_.game.level.width + halfW)
+                } else if (x - halfW > A_.game.level.width) {
+                    this.x(0 - halfW);
+                }
+                if (y + halfH < 0) {
+                    this.y(A_.game.level.height + halfH)
+                } else if (y - halfH > A_.game.level.height) {
+                    this.y(0 - halfH);
+                }
+            }
+            else {
+                if (x < 0 || x > A_.game.level.width || y < 0 || y > A_.game.level.height) {
+                    this.outOfBounds = true;
+                } else {
+                    this.outOfBounds = false;
+                }
+            }
+        }
 
     },
     onCreation: function () {
@@ -497,8 +532,6 @@ A_.SPRITES.Sprite = Class.extend({
 });
 
 A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
-    bounded: true,
-    outOfBounds: false,
     collides: true,
     interacts: false,
     drawDebugGraphics: true,
@@ -507,7 +540,7 @@ A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
 
         this.prevOverlapN = new SAT.Vector(0, 0);
 
-        this.initInput();        
+        this.initInput();
     },
     initInput: function () {
         var that = this;
@@ -679,19 +712,6 @@ A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
     },
     postupdate: function () {
         this._super();
-        if (!this.container) {
-            var pos = this.position();
-            if (this.bounded) {
-                this.position(Math.max(this.width() / 2, Math.min(pos.x, A_.game.level.width - this.width() / 2)),
-                        Math.max(this.height() / 2, Math.min(pos.y, A_.game.level.height - this.height() / 2)));
-            } else {
-                if (pos.x < 0 || pos.x > A_.game.level.width || pos.y < 0 || pos.y > A_.game.level.height) {
-                    this.outOfBounds = true;
-                } else {
-                    this.outOfBounds = false;
-                }
-            }
-        }
     },
     collideWithStatic: function (other, response) {
         this.prevOverlapN = response.overlapN;
@@ -855,7 +875,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
             this.calcAcceleration.y *= sin;
         }
 
-        if (this.gravity.x === 0) {            
+        if (this.gravity.x === 0) {
             if (this.velocity.x > 0) {
                 this.velocity.x -= this.calcFriction.x;
                 if (this.velocity.x < 0) {
