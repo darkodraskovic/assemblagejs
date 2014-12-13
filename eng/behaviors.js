@@ -122,9 +122,9 @@ A_.MODULES.Platformer = {
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
 //        if (this.controlled) {
-            A_.INPUT.addMapping("left", A_.KEY.A);
-            A_.INPUT.addMapping("right", A_.KEY.D);
-            A_.INPUT.addMapping("jump", A_.KEY.SPACE);
+        A_.INPUT.addMapping("left", A_.KEY.A);
+        A_.INPUT.addMapping("right", A_.KEY.D);
+        A_.INPUT.addMapping("jump", A_.KEY.SPACE);
 //        }
     },
     update: function () {
@@ -180,7 +180,7 @@ A_.MODULES.Platformer = {
         } else if (this.platformerState !== "jumping") {
             this.platformerState = "grounded";
         }
-        
+
         if (this.velocity.x > this.force.x || this.velocity.x < -this.force.x) {
             this.movingState = "moving";
         } else {
@@ -212,8 +212,10 @@ A_.MODULES.Platformer = {
             } else {
                 if (this.bounciness === 0) {
                     if (this.platformerState !== "grounded") {
-                        this.velocity.y = this.gravity.y;
-                        this.y(this.y() + this.velocity.y * A_.game.dt);
+                        if (this.velocity.y < this.gravity.y) {
+                            this.velocity.y = this.gravity.y;
+                            this.y(this.y() + this.velocity.y * A_.game.dt);
+                        }
                     }
                 }
             }

@@ -487,8 +487,8 @@ A_.SPRITES.Sprite = Class.extend({
             var halfW = this.width() / 2;
             var halfH = this.height() / 2;
             if (this.collisionPolygon) {
-                halfW = this.collisionPolygon.w / 2;
-                halfH = this.collisionPolygon.h / 2;
+                halfW = Math.abs(this.collisionPolygon.w / 2);
+                halfH = Math.abs(this.collisionPolygon.h / 2);
             }
             if (this.bounded) {
                 this.position(Math.max(halfW, Math.min(x, A_.game.level.width - halfW)),
