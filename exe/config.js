@@ -41,15 +41,6 @@ var level2 = A_.UTILS.copy(level1);
 level2.name = "level2";
 level2.map = "map_skorpio2";
 
-var ships = {
-    name: "ships",
-    directoryPrefix: "kenny",
-    scripts: ["kenny"],
-    map: "ships",
-    graphics: ["blue.png", "spaceships.png"],
-    sounds: []
-};
-
 farer1 = {
     name: "farer1",
     directoryPrefix: "farer",
@@ -59,11 +50,21 @@ farer1 = {
         "nebula.png", "player.png", "rotor.png", "starfield.png"],
     sounds: [["bullet.wav"], ["explosion.mp3"],["laser-beam.mp3"]]
 };
+
 rot1 = {
     name: "rot1",
     directoryPrefix: "rot",
     scripts: ["rot"],
     map: "",
     graphics: ["ball.png", "tilemap.png"],
+    sounds: []
+};
+
+platformer_level1 = {
+    name: "platformer_level1",
+    directoryPrefix: "platformer",
+    scripts: ["platformer"],
+    map: "platformer_level1",
+    graphics: ["bg_sky.png", "player.png", "thickGrass.png"],
     sounds: []
 };

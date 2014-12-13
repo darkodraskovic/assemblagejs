@@ -421,7 +421,7 @@ A_.Game = Class.extend({
         }
     },
     setScale: function(scale) {
-        if (scale > 0.25 && scale < 1.5) {
+        if (scale > 0.25 && scale < 5) {
             // scale the game world according to scale
             this.level.container.scale = new PIXI.Point(scale, scale);
 

@@ -853,7 +853,7 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
             this.calcAcceleration.y *= sin;
         }
 
-        if (this.gravity.x === 0) {
+        if (this.gravity.x === 0) {            
             if (this.velocity.x > 0) {
                 this.velocity.x -= this.calcFriction.x;
                 if (this.velocity.x < 0) {
@@ -909,6 +909,8 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
 
         var x = startPos.x + vel.x;
         var y = startPos.y + vel.y;
+//        var x = Math.round(startPos.x + vel.x);
+//        var y = Math.round(startPos.y + vel.y);
         this.position(x, y);
 
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {

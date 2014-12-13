@@ -6,31 +6,33 @@ A_.MODULES.Topdown = {
     motionStates: ["moving", "idle"],
     cardinalDir: "E",
     cardinalDirs: ["N", "NW", "NE", "S", "SW", "SE"],
-    init: function(layer, x, y, props) {
+    init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.force = new SAT.Vector(64, 64);
     },
-    update: function() {
+    update: function () {
         if (this.motionState === "moving") {
             if (this.cardinalContains("N")) {
                 this.acceleration.y = -this.force.y;
             }
             else if (this.cardinalContains("S")) {
                 this.acceleration.y = this.force.y;
-            } else this.acceleration.y = 0;
+            } else
+                this.acceleration.y = 0;
             if (this.cardinalContains("W")) {
                 this.acceleration.x = -this.force.x;
             }
             else if (this.cardinalContains("E")) {
                 this.acceleration.x = this.force.x;
-            } else this.acceleration.x = 0;
+            } else
+                this.acceleration.x = 0;
         } else {
             this.acceleration.x = this.acceleration.y = 0;
         }
 
         this._super();
     },
-    cardinalToAngle: function(car) {
+    cardinalToAngle: function (car) {
         if (!car)
             car = this.cardinalDir;
         switch (car) {
@@ -62,7 +64,7 @@ A_.MODULES.Topdown = {
                 return 0;
         }
     },
-    cardinalContains: function(cont, car) {
+    cardinalContains: function (cont, car) {
         if (!car)
             car = this.cardinalDir;
 
@@ -73,14 +75,14 @@ A_.MODULES.Topdown = {
 }
 
 A_.MODULES.TopdownWASD = {
-    init: function(layer, x, y, props) {
+    init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("down", A_.KEY.S);
         A_.INPUT.addMapping("up", A_.KEY.W);
     },
-    update: function() {
+    update: function () {
         var cd = "";
         if (A_.INPUT.down["up"]) {
             cd = "N";
@@ -107,31 +109,65 @@ A_.MODULES.Platformer = {
     platformerState: "grounded",
     jumpForce: 600,
     bounciness: 0,
-    force: new SAT.Vector(64, 64),
-    gravity: new SAT.Vector(0, 20),
-    friction: new SAT.Vector(20, 0),
-    maxVelocity: new SAT.Vector(400, 1000),
-    init: function(layer, x, y, props) {
+    controlled: false,
+    facing: "right",
+    init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("jump", A_.KEY.SPACE);
+        this.gravity = new SAT.Vector(0, 20);
+        this.friction = new SAT.Vector(64, 0);
+        this.maxVelocity = new SAT.Vector(200, 600);
+        this.force = new SAT.Vector(64, 64);
+        if (this.controlled) {            
+            A_.INPUT.addMapping("left", A_.KEY.A);
+            A_.INPUT.addMapping("right", A_.KEY.D);
+            A_.INPUT.addMapping("jump", A_.KEY.SPACE);
+        }
     },
-    update: function() {
-        if (A_.INPUT.down["left"]) {
-            this.acceleration.x -= this.force.x;
-        }
-        if (A_.INPUT.down["right"]) {
-            this.acceleration.x += this.force.x;
-        }
-        if (A_.INPUT.down["jump"]) {
-            if (this.platformerState === "grounded") {
-                this.acceleration.y -= this.jumpForce;
+    update: function () {
+        if (this.controlled) {
+            if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
+                this.applyForce = true;
+                if (A_.INPUT.down["right"] && A_.INPUT.down["left"]) {
+                    this.applyForce = false;
+                }
+                else if (A_.INPUT.down["right"]) {
+                    this.facing = "right";
+                }
+                else if (A_.INPUT.down["left"]) {
+                    this.facing = "left";
+                }
+            }
+            else {
+                this.applyForce = false;
+            }
+
+            if (A_.INPUT.down["jump"]) {
+                this.tryJump = true;
             }
         }
 
-        this._super();
+        if (this.applyForce) {
+            if (this.facing === "right") {
+                this.acceleration.x += this.force.x;
+            }
+            else if (this.facing === "left") {
+                this.acceleration.x -= this.force.x;
+            }
+        }
+        else {
+            this.acceleration.x = 0;
+        }
 
+        if (this.tryJump) {
+            if (this.platformerState === "grounded") {
+                this.velocity.y = -this.jumpForce;
+                this.bounced.vertical = false;
+            }
+            this.tryJump = false;
+        }
+
+        this._super();
+        
         // STATES
         if (this.velocity.y > this.gravity.y) {
             this.platformerState = "falling";
@@ -141,28 +177,29 @@ A_.MODULES.Platformer = {
             this.platformerState = "grounded";
         }
     },
-    collideWithStatic: function(other, response) {
+    collideWithStatic: function (other, response) {
         // BUG: When jumping and going left/right into the wall, the jump is capped
         this._super(other, response);
 
-        if (response.overlapN.y === 1) {
+        if (response.overlapN.y !== 0) {
             this.platformerState = "grounded";
             if (this.bounciness === 0) {
                 this.velocity.y = 0;
-            } else {
-                this.velocity.y -= this.gravity.y;
-            }
+            } 
+//            else {
+//                this.velocity.y -= this.gravity.y;
+//            }
         }
     }
 };
 
 A_.MODULES.pinTo = {
-    init: function(layer, x, y, props) {
+    init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.pinTo.point = this.pinTo.parent.addSpritePoint(this.pinTo.name,
                 this.pinTo.offsetX, this.pinTo.offsetY);
     },
-    postupdate: function() {
+    postupdate: function () {
         this.rotation(this.pinTo.parent.rotation());
         this.position(this.pinTo.point.calcPoint.x, this.pinTo.point.calcPoint.y);
 
@@ -174,7 +211,7 @@ A_.MODULES.pinTo = {
 /* EXTENSIONS */
 /******************************************************************************/
 A_.EXTENSIONS.Polygon = {
-    addTo: function(sprite, pixiPolygon) {
+    addTo: function (sprite, pixiPolygon) {
         var graphics = new PIXI.Graphics();
 //        sprite.graphics.beginFill(0xFFFF00);
         graphics.lineStyle(4, 0x00FF00);
@@ -186,7 +223,7 @@ A_.EXTENSIONS.Polygon = {
 };
 
 A_.EXTENSIONS.Sine = {
-    addTo: function(sprite, props) {
+    addTo: function (sprite, props) {
         sprite.sine = {};
         for (var prop in props) {
             sprite.sine[prop] = props[prop];
@@ -208,7 +245,7 @@ A_.EXTENSIONS.Sine = {
         if (sprite.sine.periodRand === 'undefined')
             sprite.sine.periodRand = 50; // in %
 
-        sprite.sine.computeValue = function() {
+        sprite.sine.computeValue = function () {
             var sin = Math.sin(this.angle += this.speed * A_.game.dt);
 
             if (sin < 0) {

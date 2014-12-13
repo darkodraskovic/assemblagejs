@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="12">
         <file>
-            <url>eng/Sprite.js</url>
-            <bookmark id="2">
-                <name/>
-                <line>322</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>eng/sprite.js</url>
             <bookmark id="12">
                 <name/>
@@ -32,15 +24,16 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>eng/Sprite.js</url>
+            <bookmark id="2">
+                <name/>
+                <line>322</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/farer/farer.js</file>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/game.js</file>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite.js</file>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/skorpio/skorpio.js</file>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/collision.js</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
