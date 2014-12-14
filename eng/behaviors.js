@@ -119,10 +119,12 @@ A_.MODULES.Platformer = {
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.gravity = new SAT.Vector(0, 20);
-        this.origGravityY = this.gravity.y;
-        this.friction = new SAT.Vector(64, 0);
+        this.friction = new SAT.Vector(48, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
+
+        this.slope = null;
+        this.slopeRiseDir = "";
 //        if (this.controlled) {
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
@@ -164,38 +166,24 @@ A_.MODULES.Platformer = {
             this.acceleration.x = 0;
         }
 
+
         if (this.tryJump) {
             if (this.platformerState === "grounded") {
                 this.velocity.y = -this.jumpForce;
-                this.bounced.vertical = false;
-                // Process SLOPE.
-                if (this.onSlope) {
-                    this.gravity.y = this.origGravityY;
-                    this.onSlope = false;
-                }
             }
             this.tryJump = false;
         }
 
         this._super();
 
-        // Process SLOPE.
-        if (this.onSlope) {
-            this.velocity.y = 0;
-            this.onSlope = false;
-        }
-        this.gravity.y = this.origGravityY;
-
         // STATES
         if (this.velocity.y > this.gravity.y) {
             this.platformerState = "falling";
         } else if (this.velocity.y < -this.gravity.y) {
             this.platformerState = "jumping";
-        } else if (this.platformerState !== "jumping") {
-            this.platformerState = "grounded";
         }
 
-        if (this.velocity.x > this.force.x || this.velocity.x < -this.force.x) {
+        if (this.velocity.x > this.friction.x || this.velocity.x < -this.friction.x) {
             this.movingState = "moving";
         } else {
             this.movingState = "idle";
@@ -212,6 +200,28 @@ A_.MODULES.Platformer = {
                     this.flip("x");
                 }
             }
+        }
+
+    },
+    calculateVelocity: function () {
+        this._super();
+        
+        if (this.slope && this.slope.slowdown) {
+            if (this.slopeRiseDir === "right" && this.velocity.x > 0 || this.slopeRiseDir === "left" && this.velocity.x < 0) {
+                this.velocity.x *= this.slope.slowdown;
+            }
+            this.slope = null;
+        }
+    },
+    applyVelocity: function () {
+        this._super();
+        
+        if (this.slopeRiseDir) {
+            var slopeRiseDir = this.slopeRiseDir;
+            if (slopeRiseDir === "right" && this.velocity.x < 0 || slopeRiseDir === "left" && this.velocity.x > 0) {
+                this.y(this.y() + 8);
+            }
+            this.slopeRiseDir = "";
         }
     },
     collideWithStatic: function (other, response) {
@@ -233,16 +243,24 @@ A_.MODULES.Platformer = {
                     }
                 }
             }
-            // Process SLOPE.
-            if (other.type === "slope" && (this.platformerState !== "falling" || this.platformerState !== "jumping")) {
-                this.x(this.x() + response.overlapV.x);
-                this.onSlope = true;
-                this.gravity.y *= this.gravity.y;
-            }
         }
         else if (response.overlapN.x !== 0) {
             if (this.bounciness === 0) {
                 this.velocity.x = 0;
+            }
+        }
+        // SLOPE
+        if (other.type === "slope") {
+            var y = this.collisionPolygon.getBottom();
+            var xL = this.collisionPolygon.getLeft() - 2;
+            var xR = this.collisionPolygon.getRight() + 2;
+            this.slopeRiseDir = other.containsPoint(xL, y) ? "left" : other.containsPoint(xR, y) ? "right" : "";
+
+            if (this.slopeRiseDir) {
+                this.platformerState = "grounded";
+                this.velocity.y = this.gravity.y;
+                this.x(this.x() + response.overlapV.x);
+                this.slope = other;
             }
         }
     },

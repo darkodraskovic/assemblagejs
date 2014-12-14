@@ -851,9 +851,17 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
     update: function () {
         this._super();
 
-        // ARCADE PHYSICS
-        var startPos = this.position();
+        this.calculateVelocity();
+        this.applyVelocity();
 
+        if (this.angularSpeed) {
+            this.rotation(this.rotation() + this.angularSpeed * A_.game.dt);
+            this.isRotating = true;
+        } else {
+            this.isRotating = false;
+        }
+    },
+    calculateVelocity: function () {
         if (this.moveForward) {
             this.movementAngle = this.rotation();
         }
@@ -873,7 +881,6 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
             this.calcAcceleration.x *= cos;
             this.calcAcceleration.y *= sin;
         }
-
         if (this.gravity.x === 0) {
             if (this.velocity.x > 0) {
                 this.velocity.x -= this.calcFriction.x;
@@ -906,13 +913,15 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
         this.velocity.add(this.calcAcceleration);
         this.velocity.add(this.gravity);
 
-        if (this.bounced.horizontal) {
-            this.velocity.x = -this.velocity.x * this.bounciness;
+        if (this.bounciness) {
+            if (this.bounced.horizontal) {
+                this.velocity.x = -this.velocity.x * this.bounciness;
+            }
+            if (this.bounced.vertical) {
+                this.velocity.y = -this.velocity.y * this.bounciness;
+            }
+            this.bounced.horizontal = this.bounced.vertical = false;
         }
-        if (this.bounced.vertical) {
-            this.velocity.y = -this.velocity.y * this.bounciness;
-        }
-        this.bounced.horizontal = this.bounced.vertical = false;
 
         if (this.moveAtAngle) {
             var spd = this.velocity.len();
@@ -924,6 +933,9 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
             this.velocity.x = this.velocity.x.clamp(-this.maxVelocity.x, this.maxVelocity.x);
             this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
         }
+    },
+    applyVelocity: function () {
+        var startPos = this.position();
 
         var vel = this.velocity.clone();
         vel.scale(A_.game.dt, A_.game.dt);
@@ -938,13 +950,6 @@ A_.SPRITES.ArcadeSprite = A_.SPRITES.ResponsiveSprite.extend({
             this.isMoving = true;
         } else {
             this.isMoving = false;
-        }
-
-        if (this.angularSpeed) {
-            this.rotation(this.rotation() + this.angularSpeed * A_.game.dt);
-            this.isRotating = true;
-        } else {
-            this.isRotating = false;
         }
     },
     collideWithStatic: function (other, response) {

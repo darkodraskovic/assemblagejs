@@ -18,6 +18,19 @@ SAT.Polygon.prototype.setScale = function(x, y) {
 //    this.recalcSize();
 };
 
+SAT.Polygon.prototype.getTop = function () {
+    return this.pos.y - Math.abs(this.offset.y);
+}
+SAT.Polygon.prototype.getBottom = function () {
+    return this.pos.y + (Math.abs(this.h) - Math.abs(this.offset.y));
+}
+SAT.Polygon.prototype.getLeft = function () {
+    return this.pos.x - Math.abs(this.offset.x);
+}
+SAT.Polygon.prototype.getRight = function () {
+    return this.pos.x + (Math.abs(this.w) - Math.abs(this.offset.x));
+}
+
 SAT.Polygon.prototype.calcSize = function() {
     var xs = [];
     var ys = [];
