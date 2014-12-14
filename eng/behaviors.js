@@ -253,6 +253,7 @@ A_.MODULES.Platformer = {
                 this.velocity.x = 0;
             }
         }
+        
         // SLOPE
         if (other.type === "slope") {
             if (!other.slopeAngle) {
