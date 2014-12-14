@@ -221,7 +221,6 @@ A_.MODULES.Platformer = {
             if (slopeRiseDir === "right" && this.velocity.x < 0 || slopeRiseDir === "left" && this.velocity.x > 0) {
                 var diffX = Math.abs(this.velocity.x) * A_.game.dt;
                 var diffY = Math.tan(this.slope.slopeAngle) * diffX;
-//                window.console.log("diffx: " + diffX + ", diffY: " + diffY);
                 this.y(this.y() + diffY);
             }
             this.slopeRiseDir = "";
@@ -253,12 +252,11 @@ A_.MODULES.Platformer = {
                 this.velocity.x = 0;
             }
         }
-        
+
         // SLOPE
         if (other.type === "slope") {
-            if (!other.slopeAngle) {
-                other.slopeAngle = other.collisionPolygon.diagonalAngle;
-                other.slopeFactor = 1 - (other.slopeAngle / (Math.PI / 2));
+            if (!other.slopeSet) {
+                other.setSlope();
             }
             var y = this.collisionPolygon.getBottom();
             var xL = this.collisionPolygon.getLeft() - 2;
@@ -272,9 +270,6 @@ A_.MODULES.Platformer = {
                 this.slope = other;
             }
         }
-    },
-    postupdate: function () {
-        this._super();
     }
 };
 

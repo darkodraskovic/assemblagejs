@@ -700,6 +700,11 @@ A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
             this.debugGraphics = null;
         }
     },
+    setSlope: function () {
+        this.slopeAngle = this.collisionPolygon.diagonalAngle;
+        this.slopeFactor = 1 - (this.slopeAngle / (Math.PI / 2));
+        this.slopeSet = true;
+    },
     update: function () {
         this._super();
     },
