@@ -614,8 +614,9 @@ A_.SPRITES.ResponsiveSprite = A_.SPRITES.Sprite.extend({
             offsetY -= h / 2;
             var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
             collisionPolygon = box.toPolygon();
-            collisionPolygon.w = box.w;
-            collisionPolygon.h = box.h;
+//            collisionPolygon.w = box.w;
+//            collisionPolygon.h = box.h;
+            collisionPolygon.calcSize();
         } else {
             collisionPolygon = polygon;
             offsetX += collisionPolygon.offset.x;

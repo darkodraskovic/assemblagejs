@@ -178,7 +178,6 @@ function createMap(game, mapData) {
                 for (var prop in oData["properties"]) {
                     args[prop] = eval(oData["properties"][prop]);
                 }
-                window.console.log(args);
 //                for (var prop in oData) {
 //                    if (prop !== "x" && prop !== "y" &&
 //                            prop !== "width" && prop !== "height")

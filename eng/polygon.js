@@ -46,6 +46,8 @@ SAT.Polygon.prototype.calcSize = function() {
     this.maxY = _.max(ys);
     this.w = this.maxX - this.minX;
     this.h = this.maxY - this.minY;
+    
+    this.diagonalAngle = Math.atan(this.h / this.w);
 }
 // ENGINE polygon UTILS
 A_.POLYGON.Utils = {};

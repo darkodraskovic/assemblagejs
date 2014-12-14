@@ -183,7 +183,8 @@ A_.MODULES.Platformer = {
             this.platformerState = "jumping";
         }
 
-        if (this.velocity.x > this.friction.x || this.velocity.x < -this.friction.x) {
+//        if (this.velocity.x > this.friction.x || this.velocity.x < -this.friction.x) {
+        if (this.velocity.x !== 0) {
             this.movingState = "moving";
         } else {
             this.movingState = "idle";
@@ -205,23 +206,26 @@ A_.MODULES.Platformer = {
     },
     calculateVelocity: function () {
         this._super();
-        
-        if (this.slope && this.slope.slowdown) {
+
+        if (this.slope) {
             if (this.slopeRiseDir === "right" && this.velocity.x > 0 || this.slopeRiseDir === "left" && this.velocity.x < 0) {
-                this.velocity.x *= this.slope.slowdown;
+                this.velocity.x *= this.slope.slopeFactor;
             }
-            this.slope = null;
         }
     },
     applyVelocity: function () {
         this._super();
-        
+
         if (this.slopeRiseDir) {
             var slopeRiseDir = this.slopeRiseDir;
             if (slopeRiseDir === "right" && this.velocity.x < 0 || slopeRiseDir === "left" && this.velocity.x > 0) {
-                this.y(this.y() + 8);
+                var diffX = Math.abs(this.velocity.x) * A_.game.dt;
+                var diffY = Math.tan(this.slope.slopeAngle) * diffX;
+//                window.console.log("diffx: " + diffX + ", diffY: " + diffY);
+                this.y(this.y() + diffY);
             }
             this.slopeRiseDir = "";
+            this.slope = null;
         }
     },
     collideWithStatic: function (other, response) {
@@ -251,6 +255,10 @@ A_.MODULES.Platformer = {
         }
         // SLOPE
         if (other.type === "slope") {
+            if (!other.slopeAngle) {
+                other.slopeAngle = other.collisionPolygon.diagonalAngle;
+                other.slopeFactor = 1 - (other.slopeAngle / (Math.PI / 2));
+            }
             var y = this.collisionPolygon.getBottom();
             var xL = this.collisionPolygon.getLeft() - 2;
             var xR = this.collisionPolygon.getRight() + 2;
