@@ -247,6 +247,7 @@ A_.Game = Class.extend({
         var that = this;
         _.each(this.spritesToCreate, function(sprite) {
             that.level.sprites.push(sprite);
+//            sprite.onCreation();
         });
         this.spritesToCreate.length = 0;
     },

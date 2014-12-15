@@ -61,6 +61,7 @@ var Player = Anime.extend({
         this.collision.response = "active";
     },
     onCreation: function() {
+        this._super();
         this.rifle = A_.game.createSprite(Rifle, this.layer,
                 this.x(), this.y(),
                 {holder: this, animSpeed: this.animSpeed});
@@ -242,7 +243,12 @@ var LaserBeam = A_.SPRITES.ResponsiveSprite.extend({
         }).play();
 
         this.origH = this.height();
-        A_.EXTENSIONS.Sine.addTo(this, {period: 1, periodRand: 50, value: 8, valueRand: 4});
+        this.sine = this.addon("Sine");
+        this.sine.period = 1;
+        this.sine.periodRand = 50;
+        this.sine.amplitude = 8;
+        this.sine.amplitudeRand = 4;
+//        A_.EXTENSIONS.Sine.addTo(this, {period: 1, periodRand: 50, value: 8, valueRand: 4});
     },
     update: function() {
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
@@ -264,7 +270,8 @@ var LaserBeam = A_.SPRITES.ResponsiveSprite.extend({
             this.destroy();
         }
 
-        this.height(this.origH + this.sine.computeValue());
+//        this.height(this.origH + this.sine.computeValue());
+        this.height(this.origH + this.sine.value);
     }
 });
 

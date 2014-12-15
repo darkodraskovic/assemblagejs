@@ -82,9 +82,14 @@ var Laser = A_.SPRITES.Sprite.extend({
 
         this.origW = this.width();
         this.origH = this.height();
-        A_.EXTENSIONS.Sine.addTo(this, {period: 0.5, periodRand: 25, value: 3, valueRand: 25});
+        this.sine = this.addon("Sine");
+        this.sine.period = 0.5;
+        this.sine.periodRand = 25;
+        this.sine.amplitude = 3;
+        this.sine.amplitudeRand = 25;
     },
     onCreation: function () {
+        this._super();
         this.origPositionX = this.x();
     },
     update: function () {
@@ -99,13 +104,12 @@ var Laser = A_.SPRITES.Sprite.extend({
         }
 
         this._super();
-        var val = this.sine.computeValue();
 
-        this.height(this.origH + val);
+        this.height(this.origH + this.sine.value);
         if (this.on)
-            this.width(this.width() + val);
+            this.width(this.width() + this.sine.value);
         else
-            this.width(this.origW + val);
+            this.width(this.origW + this.sine.value);
     },
     toggleFire: function (state) {
         if (state === "on") {

@@ -20,7 +20,7 @@
             </bookmark>
             <bookmark id="10">
                 <name/>
-                <line>763</line>
+                <line>769</line>
                 <key/>
             </bookmark>
         </file>
@@ -35,9 +35,8 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/platformer/platformer.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/behaviors.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite.js</file>
         </group>
     </open-files>
 </project-private>
