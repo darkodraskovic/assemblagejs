@@ -5,7 +5,7 @@ A_.Game = Class.extend({
     stageColor: 0x757575,
     isRunning: false,
     mousePosition: {stage: {x: 0, y: 0}, level: {x: 0, y: 0}},
-    init: function() {
+    init: function () {
         this.rendererOptions = A_.CONFIG.renderer;
         this.stage = new PIXI.Stage(this.stageColor);
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
@@ -28,36 +28,36 @@ A_.Game = Class.extend({
         this.sounds = [];
         requestAnimFrame(runGame);
     },
-    initInput: function() {
+    initInput: function () {
         var that = this;
-        this.stage.mousedown = function() {
+        this.stage.mousedown = function () {
             that.leftpressed = true;
             that.leftdown = true;
         };
-        this.stage.mouseup = function() {
+        this.stage.mouseup = function () {
             that.leftreleased = true;
             that.leftdown = false;
         };
-        this.stage.mouseupoutside = function() {
+        this.stage.mouseupoutside = function () {
             that.rightreleased = true;
             that.rightdown = false;
         };
-        this.stage.rightdown = function() {
+        this.stage.rightdown = function () {
             that.rightpressed = true;
             that.rightdown = true;
         };
-        this.stage.rightup = function() {
+        this.stage.rightup = function () {
             that.rightreleased = true;
             that.rightdown = false;
         };
-        this.stage.rightupoutside = function() {
+        this.stage.rightupoutside = function () {
             that.rightreleased = true;
             that.rightdown = false;
         };
     },
     // LEVEL LOADING
     // Load empty LEVEL
-    loadEmptyLevel: function(level) {
+    loadEmptyLevel: function (level) {
         if (!level) {
             level = {
                 name: "empty",
@@ -80,7 +80,7 @@ A_.Game = Class.extend({
             this.activateLevelLoader();
         }
     },
-    onEmptyLevelLoaded: function() {
+    onEmptyLevelLoaded: function () {
         window.console.log("Loaded EMPTY LEVEL :)");
 
         this.createLevelTemplate();
@@ -98,8 +98,8 @@ A_.Game = Class.extend({
         this.startLevel();
     },
     // Load level from TILED
-    loadTiledLevel: function(levelData) {
-        if (!_.find(this.levels, function(level) {
+    loadTiledLevel: function (levelData) {
+        if (!_.find(this.levels, function (level) {
             return level.name === levelData.name;
         })) {
             this.levels.push(levelData);
@@ -119,27 +119,27 @@ A_.Game = Class.extend({
             this.activateLevelLoader();
         }
     },
-    activateLevelLoader: function() {
+    activateLevelLoader: function () {
         this.levelLoader = new A_.LevelLoader(this.levelToLoad.directoryPrefix);
         this.levelLoader.loadScripts(this.onScriptsLoaded.bind(this), this.levelToLoad.scripts);
     },
-    onScriptsLoaded: function() {
+    onScriptsLoaded: function () {
         window.console.log("Loaded scripts");
         this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.map);
     },
-    onMapLoaded: function() {
+    onMapLoaded: function () {
         window.console.log("Loaded map");
         this.levelLoader.loadGraphics(this.onGraphicsLoaded.bind(this), this.levelToLoad.graphics);
     },
-    onGraphicsLoaded: function() {
+    onGraphicsLoaded: function () {
         window.console.log("Loaded graphics");
         this.levelLoader.loadSounds(this.onSoundsLoaded.bind(this), this.levelToLoad.sounds);
     },
-    onSoundsLoaded: function() {
+    onSoundsLoaded: function () {
         window.console.log("Loaded sounds");
         this.onLevelLoaded();
     },
-    onTiledLevelLoaded: function() {
+    onTiledLevelLoaded: function () {
         window.console.log("Loaded TILED LEVEL :)");
 
         this.createLevelTemplate();
@@ -149,7 +149,7 @@ A_.Game = Class.extend({
         this.startLevel();
     },
     // COMMON level routines
-    createLevelTemplate: function() {
+    createLevelTemplate: function () {
         this.collider = new A_.COLLISION.Collider();
         A_.collider = this.collider;
 
@@ -167,7 +167,7 @@ A_.Game = Class.extend({
 
         A_.level = this.level;
     },
-    startLevel: function() {
+    startLevel: function () {
         this.setupCamera();
 
         this.setScale(this.scale);
@@ -187,13 +187,13 @@ A_.Game = Class.extend({
         this.isRunning = true;
         this.onLevelStarted();
     },
-    onLevelStarted: function() {
+    onLevelStarted: function () {
         window.console.log("Level STARTS...");
     },
-    unloadLevel: function() {
+    unloadLevel: function () {
         this.destroyLevel = true;
     },
-    clearLevel: function() {
+    clearLevel: function () {
         this.collider = null;
         A_.collider = null;
 
@@ -217,12 +217,12 @@ A_.Game = Class.extend({
         this.destroyLevel = false;
     },
     // CAMERA
-    setupCamera: function() {
+    setupCamera: function () {
         this.camera = new A_.CAMERA.Camera(A_.game.renderer.view.width, A_.game.renderer.view.height, this.cameraOptions);
         A_.camera = this.camera;
     },
     // SPRITE CREATION and DESTRUCTION
-    createSprite: function(SpriteClass, layer, x, y, props, collisionPolygon) {
+    createSprite: function (SpriteClass, layer, x, y, props, collisionPolygon) {
         if (!SpriteClass)
             return;
 
@@ -231,7 +231,7 @@ A_.Game = Class.extend({
         }
 
         var sprite = new SpriteClass(layer, x, y, props);
-        if (sprite instanceof A_.SPRITES.ResponsiveSprite && sprite.collides)
+        if (sprite instanceof A_.SPRITES.Colliding && sprite.collides)
             sprite.setCollision(collisionPolygon);
 
         if (this.debug) {
@@ -243,15 +243,16 @@ A_.Game = Class.extend({
         sprite.onCreation();
         return sprite;
     },
-    createSprites: function() {
+    createSprites: function () {
         var that = this;
-        _.each(this.spritesToCreate, function(sprite) {
+        _.each(this.spritesToCreate, function (sprite) {
             that.level.sprites.push(sprite);
+            // TODO: Find out why this does not work.
 //            sprite.onCreation();
         });
         this.spritesToCreate.length = 0;
     },
-    destroySprite: function(sprite) {
+    destroySprite: function (sprite) {
         if (!_.contains(this.level.sprites, sprite))
             return;
 
@@ -269,29 +270,29 @@ A_.Game = Class.extend({
         sprite.sprite.parent.removeChild(sprite.sprite);
         this.level.sprites.splice(this.level.sprites.indexOf(sprite), 1);
     },
-    destroySprites: function() {
+    destroySprites: function () {
         var that = this;
-        _.each(this.spritesToDestroy, function(sprite) {
+        _.each(this.spritesToDestroy, function (sprite) {
             that.destroySprite(sprite)
         });
         this.spritesToDestroy.length = 0;
     },
-    createSound: function(props) {
-        _.each(props["urls"], function(url, i, list) {
+    createSound: function (props) {
+        _.each(props["urls"], function (url, i, list) {
             list[i] = "sounds/" + this.level.directoryPrefix + url;
         }, this);
         var sound = new Howl(props);
         this.sounds.push(sound);
         return sound;
     },
-    destroySounds: function() {
-        _.each(this.sounds, function(sound) {
+    destroySounds: function () {
+        _.each(this.sounds, function (sound) {
             sound.unload();
         });
         this.sounds.length = 0;
     },
     // GAME LOOP
-    run: function() {
+    run: function () {
         if (!this.isRunning)
             return;
         var now = new Date().getTime();
@@ -312,7 +313,65 @@ A_.Game = Class.extend({
         this.manageLevels();
 
     },
-    processInput: function() {
+    update: function () {
+        // User-defined global routine.
+        this.preupdate();
+
+        // Sprites' updates.
+        _.each(this.level.sprites, function (sprite) {
+            sprite.preupdate();
+        });
+        _.each(this.level.sprites, function (sprite) {
+            sprite.update();
+        });
+
+        this.collider.processCollisions();
+
+        _.each(this.level.sprites, function (sprite) {
+            sprite.postupdate();
+        });
+
+        // User-defined global routine.
+        this.postupdate();
+    },
+    preupdate: function () {
+
+    },
+    postupdate: function () {
+
+    },
+    manageSprites: function () {
+        this.destroySprites();
+        this.createSprites();
+    },
+    render: function () {
+        _.each(this.level.spriteLayers, function (layer) {
+            if (layer["sort"]) {
+                layer.children = _.sortBy(layer.children, function (child) {
+                    return child.position.y;
+                });
+            }
+        });
+
+        if (this.debug) {
+            _.each(this.collider.collisionSprites, function (sprite) {
+                sprite.drawDebug();
+            })
+        }
+
+        this.camera.update();
+
+        // Transform the position from container's scaled local system  
+        // into stage's unscaled global system.
+        this.level.container.position.x *= this.scale;
+        this.level.container.position.y *= this.scale;
+
+//        this.gameWorld.container.position.x = Math.round(this.gameWorld.container.position.x);
+//        this.gameWorld.container.position.y = Math.round(this.gameWorld.container.position.y);
+
+        this.renderer.render(this.stage);
+    },
+    processInput: function () {
         // #docs This will return the point containing global coordinates of the mouse,
         // more precisely, a point containing the coordinates of the global InteractionData position.
         // InteractionData holds all information related to an Interaction event.        
@@ -330,65 +389,7 @@ A_.Game = Class.extend({
         this.mousePosition.level.x += this.camera.x;
         this.mousePosition.level.y += this.camera.y;
     },
-    update: function() {
-        // User-defined global routine.
-        this.preupdate();
-
-        // Sprites' updates.
-        _.each(this.level.sprites, function(sprite) {
-            sprite.preupdate();
-        });
-        _.each(this.level.sprites, function(sprite) {
-            sprite.update();
-        });
-
-        this.collider.processCollisions();
-
-        _.each(this.level.sprites, function(sprite) {
-            sprite.postupdate();
-        });
-
-        // User-defined global routine.
-        this.postupdate();
-    },
-    preupdate: function() {
-
-    },
-    postupdate: function() {
-
-    },
-    manageSprites: function() {
-        this.destroySprites();
-        this.createSprites();
-    },
-    render: function() {
-        _.each(this.level.spriteLayers, function(layer) {
-            if (layer["sort"]) {
-                layer.children = _.sortBy(layer.children, function(child) {
-                    return child.position.y;
-                });
-            }
-        });
-
-        if (this.debug) {
-            _.each(this.collider.collisionSprites, function(sprite) {
-                sprite.drawDebug();
-            })
-        }
-
-        this.camera.update();
-
-        // Transform the position from container's scaled local system  
-        // into stage's unscaled global system.
-        this.level.container.position.x *= this.scale;
-        this.level.container.position.y *= this.scale;
-
-//        this.gameWorld.container.position.x = Math.round(this.gameWorld.container.position.x);
-//        this.gameWorld.container.position.y = Math.round(this.gameWorld.container.position.y);
-
-        this.renderer.render(this.stage);
-    },
-    postprocessInput: function() {
+    postprocessInput: function () {
         for (var action in A_.INPUT.actions) {
             if (A_.INPUT.pressed[action] === true) {
                 A_.INPUT.pressed[action] = false;
@@ -398,7 +399,7 @@ A_.Game = Class.extend({
             }
         }
 
-        _.each(this.level.sprites, function(sprite) {
+        _.each(this.level.sprites, function (sprite) {
             if (sprite.interactive) {
                 sprite.leftpressed = false;
                 sprite.leftreleased = false;
@@ -412,7 +413,7 @@ A_.Game = Class.extend({
         this.rightpressed = false;
         this.rightreleased = false;
     },
-    manageLevels: function() {
+    manageLevels: function () {
         if (this.destroyLevel) {
             this.isRunning = false;
             this.clearLevel();
@@ -421,7 +422,7 @@ A_.Game = Class.extend({
             }
         }
     },
-    setScale: function(scale) {
+    setScale: function (scale) {
         if (scale > 0.25 && scale < 5) {
             // scale the game world according to scale
             this.level.container.scale = new PIXI.Point(scale, scale);

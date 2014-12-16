@@ -1,5 +1,5 @@
 // CLASSES
-var Anime = A_.SPRITES.ArcadeSprite.extend({
+var Anime = A_.SPRITES.Topdown.extend({
     frame: {w: 64, h: 64},
     collision: {response: "passive", offset: {x: 0, y: 6}, size: {w: 26, h: 48}},
     animSpeed: 0.15,
@@ -48,23 +48,24 @@ var Anime = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-Anime.inject(A_.MODULES.Topdown);
+//Anime.inject(A_.MODULES.Topdown);
 
 var Player = Anime.extend({
     animSheet: "PlayerComplete.png",
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
+    controlled: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         
         this.collision = A_.UTILS.copy(this.collision);
         this.collision.response = "active";
-    },
-    onCreation: function() {
-        this._super();
         this.rifle = A_.game.createSprite(Rifle, this.layer,
                 this.x(), this.y(),
                 {holder: this, animSpeed: this.animSpeed});
+    },
+    onCreation: function() {
+        this._super();
     },
     update: function() {
         var rot = (A_.UTILS.angleTo(this.position(), A_.game.mousePosition.level)).toDeg();
@@ -97,7 +98,7 @@ var Player = Anime.extend({
     }
 });
 
-Player.inject(A_.MODULES.TopdownWASD);
+//Player.inject(A_.MODULES.TopdownWASD);
 
 var Agent = Anime.extend({
     animSheet: "AgentComplete.png",
@@ -134,7 +135,7 @@ var Agent = Anime.extend({
     }
 });
 
-var Rifle = A_.SPRITES.Sprite.extend({
+var Rifle = A_.SPRITES.Animated.extend({
     animSheet: "AssaultRifle.png",
     frame: {w: 64, h: 64},
     init: function(parent, x, y, props) {
@@ -174,7 +175,7 @@ var Rifle = A_.SPRITES.Sprite.extend({
     }
 });
 // WEAPONS & AMMO
-var Bullet = A_.SPRITES.ArcadeSprite.extend({
+var Bullet = A_.SPRITES.Kinematic.extend({
     animSheet: "Muzzleflashes-Shots.png",
     frame: {w: 32, h: 32},
     collision : {size: {w: 12, h: 10}, response: "sensor"},
@@ -215,7 +216,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-var LaserBeam = A_.SPRITES.ResponsiveSprite.extend({
+var LaserBeam = A_.SPRITES.Colliding.extend({
     animSheet: "Muzzleflashes-Shots.png",
     collides: false,
     frame: {w: 32, h: 32},
@@ -243,12 +244,8 @@ var LaserBeam = A_.SPRITES.ResponsiveSprite.extend({
         }).play();
 
         this.origH = this.height();
-        this.sine = this.addon("Sine");
-        this.sine.period = 1;
-        this.sine.periodRand = 50;
-        this.sine.amplitude = 8;
-        this.sine.amplitudeRand = 4;
-//        A_.EXTENSIONS.Sine.addTo(this, {period: 1, periodRand: 50, value: 8, valueRand: 4});
+        var sineProps = {period: 1, periodRand: 50, amplitude: 8, amplitudeRand: 4};
+        this.sine = this.addon("Sine", sineProps);
     },
     update: function() {
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
@@ -270,12 +267,11 @@ var LaserBeam = A_.SPRITES.ResponsiveSprite.extend({
             this.destroy();
         }
 
-//        this.height(this.origH + this.sine.computeValue());
         this.height(this.origH + this.sine.value);
     }
 });
 
-var LaserTip = A_.SPRITES.ResponsiveSprite.extend({
+var LaserTip = A_.SPRITES.Colliding.extend({
     bounded: false,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -316,7 +312,7 @@ var LaserTip = A_.SPRITES.ResponsiveSprite.extend({
 });
 
 
-var LaserFire = A_.SPRITES.Sprite.extend({
+var LaserFire = A_.SPRITES.Animated.extend({
     animSheet: "Fire.png",
     frame: {w: 64, h: 64},
     init: function(parent, x, y, props) {
@@ -349,7 +345,7 @@ var LaserFire = A_.SPRITES.Sprite.extend({
 });
 
 
-var Explosion = A_.SPRITES.Sprite.extend({
+var Explosion = A_.SPRITES.Animated.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
     init: function(parent, x, y, props) {
@@ -370,7 +366,7 @@ var Explosion = A_.SPRITES.Sprite.extend({
 });
 
 // ITEMS
-var Computer = A_.SPRITES.ResponsiveSprite.extend({
+var Computer = A_.SPRITES.Colliding.extend({
     animSheet: "Computer1.png",
     collision: {response: "static"},
 //    collisionType: A_.COLLISION.Type.ITEM,
@@ -409,6 +405,9 @@ var Computer = A_.SPRITES.ResponsiveSprite.extend({
 
 // GAME LOGIC
 A_.game.preupdate = function() {
+};
+
+A_.game.postupdate = function() {
     if (!A_.level.findSpriteByClass(Agent) && !A_.level.findSpriteByClass(Computer)) {
         if (this.level.name === "level1") {
             A_.game.loadTiledLevel(level2);
@@ -416,9 +415,6 @@ A_.game.preupdate = function() {
             A_.game.loadTiledLevel(level1);
         }
     }
-};
-
-A_.game.postupdate = function() {
 
 };
 

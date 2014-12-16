@@ -1,15 +1,17 @@
 // CLASSES
-var Ball = A_.SPRITES.ArcadeSprite.extend({
+var Ball = A_.SPRITES.Topdown.extend({
     animSheet: "ball.png",
     collision: {response: "dynamic"},
+    init: function (parent, x, y, props) {
+        this.controlled = true;
+        
+        this._super(parent, x, y, props);
+    },
     update: function () {
         this._super();
         this.bounciness = 0.75;
     }
 });
-
-Ball.inject(A_.MODULES.Topdown);
-Ball.inject(A_.MODULES.TopdownWASD);
 
 // VARS & CONSTS
 var tileW = 48;
@@ -37,8 +39,9 @@ function createRoguelikeMap() {
     var userCallback = function (x, y, value) {
         if (!value)
             this.mapDataFloors[x][y] = 35;
-        else this.mapDataWalls[x][y] = 43;
-        
+        else
+            this.mapDataWalls[x][y] = 43;
+
         if (x * y >= (this.mapDataFloors.length - 1) * (this.mapDataFloors[0].length - 1)) {
             this.createRotLayers();
             window.console.log("created");
@@ -47,7 +50,7 @@ function createRoguelikeMap() {
     map.create(userCallback.bind(this));
 }
 function createRotLayers() {
-    var layerFloors = A_.level.createTileLayer("Floor","tilemap.png", tileW, tileH);
+    var layerFloors = A_.level.createTileLayer("Floor", "tilemap.png", tileW, tileH);
     layerFloors.tilemap.createTilelayer(mapDataFloors);
     var layerWalls = A_.level.createTileLayer("Walls", "tilemap.png", tileW, tileH, true);
 //    layerWalls.collision = true;    

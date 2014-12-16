@@ -1,9 +1,8 @@
 // CLASSES
-var Player = A_.SPRITES.ArcadeSprite.extend({
+var Player = A_.SPRITES.Kinematic.extend({
     animSheet: "player.png",
     collision: {response: "active"},
     moveAtAngle: true,
-//    collisionOffset: {x: 12, y: 12},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.maxSpeed = 512;
@@ -66,7 +65,7 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-var Laser = A_.SPRITES.Sprite.extend({
+var Laser = A_.SPRITES.Animated.extend({
     animSheet: "laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -82,15 +81,8 @@ var Laser = A_.SPRITES.Sprite.extend({
 
         this.origW = this.width();
         this.origH = this.height();
-        this.sine = this.addon("Sine");
-        this.sine.period = 0.5;
-        this.sine.periodRand = 25;
-        this.sine.amplitude = 3;
-        this.sine.amplitudeRand = 25;
-    },
-    onCreation: function () {
-        this._super();
-        this.origPositionX = this.x();
+        var sineProps = {period: 0.5, periodRand: 25, amplitude: 3, amplitudeRand: 25};
+        this.sine = this.addon("Sine", sineProps);
     },
     update: function () {
         if (A_.game.rightpressed) {
@@ -132,7 +124,7 @@ var Laser = A_.SPRITES.Sprite.extend({
     }
 });
 
-var Bullet = A_.SPRITES.ArcadeSprite.extend({
+var Bullet = A_.SPRITES.Kinematic.extend({
     animSheet: "bullet.png",
     collision: {response: "sensor"},
     moveAtAngle: true,
@@ -168,7 +160,7 @@ var Bullet = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-var Rotor = A_.SPRITES.ArcadeSprite.extend({
+var Rotor = A_.SPRITES.Kinematic.extend({
     animSheet: "rotor.png",
     frame: {w: 45, h: 45},
     collision: {response: "static"},
@@ -182,7 +174,7 @@ var Rotor = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-var Explosion = A_.SPRITES.Sprite.extend({
+var Explosion = A_.SPRITES.Animated.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
     init: function (parent, x, y, props) {

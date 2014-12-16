@@ -1,5 +1,5 @@
 // CLASSES
-var Player = A_.SPRITES.ArcadeSprite.extend({
+var Player = A_.SPRITES.Platformer.extend({
     animSheet: "player.png",
     frame: {w: 32, h: 64},
     bounded: false,
@@ -33,9 +33,9 @@ var Player = A_.SPRITES.ArcadeSprite.extend({
     }
 });
 
-Player.inject(A_.MODULES.Platformer);
+//Player.inject(A_.MODULES.Platformer);
 
-var Platform = A_.SPRITES.ResponsiveSprite.extend({
+var Platform = A_.SPRITES.Colliding.extend({
     animSheet: "moving_platform.png",
     frame: {w: 128, h: 32},
     collision: {response: "static"},
@@ -46,6 +46,7 @@ var Platform = A_.SPRITES.ResponsiveSprite.extend({
         this.sine = this.addon("Sine");
         this.sine.period = 3;
         this.sine.amplitude = this.frame.w / 2;
+        this.sine.reset();
 
         this.diffX = 0;
         this.diffY = 0;
