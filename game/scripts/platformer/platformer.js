@@ -4,6 +4,7 @@ var Player = A_.SPRITES.Platformer.extend({
     frame: {w: 32, h: 64},
     bounded: false,
     wrap: true,
+    controlled: true,
     collision: {response: "dynamic", offset: {x: 0, y: 8}, size: {w: 20, h: 46}},
     drawDebugGraphics: false,
     followee: true,
@@ -25,11 +26,11 @@ var Player = A_.SPRITES.Platformer.extend({
         }
     },
     collideWithStatic: function (other, response) {
-        this._super(other, response);
         if (other instanceof Platform) {
             this.x(this.x() + other.diffX);
             this.y(this.y() + other.diffY);
         }
+        this._super(other, response);
     }
 });
 

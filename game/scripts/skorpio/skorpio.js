@@ -62,7 +62,7 @@ var Player = Anime.extend({
         this.collision.response = "active";
         this.rifle = A_.game.createSprite(Rifle, this.layer,
                 this.x(), this.y(),
-                {holder: this, animSpeed: this.animSpeed});
+                {holder: this, animSpeed: this.animSpeed});                
     },
     onCreation: function() {
         this._super();
@@ -154,6 +154,8 @@ var Rifle = A_.SPRITES.Animated.extend({
         this.spritePoint("down", -10, 28);
         this.spritePoint("left", -24, 6);
         this.spritePoint("right", 24, 6);
+        
+        this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
     postupdate: function() {
 //        var rot = A_.UTILS.angleTo(this.position(), A_.game.mousePosition.level);
@@ -165,7 +167,6 @@ var Rifle = A_.SPRITES.Animated.extend({
 //        this.rotation(rot);
 
         this.setAnimation(this.holder.motionState + "_" + this.holder.facing);
-        this.position(this.holder.x(), this.holder.y());
         if (this.holder.facing === "up") {
             this.moveToSprite(this.holder, "back");
         } else {

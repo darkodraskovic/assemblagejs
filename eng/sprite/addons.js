@@ -32,6 +32,62 @@ A_.EXTENSIONS.Polygon = {
 };
 
 A_.SPRITES.ADDONS = {};
+
+/* 
+ * TEMPLATE *
+ A_.SPRITES.ADDONS.pinTo = Class.extend({
+    init: function (sprite, props) {
+        if (props) {
+            for (var prop in props) {
+                this[prop] = props[prop];
+            }
+        }
+        this.sprite = sprite;
+        this.active = true;
+
+    },
+    off: function () {
+
+    },
+    reset: function () {
+
+    },
+    update: function () {
+
+    }
+});
+*/
+
+A_.SPRITES.ADDONS.PinTo = Class.extend({
+    init: function (sprite, props) {
+        if (props) {
+            for (var prop in props) {
+                this[prop] = props[prop];
+            }
+        }
+        this.sprite = sprite;
+        this.active = true;
+
+        if (typeof this.offsetX === "undefined") {
+            this.offsetX = 0;
+        }
+        if (typeof this.offsetY === "undefined") {
+            this.offsetY = 0;
+        }
+        this.spritePoint = this.parent.spritePoint(this.name, this.offsetX, this.offsetY);
+    },
+    off: function () {
+
+    },
+    reset: function () {
+
+    },
+    update: function () {
+        this.sprite.rotation(this.parent.rotation());
+        this.sprite.position(this.spritePoint.x(), this.spritePoint.y());
+    }
+});
+
 A_.SPRITES.ADDONS.Sine = Class.extend({
     angle: 0,
     positive: true,
@@ -42,8 +98,9 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
                 this[prop] = props[prop];
             }
         }
-
         this.sprite = sprite;
+        this.active = true;
+
         if (typeof this.amplitude === "undefined")
             this.amplitude = 12; // in units (pixels, scale, etc.)
         if (typeof this.amplitudeRand === "undefined")
@@ -59,7 +116,9 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
 
         this.value = 0;
 
-        this.active = true;
+    },
+    off: function () {
+
     },
     reset: function () {
         this.onPeriodStart();

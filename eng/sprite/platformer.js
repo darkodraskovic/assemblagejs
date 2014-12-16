@@ -15,11 +15,11 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
         this.slope = null;
         this.slopeRiseDir = "";
-//        if (this.controlled) {
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("jump", A_.KEY.SPACE);
-//        }
+        if (this.controlled) {
+            A_.INPUT.addMapping("left", A_.KEY.A);
+            A_.INPUT.addMapping("right", A_.KEY.D);
+            A_.INPUT.addMapping("jump", A_.KEY.SPACE);
+        }
     },
     update: function () {
         if (this.controlled) {
@@ -80,6 +80,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             this.movingState = "idle";
         }
 
+//        window.console.log(this.platformerState);
+
         // FLIP
         if (this.autoFlip) {
             if (this.facing === "right") {
@@ -122,14 +124,14 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (response.overlapN.y !== 0) {
             if (response.overlapN.y === 1) {
                 this.platformerState = "grounded";
-                if (this.bounciness === 0) {
-                    this.velocity.y = 0;
-                }
+                
+//                if (this.bounciness === 0)
+                this.velocity.y = 0;
+
             } else {
                 if (this.bounciness === 0) {
                     if (this.platformerState !== "grounded") {
                         if (this.velocity.y < this.gravity.y) {
-//                            this.velocity.y = this.gravity.y;
                             this.velocity.y = 0;
                             this.y(this.y() + this.velocity.y * A_.game.dt);
                         }
@@ -138,9 +140,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
         else if (response.overlapN.x !== 0) {
-            if (this.bounciness === 0) {
-                this.velocity.x = 0;
-            }
+//            if (this.bounciness === 0)
+            this.velocity.x = 0;
         }
 
         // SLOPE
@@ -155,8 +156,10 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
             if (this.slopeRiseDir) {
                 this.platformerState = "grounded";
-//                this.velocity.y = this.gravity.y;
+                
+//                if (this.bounciness === 0)
                 this.velocity.y = 0;
+                
                 this.x(this.x() + response.overlapV.x);
                 this.slope = other;
             }

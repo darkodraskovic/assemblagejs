@@ -221,11 +221,12 @@ A_.SPRITES.Animated = Class.extend({
     // SPRITE POINTS
     spritePoint: function (name, x, y) {
         // Getter
-        if (!x || !y) {
+        if (typeof x === "undefined" || typeof y  === "undefined") {
             return _.find(this.spritePoints, function (sprPt) {
                 return sprPt.name === name;
             });
         }
+        
         // Setter
         var sprPt = {};
         sprPt.name = name;
