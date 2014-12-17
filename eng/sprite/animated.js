@@ -519,14 +519,16 @@ A_.SPRITES.Animated = Class.extend({
     // ADDONS
     addon: function (addonName, props) {
         if (A_.SPRITES.ADDONS[addonName]) {
-            var addon = new A_.SPRITES.ADDONS[addonName](this, props);
-            this.addons.push(addon);
-            return addon;
+            var a = new A_.SPRITES.ADDONS[addonName](this, props);
+            a.on();
+            this.addons.push(a);
+            return a;
         }
     },
     addoff: function (addon) {
         var a = _.find(this.addons, addon);
         if (a) {
+            a.off();
             this.addons.splice(this.addons.indexOf(addon), 1);
         }
         else {

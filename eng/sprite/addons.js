@@ -1,22 +1,4 @@
 /******************************************************************************/
-/* MODULES */
-/******************************************************************************/
-
-A_.MODULES.pinTo = {
-    init: function (layer, x, y, props) {
-        this._super(layer, x, y, props);
-        this.pinTo.point = this.pinTo.parent.addSpritePoint(this.pinTo.name,
-                this.pinTo.offsetX, this.pinTo.offsetY);
-    },
-    postupdate: function () {
-        this.rotation(this.pinTo.parent.rotation());
-        this.position(this.pinTo.point.calcPoint.x, this.pinTo.point.calcPoint.y);
-
-        this._super();
-    }
-}
-
-/******************************************************************************/
 /* EXTENSIONS */
 /******************************************************************************/
 A_.EXTENSIONS.Polygon = {
@@ -36,27 +18,30 @@ A_.SPRITES.ADDONS = {};
 /* 
  * TEMPLATE *
  A_.SPRITES.ADDONS.pinTo = Class.extend({
-    init: function (sprite, props) {
-        if (props) {
-            for (var prop in props) {
-                this[prop] = props[prop];
-            }
-        }
-        this.sprite = sprite;
-        this.active = true;
-
-    },
-    off: function () {
-
-    },
-    reset: function () {
-
-    },
-    update: function () {
-
-    }
-});
-*/
+ init: function (sprite, props) {
+ if (props) {
+ for (var prop in props) {
+ this[prop] = props[prop];
+ }
+ }
+ this.sprite = sprite;
+ this.active = true;
+ 
+ },
+ on: function () {
+ this.reset();
+ },
+ off: function () {
+ 
+ },
+ reset: function () {
+ 
+ },
+ update: function () {
+ 
+ }
+ });
+ */
 
 A_.SPRITES.ADDONS.PinTo = Class.extend({
     init: function (sprite, props) {
@@ -78,6 +63,9 @@ A_.SPRITES.ADDONS.PinTo = Class.extend({
     },
     off: function () {
 
+    },
+    on: function () {
+        this.reset();
     },
     reset: function () {
 
@@ -116,6 +104,9 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
 
         this.value = 0;
 
+    },
+    on: function () {
+        this.reset();
     },
     off: function () {
 
