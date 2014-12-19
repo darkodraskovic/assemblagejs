@@ -12,10 +12,12 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 
         if (!this.collision.size)
             this.collision.size = {};
-        if (!this.collision.size.w)
-            this.collision.size.w = this.sprite.width;
-        if (!this.collision.size.h)
-            this.collision.size.h = this.sprite.height;
+        if (!this.collision.size.w) {
+            this.collision.size.w = this.width();
+        }
+        if (!this.collision.size.h) {
+            this.collision.size.h = this.height();
+        }
 
         if (!this.collision.offset) {
             this.collision.offset = {};
@@ -222,6 +224,8 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             if (this.collisionPolygon) {
                 this.collisionPolygon.pos.x = x;
                 this.collisionPolygon.pos.y = y;
+                // BUG: This should work. However, it speeds up the animation,
+                // and makes the animations speed dependent on the deltaPosition or deltaV (?).
 //                this.collisionPolygon.pos.x = this.positionLevel().x;
 //                this.collisionPolygon.pos.y = this.positionLevel().y;
             }
@@ -230,7 +234,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             return this._super();
     },
     scale: function (x, y) {
-        if (x && y) {
+        if (typeof x === "number" && typeof y === "number") {
             this._super(x, y);
             if (this.collisionPolygon) {
                 this.collisionPolygon.setScale(x, y);
@@ -268,7 +272,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
     },
     rotation: function (n) {
-        if (n) {
+        if (typeof n === "number") {
             this._super(n);
             if (this.collisionPolygon)
                 this.collisionPolygon.setAngle(this.rotation());

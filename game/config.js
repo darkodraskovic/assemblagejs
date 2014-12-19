@@ -17,7 +17,7 @@ A_.CONFIG.debug = true;
 A_.CONFIG.camera = {
     innerBoundOffset: 0.25,
     worldBounded: true,
-    followType: "centered"
+    followType: "bounded"
 };
 
 A_.CONFIG.renderer = {

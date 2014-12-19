@@ -4,7 +4,7 @@ A_.Level = Class.extend({
     scale: 1,
     init: function () {
         this.container = new PIXI.DisplayObjectContainer();
-        this.followee = null;
+//        this.followee = null;
         this.sprites = [];
         this.tileLayers = [];
         this.spriteLayers = [];
