@@ -37,7 +37,7 @@ var Platform = A_.SPRITES.Colliding.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.sine = this.addon("Sine");
-        this.sine.period = 2;
+        this.sine.period = 1;
         this.sine.amplitude = this.frame.w;
         this.sine.reset();
         this.platform = true;

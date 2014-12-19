@@ -135,7 +135,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         var colPol = this.collisionPolygon;
         if (_.find(colPol.points, function (point) {return point.x === colPol.minX && point.y === colPol.minY})) {
             this.slopeRiseDirection = "left";
-            this.slopeAngle += Math.PI / 2;
+//            this.slopeAngle += Math.PI / 2;
         }
         else {
             this.slopeRiseDirection = "right";

@@ -14,8 +14,10 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.force = new SAT.Vector(100, 100);
 
         this.slope = null;
+        this.scanDepth = 8;
         this.platform = null;
-        
+        this.platformDY = 0;
+
         if (this.controlled) {
             A_.INPUT.addMapping("left", A_.KEY.A);
             A_.INPUT.addMapping("right", A_.KEY.D);
@@ -45,11 +47,27 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
 
+        // SLOPE & PLATFORM
+        if (!this.slope) {
+            var sprite;
+            var y = this.collisionPolygon.getBottom() + this.scanDepth;
+            var xL = this.collisionPolygon.getLeft() - 2;
+            var xR = this.collisionPolygon.getRight() + 2;
+            sprite = A_.level.findSpriteContainingPoint(xL, y) || A_.level.findSpriteContainingPoint(xR, y);
+            if (sprite && sprite.slope) {
+                this.slope = sprite;
+//                this.y(this.y() + this.scanDepth / 2);
+                this.y(this.y() + 2);
+            }
+//            if (sprite && sprite.platform) {
+//                this.platform = sprite;
+//            }
+        }
+        // PLATFORM
         if (this.platform) {
             this.y(this.y() + this.platformDY + 2);
-            this.platform = null;
         }
-        
+
         if (this.applyForce) {
             if (this.facing === "right") {
                 this.acceleration.x = this.force.x;
@@ -70,22 +88,21 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             this.tryJump = false;
         }
 
+//        window.console.log(this.slope !== null);
         this._super();
 
         // STATES
-        if (this.velocity.y > this.gravity.y) {
+        if (this.velocity.y > this.gravity.y && (!this.slope && !this.platform)) {
             this.platformerState = "falling";
         } else if (this.velocity.y < -this.gravity.y) {
             this.platformerState = "jumping";
         }
-
 //        if (this.velocity.x > this.friction.x || this.velocity.x < -this.friction.x) {
         if (this.velocity.x !== 0) {
             this.movingState = "moving";
         } else {
             this.movingState = "idle";
         }
-
 //        window.console.log(this.platformerState);
 
         // FLIP
@@ -100,6 +117,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                 }
             }
         }
+
+        this.slope = null;
+        this.platform = null;
     },
     calculateVelocity: function () {
         this._super();
@@ -107,7 +127,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (this.slope) {
             var slope = this.slope;
             if (slope.slopeRiseDirection === "right" && this.velocity.x > 0 || slope.slopeRiseDirection === "left" && this.velocity.x < 0) {
-                this.velocity.x *= slope.slopeFactor;
+//                this.velocity.x *= slope.slopeFactor;
             }
         }
     },
@@ -119,10 +139,11 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             var srd = slope.slopeRiseDirection;
             if (srd === "right" && this.velocity.x < 0 || srd === "left" && this.velocity.x > 0) {
                 var diffX = Math.abs(this.velocity.x) * A_.game.dt;
-                var diffY = Math.abs(Math.tan(this.slope.slopeAngle) * diffX);
+                var diffY = Math.tan(this.slope.slopeAngle) * diffX;
+//                var diffY = Math.abs(Math.tan(this.slope.slopeAngle) * diffX);
                 this.y(this.y() + diffY);
             }
-            this.slope = null;
+//            this.slope = null;
         }
     },
     collideWithStatic: function (other, response) {
@@ -160,21 +181,24 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             var xL = this.collisionPolygon.getLeft() - 2;
             var xR = this.collisionPolygon.getRight() + 2;
 
-            if(other.containsPoint(xL, y) || other.containsPoint(xR, y)) {
+            if (other.containsPoint(xL, y) || other.containsPoint(xR, y)) {
                 this.platformerState = "grounded";
 //                if (this.bounciness === 0)
                 this.velocity.y = 0;
                 this.x(this.x() + response.overlapV.x);
                 this.slope = other;
-            };
+            }
         }
 
         // PLATFORM
         if (other.platform) {
-            this.platform = other;
-            this.platformDX = other.x() - other.prevX;
-            this.platformDY = other.y() - other.prevY;
-            this.x(this.x() + this.platformDX);
+            if (other.collisionPolygon.getLeft() < this.collisionPolygon.getRight() && 
+                    other.collisionPolygon.getRight() > this.collisionPolygon.getLeft()) {
+                this.platform = other;
+                this.platformDX = other.x() - other.prevX;
+                this.platformDY = other.y() - other.prevY;
+                this.x(this.x() + this.platformDX);
+            }
         }
     }
 });
