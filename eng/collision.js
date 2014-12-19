@@ -8,45 +8,45 @@ A_.COLLISION.Collider = Class.extend({
         this.collisionDynamics = [];
         this.collisionMasks = [];
     },
-    activateCollisionFor: function(collision, polygon) {        
-        var w = collision.size.w;
-        var h = collision.size.h;
-
-        var offsetX = collision.offset.x;
-        var offsetY = collision.offset.y;
-
-        var collisionPolygon;
-        
-        if (!polygon) {
-            offsetX -= w / 2;
-            offsetY -= h / 2;
-            var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
-            collisionPolygon = box.toPolygon();
-            collisionPolygon.w = box.w;
-            collisionPolygon.h = box.h;
-        } else {
-            collisionPolygon = polygon;
-            offsetX += collisionPolygon.offset.x;
-            offsetY += collisionPolygon.offset.y;
-        }
-        var offset = new SAT.Vector(offsetX, offsetY);
-        collisionPolygon.setOffset(offset);
-
-        collisionPolygon.origPoints = _.map(collisionPolygon.points, function(point) {
-            return point.clone();
-        });
-        collisionPolygon.origOffset = collisionPolygon.offset.clone();
-        collisionPolygon.origW = collisionPolygon.w;
-        collisionPolygon.origH = collisionPolygon.h;
-
-        collisionPolygon.scale = new SAT.Vector(1, 1);
-
-        return collisionPolygon;
+//    activateCollisionFor: function(collision, polygon) {        
+//        var w = collision.size.w;
+//        var h = collision.size.h;
+//
+//        var offsetX = collision.offset.x;
+//        var offsetY = collision.offset.y;
+//
+//        var collisionPolygon;
+//        
+//        if (!polygon) {
+//            offsetX -= w / 2;
+//            offsetY -= h / 2;
+//            var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
+//            collisionPolygon = box.toPolygon();
+//            collisionPolygon.w = box.w;
+//            collisionPolygon.h = box.h;
+//        } else {
+//            collisionPolygon = polygon;
+//            offsetX += collisionPolygon.offset.x;
+//            offsetY += collisionPolygon.offset.y;
+//        }
+//        var offset = new SAT.Vector(offsetX, offsetY);
+//        collisionPolygon.setOffset(offset);
+//
+//        collisionPolygon.origPoints = _.map(collisionPolygon.points, function(point) {
+//            return point.clone();
+//        });
+//        collisionPolygon.origOffset = collisionPolygon.offset.clone();
+//        collisionPolygon.origW = collisionPolygon.w;
+//        collisionPolygon.origH = collisionPolygon.h;
+//
+//        collisionPolygon.scale = new SAT.Vector(1, 1);
+//
+//        return collisionPolygon;
 //        if (o.sprite && o.sprite.interactive)
 //            o.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
 
 //        o.collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false);
-    },
+//    },
     processCollisions: function() {
         _.each(this.collisionSprites, function(sprite) {
             sprite.collided = false;

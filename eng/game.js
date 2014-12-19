@@ -166,13 +166,15 @@ A_.Game = Class.extend({
         this.level.height = 0;
 
         A_.level = this.level;
+        
+        this.stage.addChild(this.level.container);
     },
     startLevel: function () {
         this.setupCamera();
 
         this.setScale(this.scale);
 
-        this.stage.addChild(this.level.container);
+//        this.stage.addChild(this.level.container);
         // Debug layer must be added on top of the level container.
         if (this.debug) {
             this.level.addDebugLayer(this.collider.debugLayer);

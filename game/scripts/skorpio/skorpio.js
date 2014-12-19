@@ -157,7 +157,7 @@ var Rifle = A_.SPRITES.Animated.extend({
         
         this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
-    postupdate: function() {
+    update: function() {
 //        var rot = A_.UTILS.angleTo(this.position(), A_.game.mousePosition.level);
 //        switch (this.holder.facing) {
 //            case "left": rot -= Math.PI; break;
@@ -332,6 +332,7 @@ var LaserFire = A_.SPRITES.Animated.extend({
 //        this.sprite.filters = [blur];
     },
     onCreation: function() {
+        this._super();
         this.z("top");
     },
     update: function() {

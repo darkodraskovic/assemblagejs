@@ -71,6 +71,9 @@ function createMap(game, mapData) {
     });
 
     for (i = 0; i < layersData.length; i++) {
+        if (layersData[i]["name"] === "CollisionMasks")
+                continue;
+            
         var layer = game.level.createEmptyLayer();
         for (var prop in layersData[i]) {
             layer[prop] = layersData[i][prop];
@@ -167,9 +170,9 @@ function createMap(game, mapData) {
 
         // if the current layer is OBJECT LAYER
         else if (layersData[i]["type"] === "objectgroup") {
-            if (layersData[i]["name"] === "CollisionMasks")
-                continue;
-
+//            if (layersData[i]["name"] === "CollisionMasks")
+//                continue;
+            game.level.addSpriteLayer(layer);
             // loop through all objects conained in the layer
             for (var j = 0; j < layersData[i]["objects"].length; j++) {
                 // copy object data into temp var
@@ -230,7 +233,7 @@ function createMap(game, mapData) {
                 layer = bakeLayer(layer, game.level);
             }
 
-            game.level.addSpriteLayer(layer);
+//            game.level.addSpriteLayer(layer);
         }
     }
 }

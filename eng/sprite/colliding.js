@@ -132,6 +132,14 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     setSlope: function () {
         this.slopeAngle = this.collisionPolygon.diagonalAngle;
         this.slopeFactor = 1 - (this.slopeAngle / (Math.PI / 2));
+        var colPol = this.collisionPolygon;
+        if (_.find(colPol.points, function (point) {return point.x === colPol.minX && point.y === colPol.minY})) {
+            this.slopeRiseDirection = "left";
+            this.slopeAngle += Math.PI / 2;
+        }
+        else {
+            this.slopeRiseDirection = "right";
+        }
         this.slopeSet = true;
     },
     update: function () {
@@ -207,11 +215,13 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
     },
     position: function (x, y) {
-        if (x && y) {
+        if (typeof x === "number" && typeof y === "number") {   
             this._super(x, y);
             if (this.collisionPolygon) {
                 this.collisionPolygon.pos.x = x;
                 this.collisionPolygon.pos.y = y;
+//                this.collisionPolygon.pos.x = this.positionLevel().x;
+//                this.collisionPolygon.pos.y = this.positionLevel().y;
             }
         }
         else

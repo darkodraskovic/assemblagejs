@@ -102,6 +102,16 @@ A_.Level = Class.extend({
             return sprite.name === name;
         });
     },
+    findSpritesByProperty: function (prop) {
+        return _.filter(this.sprites, function (sprite) {
+            return typeof sprite[prop] !== "undefined";
+        });
+    },
+    findSpritesByPropertyValue: function (prop, value) {
+        return _.filter(this.sprites, function (sprite) {
+            return sprite[prop] === value;
+        });
+    },
     findSpriteByClass: function (spriteClass) {
         var sprite = _.find(this.sprites, function (sprite) {
             return sprite instanceof spriteClass;

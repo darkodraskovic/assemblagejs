@@ -14,6 +14,7 @@ var Player = A_.SPRITES.Kinematic.extend({
         A_.INPUT.addMapping("up", A_.KEY.W);
     },
     onCreation: function () {
+        this._super();
         this.laser1 = A_.game.createSprite(Laser, this, 18, -12);
         this.laser2 = A_.game.createSprite(Laser, this, 18, 12);
         this.spritePoint("bullet1", 18, -12);
@@ -141,6 +142,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         }).play();
     },
     onCreation: function () {
+        this._super();
         this.origin(0, 0.5);
         this.alpha(0.75);
         this.moveAtAngle = true;
@@ -167,20 +169,19 @@ var Rotor = A_.SPRITES.Kinematic.extend({
     angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.025);
+        this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.016);
     },
     update: function () {
         this._super();
     }
 });
-
 var Explosion = A_.SPRITES.Animated.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        this.addAnimation("explode", _.range(0, 17), 0.3);
+        this.addAnimation("explode", _.range(0, 17), 0.2);
         this.setAnimation("explode");
         this.animations["explode"].loop = false;
         var that = this;
@@ -191,6 +192,11 @@ var Explosion = A_.SPRITES.Animated.extend({
             urls: ['explosion.mp3'],
             volume: 0.35
         }).play();
+    },
+    update: function () {
+        this._super();
+//        window.console.log(this.x());
+
     }
 });
 

@@ -61,6 +61,8 @@ A_.SPRITES.Animated = Class.extend({
 
         this.addons = [];
 
+        this.prevX = 0;
+        this.prevY = 0;
 //        this.rotation(0);
 //        this.alpha(1);
 
@@ -276,6 +278,20 @@ A_.SPRITES.Animated = Class.extend({
     },
     // TRANSFORMATIONS
     // PIXI/SAT dependent setters/getters, used to keep in sync PIXI, SAT and A_.
+    position: function (x, y) {
+        if (typeof x === "number" && typeof y === "number") {
+            // Translate the PIXI sprite.
+            this.sprite.position.x = x;
+            this.sprite.position.y = y;
+            // Translate sprite points.
+            _.each(this.spritePoints, function (sp) {
+                sp.position(x, y);
+            });
+        } else {
+            return this.sprite.position;
+//            return this.sprite.position.clone();
+        }
+    },
     x: function (x) {
         if (x)
             this.position(x, this.y());
@@ -288,24 +304,12 @@ A_.SPRITES.Animated = Class.extend({
         else
             return this.sprite.position.y;
     },
-    position: function (x, y) {
-        if (x && y) {
-            // Translate the PIXI sprite.
-            this.sprite.position.x = x;
-            this.sprite.position.y = y;
-            // Translate sprite points.
-            _.each(this.spritePoints, function (sp) {
-                sp.position(x, y);
-            });
-        } else {
-            return this.sprite.position;
-        }
-    },
     positionRelative: function (x, y) {
         this.position(this.x() + x, this.y() + y);
     },
     positionLevel: function () {
         return A_.level.container.toLocal(A_.game.origin, this.sprite);
+//        return A_.level.container.toLocal(A_.game.origin, this.sprite).clone();
     },
     size: function (w, h) {
         if (typeof w !== "number" || typeof h !== "number")
@@ -537,6 +541,8 @@ A_.SPRITES.Animated = Class.extend({
     },
     // CREATION/DESTRUCTION & UPDATE
     preupdate: function () {
+        this.prevX = this.x();
+        this.prevY = this.y();
         _.each(this.addons, function (addon) {
             if (addon.active)
                 addon.update();
@@ -580,10 +586,7 @@ A_.SPRITES.Animated = Class.extend({
         }
     },
     onCreation: function () {
-//        _.each(this.addons, function(addon) {
-//            window.console.log("reseted");
-//            addon.reset();
-//        });
+
     },
     destroy: function () {
         _.each(this.sprites, function (sprite) {

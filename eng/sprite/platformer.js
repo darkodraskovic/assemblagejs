@@ -14,7 +14,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.force = new SAT.Vector(100, 100);
 
         this.slope = null;
-        this.slopeRiseDir = "";
+        this.platform = null;
+        
         if (this.controlled) {
             A_.INPUT.addMapping("left", A_.KEY.A);
             A_.INPUT.addMapping("right", A_.KEY.D);
@@ -44,6 +45,11 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
 
+        if (this.platform) {
+            this.y(this.y() + this.platformDY + 2);
+            this.platform = null;
+        }
+        
         if (this.applyForce) {
             if (this.facing === "right") {
                 this.acceleration.x = this.force.x;
@@ -99,22 +105,23 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this._super();
 
         if (this.slope) {
-            if (this.slopeRiseDir === "right" && this.velocity.x > 0 || this.slopeRiseDir === "left" && this.velocity.x < 0) {
-                this.velocity.x *= this.slope.slopeFactor;
+            var slope = this.slope;
+            if (slope.slopeRiseDirection === "right" && this.velocity.x > 0 || slope.slopeRiseDirection === "left" && this.velocity.x < 0) {
+                this.velocity.x *= slope.slopeFactor;
             }
         }
     },
     applyVelocity: function () {
         this._super();
 
-        if (this.slopeRiseDir) {
-            var slopeRiseDir = this.slopeRiseDir;
-            if (slopeRiseDir === "right" && this.velocity.x < 0 || slopeRiseDir === "left" && this.velocity.x > 0) {
+        if (this.slope) {
+            var slope = this.slope;
+            var srd = slope.slopeRiseDirection;
+            if (srd === "right" && this.velocity.x < 0 || srd === "left" && this.velocity.x > 0) {
                 var diffX = Math.abs(this.velocity.x) * A_.game.dt;
-                var diffY = Math.tan(this.slope.slopeAngle) * diffX;
+                var diffY = Math.abs(Math.tan(this.slope.slopeAngle) * diffX);
                 this.y(this.y() + diffY);
             }
-            this.slopeRiseDir = "";
             this.slope = null;
         }
     },
@@ -124,7 +131,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (response.overlapN.y !== 0) {
             if (response.overlapN.y === 1) {
                 this.platformerState = "grounded";
-                
+
 //                if (this.bounciness === 0)
                 this.velocity.y = 0;
 
@@ -145,24 +152,29 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         }
 
         // SLOPE
-        if (other.type === "slope") {
+        if (other.slope) {
             if (!other.slopeSet) {
                 other.setSlope();
             }
             var y = this.collisionPolygon.getBottom();
             var xL = this.collisionPolygon.getLeft() - 2;
             var xR = this.collisionPolygon.getRight() + 2;
-            this.slopeRiseDir = other.containsPoint(xL, y) ? "left" : other.containsPoint(xR, y) ? "right" : "";
 
-            if (this.slopeRiseDir) {
+            if(other.containsPoint(xL, y) || other.containsPoint(xR, y)) {
                 this.platformerState = "grounded";
-                
 //                if (this.bounciness === 0)
                 this.velocity.y = 0;
-                
                 this.x(this.x() + response.overlapV.x);
                 this.slope = other;
-            }
+            };
+        }
+
+        // PLATFORM
+        if (other.platform) {
+            this.platform = other;
+            this.platformDX = other.x() - other.prevX;
+            this.platformDY = other.y() - other.prevY;
+            this.x(this.x() + this.platformDX);
         }
     }
 });
