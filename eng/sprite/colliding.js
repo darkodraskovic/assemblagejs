@@ -103,7 +103,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     setCollisionDebug: function () {
         if (this.drawDebugGraphics && A_.game.debug) {
             this.debugGraphics = new PIXI.Graphics();
-            A_.collider.debugLayer.addChild(this.debugGraphics);
+            A_.level.debugLayer.addChild(this.debugGraphics);
         }
     },
     removeCollision: function () {
@@ -125,7 +125,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     },
     removeCollisionDebug: function () {
         if (this.debugGraphics) {
-            A_.collider.debugLayer.removeChild(this.debugGraphics);
+            A_.level.debugLayer.removeChild(this.debugGraphics);
             this.debugGraphics = null;
         }
     },
@@ -133,7 +133,9 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.slopeAngle = this.collisionPolygon.diagonalAngle;
         this.slopeFactor = 1 - (this.slopeAngle / (Math.PI / 2));
         var colPol = this.collisionPolygon;
-        if (_.find(colPol.points, function (point) {return point.x === colPol.minX && point.y === colPol.minY})) {
+        if (_.find(colPol.points, function (point) {
+            return point.x === colPol.minX && point.y === colPol.minY
+        })) {
             this.slopeRiseDirection = "left";
 //            this.slopeAngle += Math.PI / 2;
         }
@@ -215,7 +217,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
     },
     position: function (x, y) {
-        if (typeof x === "number" && typeof y === "number") {   
+        if (typeof x === "number" && typeof y === "number") {
             this._super(x, y);
             if (this.collisionPolygon) {
                 this.collisionPolygon.pos.x = x;
@@ -272,5 +274,12 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
                 this.collisionPolygon.setAngle(this.rotation());
         } else
             return this._super();
+    },
+    clear: function () {
+        // TODO: destroy collision mask
+        if (this.collisionPolygon)
+            this.removeCollision();
+
+        this._super();
     }
 });

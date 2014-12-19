@@ -195,6 +195,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             if (other.collisionPolygon.getLeft() < this.collisionPolygon.getRight() && 
                     other.collisionPolygon.getRight() > this.collisionPolygon.getLeft()) {
                 this.platform = other;
+                this.velocity.y = 0;
                 this.platformDX = other.x() - other.prevX;
                 this.platformDY = other.y() - other.prevY;
                 this.x(this.x() + this.platformDX);

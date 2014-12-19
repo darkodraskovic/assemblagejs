@@ -1,6 +1,7 @@
 A_.Level = Class.extend({
     width: 0,
     height: 0,
+    scale: 1,
     init: function () {
         this.container = new PIXI.DisplayObjectContainer();
         this.followee = null;
@@ -46,6 +47,12 @@ A_.Level = Class.extend({
         this.addTileLayer(layer);
         return layer;
     },
+    createDebugLayer: function (name) {
+        var layer = this.createEmptyLayer(name);
+        this.addDebugLayer(layer);
+        return layer;
+    },
+    // LAYER MANAGEMENT
     addLayer: function (layer) {
         this.layers.push(layer);
         this.container.addChild(layer);
@@ -70,12 +77,81 @@ A_.Level = Class.extend({
         this.debugLayer.name = "debug";
         this.addLayer(layer);
     },
+    // TRANSFORMATIONS
+    position: function (x, y) {
+        if (typeof x === "number" && typeof y === "number") {
+            this.container.position.x = x;
+            this.container.position.y = y;
+            this.processParallax(x, y);
+            this.processScale();
+
+//          this.container.position.x = Math.round(this.container.position.x);
+//          this.container.position.y = Math.round(this.container.position.y);
+        } else {
+            return this.container.position;
+        }
+    },
+    processParallax: function (x, y) {
+        for (var i = 0; i < this.container.children.length; i++) {
+            var layer = this.container.children[i];
+            layer.position.x = -x + x * layer.parallax / 100;
+            layer.position.y = -y + y * layer.parallax / 100;
+        }
+    },
+    processScale: function () {
+        // Transform the position from container's scaled local system  
+        // into stage's unscaled global system.        
+        this.container.position.x *= this.scale;
+        this.container.position.y *= this.scale;
+    },
+    setScale: function (scale) {
+        if (scale > 0.25 && scale < 5) {
+            // scale the game world according to scale
+            this.container.scale = new PIXI.Point(scale, scale);
+
+            // position canvas in the center of the window if...
+            // BUG: wrong behavior when screenBounded === false
+            // BUG: zoom/in out camera movement strange behavior
+            if (A_.camera.followType === "bounded") {
+                if (this.container.width < A_.renderer.view.width) {
+                    this.container.position.x = (A_.renderer.view.width - this.container.width) / 2;
+                    this.container.position.x /= scale;
+                }
+                if (this.container.height < A_.renderer.view.height) {
+                    this.container.position.y = (A_.renderer.view.height - this.container.height) / 2;
+                    this.container.position.y /= scale;
+                }
+            }
+
+            // If the world is scaled 2x, camera sees 2x less and vice versa. 
+            A_.camera.width = A_.renderer.view.width / scale;
+            A_.camera.height = A_.renderer.view.height / scale;
+
+            this.scale = scale;
+        }
+    },
     // Layer Z POSITION
     toTopOfContainer: function (layer) {
         this.container.setChildIndex(layer, this.container.children.length - 1);
     },
     toBottomOfContainer: function (layer) {
         this.container.setChildIndex(layer, 0);
+    },
+    sortLayer: function (layer) {
+        layer.children = _.sortBy(layer.children, function (child) {
+            return child.position.y;
+        });
+    },
+    // MOUSE POSITION
+    mousePosition: function () {
+        var mousePosition = A_.game.stage.getMousePosition().clone();
+        // Transform the mouse position from the unscaled stage's global system to
+        // the unscaled scaled gameWorld.container's system. 
+        mousePosition.x /= this.scale;
+        mousePosition.y /= this.scale;
+        mousePosition.x += A_.camera.x;
+        mousePosition.y += A_.camera.y;
+        return mousePosition;
     },
     // FIND
     // Layer

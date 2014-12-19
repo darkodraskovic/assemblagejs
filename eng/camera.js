@@ -114,14 +114,6 @@ A_.CAMERA.Camera = Class.extend({
             this.bind();
         }
 
-        var campPos = {x: this.x, y: this.y};
-        A_.level.container.position.x = -campPos.x;
-        A_.level.container.position.y = -campPos.y;
-
-        for (var i = 0; i < A_.level.container.children.length; i++) {
-            var layer = A_.level.container.children[i];
-            layer.position.x = campPos.x - campPos.x * layer.parallax / 100 ;
-            layer.position.y = campPos.y - campPos.y * layer.parallax / 100;
-        }
+        A_.level.position(-this.x, -this.y);
     }
 });

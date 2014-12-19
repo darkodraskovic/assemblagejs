@@ -6,10 +6,8 @@ A_.Game = Class.extend({
     isRunning: false,
     mousePosition: {stage: {x: 0, y: 0}, level: {x: 0, y: 0}},
     init: function () {
-        this.rendererOptions = A_.CONFIG.renderer;
-        this.stage = new PIXI.Stage(this.stageColor);
-        this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
-        document.body.appendChild(this.renderer.view);
+        this.createRenderer();
+        
         this.origin = new PIXI.Point(0, 0);
         this.debug = A_.CONFIG.debug;
 
@@ -27,6 +25,13 @@ A_.Game = Class.extend({
 
         this.sounds = [];
         requestAnimFrame(runGame);
+    },
+    createRenderer: function () {
+        this.rendererOptions = A_.CONFIG.renderer;
+        this.stage = new PIXI.Stage(this.stageColor);
+        this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
+        document.body.appendChild(this.renderer.view);
+        A_.renderer = this.renderer;        
     },
     initInput: function () {
         var that = this;
@@ -150,10 +155,14 @@ A_.Game = Class.extend({
     },
     // COMMON level routines
     createLevelTemplate: function () {
+        this.level = new A_.Level();
+        A_.level = this.level;
+
         this.collider = new A_.COLLISION.Collider();
         A_.collider = this.collider;
 
-        this.level = new A_.Level();
+        if (this.debug)
+            A_.level.createDebugLayer();
 
         // If the level was loaded
         if (this.levelLoader.directoryPrefix)
@@ -165,20 +174,13 @@ A_.Game = Class.extend({
         this.level.width = 0;
         this.level.height = 0;
 
-        A_.level = this.level;
-        
+
         this.stage.addChild(this.level.container);
     },
     startLevel: function () {
         this.setupCamera();
 
-        this.setScale(this.scale);
-
-//        this.stage.addChild(this.level.container);
-        // Debug layer must be added on top of the level container.
-        if (this.debug) {
-            this.level.addDebugLayer(this.collider.debugLayer);
-        }
+        this.level.setScale(this.level.scale);
 
         this.level.name = this.levelToLoad.name;
         this.activateLevelLoaderDeferred = false;
@@ -236,11 +238,6 @@ A_.Game = Class.extend({
         if (sprite instanceof A_.SPRITES.Colliding && sprite.collides)
             sprite.setCollision(collisionPolygon);
 
-        if (this.debug) {
-            sprite.debugGraphics = new PIXI.Graphics();
-            this.collider.debugLayer.addChild(sprite.debugGraphics);
-        }
-
         this.spritesToCreate.push(sprite);
         sprite.onCreation();
         return sprite;
@@ -258,18 +255,12 @@ A_.Game = Class.extend({
         if (!_.contains(this.level.sprites, sprite))
             return;
 
-        if (sprite.collisionPolygon)
-            sprite.removeCollision();
+        sprite.clear();
 
         if (sprite === this.camera.followee) {
             this.camera.followee = null;
         }
-        // TODO: destroy collision mask
-
-        if (sprite.debugGraphics) {
-            sprite.debugGraphics.parent.removeChild(sprite.debugGraphics);
-        }
-        sprite.sprite.parent.removeChild(sprite.sprite);
+        
         this.level.sprites.splice(this.level.sprites.indexOf(sprite), 1);
     },
     destroySprites: function () {
@@ -349,9 +340,7 @@ A_.Game = Class.extend({
     render: function () {
         _.each(this.level.spriteLayers, function (layer) {
             if (layer["sort"]) {
-                layer.children = _.sortBy(layer.children, function (child) {
-                    return child.position.y;
-                });
+                A_.level.sortLayer(layer);
             }
         });
 
@@ -363,33 +352,14 @@ A_.Game = Class.extend({
 
         this.camera.update();
 
-        // Transform the position from container's scaled local system  
-        // into stage's unscaled global system.
-        this.level.container.position.x *= this.scale;
-        this.level.container.position.y *= this.scale;
-
-//        this.gameWorld.container.position.x = Math.round(this.gameWorld.container.position.x);
-//        this.gameWorld.container.position.y = Math.round(this.gameWorld.container.position.y);
-
         this.renderer.render(this.stage);
     },
     processInput: function () {
         // #docs This will return the point containing global coordinates of the mouse,
         // more precisely, a point containing the coordinates of the global InteractionData position.
         // InteractionData holds all information related to an Interaction event.        
-//        this.level.mousePosition = this.stage.getMousePosition().clone();
-//        // Transform the mouse position from the unscaled stage's global system to
-//        // the unscaled scaled gameWorld.container's system. 
-//        this.level.mousePosition.x /= this.scale;
-//        this.level.mousePosition.y /= this.scale;
-//        this.level.mousePosition.x += this.camera.x;
-//        this.level.mousePosition.y += this.camera.y;
         this.mousePosition.stage = this.stage.getMousePosition().clone();
-        this.mousePosition.level = this.stage.getMousePosition().clone();
-        this.mousePosition.level.x /= this.scale;
-        this.mousePosition.level.y /= this.scale;
-        this.mousePosition.level.x += this.camera.x;
-        this.mousePosition.level.y += this.camera.y;
+        this.mousePosition.level = this.level.mousePosition();
     },
     postprocessInput: function () {
         for (var action in A_.INPUT.actions) {
@@ -423,51 +393,16 @@ A_.Game = Class.extend({
                 this.activateLevelLoader();
             }
         }
-    },
-    setScale: function (scale) {
-        if (scale > 0.25 && scale < 5) {
-            // scale the game world according to scale
-            this.level.container.scale = new PIXI.Point(scale, scale);
-
-            // position canvas in the center of the window if...
-            // console.log(gameWorld.container.width); 
-            // console.log(gameWorld.container.height); 
-            // BUG: wrong behavior when screenBounded === false
-            // BUG: zoom/in out camera movement strange behavior
-            if (this.camera.followType === "bounded") {
-                if (this.level.container.width < this.renderer.view.width) {
-                    this.level.x = (this.renderer.view.width - this.level.container.width) / 2;
-                    this.level.x /= scale;
-                }
-//            else {
-//		this.gameWorld.x = 0;
-//	    }
-                if (this.level.container.height < this.renderer.view.height) {
-                    this.level.y = (this.renderer.view.height - this.level.container.height) / 2;
-                    this.level.y /= scale;
-                }
-//            else {
-//		this.gameWorld.y = 0;
-//	    }
-            }
-
-            // If the world is scaled 2x, camera sees 2x less and vice versa. 
-            this.camera.width = this.renderer.view.width / scale;
-            this.camera.height = this.renderer.view.height / scale;
-
-//        this.camera.centerOn(player);
-
-            this.scale = scale;
-        }
     }
 });
 
+// TEMPORARY - for debugging purposes only
 window.addEventListener("mousewheel", mouseWheelHandler, false);
 function mouseWheelHandler(e) {
     var scaleDelta = 0.02;
     if (e.wheelDelta > 0) {
-        A_.game.setScale(A_.game.scale + scaleDelta);
+        A_.level.setScale(A_.level.scale + scaleDelta);
     } else {
-        A_.game.setScale(A_.game.scale - scaleDelta);
+        A_.level.setScale(A_.level.scale - scaleDelta);
     }
 }

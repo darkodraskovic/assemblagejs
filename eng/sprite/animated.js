@@ -223,12 +223,12 @@ A_.SPRITES.Animated = Class.extend({
     // SPRITE POINTS
     spritePoint: function (name, x, y) {
         // Getter
-        if (typeof x === "undefined" || typeof y  === "undefined") {
+        if (typeof x === "undefined" || typeof y === "undefined") {
             return _.find(this.spritePoints, function (sprPt) {
                 return sprPt.name === name;
             });
         }
-        
+
         // Setter
         var sprPt = {};
         sprPt.name = name;
@@ -595,6 +595,9 @@ A_.SPRITES.Animated = Class.extend({
 
         this.onDestruction();
         A_.game.spritesToDestroy.push(this);
+    },
+    clear: function () {
+        this.sprite.parent.removeChild(this.sprite);
     },
     onDestruction: function () {
 
