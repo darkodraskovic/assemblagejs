@@ -5,11 +5,13 @@ A_.COLLISION.Collider = Class.extend({
         this.collisionStatics = [];
         this.collisionDynamics = [];
         this.collisionMasks = [];
+        this.response = new SAT.Response();
     },
     processCollisions: function () {
         _.each(this.collisionSprites, function (sprite) {
             sprite.collided = false;
         });
+
 
         // DYNAMICS
         var len = this.collisionDynamics.length;
@@ -20,11 +22,11 @@ A_.COLLISION.Collider = Class.extend({
                 // Bitmasks. Currently inactive. DO NOTE DELETE!
 //                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
 //                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
-                var response = new SAT.Response();
-                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
+                this.response.clear();
+                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, this.response);
                 if (collided) {
-                    o1.collideWithDynamic(o2, response);
-                    o2.collideWithDynamic(o1, response);
+                    o1.collideWithDynamic(o2, this.response);
+                    o2.collideWithDynamic(o1, this.response);
 //                    }
                 }
             }
@@ -40,11 +42,11 @@ A_.COLLISION.Collider = Class.extend({
                 // Bitmasks. Currently inactive. DO NOTE DELETE!
 //                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
 //                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
-                var response = new SAT.Response();
-                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, response);
+                this.response.clear();
+                var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, this.response);
                 if (collided) {
-                    o1.collideWithStatic(o2, response);
-                    o2.collideWithDynamic(o1, response);
+                    o1.collideWithStatic(o2, this.response);
+                    o2.collideWithDynamic(o1, this.response);
 //                    }
                 }
             }

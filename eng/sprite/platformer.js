@@ -161,7 +161,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                     if (this.platformerState !== "grounded") {
                         if (this.velocity.y < this.gravity.y) {
                             this.velocity.y = 0;
-                            this.y(this.y() + this.velocity.y * A_.game.dt);
+//                            this.y(this.y() + this.velocity.y * A_.game.dt);
+                            this.y(this.y() + 2);
                         }
                     }
                 }

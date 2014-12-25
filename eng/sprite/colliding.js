@@ -5,6 +5,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._super(parent, x, y, props);
 
         this.prevOverlapN = new SAT.Vector(0, 0);
+        this.containedPoint = new SAT.Vector(0, 0);
     },
     createCollisionPolygon: function (polygon) {
         if (!this.collision)
@@ -32,6 +33,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         if (!this.collisionPolygons) {
             this.collisionPolygons = [];
         }
+
         var w = this.collision.size.w;
         var h = this.collision.size.h;
 
@@ -45,14 +47,15 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             offsetY -= h / 2;
             var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
             collisionPolygon = box.toPolygon();
-//            collisionPolygon.w = box.w;
-//            collisionPolygon.h = box.h;
+            // Get the with & height of the polygon's bounding box.
             collisionPolygon.calcSize();
         } else {
             collisionPolygon = polygon;
             offsetX += collisionPolygon.offset.x;
             offsetY += collisionPolygon.offset.y;
         }
+        // NB: We offset the polygon so that the origin of its bounding box is 
+        // in the top left corner of the sprite. 
         var offset = new SAT.Vector(offsetX, offsetY);
         collisionPolygon.setOffset(offset);
 
@@ -88,19 +91,16 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     setCollisionResponse: function () {
         var collider = A_.collider;
 
-        if (this.collides || this.collision.response) {
-            this.collides = true;
-            if (!this.collision.response) {
-                this.collision.response = "sensor";
+        if (!this.collision.response) {
+            this.collision.response = "sensor";
+            collider.collisionDynamics.push(this);
+        } else {
+            if (this.collision.response === "static")
+                collider.collisionStatics.push(this);
+            else
                 collider.collisionDynamics.push(this);
-            } else {
-                if (this.collision.response === "static")
-                    collider.collisionStatics.push(this);
-                else
-                    collider.collisionDynamics.push(this);
-            }
-            collider.collisionSprites.push(this);
         }
+        collider.collisionSprites.push(this);
     },
     setCollisionDebug: function () {
         if (this.drawDebugGraphics && A_.game.debug) {
@@ -210,80 +210,62 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
     },
     containsPoint: function (x, y) {
-        var response = new SAT.Response();
-        var contains = SAT.pointInPolygon(new SAT.Vector(x, y), this.collisionPolygon);
-        if (contains) {
-            return response;
-        } else {
-            return false;
-        }
+        this.containedPoint.x = x;
+        this.containedPoint.y = y;
+        return SAT.pointInPolygon(this.containedPoint, this.collisionPolygon);
     },
+    // TRANSFORMATIONS
     position: function (x, y) {
-        if (typeof x === "number" && typeof y === "number") {
-            this._super(x, y);
-            if (this.collisionPolygon) {
-                this.collisionPolygon.pos.x = x;
-                this.collisionPolygon.pos.y = y;
-                // BUG: This should work. However, it speeds up the animation,
-                // and makes the animations speed dependent on the deltaPosition or deltaV (?).
-//                this.collisionPolygon.pos.x = this.positionLevel().x;
-//                this.collisionPolygon.pos.y = this.positionLevel().y;
-            }
-        }
-        else
+        if (typeof x !== "number" || typeof y !== "number")
             return this._super();
+        this._super(x, y);
+
+        this.collisionPolygon.pos.x = x;
+        this.collisionPolygon.pos.y = y;
+        // BUG: This should work. However, it speeds up the animation,
+        // and makes the animations speed dependent on the deltaPosition or deltaV (?).
+//        this.collisionPolygon.pos.x = this.positionLevel().x;
+//        this.collisionPolygon.pos.y = this.positionLevel().y;
     },
     scale: function (x, y) {
-        if (typeof x === "number" && typeof y === "number") {
-            this._super(x, y);
-            if (this.collisionPolygon) {
-                this.collisionPolygon.setScale(x, y);
-            }
-        }
-        else
+        if (typeof x !== "number" || typeof y !== "number")
             return this._super();
+
+        this._super(x, y);
+        this.collisionPolygon.setScale(x, y);
     },
     size: function (x, y) {
         if (typeof x !== "number" || typeof y !== "number")
             return this._super();
+
         this._super(x, y);
-        if (this.collisionPolygon) {
-            x = x / this.frame.w;
-            y = y / this.frame.w;
-            this.collisionPolygon.setScale(x, y);
-        }
+        x = x / this.frame.w;
+        y = y / this.frame.w;
+        this.collisionPolygon.setScale(x, y);
     },
     width: function (w) {
         if (typeof w !== "number")
             return this._super();
         this._super(w);
-        if (this.collisionPolygon) {
-            w /= this.frame.w;
-            this.collisionPolygon.setScale(w, this.collisionPolygon.scale.y);
-        }
+        w /= this.frame.w;
+        this.collisionPolygon.setScale(w, this.collisionPolygon.scale.y);
     },
     height: function (h) {
         if (typeof h !== "number")
             return this._super();
         this._super(h);
-        if (this.collisionPolygon) {
-            h = h / this.frame.h;
-            this.collisionPolygon.setScale(this.collisionPolygon.scale.x, h);
-        }
+        h = h / this.frame.h;
+        this.collisionPolygon.setScale(this.collisionPolygon.scale.x, h);
     },
     rotation: function (n) {
-        if (typeof n === "number") {
-            this._super(n);
-            if (this.collisionPolygon)
-                this.collisionPolygon.setAngle(this.rotation());
-        } else
+        if (typeof n !== "number")
             return this._super();
+
+        this._super(n);
+        this.collisionPolygon.setAngle(this.rotation());
     },
     clear: function () {
-        // TODO: destroy collision mask
-        if (this.collisionPolygon)
-            this.removeCollision();
-
+        this.removeCollision();
         this._super();
     }
 });

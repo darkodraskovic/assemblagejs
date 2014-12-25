@@ -225,6 +225,8 @@ function createMap(game, mapData) {
                     if (o.followee) {
                         game.cameraOptions.followee = o;
                     }
+                    if (oData["name"] === "Player")
+                        A_.player = o;
                 }
                 o.rotation(oData["rotation"].toRad());
             }

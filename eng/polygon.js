@@ -62,7 +62,6 @@ A_.POLYGON.Utils.createSATPolygonFromTiled = function(oData) {
 
     var offsetX = (collisionPolygon.minX + collisionPolygon.w / 2);
     var offsetY = (collisionPolygon.minY + collisionPolygon.h / 2);
-
     var offset = new SAT.Vector(-offsetX, -offsetY);
     collisionPolygon.setOffset(offset);
 

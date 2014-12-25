@@ -235,8 +235,9 @@ A_.Game = Class.extend({
         }
 
         var sprite = new SpriteClass(layer, x, y, props);
-        if (sprite instanceof A_.SPRITES.Colliding && sprite.collides)
+        if (sprite instanceof A_.SPRITES.Colliding)
             sprite.setCollision(collisionPolygon);
+        sprite.position(x, y);
 
         this.spritesToCreate.push(sprite);
         sprite.onCreation();

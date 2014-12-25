@@ -217,9 +217,9 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var LaserBeam = A_.SPRITES.Colliding.extend({
+var LaserBeam = A_.SPRITES.Animated.extend({
     animSheet: "Muzzleflashes-Shots.png",
-    collides: false,
+//    collides: false,
     frame: {w: 32, h: 32},
     bounded: false,
     init: function(parent, x, y, props) {

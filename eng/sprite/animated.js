@@ -74,8 +74,7 @@ A_.SPRITES.Animated = Class.extend({
             this.layer.addChild(this.sprite);
         }
 //        this.parent = parent;
-        this.position(x, y);
-
+//        this.position(x, y);
     },
     // Create a transparent PIXI.Sprite that will store, as a parent,
     // all animations, ie. PIXI.MovieClip-s and all PIXI.Sprite-s.
