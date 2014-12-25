@@ -161,9 +161,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                     if (this.platformerState !== "grounded") {
                         if (this.velocity.y < this.gravity.y) {
                             this.velocity.y = 0;
-//                            this.y(this.y() + this.velocity.y * A_.game.dt);
-                            this.y(this.y() + 2);
                         }
+                        this.y(this.y() + 2);
                     }
                 }
             }
@@ -193,7 +192,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
         // PLATFORM
         if (other.platform) {
-            if (other.collisionPolygon.getLeft() < this.collisionPolygon.getRight() && 
+            if (other.collisionPolygon.getLeft() < this.collisionPolygon.getRight() &&
                     other.collisionPolygon.getRight() > this.collisionPolygon.getLeft()) {
                 this.platform = other;
                 this.velocity.y = 0;

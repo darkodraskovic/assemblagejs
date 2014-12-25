@@ -292,13 +292,13 @@ A_.SPRITES.Animated = Class.extend({
         }
     },
     x: function (x) {
-        if (x)
+        if (typeof x === "number")
             this.position(x, this.y());
         else
             return this.sprite.position.x;
     },
     y: function (y) {
-        if (y)
+        if (typeof y === "number")
             this.position(this.x(), y);
         else
             return this.sprite.position.y;
@@ -391,7 +391,7 @@ A_.SPRITES.Animated = Class.extend({
     },
     // ORIGIN (ANCHOR)
     origin: function (x, y) {
-        if (typeof x === 'undefined' || typeof y === 'undefined')
+        if (typeof x !== 'number' || typeof y !== 'number')
             return this.sprite.anchor;
         var w = this.width();
         var h = this.height();

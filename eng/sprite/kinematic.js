@@ -1,12 +1,12 @@
 A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     isMoving: false,
     bounciness: 0.5,
-    minBounceSpeed: 64,
     angularSpeed: 0,
     movementAngle: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
+        this.calcVelocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
         this.friction = new SAT.Vector(32, 32);
         this.calcFriction = new SAT.Vector(32, 32);
@@ -49,6 +49,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.calcAcceleration.x *= cos;
             this.calcAcceleration.y *= sin;
         }
+        
         if (this.gravity.x === 0) {
             if (this.velocity.x > 0) {
                 this.velocity.x -= this.calcFriction.x;
@@ -105,7 +106,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     applyVelocity: function () {
         var startPos = this.position();
 
-        var vel = this.velocity.clone();
+        var vel = this.calcVelocity;
+        vel.x = this.velocity.x;
+        vel.y = this.velocity.y;
         vel.scale(A_.game.dt, A_.game.dt);
 
         var x = startPos.x + vel.x;
