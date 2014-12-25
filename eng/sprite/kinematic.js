@@ -6,7 +6,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
-        this.calcVelocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
         this.friction = new SAT.Vector(32, 32);
         this.calcFriction = new SAT.Vector(32, 32);
@@ -104,18 +103,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
     },
     applyVelocity: function () {
-        var startPos = this.position();
-
-        var vel = this.calcVelocity;
-        vel.x = this.velocity.x;
-        vel.y = this.velocity.y;
-        vel.scale(A_.game.dt, A_.game.dt);
-
-        var x = startPos.x + vel.x;
-        var y = startPos.y + vel.y;
-//        var x = Math.round(startPos.x + vel.x);
-//        var y = Math.round(startPos.y + vel.y);
-        this.position(x, y);
+        this.positionRelative(this.velocity.x * A_.game.dt, this.velocity.y * A_.game.dt);
 
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.isMoving = true;
