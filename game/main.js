@@ -1,7 +1,7 @@
 // START
 //A_.game.loadEmptyLevel();
 
-//A_.game.loadTiledLevel(level1);
+//A_.game.loadTiledLevel(level2);
 
 //A_.game.loadEmptyLevel(farer1);
 

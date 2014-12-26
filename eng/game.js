@@ -149,7 +149,7 @@ A_.Game = Class.extend({
 
         this.createLevelTemplate();
 
-        createMap(this, this.levelLoader.mapDataParsed);
+        A_.TILES.createTiledMap(this, this.levelLoader.mapDataParsed);
 
         this.startLevel();
     },

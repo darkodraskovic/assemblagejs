@@ -55,6 +55,7 @@ var Player = Anime.extend({
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     controlled: true,
+    followee: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         

@@ -57,14 +57,13 @@
                 {
                  "gid":257,
                  "height":1,
-                 "name":"Player",
+                 "name":"",
                  "properties":
                     {
-                     "collisionMask":"\"Player\"",
-                     "followee":"true"
+                     "collisionMask":"\"Player\""
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Player",
                  "visible":true,
                  "width":1,
                  "x":288,
@@ -73,13 +72,13 @@
                 {
                  "gid":258,
                  "height":1,
-                 "name":"Agent",
+                 "name":"",
                  "properties":
                     {
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Agent",
                  "visible":true,
                  "width":1,
                  "x":32,
@@ -88,13 +87,13 @@
                 {
                  "gid":258,
                  "height":1,
-                 "name":"Agent",
+                 "name":"",
                  "properties":
                     {
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Agent",
                  "visible":true,
                  "width":1,
                  "x":480,
@@ -103,13 +102,13 @@
                 {
                  "gid":258,
                  "height":1,
-                 "name":"Agent",
+                 "name":"",
                  "properties":
                     {
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Agent",
                  "visible":true,
                  "width":1,
                  "x":192,
@@ -118,13 +117,13 @@
                 {
                  "gid":258,
                  "height":1,
-                 "name":"Agent",
+                 "name":"",
                  "properties":
                     {
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Agent",
                  "visible":true,
                  "width":1,
                  "x":288,
@@ -133,13 +132,13 @@
                 {
                  "gid":258,
                  "height":1,
-                 "name":"Agent",
+                 "name":"",
                  "properties":
                     {
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Agent",
                  "visible":true,
                  "width":1,
                  "x":0,
@@ -148,13 +147,13 @@
                 {
                  "gid":259,
                  "height":1,
-                 "name":"Computer",
+                 "name":"",
                  "properties":
                     {
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Computer",
                  "visible":true,
                  "width":1,
                  "x":224,
@@ -401,7 +400,7 @@
          "objects":[
                 {
                  "height":0,
-                 "name":"Player",
+                 "name":"",
                  "polygon":[
                         {
                          "x":0,
@@ -428,7 +427,7 @@
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Player",
                  "visible":true,
                  "width":0,
                  "x":768,

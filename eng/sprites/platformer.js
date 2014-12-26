@@ -6,7 +6,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     controlled: false,
     facing: "right",
     autoFlip: true,
-    init: function (layer, x, y, props) {
+    init: function(layer, x, y, props) {
         this._super(layer, x, y, props);
         this.gravity = new SAT.Vector(0, 20);
         this.friction = new SAT.Vector(48, 0);
@@ -24,7 +24,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             A_.INPUT.addMapping("jump", A_.KEY.SPACE);
         }
     },
-    update: function () {
+    update: function() {
         if (this.controlled) {
             if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
                 this.applyForce = true;
@@ -121,7 +121,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.slope = null;
         this.platform = null;
     },
-    calculateVelocity: function () {
+    calculateVelocity: function() {
         this._super();
 
         if (this.slope) {
@@ -131,7 +131,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
     },
-    applyVelocity: function () {
+    applyVelocity: function() {
         this._super();
 
         if (this.slope) {
@@ -146,23 +146,32 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 //            this.slope = null;
         }
     },
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
         this._super(other, response);
 
         if (response.overlapN.y !== 0) {
             if (response.overlapN.y === 1) {
-                this.platformerState = "grounded";
-
+                if (this.collisionPolygon.getBottom() < other.collisionPolygon.getTop() + 2
+                        && this.velocity.y > 0) {
+                    this.platformerState = "grounded";
 //                if (this.bounciness === 0)
-                this.velocity.y = 0;
+                    this.velocity.y = 0;
+                }
 
             } else {
                 if (this.bounciness === 0) {
                     if (this.platformerState !== "grounded") {
-                        if (this.velocity.y < this.gravity.y) {
-                            this.velocity.y = 0;
+                        var xL1 = this.collisionPolygon.getLeft() + 2;
+                        var xR1 = this.collisionPolygon.getRight() - 2;
+                        var xL2 = other.collisionPolygon.getLeft();
+                        var xR2 = other.collisionPolygon.getRight();
+                        if (xL1 < xR2 && xR1 > xL2) {
+                            // BUG: Bounced down by walls when jumping and pushing to the walls
+                            if (this.velocity.y < this.gravity.y) {
+                                this.velocity.y = 0;
+                            }
+                            this.y(this.y() + 2);
                         }
-                        this.y(this.y() + 2);
                     }
                 }
             }

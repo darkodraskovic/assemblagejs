@@ -54,104 +54,103 @@
                 {
                  "gid":257,
                  "height":1,
-                 "name":"Player",
+                 "name":"",
                  "properties":
                     {
-                     "collisionMask":"\"Player\"",
-                     "followee":"true"
+                     "collisionMask":"\"Player\""
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Player",
+                 "visible":true,
+                 "width":1,
+                 "x":576,
+                 "y":256
+                }, 
+                {
+                 "gid":258,
+                 "height":1,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Agent",
+                 "visible":true,
+                 "width":1,
+                 "x":512,
+                 "y":160
+                }, 
+                {
+                 "gid":258,
+                 "height":1,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Agent",
+                 "visible":true,
+                 "width":1,
+                 "x":416,
+                 "y":160
+                }, 
+                {
+                 "gid":258,
+                 "height":1,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Agent",
+                 "visible":true,
+                 "width":1,
+                 "x":608,
+                 "y":160
+                }, 
+                {
+                 "gid":259,
+                 "height":1,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Computer",
+                 "visible":true,
+                 "width":1,
+                 "x":480,
+                 "y":160
+                }, 
+                {
+                 "gid":259,
+                 "height":1,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Computer",
                  "visible":true,
                  "width":1,
                  "x":672,
                  "y":160
                 }, 
                 {
-                 "gid":258,
-                 "height":1,
-                 "name":"Agent",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1,
-                 "x":544,
-                 "y":64
-                }, 
-                {
-                 "gid":258,
-                 "height":1,
-                 "name":"Agent",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1,
-                 "x":448,
-                 "y":64
-                }, 
-                {
-                 "gid":258,
-                 "height":1,
-                 "name":"Agent",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1,
-                 "x":672,
-                 "y":64
-                }, 
-                {
                  "gid":259,
                  "height":1,
-                 "name":"Computer",
+                 "name":"",
                  "properties":
                     {
 
                     },
                  "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1,
-                 "x":480,
-                 "y":256
-                }, 
-                {
-                 "gid":259,
-                 "height":1,
-                 "name":"Computer",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1,
-                 "x":864,
-                 "y":256
-                }, 
-                {
-                 "gid":259,
-                 "height":1,
-                 "name":"Computer",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
+                 "type":"Computer",
                  "visible":true,
                  "width":1,
                  "x":576,
@@ -335,7 +334,7 @@
          "objects":[
                 {
                  "height":0,
-                 "name":"Player",
+                 "name":"",
                  "polygon":[
                         {
                          "x":0,
@@ -362,7 +361,7 @@
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Player",
                  "visible":true,
                  "width":0,
                  "x":768,

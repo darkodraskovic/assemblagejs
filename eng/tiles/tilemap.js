@@ -1,69 +1,12 @@
-A_.TILES.Tile = Class.extend({
-    init: function (gid, sprite, x, y, tilemap) {
-        this.gid = gid;
-        this.sprite = sprite;
-        this.mapPosition = {};
-        this.mapPosition.x = x;
-        this.mapPosition.y = y;
-        this.tilemap = tilemap;
-    },
-    setCollision: function (w, h) {
-        var collisionPolygon;
-
-        var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
-        collisionPolygon = box.toPolygon();
-        collisionPolygon.w = box.w;
-        collisionPolygon.h = box.h;
-
-        this.collisionPolygon = collisionPolygon;
-        this.collisionPolygon.pos.x = this.x();
-        this.collisionPolygon.pos.y = this.y();
-        A_.collider.collisionStatics.push(this);
-        A_.collider.collisionTiles.push(this);
-    },
-    collideWithStatic: function (other, response) {
-
-    },
-    collideWithDynamic: function (other, response) {
-
-    },
-    getPosition: function () {
-        return this.sprite.position;
-    },
-    x: function (x) {
-        if (x)
-            this.position(x, this.y());
-        else
-            return this.sprite.position.x;
-    },
-    y: function (y) {
-        if (y)
-            this.position(this.x(), y);
-        else
-            return this.sprite.position.y;
-    },
-    position: function (x, y) {
-        if (x && y) {
-            this.sprite.position.x = x;
-            this.sprite.position.y = y;
-        } else {
-            return this.sprite.position;
-        }
-    },
-});
-
 A_.TILES.Tilemap = Class.extend({
-    init: function (layer, img, tileW, tileH, collides) {
+    init: function (layer, img, tileW, tileH) {
         this.layer = layer;
         this.baked = false;
-        if (collides) {
-            this.layer.collision = true;
-        }
 
         this.img = "graphics/" + A_.level.directoryPrefix + img;
-        this.bTxt = new PIXI.BaseTexture.fromImage(this.img, PIXI.scaleModes.LINEAR);
-        this.imgW = this.bTxt.width;
-        this.imgH = this.bTxt.height;
+        this.baseTexture = new PIXI.BaseTexture.fromImage(this.img, PIXI.scaleModes.LINEAR);
+        this.imgW = this.baseTexture.width;
+        this.imgH = this.baseTexture.height;
         this.imgCols = this.imgW / tileW;
         this.imgRows = this.imgH / tileH;
 
@@ -177,7 +120,7 @@ A_.TILES.Tilemap = Class.extend({
     createTileSprite: function (frameInd) {
         var frame = new PIXI.Rectangle((frameInd % this.imgCols) * this.tileW,
                 Math.floor(frameInd / this.imgCols) * this.tileH, this.tileW, this.tileH);
-        var tileTexture = new PIXI.Texture(this.bTxt, frame);
+        var tileTexture = new PIXI.Texture(this.baseTexture, frame);
         var tileSprite = new PIXI.Sprite(tileTexture);
 
         return tileSprite;

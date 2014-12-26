@@ -41,8 +41,7 @@ function fetchAssetListFromMapData(mapData) {
     return assetsToLoad;
 }
 
-function createMap(game, mapData) {
-
+A_.TILES.createTiledMap = function(game, mapData) {
     var collider = game.collider;
 
     game.level.width = mapData["width"] * mapData["tilewidth"];
@@ -162,7 +161,7 @@ function createMap(game, mapData) {
 
             layer.baked = baked;
             if (layer.baked) {
-                layer = bakeLayer(layer, game.level);
+                layer = A_.level.bakeLayer(layer, game.level);
             }
 
             game.level.addTileLayer(layer);
@@ -170,8 +169,6 @@ function createMap(game, mapData) {
 
         // if the current layer is OBJECT LAYER
         else if (layersData[i]["type"] === "objectgroup") {
-//            if (layersData[i]["name"] === "CollisionMasks")
-//                continue;
             game.level.addSpriteLayer(layer);
             // loop through all objects conained in the layer
             for (var j = 0; j < layersData[i]["objects"].length; j++) {
@@ -181,11 +178,7 @@ function createMap(game, mapData) {
                 for (var prop in oData["properties"]) {
                     args[prop] = eval(oData["properties"][prop]);
                 }
-//                for (var prop in oData) {
-//                    if (prop !== "x" && prop !== "y" &&
-//                            prop !== "width" && prop !== "height")
-//                    args[prop] = oData[prop];
-//                }
+
                 args["name"] = oData["name"];
                 args["type"] = oData["type"];
 
@@ -211,59 +204,28 @@ function createMap(game, mapData) {
                 }
                 else {
                     var colPolyData = _.find(collider.collisionMasks, function(mask) {
-                        return mask.name === args.collisionMask;
+                        return mask.type === args.collisionMask;
                     });
                     if (colPolyData) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData);
                     } else {
                         collisionPolygon = null;
                     }
-
-                    var o = game.createSprite(eval(oData["name"]), layer, oData["x"], oData["y"], args, collisionPolygon);
+                    var o = game.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args, collisionPolygon);
                     o.positionRelative(o.sprite.width / 2, -o.sprite.height / 2);
 
                     if (o.followee) {
                         game.cameraOptions.followee = o;
                     }
-                    if (oData["name"] === "Player")
+                    if (oData["type"] === "Player")
                         A_.player = o;
                 }
                 o.rotation(oData["rotation"].toRad());
             }
 
             if (layer.baked) {
-                layer = bakeLayer(layer, game.level);
+                layer = A_.level.bakeLayer(layer, game.level);
             }
-
-//            game.level.addSpriteLayer(layer);
         }
     }
-}
-
-// if layer's object do not update their properties, such as animation or position
-// pre-bake layer, ie. make a single sprite/texture out of layer's objects
-function bakeLayer(layer, level) {
-    var renderTexture = new PIXI.RenderTexture(level.width, level.height);
-
-    // create a sprite that uses the new render texture
-    var sprite = new PIXI.Sprite(renderTexture);
-
-    // render the layer to the render texture
-    renderTexture.render(layer);
-
-    // TODO: this commented piece of code makes tiled map non seamless
-//    for (var prop in layer) {
-//        if (layer.hasOwnProperty(prop)) {
-//            sprite[prop] = layer[prop];
-//        }
-//    }
-    sprite.alpha = layer.alpha;
-    sprite.baked = true;
-    sprite.position = layer.position;
-    sprite.parallax = layer.parallax;
-    sprite.name = layer.name;
-    // If the layer is baked, we do not need the tilemap.
-//    if (layer.tilemap) { sprite.tilemap = layer.tilemap; }
-
-    return sprite;
 }

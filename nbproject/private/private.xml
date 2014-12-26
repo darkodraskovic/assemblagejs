@@ -35,11 +35,12 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite/scenery.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprite/colliding.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/game.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/game.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/polygon.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tile/tiled.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tile/tiles.js</file>
+            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level.js</file>
         </group>
     </open-files>
 </project-private>

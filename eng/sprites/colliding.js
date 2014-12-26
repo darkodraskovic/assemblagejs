@@ -43,8 +43,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         var collisionPolygon;
 
         if (!polygon) {
-            offsetX -= w / 2;
-            offsetY -= h / 2;
+//            offsetX -= w / 2;
+//            offsetY -= h / 2;
+            offsetX -= w * this.origin().x;
+            offsetY -= h * this.origin().y;
             var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
             collisionPolygon = box.toPolygon();
             // Get the with & height of the polygon's bounding box.
@@ -240,7 +242,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 
         this._super(x, y);
         x = x / this.frame.w;
-        y = y / this.frame.w;
+        y = y / this.frame.h;
         this.collisionPolygon.setScale(x, y);
     },
     width: function (w) {
