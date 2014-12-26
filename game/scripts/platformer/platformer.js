@@ -5,6 +5,7 @@ A_.TILES.Tile.inject({
         this._super(gid, sprite, x, y, tilemap);
         if (this.tilemap.layer.name === "Thrus") {
             this.interactive(true);
+            this.turned = "on";
         }
     },
     interactive: function(interacts) {
@@ -14,37 +15,26 @@ A_.TILES.Tile.inject({
             var that = this;
             if (!this.initedInput) {
                 this.sprite.mousedown = function() {
-                    window.console.log("mousedown");
-                    that.leftpressed = true;
-                    that.leftdown = true;
-                    if (that !== thruTile) {
+//                    window.console.log("mousedown");
+                    if (thruTile === that) {
+                        thruTile.turnOff();
+                    } else {
                         if (thruTile) {
-                            thruTile.sprite.alpha = 1;
+                            thruTile.turnOff();
                         }
+                        that.turnOn();
                     }
-                    thruTile = that;
-                    that.sprite.alpha = 0.5;
                 };
                 this.sprite.mouseup = function() {
-                    window.console.log("mouseup");
-                    that.leftreleased = true;
-                    that.leftdown = false;
                 };
                 this.sprite.mouseupoutside = function() {
-                    that.leftreleased = true;
-                    that.leftdown = false;
                 };
                 this.sprite.rightdown = function() {
-                    that.rightpressed = true;
-                    that.rightdown = true;
+                    that.tilemap.unsetTile(that.mapPosition.x, that.mapPosition.y);
                 };
                 this.sprite.rightup = function() {
-                    that.rightreleased = true;
-                    that.rightdown = false;
                 };
                 this.sprite.rightupoutside = function() {
-                    that.rightreleased = true;
-                    that.rightdown = false;
                 };
                 this.initedInput = true;
             }
@@ -52,11 +42,21 @@ A_.TILES.Tile.inject({
         } else {
             this.sprite.interactive = false;
         }
+    },
+    turnOn: function() {
+        thruTile = this;
+        this.sprite.alpha = 0.5;
+        this.turned = "off";
+    },
+    turnOff: function() {
+        thruTile = null;
+        this.sprite.alpha = 1;
+        this.turned = "on";
     }
 });
 
 A_.game.preupdate = function() {
-    
+
 };
 
 // CLASSES

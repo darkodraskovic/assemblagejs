@@ -12,7 +12,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.friction = new SAT.Vector(48, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
-
         this.slope = null;
         this.scanDepth = 8;
         this.platform = null;
@@ -148,17 +147,18 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     },
     collideWithStatic: function(other, response) {
         this._super(other, response);
-
+        
         if (response.overlapN.y !== 0) {
+            // FLOOR
             if (response.overlapN.y === 1) {
                 if (this.collisionPolygon.getBottom() < other.collisionPolygon.getTop() + 2
                         && this.velocity.y > 0) {
                     this.platformerState = "grounded";
-//                if (this.bounciness === 0)
                     this.velocity.y = 0;
                 }
-
-            } else {
+            }
+            // CEILING
+            else {
                 if (this.bounciness === 0) {
                     if (this.platformerState !== "grounded") {
                         var xL1 = this.collisionPolygon.getLeft() + 2;
@@ -166,18 +166,15 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                         var xL2 = other.collisionPolygon.getLeft();
                         var xR2 = other.collisionPolygon.getRight();
                         if (xL1 < xR2 && xR1 > xL2) {
-                            // BUG: Bounced down by walls when jumping and pushing to the walls
-                            if (this.velocity.y < this.gravity.y) {
-                                this.velocity.y = 0;
-                            }
+                            this.velocity.y = 0;
                             this.y(this.y() + 2);
                         }
                     }
                 }
             }
         }
+        // WALL
         else if (response.overlapN.x !== 0) {
-//            if (this.bounciness === 0)
             this.velocity.x = 0;
         }
 
@@ -192,7 +189,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
             if (other.containsPoint(xL, y) || other.containsPoint(xR, y)) {
                 this.platformerState = "grounded";
-//                if (this.bounciness === 0)
                 this.velocity.y = 0;
                 this.x(this.x() + response.overlapV.x);
                 this.slope = other;

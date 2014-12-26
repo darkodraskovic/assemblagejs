@@ -62,6 +62,6 @@ A_.TILES.Tile = Class.extend({
         return this.w;
     },
     height: function () {
-        return this.h;
+        return this.w;
     }
 });
