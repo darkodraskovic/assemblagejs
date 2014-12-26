@@ -147,7 +147,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     },
     collideWithStatic: function(other, response) {
         this._super(other, response);
-        
+
         if (response.overlapN.y !== 0) {
             // FLOOR
             if (response.overlapN.y === 1) {
@@ -166,7 +166,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                         var xL2 = other.collisionPolygon.getLeft();
                         var xR2 = other.collisionPolygon.getRight();
                         if (xL1 < xR2 && xR1 > xL2) {
-                            this.velocity.y = 0;
+                            if (this.velocity.y < 0) {
+                                this.velocity.y = 0;
+                            }
                             this.y(this.y() + 2);
                         }
                     }
@@ -199,11 +201,13 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (other.platform) {
             if (other.collisionPolygon.getLeft() < this.collisionPolygon.getRight() &&
                     other.collisionPolygon.getRight() > this.collisionPolygon.getLeft()) {
-                this.platform = other;
-                this.velocity.y = 0;
-                this.platformDX = other.x() - other.prevX;
-                this.platformDY = other.y() - other.prevY;
-                this.x(this.x() + this.platformDX);
+                if (this.y() < other.y()) {
+                    this.platform = other;
+                    this.velocity.y = 0;
+                    this.platformDX = other.x() - other.prevX;
+                    this.platformDY = other.y() - other.prevY;
+                    this.x(this.x() + this.platformDX);
+                }
             }
         }
     }

@@ -1,4 +1,3 @@
-//A_.level.globals = {};
 var thruTile = null;
 A_.TILES.Tile.inject({
     init: function(gid, sprite, x, y, tilemap) {
@@ -16,14 +15,7 @@ A_.TILES.Tile.inject({
             if (!this.initedInput) {
                 this.sprite.mousedown = function() {
 //                    window.console.log("mousedown");
-                    if (thruTile === that) {
-                        thruTile.turnOff();
-                    } else {
-                        if (thruTile) {
-                            thruTile.turnOff();
-                        }
-                        that.turnOn();
-                    }
+                    that.toggleTurned();
                 };
                 this.sprite.mouseup = function() {
                 };
@@ -44,14 +36,20 @@ A_.TILES.Tile.inject({
         }
     },
     turnOn: function() {
-        thruTile = this;
+        this.sprite.alpha = 1;
+        this.turned = "on";
+    },
+    turnOff: function() {
         this.sprite.alpha = 0.5;
         this.turned = "off";
     },
-    turnOff: function() {
-        thruTile = null;
-        this.sprite.alpha = 1;
-        this.turned = "on";
+    toggleTurned: function () {
+        if (this.turned === "on") {
+            this.turnOff();
+        } 
+        else {
+            this.turnOn();
+        }
     }
 });
 
@@ -88,7 +86,7 @@ var Player = A_.SPRITES.Platformer.extend({
         }
     },
     collideWithStatic: function(other, response) {
-        if (other === thruTile) {
+        if (other.turned && other.turned === "off") {
             return;
         }
         else {
