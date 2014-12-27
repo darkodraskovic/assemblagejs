@@ -118,8 +118,8 @@ A_.TILES.Tilemap = Class.extend({
             this.layer.removeChild(sprite);
             // Collisions
             if (this.layer.collision) {
-                var ind = A_.collider.collisionTiles.indexOf(tile);
-                A_.collider.collisionTiles.splice(ind, 1);
+//                var ind = A_.collider.collisionTiles.indexOf(tile);
+//                A_.collider.collisionTiles.splice(ind, 1);
                 ind = A_.collider.collisionStatics.indexOf(tile);
                 A_.collider.collisionStatics.splice(ind, 1);
             }

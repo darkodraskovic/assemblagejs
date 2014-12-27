@@ -1,4 +1,3 @@
-var thruTile = null;
 A_.TILES.Tile.inject({
     init: function(gid, sprite, x, y, tilemap) {
         this._super(gid, sprite, x, y, tilemap);
@@ -16,25 +15,30 @@ A_.TILES.Tile.inject({
         this.collides = false;
         this.turned = "off";
     },
-    toggleTurned: function () {
+    toggleTurned: function() {
         if (this.turned === "on") {
             this.turnOff();
-        } 
+        }
         else {
             this.turnOn();
         }
     },
-    update: function () {
+    update: function() {
         this._super();
         if (this.leftpressed) {
             this.toggleTurned();
+            A_.game.createSound({
+                urls: ['e.wav'],
+                volume: 1
+            }).play();
+        }
+        if (this.rightpressed) {
+            A_.game.createSprite(Explosion, A_.level.findLayerByName("Thrus"),
+                    this.x() + this.width() / 2, this.y() + this.height() / 2);
+            this.destroy();
         }
     }
 });
-
-A_.game.preupdate = function() {
-
-};
 
 // CLASSES
 var Player = A_.SPRITES.Platformer.extend({
@@ -63,6 +67,20 @@ var Player = A_.SPRITES.Platformer.extend({
         } else {
             this.setAnimation(this.platformerState);
         }
+    },
+    onJumped: function() {
+        this._super();
+        A_.game.createSound({
+            urls: ['jump.wav'],
+            volume: 1
+        }).play();
+    },
+    onGrounded: function() {
+        this._super();
+        A_.game.createSound({
+            urls: ['grounded.wav'],
+            volume: 1
+        }).play();
     }
 });
 
@@ -75,7 +93,7 @@ var Platform = A_.SPRITES.Colliding.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.sine = this.addon("Sine");
-        this.sine.period = 1;
+        this.sine.period = 2;
         this.sine.amplitude = this.frame.w;
         this.sine.reset();
         this.platform = true;
@@ -92,3 +110,23 @@ var Platform = A_.SPRITES.Colliding.extend({
     }
 });
 
+var Explosion = A_.SPRITES.Animated.extend({
+    animSheet: "Explosion.png",
+    frame: {w: 128, h: 128},
+    init: function(parent, x, y, props) {
+        this._super(parent, x, y, props);
+
+        this.addAnimation("explode", _.range(0, 17), 0.5);
+        this.setAnimation("explode");
+        this.animations["explode"].loop = false;
+        var that = this;
+        this.animations["explode"].onComplete = function() {
+            that.destroy();
+        };
+        this.scale(0.4, 0.4);
+        A_.game.createSound({
+            urls: ['dull.wav'],
+            volume: 1
+        }).play();
+    }
+});

@@ -65,6 +65,7 @@ platformer_level1 = {
     directoryPrefix: "platformer",
     scripts: ["platformer"],
     map: "level1",
-    graphics: ["sci-fi-platformer-tiles-32x32.png", "moving_platform.png","player.png"],
-    sounds: []
+    graphics: ["sci-fi-platformer-tiles-32x32.png", "moving_platform.png","player.png",
+    "Explosion.png"],
+    sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"],["jump.wav"]]
 };

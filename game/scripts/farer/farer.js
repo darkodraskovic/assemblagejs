@@ -188,15 +188,11 @@ var Explosion = A_.SPRITES.Animated.extend({
         this.animations["explode"].onComplete = function () {
             that.destroy();
         };
+        
         A_.game.createSound({
             urls: ['explosion.mp3'],
-            volume: 0.35
+            volume: 0.2
         }).play();
-    },
-    update: function () {
-        this._super();
-//        window.console.log(this.x());
-
     }
 });
 

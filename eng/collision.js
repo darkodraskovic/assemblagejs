@@ -1,7 +1,7 @@
 A_.COLLISION.Collider = Class.extend({
     init: function() {
         this.collisionSprites = [];
-        this.collisionTiles = [];
+//        this.collisionTiles = [];
         this.collisionStatics = [];
         this.collisionDynamics = [];
         this.collisionMasks = [];
