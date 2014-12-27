@@ -299,7 +299,7 @@ A_.Game = Class.extend({
         this.time = now;
         this.dt /= 1000;
 
-        this.processInput();
+        A_.INPUT.process();
 
         this.update();
 
@@ -307,7 +307,7 @@ A_.Game = Class.extend({
 
         this.render();
 
-        this.postprocessInput();
+        A_.INPUT.postprocess();
 
         this.manageLevels();
 
@@ -366,40 +366,6 @@ A_.Game = Class.extend({
         this.camera.update();
 
         this.renderer.render(this.stage);
-    },
-    processInput: function() {
-        // #docs This will return the point containing global coordinates of the mouse,
-        // more precisely, a point containing the coordinates of the global InteractionData position.
-        // InteractionData holds all information related to an Interaction event.        
-        this.mousePosition.stage = this.stage.getMousePosition().clone();
-        this.mousePosition.level = this.level.mousePosition();
-        
-    },
-    postprocessInput: function() {
-        for (var action in A_.INPUT.actions) {
-            if (A_.INPUT.pressed[action] === true) {
-                A_.INPUT.pressed[action] = false;
-            }
-            if (A_.INPUT.released[action] === true) {
-                A_.INPUT.released[action] = false;
-            }
-        }
-
-        _.each(this.level.sprites, function(sprite) {
-            if (sprite.sprite.interactive) {
-                sprite.resetMouseReaction();
-            }
-        });
-
-        _.each(this.level.tiles, function(tile) {
-            if (tile.sprite.interactive) {
-                tile.resetMouseReaction();
-            }
-        });
-
-        this.resetMouseReaction();
-        
-        A_.INPUT.mousewheel = "null";
     },
     manageLevels: function() {
         if (this.destroyLevel) {

@@ -21,7 +21,7 @@ var Player = A_.SPRITES.Kinematic.extend({
         this.spritePoint("bullet2", 18, 12);
     },
     update: function () {
-        var rot = A_.UTILS.angleTo(this.position(), A_.game.mousePosition.level);
+        var rot = A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level);
         this.rotation(rot);
         var speedSign = 0;
         if (this.rotation() < 0)
@@ -93,7 +93,7 @@ var Laser = A_.SPRITES.Animated.extend({
             this.toggleFire("off");
         }
         if (A_.game.rightdown) {
-            this.width(A_.UTILS.distanceTo(this.positionLevel(), A_.game.mousePosition.level));
+            this.width(A_.UTILS.distanceTo(this.positionLevel(), A_.INPUT.mousePosition.level));
         }
 
         this._super();
@@ -108,7 +108,7 @@ var Laser = A_.SPRITES.Animated.extend({
         if (state === "on") {
             this.on = true;
             this.alpha(0.75);
-            this.width(A_.UTILS.distanceTo(this.positionLevel(), A_.game.mousePosition.level));
+            this.width(A_.UTILS.distanceTo(this.positionLevel(), A_.INPUT.mousePosition.level));
 
             this.sound.play(function (id) {
                 this.soundId = id;

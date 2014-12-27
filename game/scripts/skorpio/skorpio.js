@@ -69,7 +69,7 @@ var Player = Anime.extend({
         this._super();
     },
     update: function() {
-        var rot = (A_.UTILS.angleTo(this.position(), A_.game.mousePosition.level)).toDeg();
+        var rot = (A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level)).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
@@ -90,7 +90,7 @@ var Player = Anime.extend({
     shootBullet: function() {
         var sprPt = this.rifle.spritePoint(this.facing);
         var bullet = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), sprPt.x(), sprPt.y());
-        bullet.rotation(A_.UTILS.angleTo(this.position(), A_.game.mousePosition.level));
+        bullet.rotation(A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level));
         bullet.setAnimation("all", 16, 0);
     },
     shootLaser: function() {
@@ -159,7 +159,7 @@ var Rifle = A_.SPRITES.Animated.extend({
         this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
     update: function() {
-//        var rot = A_.UTILS.angleTo(this.position(), A_.game.mousePosition.level);
+//        var rot = A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level);
 //        switch (this.holder.facing) {
 //            case "left": rot -= Math.PI; break;
 //            case "up": rot += Math.PI / 2; break;
@@ -229,7 +229,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.setAnimation("all", 18, 0);
         this.origin(0, 0.5);
 
-        this.rotation(A_.UTILS.angleTo(this.spawner.position(), A_.game.mousePosition.level));
+        this.rotation(A_.UTILS.angleTo(this.spawner.position(), A_.INPUT.mousePosition.level));
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
         this.position(sprPt.x(), sprPt.y());
 
@@ -254,8 +254,8 @@ var LaserBeam = A_.SPRITES.Animated.extend({
 //        this.position(this.spawner.x(), this.spawner.y());
         this.position(sprPt.x(), sprPt.y());
 
-        this.rotation(A_.UTILS.angleTo(this.position(), A_.game.mousePosition.level));
-        this.width(A_.UTILS.distanceTo(this.position(), A_.game.mousePosition.level));
+        this.rotation(A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level));
+        this.width(A_.UTILS.distanceTo(this.position(), A_.INPUT.mousePosition.level));
         this.tip.x = this.x() + Math.cos(this.rotation()) * this.width();
         this.tip.y = this.y() + Math.sin(this.rotation()) * this.width();
 

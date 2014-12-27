@@ -1,8 +1,6 @@
 A_.TILES.Tile = Class.extend({
-//    init: function(gid, sprite, x, y, tilemap) {
     init: function(gid, x, y, tilemap) {
         this.gid = gid;
-//        this.sprite = sprite;
         this.mapPosition = {};
         this.mapPosition.x = x;
         this.mapPosition.y = y;

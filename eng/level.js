@@ -169,8 +169,7 @@ A_.Level = Class.extend({
         });
     },
     // MOUSE POSITION
-    mousePosition: function() {
-        var mousePosition = A_.game.stage.getMousePosition().clone();
+    mousePosition: function(mousePosition) {
         // Transform the mouse position from the unscaled stage's global system to
         // the unscaled scaled gameWorld.container's system. 
         mousePosition.x /= this.scale;

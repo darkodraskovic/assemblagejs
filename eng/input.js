@@ -121,7 +121,9 @@ window.addEventListener("keyup", function(event) {
     }
 }, false);
 
-
+A_.INPUT.mousePosition = {};
+A_.INPUT.mousePosition.stage = {};
+A_.INPUT.mousePosition.level = {};
 A_.INPUT.addMouseReacivity = function(entity) {
     if (!entity.initedInput) {
         var that = entity;
@@ -179,3 +181,34 @@ function mouseWheelHandler(e) {
         A_.INPUT.mousewheel = "backward";
     }
 }
+
+A_.INPUT.process = function() {
+    var input = A_.INPUT;
+    var stageMousePosition = A_.game.stage.getMousePosition().clone();
+    input.mousePosition.stage.x = stageMousePosition.x;
+    input.mousePosition.stage.y = stageMousePosition.y;
+    input.mousePosition.level = A_.level.mousePosition(stageMousePosition);
+};
+A_.INPUT.postprocess = function() {
+    var input = A_.INPUT;
+    for (var action in input.actions) {
+        input.pressed[action] = false;
+        input.released[action] = false;
+    }
+
+    _.each(A_.level.sprites, function(sprite) {
+        if (sprite.sprite.interactive) {
+            sprite.resetMouseReaction();
+        }
+    });
+
+    _.each(A_.level.tiles, function(tile) {
+        if (tile.sprite.interactive) {
+            tile.resetMouseReaction();
+        }
+    });
+
+    A_.game.resetMouseReaction();
+
+    input.mousewheel = "null";
+};
