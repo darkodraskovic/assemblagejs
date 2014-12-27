@@ -3,44 +3,17 @@ A_.TILES.Tile.inject({
     init: function(gid, sprite, x, y, tilemap) {
         this._super(gid, sprite, x, y, tilemap);
         if (this.tilemap.layer.name === "Thrus") {
-            this.interactive(true);
             this.turned = "on";
-        }
-    },
-    interactive: function(interacts) {
-        if (typeof interacts === "undefined")
-            return this.sprite.interactive;
-        if (interacts) {
-            var that = this;
-            if (!this.initedInput) {
-                this.sprite.mousedown = function() {
-//                    window.console.log("mousedown");
-                    that.toggleTurned();
-                };
-                this.sprite.mouseup = function() {
-                };
-                this.sprite.mouseupoutside = function() {
-                };
-                this.sprite.rightdown = function() {
-                    that.tilemap.unsetTile(that.mapPosition.x, that.mapPosition.y);
-                };
-                this.sprite.rightup = function() {
-                };
-                this.sprite.rightupoutside = function() {
-                };
-                this.initedInput = true;
-            }
-            this.sprite.interactive = true;
-        } else {
-            this.sprite.interactive = false;
         }
     },
     turnOn: function() {
         this.sprite.alpha = 1;
+        this.collides = true;
         this.turned = "on";
     },
     turnOff: function() {
         this.sprite.alpha = 0.5;
+        this.collides = false;
         this.turned = "off";
     },
     toggleTurned: function () {
@@ -49,6 +22,12 @@ A_.TILES.Tile.inject({
         } 
         else {
             this.turnOn();
+        }
+    },
+    update: function () {
+        this._super();
+        if (this.leftpressed) {
+            this.toggleTurned();
         }
     }
 });
@@ -83,14 +62,6 @@ var Player = A_.SPRITES.Platformer.extend({
             this.setAnimation(this.movingState);
         } else {
             this.setAnimation(this.platformerState);
-        }
-    },
-    collideWithStatic: function(other, response) {
-        if (other.turned && other.turned === "off") {
-            return;
-        }
-        else {
-            this._super(other, response);
         }
     }
 });

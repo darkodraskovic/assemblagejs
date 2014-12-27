@@ -1,5 +1,5 @@
 A_.TILES.Tilemap = Class.extend({
-    init: function (layer, img, tileW, tileH) {
+    init: function(layer, img, tileW, tileH) {
         this.layer = layer;
         this.baked = false;
 
@@ -23,7 +23,7 @@ A_.TILES.Tilemap = Class.extend({
             this.collision.response = "static";
         }
     },
-    createTilelayer: function (layerData) {
+    createTilelayer: function(layerData) {
         this.mapW = layerData.length;
         this.mapH = layerData[0].length;
         for (var i = 0; i < this.mapW; i++) {
@@ -43,20 +43,36 @@ A_.TILES.Tilemap = Class.extend({
         if (this.layer.collision) {
             var w = this.tileW;
             var h = this.tileH;
-            _.each(this.tiles, function (tileCol) {
-                _.each(tileCol, function (tile) {
+            _.each(this.tiles, function(tileCol) {
+                _.each(tileCol, function(tile) {
                     if (tile)
                         tile.setCollision(w, h);
+                });
+            });
+        }
+        if (this.layer.interactive) {
+            _.each(this.tiles, function(tileCol) {
+                _.each(tileCol, function(tile) {
+                    if (tile)
+                        tile.interactive(true);
+                });
+            });
+        }
+        if (this.layer.active) {
+            _.each(this.tiles, function(tileCol) {
+                _.each(tileCol, function(tile) {
+                    if (tile)
+                        A_.level.tiles.push(tile);
                 });
             });
         }
 
         this.layer.tilemap = this;
     },
-    getTile: function (x, y) {
+    getTile: function(x, y) {
         return this.tiles[x][y];
     },
-    setTile: function (gid, x, y) {
+    setTile: function(gid, x, y) {
         if (this.layer.baked)
             return;
         if (typeof gid === "undefined" || typeof x === "undefined" || typeof y === "undefined")
@@ -79,17 +95,17 @@ A_.TILES.Tilemap = Class.extend({
         this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
         return tile;
     },
-    setTileInMap: function (tile, x, y) {
+    setTileInMap: function(tile, x, y) {
         this.tiles[x][y] = tile;
     },
-    setTileInWorld: function (tile, x, y) {
+    setTileInWorld: function(tile, x, y) {
         var tileSprite = tile.sprite;
         tileSprite.position.x = x;
         tileSprite.position.y = y;
 
         this.layer.addChild(tileSprite);
     },
-    unsetTile: function (x, y) {
+    unsetTile: function(x, y) {
         if (this.layer.baked)
             return;
 
@@ -107,17 +123,21 @@ A_.TILES.Tilemap = Class.extend({
                 ind = A_.collider.collisionStatics.indexOf(tile);
                 A_.collider.collisionStatics.splice(ind, 1);
             }
+            if (this.layer.active) {
+                ind = A_.level.tiles.indexOf(tile);
+                A_.level.tiles.splice(ind, 1);
+            }
             // Tilemap
             this.tiles[x][y] = null;
         }
     },
-    worldToMap: function (x, y) {
+    worldToMap: function(x, y) {
         return [Math.round(x / this.tileW), Math.round(y / this.tileH)];
     },
-    mapToWorld: function (x, y) {
+    mapToWorld: function(x, y) {
         return [x * this.tileW, y * this.tileH];
     },
-    createTileSprite: function (frameInd) {
+    createTileSprite: function(frameInd) {
         var frame = new PIXI.Rectangle((frameInd % this.imgCols) * this.tileW,
                 Math.floor(frameInd / this.imgCols) * this.tileH, this.tileW, this.tileH);
         var tileTexture = new PIXI.Texture(this.baseTexture, frame);
@@ -125,7 +145,7 @@ A_.TILES.Tilemap = Class.extend({
 
         return tileSprite;
     },
-    createTile: function (gid, x, y) {
+    createTile: function(gid, x, y) {
         var sprite = this.createTileSprite(gid - 1);
         return new A_.TILES.Tile(gid, sprite, x, y, this);
     },

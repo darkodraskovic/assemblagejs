@@ -11,6 +11,7 @@ A_.TILES.Tile = Class.extend({
         this.containedPoint = new SAT.Vector(0, 0);
     },
     setCollision: function(w, h) {
+        this.collides = true;
         var collisionPolygon;
 
         var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
@@ -24,44 +25,69 @@ A_.TILES.Tile = Class.extend({
         A_.collider.collisionStatics.push(this);
         A_.collider.collisionTiles.push(this);
     },
-    collideWithStatic: function(other, response) {
-
+    interactive: function(interacts) {
+        if (typeof interacts === "undefined")
+            return this.sprite.interactive;
+        if (interacts) {
+            var that = this;
+            if (!this.initedInput) {
+                this.sprite.mousedown = function() {
+//                    window.console.log("mousedown");
+                    that.leftpressed = true;
+                    that.leftdown = true;
+                };
+                this.sprite.mouseup = function() {
+//                    window.console.log("mouseup");
+                    that.leftreleased = true;
+                    that.leftdown = false;
+                };
+                this.sprite.mouseupoutside = function() {
+                    that.leftreleased = true;
+                    that.leftdown = false;
+                };
+                this.sprite.rightdown = function() {
+                    that.rightpressed = true;
+                    that.rightdown = true;
+                };
+                this.sprite.rightup = function() {
+                    that.rightreleased = true;
+                    that.rightdown = false;
+                };
+                this.sprite.rightupoutside = function() {
+                    that.rightreleased = true;
+                    that.rightdown = false;
+                };
+                this.initedInput = true;
+            }
+            this.sprite.interactive = true;
+        } else {
+            this.sprite.interactive = false;
+        }
+    },
+    x: function() {
+        return this.sprite.position.x;
+    },
+    y: function() {
+        return this.sprite.position.y;
+    },
+    position: function() {
+        return this.sprite.position;
+    },
+    width: function() {
+        return this.w;
+    },
+    height: function() {
+        return this.h;
     },
     collideWithDynamic: function(other, response) {
 
-    },
-    getPosition: function() {
-        return this.sprite.position;
-    },
-    x: function(x) {
-        if (x)
-            this.position(x, this.y());
-        else
-            return this.sprite.position.x;
-    },
-    y: function(y) {
-        if (y)
-            this.position(this.x(), y);
-        else
-            return this.sprite.position.y;
-    },
-    position: function(x, y) {
-        if (typeof x === "number" && typeof y === "number") {
-            this.sprite.position.x = x;
-            this.sprite.position.y = y;
-        } else {
-            return this.sprite.position;
-        }
     },
     containsPoint: function(x, y) {
         this.containedPoint.x = x;
         this.containedPoint.y = y;
         return SAT.pointInPolygon(this.containedPoint, this.collisionPolygon);
     },
-    width: function () {
-        return this.w;
-    },
-    height: function () {
-        return this.w;
+    update: function() {
+
     }
 });

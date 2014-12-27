@@ -83,6 +83,10 @@ A_.TILES.createTiledMap = function(game, mapData) {
         if (layersData[i]["properties"]) {
             if (layersData[i]["properties"]["collision"])
                 layer.collision = true;
+            if (layersData[i]["properties"]["active"])
+                layer.active = true;
+            if (layersData[i]["properties"]["interactive"])
+                layer.interactive = true;
             if (!layersData[i]["properties"]["baked"]) {
                 if (layersData[i]["type"] === "tilelayer")
                     layer.baked = true;

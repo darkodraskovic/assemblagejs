@@ -295,7 +295,7 @@ A_.Game = Class.extend({
         this.dt /= 1000;
 
         this.processInput();
-
+        
         this.update();
 
         this.manageSprites();
@@ -310,6 +310,11 @@ A_.Game = Class.extend({
     update: function () {
         // User-defined global routine.
         this.preupdate();
+
+        // Active tiles' update
+        _.each(this.level.tiles, function (sprite) {
+            sprite.update();
+        });
 
         // Sprites' updates.
         _.each(this.level.sprites, function (sprite) {
@@ -373,11 +378,20 @@ A_.Game = Class.extend({
         }
 
         _.each(this.level.sprites, function (sprite) {
-            if (sprite.interactive) {
+            if (sprite.interactive()) {
                 sprite.leftpressed = false;
                 sprite.leftreleased = false;
                 sprite.rightpressed = false;
                 sprite.rightreleased = false;
+            }
+        });
+        
+        _.each(this.level.tiles, function (tile) {
+            if (tile.interactive()) {
+                tile.leftpressed = false;
+                tile.leftreleased = false;
+                tile.rightpressed = false;
+                tile.rightreleased = false;
             }
         });
 

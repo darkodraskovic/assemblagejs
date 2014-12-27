@@ -6,6 +6,7 @@ A_.Level = Class.extend({
         this.container = new PIXI.DisplayObjectContainer();
 //        this.followee = null;
         this.sprites = [];
+        this.tiles = [];
         this.tileLayers = [];
         this.spriteLayers = [];
         this.imageLayers = [];

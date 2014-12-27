@@ -23,7 +23,7 @@
          "opacity":1,
          "properties":
             {
-             "baked":"false",
+             "baked":"true",
              "collision":"true",
              "image":"sci-fi-platformer-tiles-32x32.png"
             },
@@ -40,9 +40,11 @@
          "opacity":1,
          "properties":
             {
+             "active":"true",
              "baked":"false",
              "collision":"true",
-             "image":"sci-fi-platformer-tiles-32x32.png"
+             "image":"sci-fi-platformer-tiles-32x32.png",
+             "interactive":"true"
             },
          "type":"tilelayer",
          "visible":true,
@@ -82,8 +84,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":0,
-                 "x":640,
-                 "y":480
+                 "x":480,
+                 "y":192
                 }, 
                 {
                  "height":0,
