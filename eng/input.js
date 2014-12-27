@@ -1,3 +1,7 @@
+/**************************************************************************/
+// KEYBOARD
+/**************************************************************************/
+
 A_.KEY = {
     BACKSPACE: 8,
     TAB: 9,
@@ -121,9 +125,15 @@ window.addEventListener("keyup", function(event) {
     }
 }, false);
 
+/**************************************************************************/
+// MOUSE
+/**************************************************************************/
+
 A_.INPUT.mousePosition = {};
 A_.INPUT.mousePosition.stage = {};
 A_.INPUT.mousePosition.level = {};
+A_.INPUT.mousewheel = null;
+
 A_.INPUT.addMouseReacivity = function(entity) {
     if (!entity.initedInput) {
         var that = entity;
@@ -173,27 +183,25 @@ A_.INPUT.addMouseReacivity = function(entity) {
     };
 };
 
-window.addEventListener("mousewheel", mouseWheelHandler, false);
-function mouseWheelHandler(e) {
+A_.INPUT.processMouseWheel = function (e) {
     if (e.wheelDelta > 0) {
         A_.INPUT.mousewheel = "forward";
     } else {
         A_.INPUT.mousewheel = "backward";
     }
 }
+window.addEventListener("mousewheel", A_.INPUT.processMouseWheel, false);
 
 A_.INPUT.process = function() {
-    var input = A_.INPUT;
     var stageMousePosition = A_.game.stage.getMousePosition().clone();
-    input.mousePosition.stage.x = stageMousePosition.x;
-    input.mousePosition.stage.y = stageMousePosition.y;
-    input.mousePosition.level = A_.level.mousePosition(stageMousePosition);
+    this.mousePosition.stage.x = stageMousePosition.x;
+    this.mousePosition.stage.y = stageMousePosition.y;
+    this.mousePosition.level = A_.level.mousePosition(stageMousePosition);
 };
 A_.INPUT.postprocess = function() {
-    var input = A_.INPUT;
-    for (var action in input.actions) {
-        input.pressed[action] = false;
-        input.released[action] = false;
+    for (var action in this.actions) {
+        this.pressed[action] = false;
+        this.released[action] = false;
     }
 
     _.each(A_.level.sprites, function(sprite) {
@@ -210,5 +218,5 @@ A_.INPUT.postprocess = function() {
 
     A_.game.resetMouseReaction();
 
-    input.mousewheel = "null";
+    this.mousewheel = "null";
 };
