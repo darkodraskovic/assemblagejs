@@ -154,12 +154,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             if (response.overlapN.y === 1) {
                 if (this.collisionPolygon.getBottom() < other.collisionPolygon.getTop() + 2
                         && this.velocity.y > 0) {
-                    if (this.platformerState !== "grounded") {
-                        this.onGrounded();
-                    }
-                    this.platformerState = "grounded";
-                    this.velocity.y = 0;
-
+                    this.ground();
                 }
             }
             // CEILING
@@ -195,11 +190,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             var xR = this.collisionPolygon.getRight() + 2;
 
             if (other.containsPoint(xL, y) || other.containsPoint(xR, y)) {
-                if (this.platformerState !== "grounded") {
-                    this.onGrounded();
-                }
-                this.platformerState = "grounded";
-                this.velocity.y = 0;
+                this.ground();
                 this.x(this.x() + response.overlapV.x);
                 this.slope = other;
             }
@@ -218,6 +209,13 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                 }
             }
         }
+    },
+    ground: function() {
+        if (this.platformerState !== "grounded") {
+            this.onGrounded();
+        }
+        this.platformerState = "grounded";
+        this.velocity.y = 0;
     },
     // CALLBACKS
     onJumped: function() {
