@@ -1,8 +1,4 @@
 A_.KEY = {
-    MOUSE1: -1,
-    MOUSE2: -3,
-    MWHEEL_UP: -4,
-    MWHEEL_DOWN: -5,
     BACKSPACE: 8,
     TAB: 9,
     ENTER: 13,
@@ -98,14 +94,14 @@ A_.INPUT.released = {};
 A_.INPUT.down = {};
 
 
-A_.INPUT.addMapping = function (action, key) {
+A_.INPUT.addMapping = function(action, key) {
     this.actions[action] = key;
     this.pressed[action] = false;
     this.released[action] = false;
     this.down[action] = false;
 };
 
-window.addEventListener("keydown", function (event) {
+window.addEventListener("keydown", function(event) {
     for (var action in A_.INPUT.actions) {
         if (event.keyCode === A_.INPUT.actions[action]) {
             if (A_.INPUT.pressed[action] === false && A_.INPUT.down[action] === false) {
@@ -116,7 +112,7 @@ window.addEventListener("keydown", function (event) {
     }
 }, false);
 
-window.addEventListener("keyup", function (event) {
+window.addEventListener("keyup", function(event) {
     for (var action in A_.INPUT.actions) {
         if (event.keyCode === A_.INPUT.actions[action]) {
             A_.INPUT.released[action] = true;
@@ -126,3 +122,60 @@ window.addEventListener("keyup", function (event) {
 }, false);
 
 
+A_.INPUT.addMouseReacivity = function(entity) {
+    if (!entity.initedInput) {
+        var that = entity;
+        entity.sprite.mousedown = function() {
+            that.leftpressed = true;
+            that.leftdown = true;
+        };
+        entity.sprite.mouseup = function() {
+            that.leftreleased = true;
+            that.leftdown = false;
+        };
+        entity.sprite.mouseupoutside = function() {
+            that.leftreleased = true;
+            that.leftdown = false;
+        };
+        entity.sprite.rightdown = function() {
+            that.rightpressed = true;
+            that.rightdown = true;
+        };
+        entity.sprite.rightup = function() {
+            that.rightreleased = true;
+            that.rightdown = false;
+        };
+        entity.sprite.rightupoutside = function() {
+            that.rightreleased = true;
+            that.rightdown = false;
+        };
+        entity.initedInput = true;
+    }
+    entity.sprite.interactive = true;
+    entity.mouseReactive = function(reactive) {
+        if (typeof reactive === "undefined") {
+            return this.sprite.interactive;
+        }
+        else if (!reactive) {
+            this.sprite.interactive = false;
+        }
+        else {
+            A_.INPUT.addMouseReacivity(this);
+        }
+    };
+    entity.resetMouseReaction = function() {
+        this.leftpressed = false;
+        this.leftreleased = false;
+        this.rightpressed = false;
+        this.rightreleased = false;
+    };
+};
+
+window.addEventListener("mousewheel", mouseWheelHandler, false);
+function mouseWheelHandler(e) {
+    if (e.wheelDelta > 0) {
+        A_.INPUT.mousewheel = "forward";
+    } else {
+        A_.INPUT.mousewheel = "backward";
+    }
+}

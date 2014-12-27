@@ -161,46 +161,6 @@ A_.SPRITES.Animated = Class.extend({
         // Goes to a frame and begins playing the animation.
         this.animations[name].gotoAndPlay(frame);
     },
-    // MOUSE INTERACTION
-    interactive: function (interacts) {
-        if (typeof interacts === "undefined")
-            return this.sprite.interactive;
-        if (interacts) {
-            var that = this;
-            if (!this.initedInput) {
-                this.sprite.mousedown = function () {
-                    window.console.log("mousedown");
-                    that.leftpressed = true;
-                    that.leftdown = true;
-                };
-                this.sprite.mouseup = function () {
-                    window.console.log("mouseup");
-                    that.leftreleased = true;
-                    that.leftdown = false;
-                };
-                this.sprite.mouseupoutside = function () {
-                    that.leftreleased = true;
-                    that.leftdown = false;
-                };
-                this.sprite.rightdown = function () {
-                    that.rightpressed = true;
-                    that.rightdown = true;
-                };
-                this.sprite.rightup = function () {
-                    that.rightreleased = true;
-                    that.rightdown = false;
-                };
-                this.sprite.rightupoutside = function () {
-                    that.rightreleased = true;
-                    that.rightdown = false;
-                };
-                this.initedInput = true;
-            }
-            this.sprite.interactive = true;
-        } else {
-            this.sprite.interactive = false;
-        }
-    },
     // SPRITE CHILDREN
     addSprite: function (sprite) {
         this.sprites.push(sprite);

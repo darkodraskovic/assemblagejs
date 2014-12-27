@@ -11,7 +11,7 @@ A_.Game = Class.extend({
         this.origin = new PIXI.Point(0, 0);
         this.debug = A_.CONFIG.debug;
 
-        this.initInput();
+        A_.INPUT.addMouseReacivity(this);
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
@@ -34,33 +34,8 @@ A_.Game = Class.extend({
         this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
         A_.renderer = this.renderer;
-    },
-    initInput: function() {
-        var that = this;
-        this.stage.mousedown = function() {
-            that.leftpressed = true;
-            that.leftdown = true;
-        };
-        this.stage.mouseup = function() {
-            that.leftreleased = true;
-            that.leftdown = false;
-        };
-        this.stage.mouseupoutside = function() {
-            that.rightreleased = true;
-            that.rightdown = false;
-        };
-        this.stage.rightdown = function() {
-            that.rightpressed = true;
-            that.rightdown = true;
-        };
-        this.stage.rightup = function() {
-            that.rightreleased = true;
-            that.rightdown = false;
-        };
-        this.stage.rightupoutside = function() {
-            that.rightreleased = true;
-            that.rightdown = false;
-        };
+        // this.sprite is referenced by the A_.INPUT.addMouseReactivity
+        this.sprite = this.stage;
     },
     // LEVEL LOADING
     // Load empty LEVEL
@@ -398,6 +373,7 @@ A_.Game = Class.extend({
         // InteractionData holds all information related to an Interaction event.        
         this.mousePosition.stage = this.stage.getMousePosition().clone();
         this.mousePosition.level = this.level.mousePosition();
+        
     },
     postprocessInput: function() {
         for (var action in A_.INPUT.actions) {
@@ -410,27 +386,20 @@ A_.Game = Class.extend({
         }
 
         _.each(this.level.sprites, function(sprite) {
-            if (sprite.interactive()) {
-                sprite.leftpressed = false;
-                sprite.leftreleased = false;
-                sprite.rightpressed = false;
-                sprite.rightreleased = false;
+            if (sprite.sprite.interactive) {
+                sprite.resetMouseReaction();
             }
         });
 
         _.each(this.level.tiles, function(tile) {
-            if (tile.interactive()) {
-                tile.leftpressed = false;
-                tile.leftreleased = false;
-                tile.rightpressed = false;
-                tile.rightreleased = false;
+            if (tile.sprite.interactive) {
+                tile.resetMouseReaction();
             }
         });
 
-        this.leftpressed = false;
-        this.leftreleased = false;
-        this.rightpressed = false;
-        this.rightreleased = false;
+        this.resetMouseReaction();
+        
+        A_.INPUT.mousewheel = "null";
     },
     manageLevels: function() {
         if (this.destroyLevel) {
@@ -442,14 +411,3 @@ A_.Game = Class.extend({
         }
     }
 });
-
-// TEMPORARY - for debugging purposes only
-window.addEventListener("mousewheel", mouseWheelHandler, false);
-function mouseWheelHandler(e) {
-    var scaleDelta = 0.02;
-    if (e.wheelDelta > 0) {
-        A_.level.setScale(A_.level.scale + scaleDelta);
-    } else {
-        A_.level.setScale(A_.level.scale - scaleDelta);
-    }
-}

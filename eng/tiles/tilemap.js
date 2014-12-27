@@ -50,11 +50,12 @@ A_.TILES.Tilemap = Class.extend({
                 });
             });
         }
-        if (this.layer.interactive) {
+        if (this.layer.mouseReactive) {
             _.each(this.tiles, function(tileCol) {
                 _.each(tileCol, function(tile) {
                     if (tile)
-                        tile.interactive(true);
+//                        tile.interactive(true);
+                        A_.INPUT.addMouseReacivity(tile);
                 });
             });
         }
@@ -89,7 +90,7 @@ A_.TILES.Tilemap = Class.extend({
             this.unsetTile(x, y);
         }
 
-        var tile = this.createTile(gid, x, y);
+        var tile = new A_.TILES.Tile(gid, x, y, this);
         this.setTileInMap(tile, x, y);
         var worldCoords = this.mapToWorld(x, y);
         this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
@@ -136,17 +137,5 @@ A_.TILES.Tilemap = Class.extend({
     },
     mapToWorld: function(x, y) {
         return [x * this.tileW, y * this.tileH];
-    },
-    createTileSprite: function(frameInd) {
-        var frame = new PIXI.Rectangle((frameInd % this.imgCols) * this.tileW,
-                Math.floor(frameInd / this.imgCols) * this.tileH, this.tileW, this.tileH);
-        var tileTexture = new PIXI.Texture(this.baseTexture, frame);
-        var tileSprite = new PIXI.Sprite(tileTexture);
-
-        return tileSprite;
-    },
-    createTile: function(gid, x, y) {
-        var sprite = this.createTileSprite(gid - 1);
-        return new A_.TILES.Tile(gid, sprite, x, y, this);
-    },
+    }
 });

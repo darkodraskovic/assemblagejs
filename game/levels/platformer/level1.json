@@ -44,7 +44,7 @@
              "baked":"false",
              "collision":"true",
              "image":"sci-fi-platformer-tiles-32x32.png",
-             "interactive":"true"
+             "mouseReactive":"true"
             },
          "type":"tilelayer",
          "visible":true,
