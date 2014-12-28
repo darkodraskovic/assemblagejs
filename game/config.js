@@ -66,6 +66,6 @@ platformer_level1 = {
     scripts: ["platformer"],
     map: "level1",
     graphics: ["sci-fi-platformer-tiles-32x32.png", "moving_platform.png","player.png",
-    "Explosion.png"],
+    "Explosion.png", "undead.png"],
     sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"],["jump.wav"]]
 };

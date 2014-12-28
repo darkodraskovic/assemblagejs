@@ -177,7 +177,23 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         }
         // WALL
         else if (response.overlapN.x !== 0) {
-            this.velocity.x = 0;
+            var yTop1 = this.collisionPolygon.getTop() + 2;
+            var yBottom1 = this.collisionPolygon.getBottom() - 2;
+            var yTop2 = other.collisionPolygon.getTop();
+            var yBottom2 = other.collisionPolygon.getBottom();
+            if (yTop1 < yBottom2 && yBottom1 > yTop2) {
+                if (this.velocity.x > 0) {
+                    if (this.x() < other.x()) {
+                        this.onWall();
+                    }
+                }
+                if (this.velocity.x < 0) {
+                    if (this.x() > other.x()) {
+                        this.onWall();
+                    }
+                }
+            }
+
         }
 
         // SLOPE
@@ -223,5 +239,18 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     },
     onGrounded: function() {
 
+    },
+    onWall: function() {
+        this.velocity.x = 0;
+//        window.console.log("wall");
+    },
+    // UTILS
+    flipFacing: function() {
+        if (this.facing === "right") {
+            this.facing = "left";
+        }
+        else {
+            this.facing = "right";
+        }
     }
 });

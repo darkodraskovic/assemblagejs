@@ -40,16 +40,12 @@ A_.TILES.Tile.inject({
     }
 });
 
-// CLASSES
-var Player = A_.SPRITES.Platformer.extend({
-    animSheet: "player.png",
+var Anime = A_.SPRITES.Platformer.extend({
     frame: {w: 32, h: 64},
     bounded: false,
     wrap: true,
-    controlled: true,
     collision: {response: "dynamic", offset: {x: 0, y: 8}, size: {w: 18, h: 46}},
     drawDebugGraphics: false,
-    followee: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.jumpForce = 530;
@@ -67,7 +63,16 @@ var Player = A_.SPRITES.Platformer.extend({
         } else {
             this.setAnimation(this.platformerState);
         }
-    },
+    }
+});
+
+
+
+// CLASSES
+var Player = Anime.extend({
+    animSheet: "player.png",
+    controlled: true,
+    followee: true,
     onJumped: function() {
         this._super();
         A_.game.createSound({
@@ -81,6 +86,74 @@ var Player = A_.SPRITES.Platformer.extend({
             urls: ['grounded.wav'],
             volume: 1
         }).play();
+    }
+});
+
+var Undead = Anime.extend({
+    animSheet: "undead.png",
+    init: function(parent, x, y, props) {
+        this._super(parent, x, y, props);
+        this.controlled = false;
+        this.maxVelocity = new SAT.Vector(150, 600);
+        this.jumpProbability = 25;
+    },
+    onCreation: function() {
+        this._super();
+        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.x(), this.y(), {undead: this});
+    },
+    update: function() {
+        this.applyForce = true;
+        this._super();
+    },
+    onWall: function() {
+        this._super();
+        if (_.random(1, 100) < this.jumpProbability) {
+            this.tryJump = true;
+        }
+        else if (this.platformerState === "grounded") {
+            this.velocity.x = -this.velocity.x;
+            this.x(this.prevX);
+            this.flipFacing();
+        }
+    }
+});
+
+var UndeadProbe = A_.SPRITES.Colliding.extend({
+    bounded: false,
+    collision: {response: "sensor", offset: {x: 0, y: 0}, size: {w: 2, h: 2}},
+    init: function(parent, x, y, props) {
+        this._super(parent, x, y, props);
+
+    },
+    onCreation: function() {
+        this._super();
+        this.addon("PinTo", {name: "probe", parent: this.undead,
+            offsetX: 0, offsetY: this.undead.height() / 2 + 4});
+    },
+    update: function() {
+        this._super();
+    },
+    postupdate: function() {
+        var undead = this.undead;
+        if (!this.collided && undead.platformerState === "grounded") {
+            if (_.random(1, 100) < undead.jumpProbability) {
+                undead.tryJump = true;
+            } else if (_.random(1, 100) > 75){
+                var deltaX = 4;
+                undead.x(undead.prevX);
+                undead.velocity.x = -undead.velocity.x;
+                if (undead.facing === "right") {
+                    undead.facing = "left";
+                    undead.x(undead.x() - deltaX);
+                }
+                else {
+                    undead.facing = "right";
+                    undead.x(undead.x() + deltaX);
+                }
+            }
+        }
+        this._super();
+
     }
 });
 

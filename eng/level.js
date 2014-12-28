@@ -237,12 +237,13 @@ A_.Level = Class.extend({
 });
 
 // TEMPORARY - for debugging purposes only
-//window.addEventListener("mousewheel", mouseWheelHandler, false);
-//function mouseWheelHandler(e) {
-//    var scaleDelta = 0.02;
-//    if (e.wheelDelta > 0) {
-//        A_.level.setScale(A_.level.scale + scaleDelta);
-//    } else {
-//        A_.level.setScale(A_.level.scale - scaleDelta);
-//    }
-//}
+window.addEventListener("mousewheel", mouseWheelHandler, false);
+var scaleDelta = 0.25;
+function mouseWheelHandler(e) {
+    var scaleDelta = 0.02;
+    if (e.wheelDelta > 0) {
+        A_.level.setScale(A_.level.scale + scaleDelta);
+    } else {
+        A_.level.setScale(A_.level.scale - scaleDelta);
+    }
+}

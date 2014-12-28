@@ -44,6 +44,7 @@ A_.SPRITES.ADDONS = {};
  */
 
 A_.SPRITES.ADDONS.PinTo = Class.extend({
+    // props: {name: "name", parent: parent, offsetX: 0, offsetY: 0}
     init: function (sprite, props) {
         if (props) {
             for (var prop in props) {
