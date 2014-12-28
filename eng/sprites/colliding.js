@@ -89,6 +89,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.collisionPolygon = this.createCollisionPolygon(polygon);
         this.setCollisionResponse();
         this.setCollisionDebug();
+        A_.COLLISION.addABB(this);
     },
     setCollisionResponse: function () {
         var collider = A_.collider;
@@ -265,7 +266,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 
         this._super(n);
         this.collisionPolygon.setAngle(this.rotation());
-    },
+    },    
     clear: function () {
         this.removeCollision();
         this._super();

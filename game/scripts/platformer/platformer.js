@@ -86,6 +86,10 @@ var Player = Anime.extend({
             urls: ['grounded.wav'],
             volume: 1
         }).play();
+    },
+    onWall: function () {
+        this._super();
+        window.console.log("wall");
     }
 });
 
@@ -156,6 +160,10 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
 
     }
 });
+A_.game.preupdate = function () {
+    if (this.leftpressed) {
+    }
+}
 
 var Platform = A_.SPRITES.Colliding.extend({
     animSheet: "moving_platform.png",

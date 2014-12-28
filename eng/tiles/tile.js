@@ -32,6 +32,8 @@ A_.TILES.Tile = Class.extend({
         this.collisionPolygon.pos.y = this.y();
         A_.collider.collisionStatics.push(this);
 //        A_.collider.collisionTiles.push(this);
+
+        A_.COLLISION.addABB(this);
     },
     x: function() {
         return this.sprite.position.x;
@@ -56,7 +58,7 @@ A_.TILES.Tile = Class.extend({
         this.containedPoint.y = y;
         return SAT.pointInPolygon(this.containedPoint, this.collisionPolygon);
     },
-    destroy: function () {
+    destroy: function() {
         A_.game.tilesToDestroy.push(this);
     },
     update: function() {

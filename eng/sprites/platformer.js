@@ -49,9 +49,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         // SLOPE & PLATFORM
         if (!this.slope) {
             var sprite;
-            var y = this.collisionPolygon.getBottom() + this.scanDepth;
-            var xL = this.collisionPolygon.getLeft() - 2;
-            var xR = this.collisionPolygon.getRight() + 2;
+            var y = this.abbBottom() + this.scanDepth;
+            var xL = this.abbLeft() - 2;
+            var xR = this.abbRight() + 2;
             sprite = A_.level.findSpriteContainingPoint(xL, y) || A_.level.findSpriteContainingPoint(xR, y);
             if (sprite && sprite.slope) {
                 this.slope = sprite;
@@ -88,7 +88,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             this.tryJump = false;
         }
 
-//        window.console.log(this.slope !== null);
         this._super();
 
         // STATES
@@ -97,7 +96,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         } else if (this.velocity.y < -this.gravity.y) {
             this.platformerState = "jumping";
         }
-//        if (this.velocity.x > this.friction.x || this.velocity.x < -this.friction.x) {
         if (this.velocity.x !== 0) {
             this.movingState = "moving";
         } else {
@@ -152,7 +150,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (response.overlapN.y !== 0) {
             // FLOOR
             if (response.overlapN.y === 1) {
-                if (this.collisionPolygon.getBottom() < other.collisionPolygon.getTop() + 2
+                if (this.abbBottom() < other.abbTop() + 2
                         && this.velocity.y > 0) {
                     this.ground();
                 }
@@ -161,11 +159,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             else {
                 if (this.bounciness === 0) {
                     if (this.platformerState !== "grounded") {
-                        var xL1 = this.collisionPolygon.getLeft() + 2;
-                        var xR1 = this.collisionPolygon.getRight() - 2;
-                        var xL2 = other.collisionPolygon.getLeft();
-                        var xR2 = other.collisionPolygon.getRight();
-                        if (xL1 < xR2 && xR1 > xL2) {
+                        if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2)) {
                             if (this.velocity.y < 0) {
                                 this.velocity.y = 0;
                             }
@@ -177,23 +171,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         }
         // WALL
         else if (response.overlapN.x !== 0) {
-            var yTop1 = this.collisionPolygon.getTop() + 2;
-            var yBottom1 = this.collisionPolygon.getBottom() - 2;
-            var yTop2 = other.collisionPolygon.getTop();
-            var yBottom2 = other.collisionPolygon.getBottom();
-            if (yTop1 < yBottom2 && yBottom1 > yTop2) {
-                if (this.velocity.x > 0) {
-                    if (this.x() < other.x()) {
-                        this.onWall();
-                    }
-                }
-                if (this.velocity.x < 0) {
-                    if (this.x() > other.x()) {
-                        this.onWall();
-                    }
-                }
+            if (this.abbOverlapsSegment("y", other.abbTop() + 2, other.abbBottom() - 2)) {
+                this.onWall();
             }
-
         }
 
         // SLOPE
@@ -201,11 +181,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             if (!other.slopeSet) {
                 other.setSlope();
             }
-            var y = this.collisionPolygon.getBottom();
-            var xL = this.collisionPolygon.getLeft() - 2;
-            var xR = this.collisionPolygon.getRight() + 2;
-
-            if (other.containsPoint(xL, y) || other.containsPoint(xR, y)) {
+            if (other.containsPoint(this.abbLeft() - 2, this.abbBottom()) ||
+                    other.containsPoint(this.abbRight() + 2, this.abbBottom())) {
                 this.ground();
                 this.x(this.x() + response.overlapV.x);
                 this.slope = other;
@@ -214,8 +191,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
         // PLATFORM
         if (other.platform) {
-            if (other.collisionPolygon.getLeft() < this.collisionPolygon.getRight() &&
-                    other.collisionPolygon.getRight() > this.collisionPolygon.getLeft()) {
+            if (this.abbOverlapsSegment("x", other.abbLeft(), other.abbRight())) {
                 if (this.y() < other.y()) {
                     this.platform = other;
                     this.velocity.y = 0;
