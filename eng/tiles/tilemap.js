@@ -15,15 +15,16 @@ A_.TILES.Tilemap = Class.extend({
 
         this.tiles = [];
 
-        if (this.layer.collision) {
+    },
+    createTilelayer: function(layerData) {
+        if (this.layer.collisionResponse) {
             this.collision = {};
             this.collision.size = {};
             this.collision.size.w = this.tileW;
             this.collision.size.h = this.tileH;
-            this.collision.response = "static";
+            this.collision.response = this.layer.collisionResponse;
         }
-    },
-    createTilelayer: function(layerData) {
+        
         this.mapW = layerData.length;
         this.mapH = layerData[0].length;
         for (var i = 0; i < this.mapW; i++) {
@@ -40,7 +41,12 @@ A_.TILES.Tilemap = Class.extend({
                 }
             }
         }
-        if (this.layer.collision) {
+
+//        this.applyLayerAttributesToTiles();
+        this.layer.tilemap = this;
+    },
+    applyLayerAttributesToTiles: function() {
+        if (this.collision) {
             var w = this.tileW;
             var h = this.tileH;
             _.each(this.tiles, function(tileCol) {
@@ -68,9 +74,12 @@ A_.TILES.Tilemap = Class.extend({
             });
         }
 
-        this.layer.tilemap = this;
     },
     getTile: function(x, y) {
+        if (x < 0 || x >= this.mapW)
+            return null;
+        if (y < 0 || y >= this.mapH)
+            return null;
         return this.tiles[x][y];
     },
     setTile: function(gid, x, y) {
@@ -94,6 +103,15 @@ A_.TILES.Tilemap = Class.extend({
         this.setTileInMap(tile, x, y);
         var worldCoords = this.mapToWorld(x, y);
         this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
+
+        if (this.collision)
+            tile.setCollision(this.tileW, this.tileH);
+        if (this.layer.mouseReactive)
+            A_.INPUT.addMouseReacivity(tile);
+        if (this.layer.active)
+//            A_.level.tiles.push(tile);
+            A_.game.tilesToCreate.push(tile);
+
         return tile;
     },
     setTileInMap: function(tile, x, y) {
@@ -118,11 +136,17 @@ A_.TILES.Tilemap = Class.extend({
             // Pixi
             this.layer.removeChild(sprite);
             // Collisions
-            if (this.layer.collision) {
+            if (this.collision) {
 //                var ind = A_.collider.collisionTiles.indexOf(tile);
 //                A_.collider.collisionTiles.splice(ind, 1);
+                var ind;
                 ind = A_.collider.collisionStatics.indexOf(tile);
-                A_.collider.collisionStatics.splice(ind, 1);
+                if (ind > -1)
+                    A_.collider.collisionStatics.splice(ind, 1);
+                
+                ind = A_.collider.collisionDynamics.indexOf(tile);
+                if (ind > -1)
+                    A_.collider.collisionDynamics.splice(ind, 1);
             }
             if (this.layer.active) {
                 ind = A_.level.tiles.indexOf(tile);

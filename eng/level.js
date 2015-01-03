@@ -219,16 +219,16 @@ A_.Level = Class.extend({
         });
         return sprite;
     },
+    findSpritesByClass: function(spriteClass) {
+        return _.filter(this.sprites, function(sprite) {
+            return sprite instanceof spriteClass;
+        });
+    },
     findSpriteContainingPoint: function(x, y) {
         var sprite = _.find(A_.collider.collisionSprites, function(sprite) {
             return sprite.containsPoint(x, y);
         });
         return sprite;
-    },
-    findSpritesByClass: function(spriteClass) {
-        return _.filter(this.sprites, function(sprite) {
-            return sprite instanceof spriteClass;
-        });
     },
     // TODO
     findSpriteByID: function() {

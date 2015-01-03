@@ -81,8 +81,15 @@ A_.TILES.createTiledMap = function(game, mapData) {
 
         // TODO: rewrite this to be automatic and to use eval
         if (layersData[i]["properties"]) {
-            if (layersData[i]["properties"]["collision"])
-                layer.collision = true;
+//            if (layersData[i]["properties"]["collision"])
+//                layer.collision = true;
+            if (layersData[i]["properties"]["collisionResponse"]) {
+                layer.collisionResponse = eval(layersData[i]["properties"]["collisionResponse"]);
+                if (!layer.collisionResponse === "static" || !layer.collisionResponse === "sensor")
+                {
+                    layer.collisionResponse = "static";
+                }
+            }
             if (layersData[i]["properties"]["active"])
                 layer.active = true;
             if (layersData[i]["properties"]["mouseReactive"])

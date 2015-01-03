@@ -40,6 +40,7 @@
             {
              "baked":"true",
              "collision":"true",
+             "collisionResponse":"\"static\"",
              "image":"sci-fi-platformer-tiles-32x32.png"
             },
          "type":"tilelayer",
@@ -58,6 +59,7 @@
              "active":"true",
              "baked":"false",
              "collision":"true",
+             "collisionResponse":"\"static\"",
              "image":"sci-fi-platformer-tiles-32x32.png",
              "mouseReactive":"true"
             },
@@ -99,8 +101,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":0,
-                 "x":1128,
-                 "y":120
+                 "x":80,
+                 "y":176
                 }, 
                 {
                  "height":0,

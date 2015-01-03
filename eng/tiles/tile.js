@@ -30,7 +30,15 @@ A_.TILES.Tile = Class.extend({
         this.collisionPolygon = collisionPolygon;
         this.collisionPolygon.pos.x = this.x();
         this.collisionPolygon.pos.y = this.y();
-        A_.collider.collisionStatics.push(this);
+        this.collision = {};
+        if (this.tilemap.collision.response === "sensor") {
+            A_.collider.collisionDynamics.push(this);
+            this.collision.response = "sensor";
+        }
+        else {
+            A_.collider.collisionStatics.push(this);
+            this.collision.response = "static";
+        }
 //        A_.collider.collisionTiles.push(this);
 
         A_.COLLISION.addABB(this);
@@ -51,6 +59,9 @@ A_.TILES.Tile = Class.extend({
         return this.h;
     },
     collideWithDynamic: function(other, response) {
+        
+    },
+    collideWithStatic: function(other, response) {
 
     },
     containsPoint: function(x, y) {

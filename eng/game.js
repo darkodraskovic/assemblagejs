@@ -20,8 +20,8 @@ A_.Game = Class.extend({
         this.level = null;
         this.spritesToDestroy = [];
         this.spritesToCreate = [];
-        this.tilesToDestroy = [];
         this.tilesToCreate = [];
+        this.tilesToDestroy = [];
 
         this.cameraOptions = A_.CONFIG.camera;
 
@@ -164,7 +164,9 @@ A_.Game = Class.extend({
         this.levelToLoad = null;
         this.onLevelLoaded = null;
 
-        this.createSprites();
+//        this.createSprites();
+        this.createEntities(this.spritesToCreate);
+        this.createEntities(this.tilesToCreate);
         this.isRunning = true;
         this.onLevelStarted();
     },
@@ -220,14 +222,34 @@ A_.Game = Class.extend({
         sprite.onCreation();
         return sprite;
     },
-    createSprites: function() {
-        var that = this;
-        _.each(this.spritesToCreate, function(sprite) {
-            that.level.sprites.push(sprite);
-            // TODO: Find out why this does not work.
-//            sprite.onCreation();
+//    createSprites: function() {
+//        var that = this;
+//        _.each(this.spritesToCreate, function(sprite) {
+//            that.level.sprites.push(sprite);
+//            // TODO: Find out why this does not work.
+////            sprite.onCreation();
+//        });
+//        this.spritesToCreate.length = 0;
+//    },
+    createTile: function(tileLayer, gid, x, y) {
+        if (_.isString(tileLayer)) {
+            tileLayer = A_.level.findLayerByName(tileLayer)
+        }
+        if (!tileLayer) {
+            return;
+        }
+        var tile = tileLayer.tilemap.setTile(gid, x, y);
+        return tile;
+    },
+    createEntities: function(entities) {
+        if (!entities.length)
+            return;
+        var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
+                this.level.sprites : this.level.tiles;
+        _.each(entities, function(entity) {
+            levelEntities.push(entity);
         });
-        this.spritesToCreate.length = 0;
+        entities.length = 0;
     },
 //    destroySprite: function (sprite) {
 //        
@@ -348,7 +370,9 @@ A_.Game = Class.extend({
 //        this.destroySprites();
         this.destroyEntities(this.tilesToDestroy);
         this.destroyEntities(this.spritesToDestroy);
-        this.createSprites();
+//        this.createSprites();
+        this.createEntities(this.tilesToCreate);
+        this.createEntities(this.spritesToCreate);
     },
     render: function() {
         _.each(this.level.spriteLayers, function(layer) {

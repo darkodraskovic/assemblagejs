@@ -175,7 +175,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                 this.onWall();
             }
         }
-
         // SLOPE
         if (other.slope) {
             if (!other.slopeSet) {
@@ -188,7 +187,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                 this.slope = other;
             }
         }
-
         // PLATFORM
         if (other.platform) {
             if (this.abbOverlapsSegment("x", other.abbLeft(), other.abbRight())) {

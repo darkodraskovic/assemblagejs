@@ -139,6 +139,7 @@ A_.INPUT.addMouseReacivity = function(entity) {
         var that = entity;
         entity.sprite.mousedown = function() {
             that.leftpressed = true;
+//            window.console.log("left pressed");
             that.leftdown = true;
         };
         entity.sprite.mouseup = function() {

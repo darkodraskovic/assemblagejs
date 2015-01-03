@@ -172,6 +172,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     collideWithDynamic: function (other, response) {
         this.prevOverlapN = response.overlapN;
         this.collided = true;
+        
         var thisResponse = this.collision.response;
         var otherResponse = other.collision.response;
 

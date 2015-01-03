@@ -3,7 +3,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     bounciness: 0.5,
     angularSpeed: 0,
     movementAngle: 0,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
@@ -15,7 +15,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.maxSpeed = this.maxVelocity.len();
         this.bounced = {horizontal: false, vertical: false};
     },
-    update: function () {
+    update: function() {
         this._super();
 
         this.calculateVelocity();
@@ -28,7 +28,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.isRotating = false;
         }
     },
-    calculateVelocity: function () {
+    calculateVelocity: function() {
         if (this.moveForward) {
             this.movementAngle = this.rotation();
         }
@@ -48,7 +48,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.calcAcceleration.x *= cos;
             this.calcAcceleration.y *= sin;
         }
-        
+
         if (this.gravity.x === 0) {
             if (this.velocity.x > 0) {
                 this.velocity.x -= this.calcFriction.x;
@@ -102,7 +102,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.velocity.y = this.velocity.y.clamp(-this.maxVelocity.y, this.maxVelocity.y);
         }
     },
-    applyVelocity: function () {
+    applyVelocity: function() {
         this.positionRelative(this.velocity.x * A_.game.dt, this.velocity.y * A_.game.dt);
 
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
@@ -111,21 +111,21 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.isMoving = false;
         }
     },
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
         this.processBounce(response.overlapN);
         this._super(other, response);
     },
-    processBounce: function (currentOverlapN) {
+    processBounce: function(currentOverlapN) {
         // This method must be called before the collide* _super in order
         // to fetch the correct this.previousOverlapN
         // BUG: the sprite does not bounce in tilemap corners
         if (currentOverlapN.x !== 0 && Math.abs(this.velocity.x) > this.calcAcceleration.x) {
-            if (this.prevOverlapN.y === 0)
-                this.bounced.horizontal = true;
+//            if (this.prevOverlapN.y === 0) {
+            this.bounced.horizontal = true;
         }
         if (currentOverlapN.y !== 0 && Math.abs(this.velocity.y) > this.calcAcceleration.y) {
-            if (this.prevOverlapN.x === 0)
-                this.bounced.vertical = true;
+//            if (this.prevOverlapN.x === 0)
+            this.bounced.vertical = true;
         }
     }
 });

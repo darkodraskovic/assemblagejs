@@ -22,6 +22,7 @@ A_.TILES.Tile.inject({
         else {
             this.turnOn();
         }
+//        window.console.log(this.turned);
     },
     update: function() {
         this._super();
@@ -32,10 +33,18 @@ A_.TILES.Tile.inject({
                 volume: 1
             }).play();
         }
-        if (this.rightpressed) {
-            A_.game.createSprite(Explosion, A_.level.findLayerByName("Thrus"),
-                    this.x() + this.width() / 2, this.y() + this.height() / 2);
-            this.destroy();
+//        if (this.rightpressed) {
+//            A_.game.createSprite(Explosion, A_.level.findLayerByName("Thrus"),
+//                    this.x() + this.width() / 2, this.y() + this.height() / 2);
+//            this.destroy();
+//        }
+        if (A_.game.rightdown) {
+            var mpl = A_.INPUT.mousePosition.level;
+            if (this.containsPoint(mpl.x, mpl.y)) {
+                A_.game.createSprite(Explosion, A_.level.findLayerByName("Thrus"),
+                        this.x() + this.width() / 2, this.y() + this.height() / 2);
+                this.destroy();
+            }
         }
     }
 });
@@ -73,6 +82,9 @@ var Player = Anime.extend({
     animSheet: "player.png",
     controlled: true,
     followee: true,
+    onCreation: function() {
+        this.thrus = A_.level.findLayerByName("Thrus");
+    },
     onJumped: function() {
         this._super();
         A_.game.createSound({
@@ -87,10 +99,27 @@ var Player = Anime.extend({
             volume: 1
         }).play();
     },
-    onWall: function () {
+    onWall: function() {
         this._super();
-        window.console.log("wall");
+//        window.console.log("wall");
+    },
+    update: function() {
+        if (A_.game.leftdown) {
+            var mpl = A_.INPUT.mousePosition.level;
+            var tilemap = this.thrus.tilemap;
+            var x = Math.floor(mpl.x / tilemap.tileW);
+            var y = Math.floor(mpl.y / tilemap.tileH);
+            if (!tilemap.getTile(x, y)) {
+                A_.game.createTile(this.thrus, 737, x, y);
+            }
+        }
+        this._super();
     }
+//    collideWithDynamic: function (other, response) {
+//        if (other.collision.response === "sensor") {
+//            window.console.log("I am being sensed");
+//        }
+//    }
 });
 
 var Undead = Anime.extend({
@@ -142,7 +171,7 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
         if (!this.collided && undead.platformerState === "grounded") {
             if (_.random(1, 100) < undead.jumpProbability) {
                 undead.tryJump = true;
-            } else if (_.random(1, 100) > 75){
+            } else if (_.random(1, 100) > 75) {
                 var deltaX = 4;
                 undead.x(undead.prevX);
                 undead.velocity.x = -undead.velocity.x;
@@ -160,7 +189,7 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
 
     }
 });
-A_.game.preupdate = function () {
+A_.game.preupdate = function() {
     if (this.leftpressed) {
     }
 }
