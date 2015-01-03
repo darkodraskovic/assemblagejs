@@ -33,11 +33,6 @@ A_.TILES.Tile.inject({
                 volume: 1
             }).play();
         }
-//        if (this.rightpressed) {
-//            A_.game.createSprite(Explosion, A_.level.findLayerByName("Thrus"),
-//                    this.x() + this.width() / 2, this.y() + this.height() / 2);
-//            this.destroy();
-//        }
         if (A_.level.rightdown) {
             var mpl = A_.INPUT.mousePosition.level;
             if (this.containsPoint(mpl.x, mpl.y)) {
@@ -114,12 +109,12 @@ var Player = Anime.extend({
             }
         }
         this._super();
+    },
+    collideWithDynamic: function (other, response) {
+        if (other.collision.response === "sensor") {
+            window.console.log("I am being sensed");
+        }
     }
-//    collideWithDynamic: function (other, response) {
-//        if (other.collision.response === "sensor") {
-//            window.console.log("I am being sensed");
-//        }
-//    }
 });
 
 var Undead = Anime.extend({

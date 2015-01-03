@@ -23,6 +23,9 @@ A_.TILES.Tilemap = Class.extend({
             this.collision.size.w = this.tileW;
             this.collision.size.h = this.tileH;
             this.collision.response = this.layer.collisionResponse;
+            if (this.collision.response !== "sensor" && this.collision.response !== "static") {
+                this.collision.response = "static";
+            }
         }
         
         this.mapW = layerData.length;
@@ -60,7 +63,6 @@ A_.TILES.Tilemap = Class.extend({
             _.each(this.tiles, function(tileCol) {
                 _.each(tileCol, function(tile) {
                     if (tile)
-//                        tile.interactive(true);
                         A_.INPUT.addMouseReacivity(tile);
                 });
             });
@@ -85,7 +87,7 @@ A_.TILES.Tilemap = Class.extend({
     setTile: function(gid, x, y) {
         if (this.layer.baked)
             return;
-        if (typeof gid === "undefined" || typeof x === "undefined" || typeof y === "undefined")
+        if (!_.isNumber(gid) || !_.isNumber(x) || !_.isNumber(y))
             return;
         if (gid <= 0 || gid >= this.imgCols * this.imgRows)
             return;
@@ -109,7 +111,6 @@ A_.TILES.Tilemap = Class.extend({
         if (this.layer.mouseReactive)
             A_.INPUT.addMouseReacivity(tile);
         if (this.layer.active)
-//            A_.level.tiles.push(tile);
             A_.game.tilesToCreate.push(tile);
 
         return tile;
@@ -118,11 +119,11 @@ A_.TILES.Tilemap = Class.extend({
         this.tiles[x][y] = tile;
     },
     setTileInWorld: function(tile, x, y) {
-        var tileSprite = tile.sprite;
-        tileSprite.position.x = x;
-        tileSprite.position.y = y;
+        var sprite = tile.sprite;
+        sprite.position.x = x;
+        sprite.position.y = y;
 
-        this.layer.addChild(tileSprite);
+        this.layer.addChild(sprite);
     },
     unsetTile: function(x, y) {
         if (this.layer.baked)
@@ -137,9 +138,8 @@ A_.TILES.Tilemap = Class.extend({
             this.layer.removeChild(sprite);
             // Collisions
             if (this.collision) {
-//                var ind = A_.collider.collisionTiles.indexOf(tile);
-//                A_.collider.collisionTiles.splice(ind, 1);
                 var ind;
+                
                 ind = A_.collider.collisionStatics.indexOf(tile);
                 if (ind > -1)
                     A_.collider.collisionStatics.splice(ind, 1);
@@ -148,6 +148,7 @@ A_.TILES.Tilemap = Class.extend({
                 if (ind > -1)
                     A_.collider.collisionDynamics.splice(ind, 1);
             }
+            // Active tiles
             if (this.layer.active) {
                 ind = A_.level.tiles.indexOf(tile);
                 A_.level.tiles.splice(ind, 1);
@@ -156,6 +157,7 @@ A_.TILES.Tilemap = Class.extend({
             this.tiles[x][y] = null;
         }
     },
+    // UTILS
     worldToMap: function(x, y) {
         return [Math.round(x / this.tileW), Math.round(y / this.tileH)];
     },

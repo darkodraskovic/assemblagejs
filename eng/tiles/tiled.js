@@ -1,46 +1,3 @@
-function fetchAssetListFromMapData(mapData) {
-    var assetsToLoad = [];
-    _.each(mapData["tilesets"], function(tileset) {
-        var img = tileset["image"];
-        if (img.indexOf("/") > -1) {
-            img = img.substring(img.lastIndexOf("/") + 1);
-        }
-        assetsToLoad.push("assets/" + img);
-    });
-
-    var layersData = mapData["layers"];
-    var classes = [];
-    for (i = 0; i < layersData.length; i++) {
-        // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld
-        if (layersData[i]["type"] === "imagelayer") {
-            var img = layersData[i]["image"];
-            if (img.indexOf("/") > -1) {
-                img = img.substring(img.lastIndexOf("/") + 1);
-            }
-            assetsToLoad.push("assets/" + img);
-        } else if (layersData[i]["type"] === "objectgroup") {
-            _.each(layersData[i]["objects"], function(o) {
-                if (!o["polygon"] && o["type"] !== "Rectangle") {
-                    classes.push(o["name"]);
-                }
-            });
-        }
-    }
-    classes = _.uniq(classes);
-
-    _.each(classes, function(c) {
-        var asset = eval(c).prototype.animSheet;
-        if (!asset) {
-            asset = eval(c).prototype.image;
-        }
-        if (asset.indexOf("/") > -1) {
-            asset = asset.substring(asset.lastIndexOf("/") + 1);
-        }
-        assetsToLoad.push("assets/" + asset);
-    });
-    return assetsToLoad;
-}
-
 A_.TILES.createTiledMap = function(game, mapData) {
     var collider = game.collider;
 
@@ -81,8 +38,6 @@ A_.TILES.createTiledMap = function(game, mapData) {
 
         // TODO: rewrite this to be automatic and to use eval
         if (layersData[i]["properties"]) {
-//            if (layersData[i]["properties"]["collision"])
-//                layer.collision = true;
             if (layersData[i]["properties"]["collisionResponse"]) {
                 layer.collisionResponse = eval(layersData[i]["properties"]["collisionResponse"]);
                 if (!layer.collisionResponse === "static" || !layer.collisionResponse === "sensor")
@@ -239,4 +194,4 @@ A_.TILES.createTiledMap = function(game, mapData) {
             }
         }
     }
-}
+};

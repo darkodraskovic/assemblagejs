@@ -20,26 +20,23 @@ A_.TILES.Tile = Class.extend({
     },
     setCollision: function(w, h) {
         this.collides = true;
-        var collisionPolygon;
 
+        var collisionPolygon;
         var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
         collisionPolygon = box.toPolygon();
         collisionPolygon.w = box.w;
         collisionPolygon.h = box.h;
-
         this.collisionPolygon = collisionPolygon;
         this.collisionPolygon.pos.x = this.x();
         this.collisionPolygon.pos.y = this.y();
-        this.collision = {};
-        if (this.tilemap.collision.response === "sensor") {
+        
+        this.collision = this.tilemap.collision;
+        if (this.collision.response === "sensor") {
             A_.collider.collisionDynamics.push(this);
-            this.collision.response = "sensor";
         }
         else {
             A_.collider.collisionStatics.push(this);
-            this.collision.response = "static";
         }
-//        A_.collider.collisionTiles.push(this);
 
         A_.COLLISION.addABB(this);
     },
@@ -59,7 +56,7 @@ A_.TILES.Tile = Class.extend({
         return this.h;
     },
     collideWithDynamic: function(other, response) {
-        
+
     },
     collideWithStatic: function(other, response) {
 
