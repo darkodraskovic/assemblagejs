@@ -49,7 +49,7 @@ var Player = A_.SPRITES.Kinematic.extend({
             this.acceleration.x = this.acceleration.y = 0;            
         }
 
-        if (A_.game.leftpressed) {
+        if (A_.level.leftpressed) {
             this.shootBullet();
         }
 
@@ -86,13 +86,13 @@ var Laser = A_.SPRITES.Animated.extend({
         this.sine = this.addon("Sine", sineProps);
     },
     update: function () {
-        if (A_.game.rightpressed) {
+        if (A_.level.rightpressed) {
             this.toggleFire("on");
         }
-        if (A_.game.rightreleased) {
+        if (A_.level.rightreleased) {
             this.toggleFire("off");
         }
-        if (A_.game.rightdown) {
+        if (A_.level.rightdown) {
             this.width(A_.UTILS.distanceTo(this.positionLevel(), A_.INPUT.mousePosition.level));
         }
 

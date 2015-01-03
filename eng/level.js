@@ -4,6 +4,10 @@ A_.Level = Class.extend({
     scale: 1,
     init: function() {
         this.container = new PIXI.DisplayObjectContainer();
+        // this.sprite is referenced by the A_.INPUT.addMouseReactivity
+        this.sprite = this.container;
+        A_.INPUT.addMouseReacivity(this);
+
 //        this.followee = null;
         this.sprites = [];
         this.tiles = [];
@@ -12,6 +16,12 @@ A_.Level = Class.extend({
         this.imageLayers = [];
         this.layers = [];
         this.debugLayer = null;
+
+        this.origin = new PIXI.Point(0, 0);
+        
+        A_.game.stage.addChild(this.container);
+        this.width = A_.game.screen.width;
+        this.height = A_.game.screen.height;
     },
     createEmptyLayer: function(name) {
         var layer = new PIXI.DisplayObjectContainer();
@@ -52,6 +62,17 @@ A_.Level = Class.extend({
         var layer = this.createEmptyLayer(name);
         this.addDebugLayer(layer);
         return layer;
+    },
+    createDummyLayer: function() {
+        var layer = this.createEmptyLayer();
+        var text = new PIXI.Text("Level loaded :)", {font: "Bold 50px Courier New", fill: "Black",
+            stroke: "LightGrey", strokeThickness: 0,
+            dropShadow: true, dropShadowColor: '#444444', dropShadowAngle: Math.PI / 4, dropShadowDistance: 4});
+        layer.addChild(text);
+        text.anchor = new PIXI.Point(0.5, 0.5);
+        text.position.x = A_.game.renderer.width / 2;
+        text.position.y = A_.game.renderer.height / 2;
+        this.addLayer(layer);
     },
     // LAYER MANAGEMENT
     addLayer: function(layer) {
@@ -111,8 +132,8 @@ A_.Level = Class.extend({
             this.processParallax(x, y);
             this.processScale();
 
-          this.container.position.x = Math.round(this.container.position.x);
-          this.container.position.y = Math.round(this.container.position.y);
+            this.container.position.x = Math.round(this.container.position.x);
+            this.container.position.y = Math.round(this.container.position.y);
         } else {
             return this.container.position;
         }

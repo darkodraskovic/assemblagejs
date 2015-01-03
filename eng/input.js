@@ -130,7 +130,7 @@ window.addEventListener("keyup", function(event) {
 /**************************************************************************/
 
 A_.INPUT.mousePosition = {};
-A_.INPUT.mousePosition.stage = {};
+A_.INPUT.mousePosition.screen = {};
 A_.INPUT.mousePosition.level = {};
 A_.INPUT.mousewheel = null;
 
@@ -195,8 +195,8 @@ window.addEventListener("mousewheel", A_.INPUT.processMouseWheel, false);
 
 A_.INPUT.process = function() {
     var stageMousePosition = A_.game.stage.getMousePosition().clone();
-    this.mousePosition.stage.x = stageMousePosition.x;
-    this.mousePosition.stage.y = stageMousePosition.y;
+    this.mousePosition.screen.x = stageMousePosition.x;
+    this.mousePosition.screen.y = stageMousePosition.y;
     this.mousePosition.level = A_.level.mousePosition(stageMousePosition);
 };
 A_.INPUT.postprocess = function() {
@@ -217,7 +217,7 @@ A_.INPUT.postprocess = function() {
         }
     });
 
-    A_.game.resetMouseReaction();
+    A_.level.resetMouseReaction();
 
     this.mousewheel = "null";
 };

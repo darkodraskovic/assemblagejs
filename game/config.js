@@ -25,6 +25,11 @@ A_.CONFIG.renderer = {
     transparent: false,
     resolution: 1
 };
+A_.CONFIG.screen = {
+    width: 800,
+    height: 600,
+    color: 0x757575
+};
 
 var level1 = {
     name: "level1",

@@ -1,14 +1,14 @@
 // START
-//A_.game.loadEmptyLevel();
+//A_.game.loadGenericLevel();
 
-//A_.game.loadTiledLevel(level2);
+A_.game.loadTiledLevel(level2);
 
-//A_.game.loadEmptyLevel(farer1);
+//A_.game.loadGenericLevel(farer1);
 
-//A_.game.loadEmptyLevel(rot1);
+//A_.game.loadGenericLevel(rot1);
 
 //PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
-A_.game.loadTiledLevel(platformer_level1);
+//A_.game.loadTiledLevel(platformer_level1);
 
 
 

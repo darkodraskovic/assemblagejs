@@ -267,7 +267,7 @@ A_.SPRITES.Animated = Class.extend({
         this.position(this.x() + x, this.y() + y);
     },
     positionLevel: function () {
-        return A_.level.container.toLocal(A_.game.origin, this.sprite);
+        return A_.level.container.toLocal(A_.level.origin, this.sprite);
 //        return A_.level.container.toLocal(A_.game.origin, this.sprite).clone();
     },
     size: function (w, h) {

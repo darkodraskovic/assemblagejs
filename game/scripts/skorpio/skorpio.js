@@ -79,10 +79,10 @@ var Player = Anime.extend({
         } else
             this.facing = "up";
 
-        if (A_.game.leftpressed) {
+        if (A_.level.leftpressed) {
             this.shootBullet();
         }
-        if (A_.game.rightpressed) {
+        if (A_.level.rightpressed) {
             this.shootLaser();
         }
         this._super();
@@ -259,7 +259,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.tip.x = this.x() + Math.cos(this.rotation()) * this.width();
         this.tip.y = this.y() + Math.sin(this.rotation()) * this.width();
 
-        if (A_.game.rightreleased) {
+        if (A_.level.rightreleased) {
             if (this.laserTip) {
                 if (this.laserTip.fire)
                     this.laserTip.fire.destroy();

@@ -38,7 +38,7 @@ A_.TILES.Tile.inject({
 //                    this.x() + this.width() / 2, this.y() + this.height() / 2);
 //            this.destroy();
 //        }
-        if (A_.game.rightdown) {
+        if (A_.level.rightdown) {
             var mpl = A_.INPUT.mousePosition.level;
             if (this.containsPoint(mpl.x, mpl.y)) {
                 A_.game.createSprite(Explosion, A_.level.findLayerByName("Thrus"),
@@ -104,7 +104,7 @@ var Player = Anime.extend({
 //        window.console.log("wall");
     },
     update: function() {
-        if (A_.game.leftdown) {
+        if (A_.level.leftdown) {
             var mpl = A_.INPUT.mousePosition.level;
             var tilemap = this.thrus.tilemap;
             var x = Math.floor(mpl.x / tilemap.tileW);

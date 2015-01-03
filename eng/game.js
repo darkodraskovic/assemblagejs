@@ -1,45 +1,41 @@
 A_.Game = Class.extend({
-    scale: 1,
-    screenW: 800,
-    screenH: 600,
-    stageColor: 0x757575,
     isRunning: false,
-    mousePosition: {stage: {x: 0, y: 0}, level: {x: 0, y: 0}},
     init: function() {
         this.createRenderer();
 
-        this.origin = new PIXI.Point(0, 0);
-        this.debug = A_.CONFIG.debug;
-
-        A_.INPUT.addMouseReacivity(this);
-
-        this.time = new Date().getTime();
-        this.dt = new Date().getTime();
-
+        // Level management
         this.levels = [];
         this.level = null;
-        this.spritesToDestroy = [];
+
+        // Entity management
         this.spritesToCreate = [];
+        this.spritesToDestroy = [];
         this.tilesToCreate = [];
         this.tilesToDestroy = [];
 
+        // Sound management
+        this.sounds = [];
+
+        this.debug = A_.CONFIG.debug;
         this.cameraOptions = A_.CONFIG.camera;
 
-        this.sounds = [];
+        this.time = new Date().getTime();
+        this.dt = new Date().getTime();
+        // Cf. run.js
         requestAnimFrame(runGame);
     },
     createRenderer: function() {
         this.rendererOptions = A_.CONFIG.renderer;
-        this.stage = new PIXI.Stage(this.stageColor);
-        this.renderer = PIXI.autoDetectRenderer(this.screenW, this.screenH, this.rendererOptions);
+        this.screen = A_.CONFIG.screen;
+
+        this.stage = new PIXI.Stage(this.screen.color);
+        this.renderer = PIXI.autoDetectRenderer(this.screen.width, this.screen.height, this.rendererOptions);
         document.body.appendChild(this.renderer.view);
         A_.renderer = this.renderer;
-        // this.sprite is referenced by the A_.INPUT.addMouseReactivity
-        this.sprite = this.stage;
     },
     // LEVEL LOADING
-    // Load empty LEVEL
-    loadEmptyLevel: function(level) {
+    loadGenericLevel: function(level) {
+        this.levelType = "generic";
         if (!level) {
             level = {
                 name: "empty",
@@ -52,7 +48,6 @@ A_.Game = Class.extend({
         }
         this.levels.push(level);
         this.levelToLoad = level;
-        this.onLevelLoaded = this.onEmptyLevelLoaded;
 
         if (this.level) {
             this.destroyLevel = true;
@@ -62,47 +57,41 @@ A_.Game = Class.extend({
             this.activateLevelLoader();
         }
     },
-    onEmptyLevelLoaded: function() {
-        window.console.log("Loaded EMPTY LEVEL :)");
-
-        this.createLevelTemplate();
-
-        var layer = this.level.createEmptyLayer();
-        var text = new PIXI.Text("Level loaded :)", {font: "Bold 50px Courier New", fill: "Black",
-            stroke: "LightGrey", strokeThickness: 0,
-            dropShadow: true, dropShadowColor: '#444444', dropShadowAngle: Math.PI / 4, dropShadowDistance: 4});
-        layer.addChild(text);
-        text.anchor = new PIXI.Point(0.5, 0.5);
-        text.position.x = this.renderer.width / 2;
-        text.position.y = this.renderer.height / 2;
-        this.level.addLayer(layer);
-
-        this.startLevel();
-    },
-    // Load level from TILED
-    loadTiledLevel: function(levelData) {
+    loadTiledLevel: function(level) {
+        this.levelType = "tiled";
         if (!_.find(this.levels, function(level) {
-            return level.name === levelData.name;
+            return level.name === level.name;
         })) {
-            this.levels.push(levelData);
+            this.levels.push(level);
         }
-
-        this.onLevelLoaded = this.onTiledLevelLoaded;
 
         if (this.level) {
             // Load level deferred: wait until the end of the game loop.
             this.destroyLevel = true;
             this.activateLevelLoaderDeferred = true;
-            this.levelToLoad = levelData;
+            this.levelToLoad = level;
             return;
         } else {
             // Load level immediately.
-            this.levelToLoad = levelData;
+            this.levelToLoad = level;
             this.activateLevelLoader();
         }
     },
+    onLevelLoaded: function () {
+        this.createLevelTemplate();
+        if (this.levelType === "generic") {
+            window.console.log("Loaded GENERIC LEVEL :)");
+            this.level.createDummyLayer();
+        } 
+        else {
+            window.console.log("Loaded TILED LEVEL :)");
+            A_.TILES.createTiledMap(this, this.levelLoader.mapDataParsed);
+        }
+        this.startLevel();
+    },
     activateLevelLoader: function() {
         this.levelLoader = new A_.LevelLoader(this.levelToLoad.directoryPrefix);
+        A_.levelLoader = this.levelLoader;
         this.levelLoader.loadScripts(this.onScriptsLoaded.bind(this), this.levelToLoad.scripts);
     },
     onScriptsLoaded: function() {
@@ -121,16 +110,6 @@ A_.Game = Class.extend({
         window.console.log("Loaded sounds");
         this.onLevelLoaded();
     },
-    onTiledLevelLoaded: function() {
-        window.console.log("Loaded TILED LEVEL :)");
-
-        this.createLevelTemplate();
-
-        A_.TILES.createTiledMap(this, this.levelLoader.mapDataParsed);
-
-        this.startLevel();
-    },
-    // COMMON level routines
     createLevelTemplate: function() {
         this.level = new A_.Level();
         A_.level = this.level;
@@ -141,18 +120,11 @@ A_.Game = Class.extend({
         if (this.debug)
             A_.level.createDebugLayer();
 
-        // If the level was loaded
+        // TODO: Remove. Currently used only by this.createSound().
         if (this.levelLoader.directoryPrefix)
             this.level.directoryPrefix = this.levelLoader.directoryPrefix;
-        // If the empty level was created
         else
             this.level.directoryPrefix = "";
-
-        this.level.width = 0;
-        this.level.height = 0;
-
-
-        this.stage.addChild(this.level.container);
     },
     startLevel: function() {
         this.setupCamera();
@@ -162,9 +134,7 @@ A_.Game = Class.extend({
         this.level.name = this.levelToLoad.name;
         this.activateLevelLoaderDeferred = false;
         this.levelToLoad = null;
-        this.onLevelLoaded = null;
 
-//        this.createSprites();
         this.createEntities(this.spritesToCreate);
         this.createEntities(this.tilesToCreate);
         this.isRunning = true;
@@ -172,9 +142,6 @@ A_.Game = Class.extend({
     },
     onLevelStarted: function() {
         window.console.log("Level STARTS...");
-    },
-    unloadLevel: function() {
-        this.destroyLevel = true;
     },
     clearLevel: function() {
         this.collider = null;
@@ -187,11 +154,12 @@ A_.Game = Class.extend({
         A_.camera = null;
 
         this.levelLoader = null;
+        A_.levelLoader = null;
 
         delete(A_.game.level);
         delete(A_.game.collider);
         delete(A_.game.camera);
-        delete(A_.game.LevelLoader);
+        delete(A_.game.levelLoader);
 
         this.destroySounds();
 
@@ -222,15 +190,6 @@ A_.Game = Class.extend({
         sprite.onCreation();
         return sprite;
     },
-//    createSprites: function() {
-//        var that = this;
-//        _.each(this.spritesToCreate, function(sprite) {
-//            that.level.sprites.push(sprite);
-//            // TODO: Find out why this does not work.
-////            sprite.onCreation();
-//        });
-//        this.spritesToCreate.length = 0;
-//    },
     createTile: function(tileLayer, gid, x, y) {
         if (_.isString(tileLayer)) {
             tileLayer = A_.level.findLayerByName(tileLayer)
@@ -251,26 +210,6 @@ A_.Game = Class.extend({
         });
         entities.length = 0;
     },
-//    destroySprite: function (sprite) {
-//        
-//        if (!_.contains(this.level.sprites, sprite))
-//            return;
-//
-//        sprite.clear();
-//
-//        if (sprite === this.camera.followee) {
-//            this.camera.followee = null;
-//        }
-//        
-//        this.level.sprites.splice(this.level.sprites.indexOf(sprite), 1);
-//    },
-//    destroySprites: function () {
-//        var that = this;
-//        _.each(this.spritesToDestroy, function (sprite) {
-//            that.destroySprite(sprite)
-//        });
-//        this.spritesToDestroy.length = 0;
-//    },
     destroyEntity: function(entity) {
         if (entity instanceof A_.SPRITES.Animated) {
             if (!_.contains(this.level.sprites, entity))
@@ -292,12 +231,12 @@ A_.Game = Class.extend({
         }
     },
     destroyEntities: function(entities) {
-        var that = this;
         _.each(entities, function(entity) {
-            that.destroyEntity(entity)
-        });
+            this.destroyEntity(entity)
+        }, this);
         entities.length = 0;
     },
+    // TODO: Create a separate js to handle sound
     createSound: function(props) {
         _.each(props["urls"], function(url, i, list) {
             list[i] = "sounds/" + this.level.directoryPrefix + url;
@@ -332,10 +271,9 @@ A_.Game = Class.extend({
         A_.INPUT.postprocess();
 
         this.manageLevels();
-
     },
     update: function() {
-        // User-defined global routine.
+        // User-defined global routine hook.
         this.preupdate();
 
         // Active tiles' update
@@ -357,7 +295,7 @@ A_.Game = Class.extend({
             sprite.postupdate();
         });
 
-        // User-defined global routine.
+        // User-defined global routine hook.
         this.postupdate();
     },
     preupdate: function() {
@@ -367,14 +305,14 @@ A_.Game = Class.extend({
 
     },
     manageSprites: function() {
-//        this.destroySprites();
         this.destroyEntities(this.tilesToDestroy);
         this.destroyEntities(this.spritesToDestroy);
-//        this.createSprites();
         this.createEntities(this.tilesToCreate);
         this.createEntities(this.spritesToCreate);
     },
     render: function() {
+        // TODO: Currently only sorting on y axis. Add a generic sort routine
+        // based on an arbitrary property.
         _.each(this.level.spriteLayers, function(layer) {
             if (layer["sort"]) {
                 A_.level.sortLayer(layer);
@@ -384,7 +322,7 @@ A_.Game = Class.extend({
         if (this.debug) {
             _.each(this.collider.collisionSprites, function(sprite) {
                 sprite.drawDebug();
-            })
+            });
         }
 
         this.camera.update();
