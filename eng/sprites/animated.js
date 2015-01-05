@@ -412,16 +412,17 @@ A_.SPRITES.Animated = Class.extend({
     },
     // Z ORDER & LAYERS
     z: function(position) {
+        var parent;
+        // If the sprite is the child of some other sprite...
+        if (this.container) {
+            // this.container is the instance of A_ sprite.
+            parent = this.container.sprite.children[1];
+        } else {
+            // this.layer is the instance of PIXI DOC.
+            parent = this.layer;
+        }
+
         if (_.isNumber(position)) {
-            var parent;
-            // If the sprite is the child of some other sprite...
-            if (this.container) {
-                // this.container is the instance of A_ sprite.
-                parent = this.container.sprite.children[1];
-            } else {
-                // this.layer is the instance of PIXI DOC.
-                parent = this.layer;
-            }
 
             if (typeof position === "string") {
                 if (position === "top") {

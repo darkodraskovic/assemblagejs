@@ -264,7 +264,7 @@ A_.Game = Class.extend({
 
         this.update();
 
-        this.manageSprites();
+        this.manageEntities();
 
         this.render();
 
@@ -305,7 +305,7 @@ A_.Game = Class.extend({
     postupdate: function() {
 
     },
-    manageSprites: function() {
+    manageEntities: function() {
         this.destroyEntities(this.tilesToDestroy);
         this.destroyEntities(this.spritesToDestroy);
         this.createEntities(this.tilesToCreate);
