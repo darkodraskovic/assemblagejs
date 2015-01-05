@@ -246,7 +246,6 @@ A_.SPRITES.Animated = Class.extend({
             });
         } else {
             return this.sprite.position;
-//            return this.sprite.position.clone();
         }
     },
     x: function(x) {
@@ -256,8 +255,7 @@ A_.SPRITES.Animated = Class.extend({
             return this.sprite.position.x;
     },
     xRel: function(x) {
-        if (_.isNumber(x))
-            this.x(this.x() + x);
+        this.x(this.x() + x);
     },
     y: function(y) {
         if (_.isNumber(y))
@@ -266,17 +264,15 @@ A_.SPRITES.Animated = Class.extend({
             return this.sprite.position.y;
     },
     yRel: function(y) {
-        if (_.isNumber(y))
-            this.y(this.y() + y);
+        this.y(this.y() + y);
     },
     positionRelative: function(x, y) {
-        if (_.isNumber(x) && _.isNumber(y)) {
-            this.position(this.x() + x, this.y() + y);
-        }
+//        if (_.isNumber(x) && _.isNumber(y)) {
+        this.position(this.x() + x, this.y() + y);
+//        }
     },
     positionLevel: function() {
         return A_.level.container.toLocal(A_.level.origin, this.sprite);
-//        return A_.level.container.toLocal(A_.game.origin, this.sprite).clone();
     },
     size: function(w, h) {
         if (_.isNumber(w) && _.isNumber(h)) {
