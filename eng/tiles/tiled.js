@@ -118,7 +118,6 @@ A_.TILES.createTiledMap = function(mapData) {
                 args["type"] = oData["type"];
 
                 // POLY || RECT
-                // TODO: write Game.createPolygon()
                 if (oData.polygon || oData.type === "Rectangle") {
                     args.collision = {};
                     args.collision.response = args.collisionResponse;
@@ -134,8 +133,6 @@ A_.TILES.createTiledMap = function(mapData) {
                         o.positionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
 //                    A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
-                    o.update();
-                    layer.addChild(o.sprite);
                 }
                 else {
                     var colPolyData = _.find(collider.collisionMasks, function(mask) {
@@ -147,7 +144,7 @@ A_.TILES.createTiledMap = function(mapData) {
                         collisionPolygon = null;
                     }
                     var o = game.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args, collisionPolygon);
-                    o.positionRelative(o.sprite.width / 2, -o.sprite.height / 2);
+                    o.positionRelative(o.width() / 2, -o.height() / 2);
 
                     if (o.followee) {
                         game.cameraOptions.followee = o;
