@@ -110,11 +110,10 @@ var Player = Anime.extend({
         }
         this._super();
     },
-    collideWithDynamic: function (other, response) {
-        if (other.collision.response === "sensor") {
-            window.console.log("I am being sensed");
-        }
-    }
+//    collideWithDynamic: function (other, response) {
+//        if (other.collision.response === "sensor") {
+//        }
+//    }
 });
 
 var Undead = Anime.extend({
@@ -160,8 +159,8 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
     },
     update: function() {
         this._super();
-    },
-    postupdate: function() {
+//    },
+//    postupdate: function() {
         var undead = this.undead;
         if (!this.collided && undead.platformerState === "grounded") {
             if (_.random(1, 100) < undead.jumpProbability) {

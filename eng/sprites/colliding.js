@@ -149,18 +149,12 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
         this.slopeSet = true;
     },
-    update: function () {
-        this._super();
-    },
     drawDebug: function () {
         var debugGraphics = this.debugGraphics;
         if (this.drawDebugGraphics && debugGraphics) {
             debugGraphics.clear();
             A_.POLYGON.Utils.drawSATPolygon(debugGraphics, this.collisionPolygon);
         }
-    },
-    postupdate: function () {
-        this._super();
     },
     collideWithStatic: function (other, response) {
         this.prevOverlapN = response.overlapN;

@@ -285,15 +285,16 @@ A_.Game = Class.extend({
         _.each(this.level.sprites, function(sprite) {
             sprite.preupdate();
         });
+        
         _.each(this.level.sprites, function(sprite) {
             sprite.update();
         });
-
-        this.collider.processCollisions();
-
+        
         _.each(this.level.sprites, function(sprite) {
             sprite.postupdate();
         });
+
+        this.collider.processCollisions();
 
         // User-defined global routine hook.
         this.postupdate();
