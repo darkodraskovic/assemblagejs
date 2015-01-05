@@ -293,8 +293,17 @@ A_.Game = Class.extend({
         _.each(this.level.sprites, function(sprite) {
             sprite.postupdate();
         });
+        
+        // Collision handling
+//        _.each(this.collider.collisionSprites, function(sprite) {
+//            sprite.syncCollisionPolygon();
+//        });
 
         this.collider.processCollisions();
+
+//        _.each(this.collider.collisionSprites, function(sprite) {
+//            sprite.syncSprite();
+//        });
 
         // User-defined global routine hook.
         this.postupdate();

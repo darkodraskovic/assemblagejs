@@ -249,19 +249,25 @@ A_.SPRITES.Animated = Class.extend({
         }
     },
     x: function(x) {
-        if (_.isNumber(x))
-            this.position(x, this.y());
-        else
-            return this.sprite.position.x;
+//        if (_.isNumber(x))
+//            this.position(x, this.y());
+//        else
+//            return this.sprite.position.x;
+        var pos = this.position(x, this.sprite.position.y);
+        if (pos)
+            return pos.x;
     },
     xRel: function(x) {
         this.x(this.x() + x);
     },
     y: function(y) {
-        if (_.isNumber(y))
-            this.position(this.x(), y);
-        else
-            return this.sprite.position.y;
+//        if (_.isNumber(y))
+//            this.position(this.x(), y);
+//        else
+//            return this.sprite.position.y;
+        var pos = this.position(this.sprite.position.x, y);
+        if (pos)
+            return pos.y;
     },
     yRel: function(y) {
         this.y(this.y() + y);
