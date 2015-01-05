@@ -85,7 +85,7 @@ A_.Game = Class.extend({
         } 
         else {
             window.console.log("Loaded TILED LEVEL :)");
-            A_.TILES.createTiledMap(this, this.levelLoader.mapDataParsed);
+            A_.TILES.createTiledMap(this.levelLoader.mapDataParsed);
         }
         this.startLevel();
     },

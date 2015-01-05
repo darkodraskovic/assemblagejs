@@ -18,7 +18,7 @@ A_.Level = Class.extend({
         this.debugLayer = null;
 
         this.origin = new PIXI.Point(0, 0);
-        
+
         A_.game.stage.addChild(this.container);
         this.width = A_.game.screen.width;
         this.height = A_.game.screen.height;
@@ -32,8 +32,10 @@ A_.Level = Class.extend({
             layer.name = name;
         return layer;
     },
-    createImageLayer: function(name, props) {
-        var layer = this.createEmptyLayer(name);
+    createImageLayer: function(name, props, layer) {
+        if (!layer) {
+            layer = this.createEmptyLayer(name);
+        }
 
         if (!props.width) {
             props.width = this.width;
@@ -99,8 +101,8 @@ A_.Level = Class.extend({
         this.debugLayer.name = "debug";
         this.addLayer(layer);
     },
-    // if layer's object do not update their properties, such as animation or position
-    // pre-bake layer, ie. make a single sprite/texture out of layer's objects
+    // If layer's object do not update their properties, such as animation or position
+    // pre-bake layer, ie. make a single sprite/texture out of layer's objects.
     bakeLayer: function(layer, level) {
         var renderTexture = new PIXI.RenderTexture(level.width, level.height);
         // Create a sprite that uses the render texture.
@@ -114,14 +116,13 @@ A_.Level = Class.extend({
 //        }
 //    }
         sprite.alpha = layer.alpha;
-        sprite.baked = true;
         sprite.position = layer.position;
         sprite.parallax = layer.parallax;
         sprite.name = layer.name;
-        if (layer.tilemap) {
-            sprite.tilemap = layer.tilemap;
-        }
+        sprite.tilemap = layer.tilemap;
+        sprite.collisionResponse = layer.collisionResponse;
 
+        sprite.baked = true;
         return sprite;
     },
     // TRANSFORMATIONS

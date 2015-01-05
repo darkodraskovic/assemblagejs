@@ -51,10 +51,10 @@ function createRoguelikeMap() {
 }
 function createRotLayers() {
     var layerFloors = A_.level.createTileLayer("Floor", "tilemap.png", tileW, tileH);
-    layerFloors.tilemap.createTilelayer(mapDataFloors);
+    layerFloors.tilemap.populateTilelayer(mapDataFloors);
     var layerWalls = A_.level.createTileLayer("Walls", "tilemap.png", tileW, tileH);
     layerWalls.collisionResponse = "static";    
-    layerWalls.tilemap.createTilelayer(mapDataWalls);
+    layerWalls.tilemap.populateTilelayer(mapDataWalls);
 
 
     var layer = A_.level.createSpriteLayer();

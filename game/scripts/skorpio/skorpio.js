@@ -99,8 +99,6 @@ var Player = Anime.extend({
     }
 });
 
-//Player.inject(A_.MODULES.TopdownWASD);
-
 var Agent = Anime.extend({
     animSheet: "AgentComplete.png",
     timer: 0,

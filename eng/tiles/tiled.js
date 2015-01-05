@@ -1,92 +1,62 @@
-A_.TILES.createTiledMap = function(game, mapData) {
-    var collider = game.collider;
+A_.TILES.createTiledMap = function(mapData) {
+    var game = A_.game;
+    var level = A_.level;
+    var collider = A_.collider;
 
-    game.level.width = mapData["width"] * mapData["tilewidth"];
-    game.level.height = mapData["height"] * mapData["tileheight"];
-    game.level.mapWidth = mapData["width"];
-    game.level.mapHeight = mapData["height"];
+    level.width = mapData["width"] * mapData["tilewidth"];
+    level.height = mapData["height"] * mapData["tileheight"];
 
+    // Each Tiled level can have one CollisionMasks layer.
+    // The type of the collision mask polygon has to correspond to the type,
+    // ie. to the class of the sprite whose mask it is.
     var layersData = mapData["layers"];
-    var collisionLayer = _.find(layersData, function(layerData) {
+    var collisionMasksLayer = _.find(layersData, function(layerData) {
         return layerData["name"] === "CollisionMasks";
     });
 
-    if (collisionLayer) {
-        for (var i = 0; i < collisionLayer["objects"].length; i++) {
-            var oData = collisionLayer["objects"][i];
+    if (collisionMasksLayer) {
+        for (var i = 0; i < collisionMasksLayer["objects"].length; i++) {
+            var oData = collisionMasksLayer["objects"][i];
             collider.collisionMasks.push(oData);
         }
+        layersData.splice(layersData.indexOf(collisionMasksLayer), 1);
     }
 
-    var objectNames = [];
-    _.each(layersData, function(layerData) {
-        _.each(layerData["objects"], function(o) {
-            if (!o["polygon"] && !_.contains(objectNames, o.name) && o.name !== "")
-                objectNames[objectNames.length] = o.name;
-        });
-    });
-
     for (i = 0; i < layersData.length; i++) {
-        if (layersData[i]["name"] === "CollisionMasks")
-                continue;
-            
-        var layer = game.level.createEmptyLayer();
-        for (var prop in layersData[i]) {
-            layer[prop] = layersData[i][prop];
+        var layer = level.createEmptyLayer();
+        var layerData = layersData[i];
+        
+        for (var prop in layerData) {
+            layer[prop] = layerData[prop];
         }
         layer.alpha = layer.opacity;
 
-        // TODO: rewrite this to be automatic and to use eval
-        if (layersData[i]["properties"]) {
-            if (layersData[i]["properties"]["collisionResponse"]) {
-                layer.collisionResponse = eval(layersData[i]["properties"]["collisionResponse"]);
-                if (!layer.collisionResponse === "static" || !layer.collisionResponse === "sensor")
-                {
-                    layer.collisionResponse = "static";
-                }
-            }
-            if (layersData[i]["properties"]["active"])
-                layer.active = true;
-            if (layersData[i]["properties"]["mouseReactive"])
-                layer.mouseReactive = true;
-            if (!layersData[i]["properties"]["baked"]) {
-                if (layersData[i]["type"] === "tilelayer")
-                    layer.baked = true;
-            } else {
-                layer.baked = eval(layersData[i]["properties"]["baked"]);
-            }
-            if (layersData[i]["properties"]["sort"]) {
-                layer.sort = true;
-            }
-            if (layersData[i]["properties"]["parallax"]) {
-                layer.parallax = parseFloat(layersData[i]["properties"]["parallax"]);
-                if (isNaN(layer.parallax)) {
-                    layer.parallax = 100;
-                }
-            }
-        }
-        if (typeof layer.parallax === "undefined") {
-            layer.parallax = 100;
+        if (layerData["properties"]) {
+            var customLayerProps = layerData["properties"];
+            for (var prop in customLayerProps) {
+                layer[prop] = eval(customLayerProps[prop]);
+            }            
         }
 
-        // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld
-        if (layersData[i]["type"] === "imagelayer") {
-            var img = layersData[i]["image"];
+        // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld.
+        if (layerData["type"] === "imagelayer") {
+            var img = layerData["image"];
             if (img.indexOf("/") > -1) {
                 img = img.substring(img.lastIndexOf("/") + 1);
             }
-            var tiledSprite = new A_.SCENERY.TiledSprite({image: img, width: game.level.width, height: game.level.height});
-            layer.addChild(tiledSprite.sprite);
-            game.level.addImageLayer(layer);
+
+            level.createImageLayer(layer.name, {image: img, width: level.width, height: level.height}, layer);
         }
 
         // if current layer is TILE LAYER
-        else if (layersData[i]["type"] === "tilelayer") {
-
+        else if (layerData["type"] === "tilelayer") {
+            // Temporarily turn unser layer.baked option in order to build
+            // a tilemap. We'll bake the tilemap later if needed.
             var baked = layer.baked;
             layer.baked = false;
-
-            var img = layersData[i]["properties"]["image"];
+            
+            // This layer property must be set by user.
+            var img = layer["image"];
             var tileset;
             for (var j = 0; j < mapData["tilesets"].length; j++) {
                 var tilesetimg = mapData["tilesets"][j].image;
@@ -99,12 +69,12 @@ A_.TILES.createTiledMap = function(game, mapData) {
                 }
             }
 
-            var mapW = layersData[i]["width"];
-            var mapH = layersData[i]["height"];
+            var mapW = layerData["width"];
+            var mapH = layerData["height"];
             var tileW = tileset.tilewidth;
             var tileH = tileset.tileheight;
 
-            var tileData = layersData[i]["data"];
+            var tileData = layerData["data"];
             var tileData2D = [];
             for (var j = 0; j < mapW; j++) {
                 tileData2D[j] = [];
@@ -114,33 +84,32 @@ A_.TILES.createTiledMap = function(game, mapData) {
             }
             for (var j = 0; j < tileData.length; j++) {
                 if (tileData[j] !== 0) {
-                    tileData[j] = tileData[j] - tileset.firstgid + 1;
-                    var gid = tileData[j];
-                    var mapX = j % game.level.mapWidth;
-                    var mapY = Math.floor(j / game.level.mapWidth);
+                    var gid  = tileData[j] - tileset.firstgid + 1;
+                    var mapX = j % mapData["width"];
+                    var mapY = Math.floor(j / mapData["width"]);
                     tileData2D[mapX][mapY] = gid;
                 }
             }
 
             var tilemap = new A_.TILES.Tilemap(layer, img, tileW, tileH);
-            tilemap.createTilelayer(tileData2D);
+            tilemap.populateTilelayer(tileData2D);
 
             layer.baked = baked;
             if (layer.baked) {
-                layer = A_.level.bakeLayer(layer, game.level);
+                layer = level.bakeLayer(layer, level);
             }
 
-            game.level.addTileLayer(layer);
+            level.addTileLayer(layer);
         }
 
         // if the current layer is OBJECT LAYER
-        else if (layersData[i]["type"] === "objectgroup") {
-            game.level.addSpriteLayer(layer);
+        else if (layerData["type"] === "objectgroup") {
+            level.addSpriteLayer(layer);
             // loop through all objects conained in the layer
-            for (var j = 0; j < layersData[i]["objects"].length; j++) {
+            for (var j = 0; j < layerData["objects"].length; j++) {
                 // copy object data into temp var
                 var args = {};
-                var oData = layersData[i]["objects"][j];
+                var oData = layerData["objects"][j];
                 for (var prop in oData["properties"]) {
                     args[prop] = eval(oData["properties"][prop]);
                 }
@@ -190,7 +159,7 @@ A_.TILES.createTiledMap = function(game, mapData) {
             }
 
             if (layer.baked) {
-                layer = A_.level.bakeLayer(layer, game.level);
+                layer = level.bakeLayer(layer, level);
             }
         }
     }

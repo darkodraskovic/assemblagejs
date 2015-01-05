@@ -16,7 +16,7 @@ A_.TILES.Tilemap = Class.extend({
         this.tiles = [];
 
     },
-    createTilelayer: function(layerData) {
+    populateTilelayer: function(layerData) {
         if (this.layer.collisionResponse) {
             this.collision = {};
             this.collision.size = {};

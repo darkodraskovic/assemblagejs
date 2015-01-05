@@ -7,7 +7,8 @@
          "opacity":1,
          "properties":
             {
-             "image":"Interior-Furniture.png"
+             "baked":"true",
+             "image":"\"Interior-Furniture.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -22,7 +23,8 @@
          "opacity":1,
          "properties":
             {
-             "image":"Interior-Furniture.png"
+             "baked":"true",
+             "image":"\"Interior-Furniture.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -37,8 +39,9 @@
          "opacity":1,
          "properties":
             {
+             "baked":"true",
              "collisionResponse":"\"static\"",
-             "image":"Interior-Furniture.png"
+             "image":"\"Interior-Furniture.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -174,7 +177,8 @@
          "opacity":1,
          "properties":
             {
-             "image":"Interior-Furniture.png"
+             "baked":"true",
+             "image":"\"Interior-Furniture.png\""
             },
          "type":"tilelayer",
          "visible":true,

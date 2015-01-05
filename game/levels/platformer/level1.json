@@ -7,7 +7,8 @@
          "opacity":1,
          "properties":
             {
-             "image":"sci-fi-platformer-tiles-32x32.png",
+             "baked":"true",
+             "image":"\"sci-fi-platformer-tiles-32x32.png\"",
              "parallax":"85"
             },
          "type":"tilelayer",
@@ -23,7 +24,8 @@
          "opacity":1,
          "properties":
             {
-             "image":"sci-fi-platformer-tiles-32x32.png"
+             "baked":"true",
+             "image":"\"sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -40,7 +42,7 @@
             {
              "baked":"true",
              "collisionResponse":"\"static\"",
-             "image":"sci-fi-platformer-tiles-32x32.png"
+             "image":"\"sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -58,7 +60,7 @@
              "active":"true",
              "baked":"false",
              "collisionResponse":"\"static\"",
-             "image":"sci-fi-platformer-tiles-32x32.png",
+             "image":"\"sci-fi-platformer-tiles-32x32.png\"",
              "mouseReactive":"true"
             },
          "type":"tilelayer",
@@ -74,7 +76,8 @@
          "opacity":1,
          "properties":
             {
-             "image":"sci-fi-platformer-tiles-32x32.png"
+             "baked":"true",
+             "image":"\"sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -325,7 +328,8 @@
          "opacity":1,
          "properties":
             {
-             "image":"sci-fi-platformer-tiles-32x32.png",
+             "baked":"true",
+             "image":"\"sci-fi-platformer-tiles-32x32.png\"",
              "parallax":"115"
             },
          "type":"tilelayer",
