@@ -304,17 +304,11 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 //        this._super(n);
 //        this.collisionPolygon.setAngle(this.rotation());
 
-        var rot = this._super(n);
-        if (_.isNumber(rot)) {
-            return rot;
-        }
-        else {
+        if (_.isNumber(n)) {
             this.collisionPolygon.setAngle(n);
         }
+        return this._super(n);
     },
-//    postupdate: function () {
-//        this._super();
-//    },
 //    syncCollisionPolygon: function() {
 //        this.collisionPolygon.pos.x = this.x();
 //        this.collisionPolygon.pos.y = this.y();

@@ -109,6 +109,7 @@ A_.SPRITES.Animated = Class.extend({
         this.sprites = [];
 
         this.sprite = sprite;
+        // Used to optimize x & y setting & getting.
         this.pos = this.sprite.position;
     },
     // ANIMATION
@@ -263,7 +264,8 @@ A_.SPRITES.Animated = Class.extend({
 //            return pos.x;
 
         if (_.isNumber(x)) {
-            this.sprite.position.x = x;
+//            this.sprite.position.x = x;
+            this.pos.x = x;
             _.each(this.spritePoints, function(sp) {
                 sp.x(x);
             });
@@ -286,7 +288,8 @@ A_.SPRITES.Animated = Class.extend({
 //            return pos.y;
         
         if (_.isNumber(y)) {
-            this.sprite.position.y = y;
+//            this.sprite.position.y = y;
+            this.pos.y = y;
             _.each(this.spritePoints, function(sp) {
                 sp.y(y);
             });
