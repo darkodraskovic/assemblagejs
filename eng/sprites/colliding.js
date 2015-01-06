@@ -73,7 +73,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 
         collisionPolygon.scale = new SAT.Vector(1, 1);
 
-//        if (this.interacts)
+//        if (this.interactive())
 //            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
 //        collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
