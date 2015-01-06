@@ -173,7 +173,7 @@ A_.Game = Class.extend({
         A_.camera = this.camera;
     },
     // SPRITE CREATION and DESTRUCTION
-    createSprite: function(SpriteClass, layer, x, y, props, collisionPolygon) {
+    createSprite: function(SpriteClass, layer, x, y, props) {
         if (!SpriteClass)
             return;
 
@@ -182,12 +182,12 @@ A_.Game = Class.extend({
         }
 
         var sprite = new SpriteClass(layer, x, y, props);
-        if (sprite instanceof A_.SPRITES.Colliding)
-            sprite.setCollision(collisionPolygon);
+//        if (sprite instanceof A_.SPRITES.Colliding)
+//            sprite.setCollision(collisionPolygon);
         sprite.position(x, y);
+        sprite.onCreation();
 
         this.spritesToCreate.push(sprite);
-        sprite.onCreation();
         return sprite;
     },
     createTile: function(tileLayer, gid, x, y) {

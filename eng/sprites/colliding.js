@@ -3,9 +3,12 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     drawDebugGraphics: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-
+        this.setCollision(this.collisionPolygon);
         this.prevOverlapN = new SAT.Vector(0, 0);
         this.containedPoint = new SAT.Vector(0, 0);
+    },
+    onCreation: function () {
+        this._super();
     },
     createCollisionPolygon: function(polygon) {
         if (!this.collision)
@@ -231,22 +234,32 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             this.collisionPolygon.pos.y = y;
         }
     },
-//    x: function (x) {
+    x: function (x) {
 //        var posX = this._super(x);
-//        if (posX) {
+//        if (_.isNumber(posX)) {
 //            return posX;
 //        } else {
 //            this.collisionPolygon.pos.x = x;
 //        }
-//    },
-//    y: function (y) {
+        
+        if (_.isNumber(x)) {
+            this.collisionPolygon.pos.x = x;
+        }
+        return this._super(x);
+    },
+    y: function (y) {
 //        var posY = this._super(y);
-//        if (posY) {
+//        if (_.isNumber(posY)) {
 //            return posY;
 //        } else {
 //            this.collisionPolygon.pos.y = y;
 //        }
-//    },
+
+        if (_.isNumber(y)) {
+            this.collisionPolygon.pos.y = y;
+        }
+        return this._super(y);
+    },
     scale: function(x, y) {
 //        if (typeof x !== "number" || typeof y !== "number")
 //            return this._super();

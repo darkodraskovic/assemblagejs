@@ -58,9 +58,9 @@ var Player = Anime.extend({
     followee: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-        
         this.collision = A_.UTILS.copy(this.collision);
         this.collision.response = "active";
+        
         this.rifle = A_.game.createSprite(Rifle, this.layer,
                 this.x(), this.y(),
                 {holder: this, animSpeed: this.animSpeed});                

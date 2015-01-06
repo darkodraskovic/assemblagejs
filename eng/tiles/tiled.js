@@ -124,7 +124,8 @@ A_.TILES.createTiledMap = function(mapData) {
 
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
-                        var o = game.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args, collisionPolygon);
+                        args.collisionPolygon = collisionPolygon;
+                        var o = game.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                         o.positionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
@@ -140,17 +141,20 @@ A_.TILES.createTiledMap = function(mapData) {
                     });
                     if (colPolyData) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData);
-                    } else {
-                        collisionPolygon = null;
-                    }
-                    var o = game.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args, collisionPolygon);
+                        args.collisionPolygon = collisionPolygon;
+                    } 
+//                    else {
+//                        collisionPolygon = null;
+//                    }
+                    var o = game.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args);
                     o.positionRelative(o.width() / 2, -o.height() / 2);
 
                     if (o.followee) {
                         game.cameraOptions.followee = o;
                     }
-                    if (oData["type"] === "Player")
+                    if (oData["type"] === "Player") {
                         A_.player = o;
+                    }
                 }
                 o.rotation(oData["rotation"].toRad());
             }

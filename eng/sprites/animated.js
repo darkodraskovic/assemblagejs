@@ -109,6 +109,7 @@ A_.SPRITES.Animated = Class.extend({
         this.sprites = [];
 
         this.sprite = sprite;
+        this.pos = this.sprite.position;
     },
     // ANIMATION
     // frames is an array of nums refering to the index of texture in this.textures
@@ -238,14 +239,17 @@ A_.SPRITES.Animated = Class.extend({
     position: function(x, y) {
         if (_.isNumber(x) && _.isNumber(y)) {
             // Translate the PIXI sprite.
-            this.sprite.position.x = x;
-            this.sprite.position.y = y;
+//            this.sprite.position.x = x;
+//            this.sprite.position.y = y;
+            this.pos.x = x;
+            this.pos.y = y;
             // Translate sprite points.
             _.each(this.spritePoints, function(sp) {
                 sp.position(x, y);
             });
         } else {
-            return this.sprite.position;
+//            return this.sprite.position;
+            return this.pos;
         }
     },
     x: function(x) {
@@ -254,18 +258,19 @@ A_.SPRITES.Animated = Class.extend({
 //        else
 //            return this.sprite.position.x;
 
-        var pos = this.position(x, this.sprite.position.y);
-        if (pos)
-            return pos.x;
+//        var pos = this.position(x, this.sprite.position.y);
+//        if (pos)
+//            return pos.x;
 
-//        if (_.isNumber(x)) {
-//            this.sprite.position.x = x;
-//            _.each(this.spritePoints, function(sp) {
-//                sp.x(x);
-//            });
-//        } else {
+        if (_.isNumber(x)) {
+            this.sprite.position.x = x;
+            _.each(this.spritePoints, function(sp) {
+                sp.x(x);
+            });
+        } else {
 //            return this.sprite.position.x;
-//        }
+            return this.pos.x;
+        }
     },
     xRel: function(x) {
         this.x(this.x() + x);
@@ -276,18 +281,19 @@ A_.SPRITES.Animated = Class.extend({
 //        else
 //            return this.sprite.position.y;
 
-        var pos = this.position(this.sprite.position.x, y);
-        if (pos)
-            return pos.y;
+//        var pos = this.position(this.sprite.position.x, y);
+//        if (pos)
+//            return pos.y;
         
-//        if (_.isNumber(y)) {
-//            this.sprite.position.y = y;
-//            _.each(this.spritePoints, function(sp) {
-//                sp.y(y);
-//            });
-//        } else {
+        if (_.isNumber(y)) {
+            this.sprite.position.y = y;
+            _.each(this.spritePoints, function(sp) {
+                sp.y(y);
+            });
+        } else {
 //            return this.sprite.position.y;
-//        }
+            return this.pos.y;
+        }
     },
     yRel: function(y) {
         this.y(this.y() + y);
