@@ -253,9 +253,19 @@ A_.SPRITES.Animated = Class.extend({
 //            this.position(x, this.y());
 //        else
 //            return this.sprite.position.x;
+
         var pos = this.position(x, this.sprite.position.y);
         if (pos)
             return pos.x;
+
+//        if (_.isNumber(x)) {
+//            this.sprite.position.x = x;
+//            _.each(this.spritePoints, function(sp) {
+//                sp.x(x);
+//            });
+//        } else {
+//            return this.sprite.position.x;
+//        }
     },
     xRel: function(x) {
         this.x(this.x() + x);
@@ -265,9 +275,19 @@ A_.SPRITES.Animated = Class.extend({
 //            this.position(this.x(), y);
 //        else
 //            return this.sprite.position.y;
+
         var pos = this.position(this.sprite.position.x, y);
         if (pos)
             return pos.y;
+        
+//        if (_.isNumber(y)) {
+//            this.sprite.position.y = y;
+//            _.each(this.spritePoints, function(sp) {
+//                sp.y(y);
+//            });
+//        } else {
+//            return this.sprite.position.y;
+//        }
     },
     yRel: function(y) {
         this.y(this.y() + y);

@@ -231,6 +231,22 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             this.collisionPolygon.pos.y = y;
         }
     },
+//    x: function (x) {
+//        var posX = this._super(x);
+//        if (posX) {
+//            return posX;
+//        } else {
+//            this.collisionPolygon.pos.x = x;
+//        }
+//    },
+//    y: function (y) {
+//        var posY = this._super(y);
+//        if (posY) {
+//            return posY;
+//        } else {
+//            this.collisionPolygon.pos.y = y;
+//        }
+//    },
     scale: function(x, y) {
 //        if (typeof x !== "number" || typeof y !== "number")
 //            return this._super();
