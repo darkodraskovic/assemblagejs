@@ -92,7 +92,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.collisionPolygon = this.createCollisionPolygon(polygon);
         this.setCollisionResponse();
         this.setCollisionDebug();
-        A_.COLLISION.addABB(this);
+//        A_.COLLISION.addABB(this);
     },
     setCollisionResponse: function() {
         var collider = A_.collider;
@@ -279,23 +279,27 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             return this._super();
 
         this._super(x, y);
-        x = x / this.frame.w;
-        y = y / this.frame.h;
-        this.collisionPolygon.setScale(x, y);
+//        x = x / this.frame.w;
+//        y = y / this.frame.h;
+//        this.collisionPolygon.setScale(x, y);
+
+        this.collisionPolygon.setScale(this.scale().x, this.scale().y);
     },
     width: function(w) {
         if (typeof w !== "number")
             return this._super();
         this._super(w);
-        w /= this.frame.w;
-        this.collisionPolygon.setScale(w, this.collisionPolygon.scale.y);
+//        w /= this.frame.w;
+//        this.collisionPolygon.setScale(w, this.collisionPolygon.scale.y);
+        this.collisionPolygon.setScale(this.scale().x, this.collisionPolygon.scale.y);
     },
     height: function(h) {
         if (typeof h !== "number")
             return this._super();
         this._super(h);
-        h = h / this.frame.h;
-        this.collisionPolygon.setScale(this.collisionPolygon.scale.x, h);
+//        h = h / this.frame.h;
+//        this.collisionPolygon.setScale(this.collisionPolygon.scale.x, h);
+        this.collisionPolygon.setScale(this.collisionPolygon.scale.x, this.scale().y);
     },
     rotation: function(n) {
 //        if (typeof n !== "number")
@@ -324,3 +328,5 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._super();
     }
 });
+
+A_.SPRITES.Colliding.inject(A_.COLLISION.abbInjection);

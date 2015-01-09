@@ -109,6 +109,7 @@ var Player = Anime.extend({
             }
         }
         this._super();
+        window.console.log(this.platformerState);
     },
 //    collideWithDynamic: function (other, response) {
 //        if (other.collision.response === "sensor") {

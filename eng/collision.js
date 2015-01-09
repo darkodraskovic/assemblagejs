@@ -59,28 +59,28 @@ A_.COLLISION.Collider = Class.extend({
     }
 });
 
-A_.COLLISION.addABB = function(entity) {
-    entity.abbBottom = function() {
+A_.COLLISION.abbInjection = {
+    abbBottom: function() {
         return this.collisionPolygon.getBottom();
-    };
-    entity.abbTop = function() {
+    },
+    abbTop: function() {
         return this.collisionPolygon.getTop();
-    };
-    entity.abbLeft = function() {
+    },
+    abbLeft: function() {
         return this.collisionPolygon.getLeft();
-    };
-    entity.abbRight = function() {
+    },
+    abbRight: function() {
         return this.collisionPolygon.getRight();
-    };
-    entity.abbOverlapsSegment = function(axis, a, b) {
+    },
+    abbOverlapsSegment: function(axis, a, b) {
         if (axis === "y") {
             return (this.abbTop() < b && this.abbBottom() > a);
         } else if (axis === "x") {
             return (this.abbLeft() < b && this.abbRight() > a);
         }
-    };
-    entity.abbOverlapsEntity = function(entity) {
+    },
+    abbOverlapsEntity: function(entity) {
         return (this.abbTop() < entity.abbBottom() && this.abbBottom() > entity.abbTop()
                 && this.abbLeft() < entity.abbRight() && this.abbRight() > entity.abbLeft());
-    };
-}
+    }
+};

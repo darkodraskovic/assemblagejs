@@ -244,7 +244,7 @@ A_.SPRITES.Animated = Class.extend({
 //        var pos = this.position(this.sprite.position.x, y);
 //        if (pos)
 //            return pos.y;
-        
+
         if (_.isNumber(y)) {
 //            this.sprite.position.y = y;
             this.pos.y = y;
@@ -524,10 +524,10 @@ A_.SPRITES.Animated = Class.extend({
             var y = this.y();
             var halfW = this.width() / 2;
             var halfH = this.height() / 2;
-            if (this.collisionPolygon) {
-                halfW = Math.abs(this.collisionPolygon.w / 2);
-                halfH = Math.abs(this.collisionPolygon.h / 2);
-            }
+//            if (this.collisionPolygon) {
+//                halfW = Math.abs(this.collisionPolygon.w / 2);
+//                halfH = Math.abs(this.collisionPolygon.h / 2);
+//            }
             if (this.bounded) {
                 this.position(Math.max(halfW, Math.min(x, A_.game.level.width - halfW)),
                         Math.max(halfH, Math.min(y, A_.game.level.height - halfH)));
@@ -553,7 +553,7 @@ A_.SPRITES.Animated = Class.extend({
         }
     },
     onCreation: function() {
-
+        this.position(x, y);
     },
     destroy: function() {
         _.each(this.sprites, function(sprite) {
@@ -570,3 +570,5 @@ A_.SPRITES.Animated = Class.extend({
 
     }
 });
+
+A_.SPRITES.Animated.inject(A_.INPUT.mouseReactivityInjection);

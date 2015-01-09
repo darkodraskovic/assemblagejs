@@ -101,7 +101,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         } else {
             this.movingState = "idle";
         }
-//        window.console.log(this.platformerState);
 
         // FLIP
         if (this.autoFlip) {
@@ -150,8 +149,10 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (response.overlapN.y !== 0) {
             // FLOOR
             if (response.overlapN.y === 1) {
+                // BUG: The wall slide pass this test.
                 if (this.abbBottom() < other.abbTop() + 2
                         && this.velocity.y > 0) {
+//                  if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2))
                     this.ground();
                 }
             }

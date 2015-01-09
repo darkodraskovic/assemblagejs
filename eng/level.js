@@ -6,7 +6,9 @@ A_.Level = Class.extend({
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.addMouseReactivity
         this.sprite = this.container;
-        A_.INPUT.addMouseReacivity(this);
+//        A_.INPUT.addMouseReacivity(this);
+        this.initMouseReactivity();
+        this.mouseReactive(true);
 
 //        this.followee = null;
         this.sprites = [];
@@ -257,6 +259,7 @@ A_.Level = Class.extend({
 
     }
 });
+A_.Level.inject(A_.INPUT.mouseReactivityInjection);
 
 // TEMPORARY - for debugging purposes only
 window.addEventListener("mousewheel", mouseWheelHandler, false);

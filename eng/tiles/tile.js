@@ -38,7 +38,7 @@ A_.TILES.Tile = Class.extend({
             A_.collider.collisionStatics.push(this);
         }
 
-        A_.COLLISION.addABB(this);
+//        A_.COLLISION.addABB(this);
     },
     x: function() {
         return this.sprite.position.x;
@@ -73,3 +73,6 @@ A_.TILES.Tile = Class.extend({
 
     }
 });
+
+A_.TILES.Tile.inject(A_.COLLISION.abbInjection);
+A_.TILES.Tile.inject(A_.INPUT.mouseReactivityInjection);

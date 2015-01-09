@@ -63,7 +63,9 @@ A_.TILES.Tilemap = Class.extend({
             _.each(this.tiles, function(tileCol) {
                 _.each(tileCol, function(tile) {
                     if (tile)
-                        A_.INPUT.addMouseReacivity(tile);
+//                        A_.INPUT.addMouseReacivity(tile);
+                        tile.initMouseReactivity();
+                        tile.mouseReactive(true);
                 });
             });
         }
@@ -165,3 +167,4 @@ A_.TILES.Tilemap = Class.extend({
         return [x * this.tileW, y * this.tileH];
     }
 });
+

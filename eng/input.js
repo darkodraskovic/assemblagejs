@@ -221,3 +221,48 @@ A_.INPUT.postprocess = function() {
 
     this.mousewheel = "null";
 };
+
+A_.INPUT.mouseReactivityInjection = {
+    initMouseReactivity: function () {
+        var that = this;
+        this.sprite.mousedown = function() {
+            that.leftpressed = true;
+            window.console.log("left pressed");
+            that.leftdown = true;
+        };
+        this.sprite.mouseup = function() {
+            that.leftreleased = true;
+            that.leftdown = false;
+        };
+        this.sprite.mouseupoutside = function() {
+            that.leftreleased = true;
+            that.leftdown = false;
+        };
+        this.sprite.rightdown = function() {
+            that.rightpressed = true;
+            that.rightdown = true;
+        };
+        this.sprite.rightup = function() {
+            that.rightreleased = true;
+            that.rightdown = false;
+        };
+        this.sprite.rightupoutside = function() {
+            that.rightreleased = true;
+            that.rightdown = false;
+        };
+    },
+    mouseReactive: function(reactive) {
+        if (typeof reactive === "undefined") {
+            return this.sprite.interactive;
+        }
+        else {
+            this.sprite.interactive = reactive;
+        }        
+    },
+    resetMouseReaction: function() {
+        this.leftpressed = false;
+        this.leftreleased = false;
+        this.rightpressed = false;
+        this.rightreleased = false;
+    }
+};
