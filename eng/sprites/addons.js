@@ -72,8 +72,8 @@ A_.SPRITES.ADDONS.PinTo = Class.extend({
 
     },
     update: function () {
-        this.sprite.rotation(this.parent.rotation());
-        this.sprite.position(this.spritePoint.x(), this.spritePoint.y());
+        this.sprite.setRotation(this.parent.getRotation());
+        this.sprite.setPosition(this.spritePoint.getX(), this.spritePoint.getY());
     }
 });
 
@@ -88,7 +88,6 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
             }
         }
         this.sprite = sprite;
-        this.active = true;
 
         if (typeof this.amplitude === "undefined")
             this.amplitude = 12; // in units (pixels, scale, etc.)
@@ -108,9 +107,10 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
     },
     on: function () {
         this.reset();
+        this.active = true;
     },
     off: function () {
-
+        this.active = false;
     },
     reset: function () {
         this.onPeriodStart();

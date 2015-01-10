@@ -62,14 +62,14 @@ var Player = Anime.extend({
         this.collision.response = "active";
         
         this.rifle = A_.game.createSprite(Rifle, this.layer,
-                this.x(), this.y(),
+                this.getX(), this.getY(),
                 {holder: this, animSpeed: this.animSpeed});                
     },
     onCreation: function() {
         this._super();
     },
     update: function() {
-        var rot = (A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level)).toDeg();
+        var rot = (A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level)).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
@@ -89,12 +89,12 @@ var Player = Anime.extend({
     },
     shootBullet: function() {
         var sprPt = this.rifle.spritePoint(this.facing);
-        var bullet = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), sprPt.x(), sprPt.y());
-        bullet.rotation(A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level));
+        var bullet = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
+        bullet.setRotation(A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level));
         bullet.setAnimation("all", 16, 0);
     },
     shootLaser: function() {
-        var pos = this.position();
+        var pos = this.getPosition();
         A_.game.createSprite(LaserBeam, A_.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
     }
 });
@@ -157,13 +157,13 @@ var Rifle = A_.SPRITES.Animated.extend({
         this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
     update: function() {
-//        var rot = A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level);
+//        var rot = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
 //        switch (this.holder.facing) {
 //            case "left": rot -= Math.PI; break;
 //            case "up": rot += Math.PI / 2; break;
 //            case "down": rot -= Math.PI / 2; break;
 //        };
-//        this.rotation(rot);
+//        this.setRotation(rot);
 
         this.setAnimation(this.holder.motionState + "_" + this.holder.facing);
         if (this.holder.facing === "up") {
@@ -223,18 +223,18 @@ var LaserBeam = A_.SPRITES.Animated.extend({
     bounded: false,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.alpha(0.75);
+        this.setAlpha(0.75);
         this.setAnimation("all", 18, 0);
-        this.origin(0, 0.5);
+        this.setOrigin(0, 0.5);
 
-        this.rotation(A_.UTILS.angleTo(this.spawner.position(), A_.INPUT.mousePosition.level));
+        this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), A_.INPUT.mousePosition.level));
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
-        this.position(sprPt.x(), sprPt.y());
+        this.setPosition(sprPt.getX(), sprPt.getY());
 
-        this.tip = {x: this.x(), y: this.y()};
+        this.tip = {x: this.getX(), y: this.getY()};
         this.laserTip = A_.game.createSprite(LaserTip, A_.level.findLayerByName("Effects"),
-                this.x() + Math.cos(this.rotation()) * this.width(),
-                this.y() + Math.sin(this.rotation()) * this.width(),
+                this.getX() + Math.cos(this.getRotation()) * this.getWidth(),
+                this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collision : {size: {w: 4, h: 4}}});
         this.laserTip.laser = this;
         this.sound = A_.game.createSound({
@@ -243,19 +243,19 @@ var LaserBeam = A_.SPRITES.Animated.extend({
             volume: 0.4
         }).play();
 
-        this.origH = this.height();
+        this.origH = this.getHeight();
         var sineProps = {period: 1, periodRand: 50, amplitude: 8, amplitudeRand: 4};
         this.sine = this.addon("Sine", sineProps);
     },
     update: function() {
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
-//        this.position(this.spawner.x(), this.spawner.y());
-        this.position(sprPt.x(), sprPt.y());
+//        this.getPosition(this.spawner.getX(), this.spawner.getY());
+        this.setPosition(sprPt.getX(), sprPt.getY());
 
-        this.rotation(A_.UTILS.angleTo(this.position(), A_.INPUT.mousePosition.level));
-        this.width(A_.UTILS.distanceTo(this.position(), A_.INPUT.mousePosition.level));
-        this.tip.x = this.x() + Math.cos(this.rotation()) * this.width();
-        this.tip.y = this.y() + Math.sin(this.rotation()) * this.width();
+        this.setRotation(A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level));
+        this.setWidth(A_.UTILS.distanceTo(this.getPosition(), A_.INPUT.mousePosition.level));
+        this.tip.x = this.getX() + Math.cos(this.getRotation()) * this.getWidth();
+        this.tip.y = this.getY() + Math.sin(this.getRotation()) * this.getWidth();
 
         if (A_.level.rightreleased) {
             if (this.laserTip) {
@@ -267,7 +267,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
             this.destroy();
         }
 
-        this.height(this.origH + this.sine.value);
+        this.setHeight(this.origH + this.sine.value);
     }
 });
 
@@ -278,7 +278,7 @@ var LaserTip = A_.SPRITES.Colliding.extend({
     },
     update: function() {
         this._super();
-        this.position(this.laser.tip.x, this.laser.tip.y);
+        this.setPosition(this.laser.tip.x, this.laser.tip.y);
         if (!this.collided) {
             if (this.fire) {
                 this.fire.destroy();
@@ -298,13 +298,13 @@ var LaserTip = A_.SPRITES.Colliding.extend({
             }
             if (this.timer < 0) {
                 A_.game.createSprite(Explosion, A_.level.findLayerByName("Effects"),
-                        other.x(), other.y());
+                        other.getX(), other.getY());
                 other.destroy();
                 this.timer = null;
             }
             if (!this.fire) {
                 this.fire = A_.game.createSprite(LaserFire, A_.level.findLayerByName("Effects"),
-                        this.x(), this.y());
+                        this.getX(), this.getY());
                 this.fire.laserTip = this;
             }
         }
@@ -332,13 +332,13 @@ var LaserFire = A_.SPRITES.Animated.extend({
     },
     onCreation: function() {
         this._super();
-        this.z("top");
+        this.setZ("top");
     },
     update: function() {
         this._super();
-        this.position(this.laserTip.x(), this.laserTip.y());
-        var scale = this.scale();
-        this.scale(scale.x + A_.game.dt, scale.y + A_.game.dt);
+        this.setPosition(this.laserTip.getX(), this.laserTip.getY());
+        var scale = this.getScale();
+        this.setScale(scale.x + A_.game.dt, scale.y + A_.game.dt);
     },
     onDestruction: function() {
         this.sound.stop();
@@ -374,33 +374,9 @@ var Computer = A_.SPRITES.Colliding.extend({
 //    collidesWith: A_.COLLISION.Type.NONE,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-
-//        A_.EXTENSIONS.Sine.addTo(this, {period: 3, periodRand: 0, value: 0.5, valueRand: 50});
     },
     update: function(props) {
         this._super(props);
-
-//        var val = this.sine.computeValue();
-//        this.scale(1 + val, 1 + val);
-//        
-//        if (this.leftpressed) {
-//            window.console.log("Pressed");
-//        }
-//        if (this.leftreleased) {
-//            window.console.log("Released");
-//        }
-//        if (this.leftdown) {
-//            window.console.log("Down");
-//        }
-//        if (this.rightpressed) {
-//            window.console.log("Pressed");
-//        }
-//        if (this.rightreleased) {
-//            window.console.log("Released");
-//        }
-//        if (this.rightdown) {
-//            window.console.log("Down");
-//        }
     }
 })
 

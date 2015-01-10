@@ -37,7 +37,7 @@ A_.TILES.Tile.inject({
             var mpl = A_.INPUT.mousePosition.level;
             if (this.containsPoint(mpl.x, mpl.y)) {
                 A_.game.createSprite(Explosion, A_.level.findLayerByName("Thrus"),
-                        this.x() + this.width() / 2, this.y() + this.height() / 2);
+                        this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
                 this.destroy();
             }
         }
@@ -109,7 +109,7 @@ var Player = Anime.extend({
             }
         }
         this._super();
-        window.console.log(this.platformerState);
+//        window.console.log(this.platformerState);
     },
 //    collideWithDynamic: function (other, response) {
 //        if (other.collision.response === "sensor") {
@@ -127,7 +127,7 @@ var Undead = Anime.extend({
     },
     onCreation: function() {
         this._super();
-        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.x(), this.y(), {undead: this});
+        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.getX(), this.getY(), {undead: this});
     },
     update: function() {
         this.applyForce = true;
@@ -140,7 +140,7 @@ var Undead = Anime.extend({
         }
         else if (this.platformerState === "grounded") {
             this.velocity.x = -this.velocity.x;
-            this.x(this.prevX);
+            this.setX(this.prevX);
             this.flipFacing();
         }
     }
@@ -156,7 +156,7 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
     onCreation: function() {
         this._super();
         this.addon("PinTo", {name: "probe", parent: this.undead,
-            offsetX: 0, offsetY: this.undead.height() / 2 + 4});
+            offsetX: 0, offsetY: this.undead.getHeight() / 2 + 4});
     },
     update: function() {
         this._super();
@@ -168,15 +168,15 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
                 undead.tryJump = true;
             } else if (_.random(1, 100) > 75) {
                 var deltaX = 4;
-                undead.x(undead.prevX);
+                undead.setX(undead.prevX);
                 undead.velocity.x = -undead.velocity.x;
                 if (undead.facing === "right") {
                     undead.facing = "left";
-                    undead.x(undead.x() - deltaX);
+                    undead.setX(undead.getX() - deltaX);
                 }
                 else {
                     undead.facing = "right";
-                    undead.x(undead.x() + deltaX);
+                    undead.setX(undead.getX() + deltaX);
                 }
             }
         }
@@ -204,14 +204,14 @@ var Platform = A_.SPRITES.Colliding.extend({
         this.platform = true;
     },
     onCreation: function() {
-        this.origX = this.x();
-        this.origY = this.y();
+        this.origX = this.getX();
+        this.origY = this.getY();
     },
     update: function() {
         this._super();
 
-        this.x(this.origX + this.sine.value);
-        this.y(this.origY - this.sine.value);
+        this.setX(this.origX + this.sine.value);
+        this.setY(this.origY - this.sine.value);
     }
 });
 
@@ -228,7 +228,7 @@ var Explosion = A_.SPRITES.Animated.extend({
         this.animations["explode"].onComplete = function() {
             that.destroy();
         };
-        this.scale(0.4, 0.4);
+        this.setScale(0.4, 0.4);
         A_.game.createSound({
             urls: ['dull.wav'],
             volume: 1

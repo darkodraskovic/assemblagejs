@@ -8,7 +8,7 @@ A_.Level = Class.extend({
         this.sprite = this.container;
 //        A_.INPUT.addMouseReacivity(this);
         this.initMouseReactivity();
-        this.mouseReactive(true);
+        this.setMouseReactivity(true);
 
 //        this.followee = null;
         this.sprites = [];

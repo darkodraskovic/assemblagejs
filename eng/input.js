@@ -184,7 +184,7 @@ A_.INPUT.addMouseReacivity = function(entity) {
     };
 };
 
-A_.INPUT.processMouseWheel = function (e) {
+A_.INPUT.processMouseWheel = function(e) {
     if (e.wheelDelta > 0) {
         A_.INPUT.mousewheel = "forward";
     } else {
@@ -223,7 +223,7 @@ A_.INPUT.postprocess = function() {
 };
 
 A_.INPUT.mouseReactivityInjection = {
-    initMouseReactivity: function () {
+    initMouseReactivity: function() {
         var that = this;
         this.sprite.mousedown = function() {
             that.leftpressed = true;
@@ -251,13 +251,11 @@ A_.INPUT.mouseReactivityInjection = {
             that.rightdown = false;
         };
     },
-    mouseReactive: function(reactive) {
-        if (typeof reactive === "undefined") {
-            return this.sprite.interactive;
-        }
-        else {
-            this.sprite.interactive = reactive;
-        }        
+    setMouseReactivity: function(reactive) {
+        this.sprite.interactive = reactive;
+    },
+    getMouseReactivity: function() {
+        return this.sprite.interactive;
     },
     resetMouseReaction: function() {
         this.leftpressed = false;

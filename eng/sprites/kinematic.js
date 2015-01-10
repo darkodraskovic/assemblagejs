@@ -22,7 +22,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.applyVelocity();
 
         if (this.angularSpeed) {
-            this.rotation(this.rotation() + this.angularSpeed * A_.game.dt);
+            this.setRotation(this.getRotation() + this.angularSpeed * A_.game.dt);
             this.isRotating = true;
         } else {
             this.isRotating = false;
@@ -30,7 +30,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     calculateVelocity: function() {
         if (this.moveForward) {
-            this.movementAngle = this.rotation();
+            this.movementAngle = this.getRotation();
         }
 
         this.calcFriction.x = this.friction.x;
@@ -103,7 +103,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
     },
     applyVelocity: function() {
-        this.positionRelative(this.velocity.x * A_.game.dt, this.velocity.y * A_.game.dt);
+        this.setPositionRelative(this.velocity.x * A_.game.dt, this.velocity.y * A_.game.dt);
 
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.isMoving = true;

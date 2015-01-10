@@ -56,7 +56,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             if (sprite && sprite.slope) {
                 this.slope = sprite;
 //                this.y(this.y() + this.scanDepth / 2);
-                this.y(this.y() + 2);
+                this.setY(this.getY() + 2);
             }
 //            if (sprite && sprite.platform) {
 //                this.platform = sprite;
@@ -64,7 +64,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         }
         // PLATFORM
         if (this.platform) {
-            this.y(this.y() + this.platformDY + 2);
+            this.setY(this.getY() + this.platformDY + 2);
         }
 
         if (this.applyForce) {
@@ -105,13 +105,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         // FLIP
         if (this.autoFlip) {
             if (this.facing === "right") {
-                if (this.flipped("x")) {
-                    this.flip("x");
-                }
-            } else if (this.facing === "left") {
-                if (!this.flipped("x")) {
-                    this.flip("x");
-                }
+                this.setFlippedX(false);
+            } else {
+                this.setFlippedX(true);
             }
         }
 
@@ -138,7 +134,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                 var diffX = Math.abs(this.velocity.x) * A_.game.dt;
                 var diffY = Math.tan(this.slope.slopeAngle) * diffX;
 //                var diffY = Math.abs(Math.tan(this.slope.slopeAngle) * diffX);
-                this.y(this.y() + diffY);
+                this.setY(this.getY() + diffY);
             }
 //            this.slope = null;
         }
@@ -164,7 +160,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                             if (this.velocity.y < 0) {
                                 this.velocity.y = 0;
                             }
-                            this.y(this.y() + 2);
+                            this.setY(this.getY() + 2);
                         }
                     }
                 }
@@ -184,19 +180,19 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             if (other.containsPoint(this.abbLeft() - 2, this.abbBottom()) ||
                     other.containsPoint(this.abbRight() + 2, this.abbBottom())) {
                 this.ground();
-                this.x(this.x() + response.overlapV.x);
+                this.setX(this.getX() + response.overlapV.x);
                 this.slope = other;
             }
         }
         // PLATFORM
         if (other.platform) {
             if (this.abbOverlapsSegment("x", other.abbLeft(), other.abbRight())) {
-                if (this.y() < other.y()) {
+                if (this.getY() < other.getY()) {
                     this.platform = other;
                     this.velocity.y = 0;
-                    this.platformDX = other.x() - other.prevX;
-                    this.platformDY = other.y() - other.prevY;
-                    this.x(this.x() + this.platformDX);
+                    this.platformDX = other.getX() - other.prevX;
+                    this.platformDY = other.getY() - other.prevY;
+                    this.setX(this.getX() + this.platformDX);
                 }
             }
         }

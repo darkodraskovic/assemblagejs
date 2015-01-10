@@ -1,21 +1,46 @@
 // SAT EXTENSION
 SAT.Polygon.prototype.setScale = function(x, y) {
-    var prevScale = this.scale.clone();
-    var scaleX = x / prevScale.x;
-    var scaleY = y / prevScale.y;    
+    var relScaleX = x / this.scale.x;
+    var relScaleY = y / this.scale.y;    
     this.scale.x = x;
     this.scale.y = y;
 
     _.each(this.points, function(point) {
-        return point.scale(scaleX, scaleY);
+        return point.scale(relScaleX, relScaleY);
     }, this);
 
-    this.w *= x / prevScale.x;
-    this.h *= y / prevScale.y;
+    this.w *= relScaleX;
+    this.h *= relScaleY;
 
-    this.offset.scale(x / prevScale.x, y / prevScale.y);
+    this.offset.scale(relScaleX, relScaleY);
     this.recalc();
-//    this.recalcSize();
+};
+
+SAT.Polygon.prototype.setScaleX = function(x) {
+    var relScaleX = x / this.scale.x;
+    this.scale.x = x;
+
+    _.each(this.points, function(point) {
+        return point.x *= relScaleX;
+    }, this);
+
+    this.w *= relScaleX;
+
+    this.offset.x *= relScaleX;
+    this.recalc();
+};
+SAT.Polygon.prototype.setScaleY = function(y) {
+    var relScaleY = y / this.scale.y;
+    this.scale.y = y;
+
+    _.each(this.points, function(point) {
+        return point.y *= relScaleY;
+    }, this);
+
+    this.h *= relScaleY;
+
+    this.offset.y *= relScaleY;
+    this.recalc();
 };
 
 SAT.Polygon.prototype.getTop = function () {

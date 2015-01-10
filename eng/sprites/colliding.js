@@ -3,11 +3,11 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     drawDebugGraphics: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.setCollision(this.collisionPolygon);
+        this.initCollision(this.collisionPolygon);
         this.prevOverlapN = new SAT.Vector(0, 0);
         this.containedPoint = new SAT.Vector(0, 0);
     },
-    onCreation: function () {
+    onCreation: function() {
         this._super();
     },
     createCollisionPolygon: function(polygon) {
@@ -17,10 +17,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         if (!this.collision.size)
             this.collision.size = {};
         if (!this.collision.size.w) {
-            this.collision.size.w = this.width();
+            this.collision.size.w = this.getWidth();
         }
         if (!this.collision.size.h) {
-            this.collision.size.h = this.height();
+            this.collision.size.h = this.getHeight();
         }
 
         if (!this.collision.offset) {
@@ -48,8 +48,8 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         if (!polygon) {
 //            offsetX -= w / 2;
 //            offsetY -= h / 2;
-            offsetX -= w * this.origin().x;
-            offsetY -= h * this.origin().y;
+            offsetX -= w * this.getOrigin().x;
+            offsetY -= h * this.getOrigin().y;
             var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
             collisionPolygon = box.toPolygon();
             // Get the with & height of the polygon's bounding box.
@@ -88,11 +88,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         if (this.collisionPolygon === collisionPolygon)
             this.collisionPolygon = null;
     },
-    setCollision: function(polygon) {
+    initCollision: function(polygon) {
         this.collisionPolygon = this.createCollisionPolygon(polygon);
         this.setCollisionResponse();
         this.setCollisionDebug();
-//        A_.COLLISION.addABB(this);
     },
     setCollisionResponse: function() {
         var collider = A_.collider;
@@ -164,7 +163,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.collided = true;
 
         if (this.collision.response !== "sensor")
-            this.positionRelative(-response.overlapV.x, -response.overlapV.y);
+            this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
     },
     collideWithDynamic: function(other, response) {
         this.prevOverlapN = response.overlapN;
@@ -182,28 +181,28 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             if (otherResponse === "active") {
                 if (thisResponse === "active" || thisResponse === "passive") {
                     if (this.collisionPolygon === response.a) {
-                        this.positionRelative(-response.overlapV.x * 0.5,
+                        this.setPositionRelative(-response.overlapV.x * 0.5,
                                 -response.overlapV.y * 0.5);
                     } else {
-                        this.positionRelative(response.overlapV.x * 0.5,
+                        this.setPositionRelative(response.overlapV.x * 0.5,
                                 response.overlapV.y * 0.5);
                     }
                 }
                 else if (thisResponse === "light") {
                     if (this.collisionPolygon === response.a) {
-                        this.positionRelative(-response.overlapV.x, -response.overlapV.y);
+                        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
                     } else {
-                        this.positionRelative(response.overlapV.x, response.overlapV.y);
+                        this.setPositionRelative(response.overlapV.x, response.overlapV.y);
                     }
                 }
             }
             else if (otherResponse === "passive") {
                 if (thisResponse === "active") {
                     if (this.collisionPolygon === response.a) {
-                        this.positionRelative(-response.overlapV.x * 0.5,
+                        this.setPositionRelative(-response.overlapV.x * 0.5,
                                 -response.overlapV.y * 0.5);
                     } else {
-                        this.positionRelative(response.overlapV.x * 0.5,
+                        this.setPositionRelative(response.overlapV.x * 0.5,
                                 response.overlapV.y * 0.5);
                     }
                 }
@@ -216,102 +215,52 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         return SAT.pointInPolygon(this.containedPoint, this.collisionPolygon);
     },
 //    TRANSFORMATIONS
-    position: function(x, y) {
-//        if (typeof x !== "number" || typeof y !== "number")
-//            return this._super();
-//        this._super(x, y);
-//        this.collisionPolygon.pos.x = x;
-//        this.collisionPolygon.pos.y = y;
-        // BUG: This should work. However, it speeds up the animation,
-        // and makes the animations speed dependent on the deltaPosition or deltaV (?).
-//        this.collisionPolygon.pos.x = this.positionLevel().x;
-//        this.collisionPolygon.pos.y = this.positionLevel().y;
-        var pos = this._super(x, y);
-        if (pos) {
-            return pos;
-        } else {
-            this.collisionPolygon.pos.x = x;
-            this.collisionPolygon.pos.y = y;
-        }
-    },
-    x: function (x) {
-//        var posX = this._super(x);
-//        if (_.isNumber(posX)) {
-//            return posX;
-//        } else {
-//            this.collisionPolygon.pos.x = x;
-//        }
-        
-        if (_.isNumber(x)) {
-            this.collisionPolygon.pos.x = x;
-        }
-        return this._super(x);
-    },
-    y: function (y) {
-//        var posY = this._super(y);
-//        if (_.isNumber(posY)) {
-//            return posY;
-//        } else {
-//            this.collisionPolygon.pos.y = y;
-//        }
-
-        if (_.isNumber(y)) {
-            this.collisionPolygon.pos.y = y;
-        }
-        return this._super(y);
-    },
-    scale: function(x, y) {
-//        if (typeof x !== "number" || typeof y !== "number")
-//            return this._super();
-//
-//        this._super(x, y);
-//        this.collisionPolygon.setScale(x, y);
-
-        var scale = this._super(x, y);
-        if (scale) {
-            return scale;
-        } else {
-            this.collisionPolygon.setScale(x, y);
-        }
-    },
-    size: function(x, y) {
-        if (typeof x !== "number" || typeof y !== "number")
-            return this._super();
-
+    setPosition: function(x, y) {
         this._super(x, y);
-//        x = x / this.frame.w;
-//        y = y / this.frame.h;
-//        this.collisionPolygon.setScale(x, y);
-
-        this.collisionPolygon.setScale(this.scale().x, this.scale().y);
+        this.collisionPolygon.pos.x = x;
+        this.collisionPolygon.pos.y = y;
     },
-    width: function(w) {
-        if (typeof w !== "number")
-            return this._super();
+    setX: function(x) {
+        this._super(x);
+        this.collisionPolygon.pos.x = x;
+    },
+    setY: function(y) {
+        this._super(y);
+        this.collisionPolygon.pos.y = y;
+    },
+    setScale: function(x, y) {
+        this._super(x, y);
+        this.collisionPolygon.setScale(x, y);
+    },
+    setScaleX: function(x) {
+        this._super(x);
+//        this.collisionPolygon.setScale(x, this.getScaleY());
+        this.collisionPolygon.setScaleX(x);
+    },
+    setScaleY: function(y) {
+        this._super(y);
+//        this.collisionPolygon.setScale(this.getScaleX(), y);
+        this.collisionPolygon.setScaleY(y);
+    },
+    setSize: function(x, y) {
+        this._super(x, y);
+        this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
+    },
+    setWidth: function(w) {
         this._super(w);
-//        w /= this.frame.w;
-//        this.collisionPolygon.setScale(w, this.collisionPolygon.scale.y);
-        this.collisionPolygon.setScale(this.scale().x, this.collisionPolygon.scale.y);
+//        this.collisionPolygon.setScale(this.getScaleX(), this.collisionPolygon.scale.y);
+//        this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
+        this.collisionPolygon.setScaleX(this.getScaleX());
     },
-    height: function(h) {
-        if (typeof h !== "number")
-            return this._super();
+    setHeight: function(h) {
         this._super(h);
-//        h = h / this.frame.h;
-//        this.collisionPolygon.setScale(this.collisionPolygon.scale.x, h);
-        this.collisionPolygon.setScale(this.collisionPolygon.scale.x, this.scale().y);
+//        this.collisionPolygon.setScale(this.collisionPolygon.scale.x, this.getScaleY());
+//        this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
+        this.collisionPolygon.setScaleY(this.getScaleY());
     },
-    rotation: function(n) {
-//        if (typeof n !== "number")
-//            return this._super();
-//
-//        this._super(n);
-//        this.collisionPolygon.setAngle(this.rotation());
-
-        if (_.isNumber(n)) {
-            this.collisionPolygon.setAngle(n);
-        }
-        return this._super(n);
+    setRotation: function(n) {
+        this._super(n);
+        this.collisionPolygon.setAngle(n);
     },
 //    syncCollisionPolygon: function() {
 //        this.collisionPolygon.pos.x = this.x();

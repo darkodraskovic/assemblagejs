@@ -9,6 +9,9 @@ A_.TILES.Tile = Class.extend({
         this.h = tilemap.tileH;
         this.containedPoint = new SAT.Vector(0, 0);
         this.createSprite();
+        if (this.tilemap.collision) {
+            this.initCollision();
+        }
     },
     createSprite: function() {
         var frameInd = this.gid - 1;
@@ -18,18 +21,18 @@ A_.TILES.Tile = Class.extend({
         var tileTexture = new PIXI.Texture(tm.baseTexture, frame);
         this.sprite = new PIXI.Sprite(tileTexture);
     },
-    setCollision: function(w, h) {
+    initCollision: function() {
         this.collides = true;
 
         var collisionPolygon;
-        var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
+        var box = new SAT.Box(new SAT.Vector(0, 0), this.w, this.h);
         collisionPolygon = box.toPolygon();
         collisionPolygon.w = box.w;
         collisionPolygon.h = box.h;
         this.collisionPolygon = collisionPolygon;
-        this.collisionPolygon.pos.x = this.x();
-        this.collisionPolygon.pos.y = this.y();
-        
+        this.collisionPolygon.pos.x = this.getX();
+        this.collisionPolygon.pos.y = this.getY();
+
         this.collision = this.tilemap.collision;
         if (this.collision.response === "sensor") {
             A_.collider.collisionDynamics.push(this);
@@ -40,19 +43,30 @@ A_.TILES.Tile = Class.extend({
 
 //        A_.COLLISION.addABB(this);
     },
-    x: function() {
+    moveToLayer: function(layer) {
+        layer.addChild(this.sprite);
+    },
+    setPosition: function(x, y) {
+        this.sprite.position.x = x;
+        this.sprite.position.y = y;
+        if (this.collisionPolygon) {
+            this.collisionPolygon.pos.x = x;
+            this.collisionPolygon.pos.y = y;
+        }
+    },
+    getX: function() {
         return this.sprite.position.x;
     },
-    y: function() {
+    getY: function() {
         return this.sprite.position.y;
     },
-    position: function() {
+    getPosition: function() {
         return this.sprite.position;
     },
-    width: function() {
+    getWidth: function() {
         return this.w;
     },
-    height: function() {
+    getHeight: function() {
         return this.h;
     },
     collideWithDynamic: function(other, response) {
