@@ -1,7 +1,7 @@
 // CLASSES
 var Ball = A_.SPRITES.Topdown.extend({
     animSheet: "ball.png",
-    collision: {response: "dynamic"},
+    collisionResponse: "dynamic",
     init: function (parent, x, y, props) {
         this.controlled = true;
         

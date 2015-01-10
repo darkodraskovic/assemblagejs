@@ -94,6 +94,12 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 //        collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
         this.collisionPolygons.push(collisionPolygon);
+        
+        delete this.collisionW;
+        delete this.collisionH;
+        delete this.collisionOffsetX;
+        delete this.collisionOffsetY;
+        
         return collisionPolygon;
     },
     destroyCollisionPolygon: function(collisionPolygon) {

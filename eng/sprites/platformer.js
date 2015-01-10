@@ -229,16 +229,16 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var PlatformerProbe = A_.SPRITES.Colliding.extend({
-    bounded: false,
-    collision: {response: "sensor", offset: {x: 0, y: 0}, size: {w: 2, h: 2}},
-    init: function(parent, x, y, props) {
-        this._super(parent, x, y, props);
-
-    },
-    onCreation: function() {
-        this._super();
-        this.addon("PinTo", {name: "probe", parent: this.undead,
-            offsetX: 0, offsetY: this.platformer.getHeight() / 2 + 2});
-    }
-});
+//var PlatformerProbe = A_.SPRITES.Colliding.extend({
+//    bounded: false,
+//    collision: {response: "sensor", offset: {x: 0, y: 0}, size: {w: 2, h: 2}},
+//    init: function(parent, x, y, props) {
+//        this._super(parent, x, y, props);
+//
+//    },
+//    onCreation: function() {
+//        this._super();
+//        this.addon("PinTo", {name: "probe", parent: this.undead,
+//            offsetX: 0, offsetY: this.platformer.getHeight() / 2 + 2});
+//    }
+//});

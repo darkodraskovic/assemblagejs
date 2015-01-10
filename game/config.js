@@ -72,5 +72,5 @@ platformer_level1 = {
     map: "level1",
     graphics: ["sci-fi-platformer-tiles-32x32.png", "moving_platform.png","player.png",
     "Explosion.png", "undead.png"],
-    sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"],["jump.wav"]]
+    sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"], ["jetpack.wav"],["jump.wav"]]
 };

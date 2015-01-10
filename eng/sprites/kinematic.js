@@ -49,32 +49,28 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.calcAcceleration.y *= sin;
         }
 
-        if (this.gravity.x === 0) {
-            if (this.velocity.x > 0) {
-                this.velocity.x -= this.calcFriction.x;
-                if (this.velocity.x < 0) {
-                    this.velocity.x = 0;
-                }
-            }
+        if (this.velocity.x > 0) {
+            this.velocity.x -= this.calcFriction.x;
             if (this.velocity.x < 0) {
-                this.velocity.x += this.calcFriction.x;
-                if (this.velocity.x > 0) {
-                    this.velocity.x = 0;
-                }
+                this.velocity.x = 0;
             }
         }
-        if (this.gravity.y === 0) {
-            if (this.velocity.y > 0) {
-                this.velocity.y -= this.calcFriction.y;
-                if (this.velocity.y < 0) {
-                    this.velocity.y = 0;
-                }
+        if (this.velocity.x < 0) {
+            this.velocity.x += this.calcFriction.x;
+            if (this.velocity.x > 0) {
+                this.velocity.x = 0;
             }
+        }
+        if (this.velocity.y > 0) {
+            this.velocity.y -= this.calcFriction.y;
             if (this.velocity.y < 0) {
-                this.velocity.y += this.calcFriction.y;
-                if (this.velocity.y > 0) {
-                    this.velocity.y = 0;
-                }
+                this.velocity.y = 0;
+            }
+        }
+        if (this.velocity.y < 0) {
+            this.velocity.y += this.calcFriction.y;
+            if (this.velocity.y > 0) {
+                this.velocity.y = 0;
             }
         }
 

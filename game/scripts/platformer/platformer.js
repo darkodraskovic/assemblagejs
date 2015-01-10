@@ -82,6 +82,7 @@ var Player = Anime.extend({
     controlled: true,
     followee: true,
     onCreation: function() {
+        A_.INPUT.addMapping("jetpack", A_.KEY.SHIFT);
         this._super();
         this.thrus = A_.level.findLayerByName("Thrus");
     },
@@ -117,6 +118,21 @@ var Player = Anime.extend({
                 A_.game.createTile(this.thrus, 737, x, y);
             }
         }
+        if (A_.INPUT.down["jetpack"]) {
+            if (this.velocity.y > -200) {
+                this.velocity.y -= this.force.y;
+            }
+        }
+        if (A_.INPUT.pressed["jetpack"]) {
+            this.jetpackSound = A_.game.createSound({
+                urls: ['jetpack.wav'],
+                volume: 1,
+            });
+            this.jetpackSound.play();
+        }
+        if (A_.INPUT.released["jetpack"]) {
+//            this.jetpackSound.stop();
+        }
         this._super();
 //        window.console.log(this.platformerState);
     },
@@ -124,7 +140,7 @@ var Player = Anime.extend({
 //        if (other.collision.response === "sensor") {
 //        }
 //    }
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
 //        window.console.log(response.overlapN.y);
         this._super(other, response);
     }
