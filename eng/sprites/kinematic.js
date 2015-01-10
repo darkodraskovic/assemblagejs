@@ -88,8 +88,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             if (this.bounced.vertical) {
                 this.velocity.y = -this.velocity.y * this.bounciness;
             }
-            this.bounced.horizontal = this.bounced.vertical = false;
         }
+        this.bounced.horizontal = this.bounced.vertical = false;
 
         if (this.moveAtAngle) {
             var spd = this.velocity.len();

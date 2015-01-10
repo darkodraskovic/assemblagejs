@@ -119,8 +119,8 @@ A_.TILES.createTiledMap = function(mapData) {
 
                 // POLY || RECT
                 if (oData.polygon || oData.type === "Rectangle") {
-                    args.collision = {};
-                    args.collision.response = args.collisionResponse;
+//                    args.collision = {};
+//                    args.collision.response = args.collisionResponse;
 
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
@@ -129,7 +129,9 @@ A_.TILES.createTiledMap = function(mapData) {
                         o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
-                        args.collision.size = {w: oData["width"], h: oData["height"]};
+//                        args.collision.size = {w: oData["width"], h: oData["height"]};
+                        args.collisionW = oData["width"]; 
+                        args.collisionH = oData["height"]; 
                         var o = game.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                         o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }

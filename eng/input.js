@@ -134,56 +134,6 @@ A_.INPUT.mousePosition.screen = {};
 A_.INPUT.mousePosition.level = {};
 A_.INPUT.mousewheel = null;
 
-A_.INPUT.addMouseReacivity = function(entity) {
-    if (!entity.initedInput) {
-        var that = entity;
-        entity.sprite.mousedown = function() {
-            that.leftpressed = true;
-//            window.console.log("left pressed");
-            that.leftdown = true;
-        };
-        entity.sprite.mouseup = function() {
-            that.leftreleased = true;
-            that.leftdown = false;
-        };
-        entity.sprite.mouseupoutside = function() {
-            that.leftreleased = true;
-            that.leftdown = false;
-        };
-        entity.sprite.rightdown = function() {
-            that.rightpressed = true;
-            that.rightdown = true;
-        };
-        entity.sprite.rightup = function() {
-            that.rightreleased = true;
-            that.rightdown = false;
-        };
-        entity.sprite.rightupoutside = function() {
-            that.rightreleased = true;
-            that.rightdown = false;
-        };
-        entity.initedInput = true;
-    }
-    entity.sprite.interactive = true;
-    entity.mouseReactive = function(reactive) {
-        if (typeof reactive === "undefined") {
-            return this.sprite.interactive;
-        }
-        else if (!reactive) {
-            this.sprite.interactive = false;
-        }
-        else {
-            A_.INPUT.addMouseReacivity(this);
-        }
-    };
-    entity.resetMouseReaction = function() {
-        this.leftpressed = false;
-        this.leftreleased = false;
-        this.rightpressed = false;
-        this.rightreleased = false;
-    };
-};
-
 A_.INPUT.processMouseWheel = function(e) {
     if (e.wheelDelta > 0) {
         A_.INPUT.mousewheel = "forward";
@@ -227,7 +177,7 @@ A_.INPUT.mouseReactivityInjection = {
         var that = this;
         this.sprite.mousedown = function() {
             that.leftpressed = true;
-            window.console.log("left pressed");
+//            window.console.log("left pressed");
             that.leftdown = true;
         };
         this.sprite.mouseup = function() {

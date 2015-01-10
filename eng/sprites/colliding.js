@@ -11,37 +11,52 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._super();
     },
     createCollisionPolygon: function(polygon) {
-        if (!this.collision)
-            this.collision = {};
-
-        if (!this.collision.size)
-            this.collision.size = {};
-        if (!this.collision.size.w) {
-            this.collision.size.w = this.getWidth();
-        }
-        if (!this.collision.size.h) {
-            this.collision.size.h = this.getHeight();
-        }
-
-        if (!this.collision.offset) {
-            this.collision.offset = {};
-        }
-        if (!this.collision.offset.x) {
-            this.collision.offset.x = 0;
-        }
-        if (!this.collision.offset.y) {
-            this.collision.offset.y = 0;
-        }
-
+//        if (!this.collision)
+//            this.collision = {};
+//
+//        if (!this.collision.size)
+//            this.collision.size = {};
+//        if (!this.collision.size.w) {
+//            this.collision.size.w = this.getWidth();
+//        }
+//        if (!this.collision.size.h) {
+//            this.collision.size.h = this.getHeight();
+//        }
+//
+//        if (!this.collision.offset) {
+//            this.collision.offset = {};
+//        }
+//        if (!this.collision.offset.x) {
+//            this.collision.offset.x = 0;
+//        }
+//        if (!this.collision.offset.y) {
+//            this.collision.offset.y = 0;
+//        }
+//
         if (!this.collisionPolygons) {
             this.collisionPolygons = [];
         }
+        if (!_.isNumber(this.collisionW))
+            this.collisionW = this.getWidth();
+        if (!_.isNumber(this.collisionH))
+            this.collisionH = this.getHeight();
+        if (!_.isNumber(this.collisionOffsetX))
+            this.collisionOffsetX = 0;
+        if (!_.isNumber(this.collisionOffsetY))
+            this.collisionOffsetY = 0;
 
-        var w = this.collision.size.w;
-        var h = this.collision.size.h;
+//        var w = this.collision.size.w;
+//        var h = this.collision.size.h;
+//
+//        var offsetX = this.collision.offset.x;
+//        var offsetY = this.collision.offset.y;
+        var w = this.collisionW;
+        var h = this.collisionH;
 
-        var offsetX = this.collision.offset.x;
-        var offsetY = this.collision.offset.y;
+//        var offsetX = this.collision.offset.x;
+//        var offsetY = this.collision.offset.y;
+        var offsetX = this.collisionOffsetX;
+        var offsetY = this.collisionOffsetY;
 
         var collisionPolygon;
 
@@ -96,11 +111,14 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     setCollisionResponse: function() {
         var collider = A_.collider;
 
-        if (!this.collision.response) {
-            this.collision.response = "sensor";
+//        if (!this.collision.response) {
+        if (!this.collisionResponse) {
+//            this.collision.response = "sensor";
+            this.collisionResponse = "sensor";
             collider.collisionDynamics.push(this);
         } else {
-            if (this.collision.response === "static")
+//            if (this.collision.response === "static")
+            if (this.collisionResponse === "static")
                 collider.collisionStatics.push(this);
             else
                 collider.collisionDynamics.push(this);
@@ -162,16 +180,18 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.prevOverlapN = response.overlapN;
         this.collided = true;
 
-        if (this.collision.response !== "sensor")
+//        if (this.collision.response !== "sensor")
+        if (this.collisionResponse !== "sensor")
             this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
     },
     collideWithDynamic: function(other, response) {
         this.prevOverlapN = response.overlapN;
         this.collided = true;
 
-        var thisResponse = this.collision.response;
-        var otherResponse = other.collision.response;
-
+//        var thisResponse = this.collision.response;
+//        var otherResponse = other.collision.response;
+        var thisResponse = this.collisionResponse;
+        var otherResponse = other.collisionResponse;
         if (thisResponse === "static") {
             return;
         }
@@ -228,6 +248,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._super(y);
         this.collisionPolygon.pos.y = y;
     },
+    setRotation: function(n) {
+        this._super(n);
+        this.collisionPolygon.setAngle(n);
+    },
     setScale: function(x, y) {
         this._super(x, y);
         this.collisionPolygon.setScale(x, y);
@@ -258,19 +282,19 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 //        this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
         this.collisionPolygon.setScaleY(this.getScaleY());
     },
-    setRotation: function(n) {
-        this._super(n);
-        this.collisionPolygon.setAngle(n);
-    },
 //    syncCollisionPolygon: function() {
-//        this.collisionPolygon.pos.x = this.x();
-//        this.collisionPolygon.pos.y = this.y();
-//        
-//        this.collisionPolygon.setAngle(this.rotation());
+//        if (this.getRotation() !== this.prevRot)
+//            this.collisionPolygon.setAngle(this.getRotation());
+//
+//        this.collisionPolygon.pos.x = this.getX();
+//        this.collisionPolygon.pos.y = this.getY();
+//
 //    },
 //    syncSprite: function() {
-//        this.position(this.collisionPolygon.pos.x, this.collisionPolygon.pos.y);        
-//        this.rotation(this.collisionPolygon.angle)
+//        if (this.getRotation() !== this.prevRot)
+//            this.setRotation(this.collisionPolygon.angle);
+//        
+//        this.setPosition(this.collisionPolygon.pos.x, this.collisionPolygon.pos.y);
 //    },
     clear: function() {
         this.removeCollision();

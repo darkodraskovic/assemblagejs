@@ -55,6 +55,12 @@ SAT.Polygon.prototype.getLeft = function () {
 SAT.Polygon.prototype.getRight = function () {
     return this.pos.x + (Math.abs(this.w) - Math.abs(this.offset.x));
 }
+SAT.Polygon.prototype.getCenterX = function () {
+    return this.getLeft() + (Math.abs(this.w) / 2);
+}
+SAT.Polygon.prototype.getCenterY = function () {
+    return this.getTop() + (Math.abs(this.h) / 2);
+}
 
 SAT.Polygon.prototype.calcSize = function() {
     var xs = [];

@@ -1,7 +1,11 @@
 // CLASSES
 var Anime = A_.SPRITES.Topdown.extend({
     frame: {w: 64, h: 64},
-    collision: {response: "passive", offset: {x: 0, y: 6}, size: {w: 26, h: 48}},
+//    collision: {response: "passive", offset: {x: 0, y: 6}, size: {w: 26, h: 48}},
+    collisionResponse: "passive", 
+    collisionOffsetY: 6,
+    collisionW: 26,
+    collisionH: 48,
     animSpeed: 0.15,
     alive: true,
     facing: "right",
@@ -57,9 +61,9 @@ var Player = Anime.extend({
     controlled: true,
     followee: true,
     init: function(parent, x, y, props) {
+        this.collisionResponse = "active";
         this._super(parent, x, y, props);
-        this.collision = A_.UTILS.copy(this.collision);
-        this.collision.response = "active";
+//        this.collision = A_.UTILS.copy(this.collision);
         
         this.rifle = A_.game.createSprite(Rifle, this.layer,
                 this.getX(), this.getY(),
@@ -178,7 +182,10 @@ var Rifle = A_.SPRITES.Animated.extend({
 var Bullet = A_.SPRITES.Kinematic.extend({
     animSheet: "Muzzleflashes-Shots.png",
     frame: {w: 32, h: 32},
-    collision : {size: {w: 12, h: 10}, response: "sensor"},
+//    collision : {size: {w: 12, h: 10}, response: "sensor"},
+    collisionResponse: "sensor",
+    collisionW: 12,
+    collisionH: 10,
     collidesWith: A_.COLLISION.Type.ENEMY,    
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -207,7 +214,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
             other.alive = false;
             other.motionState = "idle";
             this.destroy();
-        } else if (other.collision.response === "static") {
+        } else if (other.collisionResponse === "static") {
             this.destroy();
         }
     },
@@ -235,7 +242,8 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.laserTip = A_.game.createSprite(LaserTip, A_.level.findLayerByName("Effects"),
                 this.getX() + Math.cos(this.getRotation()) * this.getWidth(),
                 this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
-                {collision : {size: {w: 4, h: 4}}});
+//                {collision : {size: {w: 4, h: 4}}});
+                {collisionW: 4, collisionH: 4});
         this.laserTip.laser = this;
         this.sound = A_.game.createSound({
             urls: ['laser-beam.mp3'],
@@ -289,7 +297,7 @@ var LaserTip = A_.SPRITES.Colliding.extend({
     },
     collideWithStatic: function(other, response) {
         this._super(other, response);
-        if (other.collision.response === "static") {
+        if (other.collisionResponse === "static") {
             if (!this.timer) {
                 this.timer = 1;
             }
@@ -369,7 +377,8 @@ var Explosion = A_.SPRITES.Animated.extend({
 // ITEMS
 var Computer = A_.SPRITES.Colliding.extend({
     animSheet: "Computer1.png",
-    collision: {response: "static"},
+//    collision: {response: "static"},
+    collisionResponse: "static",
 //    collisionType: A_.COLLISION.Type.ITEM,
 //    collidesWith: A_.COLLISION.Type.NONE,
     init: function(parent, x, y, props) {

@@ -9,7 +9,8 @@ A_.TILES.Tile = Class.extend({
         this.h = tilemap.tileH;
         this.containedPoint = new SAT.Vector(0, 0);
         this.createSprite();
-        if (this.tilemap.collision) {
+//        if (this.tilemap.collision) {
+        if (this.tilemap.collisionResponse) {
             this.initCollision();
         }
     },
@@ -30,11 +31,13 @@ A_.TILES.Tile = Class.extend({
         collisionPolygon.w = box.w;
         collisionPolygon.h = box.h;
         this.collisionPolygon = collisionPolygon;
-        this.collisionPolygon.pos.x = this.getX();
-        this.collisionPolygon.pos.y = this.getY();
+//        this.collisionPolygon.pos.x = this.getX();
+//        this.collisionPolygon.pos.y = this.getY();
 
-        this.collision = this.tilemap.collision;
-        if (this.collision.response === "sensor") {
+//        this.collision = this.tilemap.collision;
+//        if (this.collision.response === "sensor") {
+        this.collisionResponse = this.tilemap.collisionResponse;
+        if (this.collisionResponse === "sensor") {
             A_.collider.collisionDynamics.push(this);
         }
         else {

@@ -48,7 +48,11 @@ var Anime = A_.SPRITES.Platformer.extend({
     frame: {w: 32, h: 64},
     bounded: false,
     wrap: true,
-    collision: {response: "dynamic", offset: {x: 0, y: 8}, size: {w: 18, h: 46}},
+//    collision: {response: "dynamic", offset: {x: 0, y: 8}, size: {w: 18, h: 46}},
+    collisionResponse: "dynamic",
+    collisionOffsetY: 8,
+    collisionW: 18,
+    collisionH: 46,
     drawDebugGraphics: false,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -78,6 +82,7 @@ var Player = Anime.extend({
     controlled: true,
     followee: true,
     onCreation: function() {
+        this._super();
         this.thrus = A_.level.findLayerByName("Thrus");
     },
     onJumped: function() {
@@ -98,6 +103,10 @@ var Player = Anime.extend({
         this._super();
 //        window.console.log("wall");
     },
+    onCeiling: function() {
+        this._super();
+        window.console.log("ceiling");
+    },
     update: function() {
         if (A_.level.leftdown) {
             var mpl = A_.INPUT.mousePosition.level;
@@ -115,6 +124,10 @@ var Player = Anime.extend({
 //        if (other.collision.response === "sensor") {
 //        }
 //    }
+    collideWithStatic: function (other, response) {
+//        window.console.log(response.overlapN.y);
+        this._super(other, response);
+    }
 });
 
 var Undead = Anime.extend({
@@ -148,7 +161,10 @@ var Undead = Anime.extend({
 
 var UndeadProbe = A_.SPRITES.Colliding.extend({
     bounded: false,
-    collision: {response: "sensor", offset: {x: 0, y: 0}, size: {w: 2, h: 2}},
+//    collision: {response: "sensor", offset: {x: 0, y: 0}, size: {w: 2, h: 2}},
+    collisionResponse: "sensor",
+    collisionW: 2,
+    collisionH: 2,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -192,7 +208,8 @@ A_.game.preupdate = function() {
 var Platform = A_.SPRITES.Colliding.extend({
     animSheet: "moving_platform.png",
     frame: {w: 128, h: 32},
-    collision: {response: "static"},
+//    collision: {response: "static"},
+    collisionResponse: "static",
     type: "horizontal",
 //    drawDebugGraphics: false,    
     init: function(parent, x, y, props) {

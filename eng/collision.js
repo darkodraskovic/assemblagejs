@@ -14,10 +14,10 @@ A_.COLLISION.Collider = Class.extend({
 
 
         // DYNAMICS
-        var len = this.collisionDynamics.length;
-        for (i = 0; i < len - 1; i++) {
+        var lenDyn = this.collisionDynamics.length;
+        for (i = 0; i < lenDyn - 1; i++) {
             var o1 = this.collisionDynamics[i];
-            for (j = i + 1; j < len; j++) {
+            for (j = i + 1; j < lenDyn; j++) {
                 var o2 = this.collisionDynamics[j];
                 if (o1.collides && o2.collides) {
                     // Bitmasks. Currently inactive. DO NOTE DELETE!
@@ -36,7 +36,6 @@ A_.COLLISION.Collider = Class.extend({
         }
 
         // STATICS
-        var lenDyn = this.collisionDynamics.length;
         var lenStat = this.collisionStatics.length;
         for (i = 0; i < lenDyn; i++) {
             var o1 = this.collisionDynamics[i];
@@ -60,6 +59,12 @@ A_.COLLISION.Collider = Class.extend({
 });
 
 A_.COLLISION.abbInjection = {
+    abbWidth: function() {
+        return this.collisionPolygon.w;
+    },
+    abbHeight: function() {
+        return this.collisionPolygon.h;
+    },
     abbBottom: function() {
         return this.collisionPolygon.getBottom();
     },
@@ -71,6 +76,12 @@ A_.COLLISION.abbInjection = {
     },
     abbRight: function() {
         return this.collisionPolygon.getRight();
+    },
+    abbCenterX: function() {
+        return this.collisionPolygon.getCenterX();
+    },
+    abbCenterY: function() {
+        return this.collisionPolygon.getCenterY();
     },
     abbOverlapsSegment: function(axis, a, b) {
         if (axis === "y") {

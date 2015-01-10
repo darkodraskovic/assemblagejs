@@ -18,13 +18,17 @@ A_.TILES.Tilemap = Class.extend({
     },
     populateTilelayer: function(layerData) {
         if (this.layer.collisionResponse) {
-            this.collision = {};
-            this.collision.size = {};
-            this.collision.size.w = this.tileW;
-            this.collision.size.h = this.tileH;
-            this.collision.response = this.layer.collisionResponse;
-            if (this.collision.response !== "sensor" && this.collision.response !== "static") {
-                this.collision.response = "static";
+//            this.collision = {};
+//            this.collision.size = {};
+//            this.collision.size.w = this.tileW;
+//            this.collision.size.h = this.tileH;
+//            this.collision.response = this.layer.collisionResponse;
+//            if (this.collision.response !== "sensor" && this.collision.response !== "static") {
+//                this.collision.response = "static";
+//            }
+            this.collisioResponse = this.layer.collisionResponse;
+            if (this.collisionResponse !== "sensor" && this.collisionResponse !== "static") {
+                this.collisionResponse = "static";
             }
         }
 
@@ -49,7 +53,7 @@ A_.TILES.Tilemap = Class.extend({
         this.layer.tilemap = this;
     },
     applyLayerAttributesToTiles: function() {
-        if (this.collision) {
+        if (this.collisionResponse) {
             var w = this.tileW;
             var h = this.tileH;
             _.each(this.tiles, function(tileCol) {
@@ -138,7 +142,7 @@ A_.TILES.Tilemap = Class.extend({
             // Pixi
             this.layer.removeChild(sprite);
             // Collisions
-            if (this.collision) {
+            if (this.collisionResponse) {
                 var ind;
 
                 ind = A_.collider.collisionStatics.indexOf(tile);

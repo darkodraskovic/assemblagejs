@@ -495,6 +495,7 @@ A_.SPRITES.Animated = Class.extend({
     },
     // CREATION/DESTRUCTION & UPDATE
     preupdate: function() {
+        this.prevRot = this.getRotation();
         this.prevX = this.getX();
         this.prevY = this.getY();
 

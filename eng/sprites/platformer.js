@@ -9,6 +9,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     init: function(layer, x, y, props) {
         this._super(layer, x, y, props);
         this.gravity = new SAT.Vector(0, 20);
+        this.gravityMultiplier = 4;
+        this.recalcFallTreshold();
         this.friction = new SAT.Vector(48, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
@@ -22,6 +24,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             A_.INPUT.addMapping("right", A_.KEY.D);
             A_.INPUT.addMapping("jump", A_.KEY.SPACE);
         }
+    },
+    onCreation: function () {
+        this._super();
     },
     update: function() {
         if (this.controlled) {
@@ -46,7 +51,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
 
-        // SLOPE & PLATFORM
+        // SLOPE
         if (!this.slope) {
             var sprite;
             var y = this.abbBottom() + this.scanDepth;
@@ -55,12 +60,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             sprite = A_.level.findSpriteContainingPoint(xL, y) || A_.level.findSpriteContainingPoint(xR, y);
             if (sprite && sprite.slope) {
                 this.slope = sprite;
-//                this.y(this.y() + this.scanDepth / 2);
                 this.setY(this.getY() + 2);
             }
-//            if (sprite && sprite.platform) {
-//                this.platform = sprite;
-//            }
         }
         // PLATFORM
         if (this.platform) {
@@ -91,11 +92,13 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this._super();
 
         // STATES
-        if (this.velocity.y > this.gravity.y && (!this.slope && !this.platform)) {
+//        if (this.velocity.y > this.gravity.y * 4 && (!this.slope && !this.platform)) {
+        if (this.velocity.y > this.fallTreshold && (!this.slope && !this.platform)) {
             this.platformerState = "falling";
         } else if (this.velocity.y < -this.gravity.y) {
             this.platformerState = "jumping";
         }
+
         if (this.velocity.x !== 0) {
             this.movingState = "moving";
         } else {
@@ -145,30 +148,26 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (response.overlapN.y !== 0) {
             // FLOOR
             if (response.overlapN.y === 1) {
-                // BUG: The wall slide pass this test.
-                if (this.abbBottom() < other.abbTop() + 2
-                        && this.velocity.y > 0) {
-//                  if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2))
+                if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2)) {
                     this.ground();
                 }
             }
             // CEILING
             else {
-                if (this.bounciness === 0) {
-                    if (this.platformerState !== "grounded") {
-                        if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2)) {
-                            if (this.velocity.y < 0) {
-                                this.velocity.y = 0;
-                            }
-                            this.setY(this.getY() + 2);
-                        }
+                if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2) 
+                        && this.platformerState !== "grounded") {
+                    this.onCeiling();
+                    if (this.velocity.y < 0) {
+                        this.velocity.y = 0;
                     }
+                    this.setYRelative(2);
                 }
             }
         }
         // WALL
         else if (response.overlapN.x !== 0) {
             if (this.abbOverlapsSegment("y", other.abbTop() + 2, other.abbBottom() - 2)) {
+                this.velocity.x = 0;
                 this.onWall();
             }
         }
@@ -212,8 +211,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
     },
     onWall: function() {
-        this.velocity.x = 0;
-//        window.console.log("wall");
+    },
+    onCeiling: function() {
+
     },
     // UTILS
     flipFacing: function() {
@@ -223,5 +223,22 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         else {
             this.facing = "right";
         }
+    },
+    recalcFallTreshold: function() {
+        this.fallTreshold = this.gravity.y * this.gravityMultiplier;
+    }
+});
+
+var PlatformerProbe = A_.SPRITES.Colliding.extend({
+    bounded: false,
+    collision: {response: "sensor", offset: {x: 0, y: 0}, size: {w: 2, h: 2}},
+    init: function(parent, x, y, props) {
+        this._super(parent, x, y, props);
+
+    },
+    onCreation: function() {
+        this._super();
+        this.addon("PinTo", {name: "probe", parent: this.undead,
+            offsetX: 0, offsetY: this.platformer.getHeight() / 2 + 2});
     }
 });
