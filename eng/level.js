@@ -141,6 +141,9 @@ A_.Level = Class.extend({
             return this.container.position;
         }
     },
+    getPosition: function () {
+        return this.container.position;
+    },
     processParallax: function(x, y) {
         for (var i = 0; i < this.container.children.length; i++) {
             var layer = this.container.children[i];

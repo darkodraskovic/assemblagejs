@@ -1,15 +1,22 @@
 // CLASSES
 var Ball = A_.SPRITES.Topdown.extend({
+    colTimesCalled: 0,
     animSheet: "ball.png",
     collisionResponse: "dynamic",
+    name: "ball",
     init: function (parent, x, y, props) {
         this.controlled = true;
         
         this._super(parent, x, y, props);
     },
     update: function () {
+        this.colTimesCalled = 0;
         this._super();
-        this.bounciness = 0.75;
+        this.bounciness = 2;
+    },
+    collideWithStatic: function (other, response) {
+        this.colTimesCalled++;
+        this._super(other, response);
     }
 });
 

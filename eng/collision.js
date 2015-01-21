@@ -1,5 +1,5 @@
 A_.COLLISION.Collider = Class.extend({
-    init: function() {
+    init: function () {
         this.collisionSprites = [];
 //        this.collisionTiles = [];
         this.collisionStatics = [];
@@ -7,8 +7,8 @@ A_.COLLISION.Collider = Class.extend({
         this.collisionMasks = [];
         this.response = new SAT.Response();
     },
-    processCollisions: function() {
-        _.each(this.collisionSprites, function(sprite) {
+    processCollisions: function () {
+        _.each(this.collisionSprites, function (sprite) {
             sprite.collided = false;
         });
 
@@ -36,6 +36,9 @@ A_.COLLISION.Collider = Class.extend({
         }
 
         // STATICS
+//        this.collisionStatics = _.sortBy(this.collisionStatics, function (static) {
+//            return static.getY();
+//        });
         var lenStat = this.collisionStatics.length;
         for (i = 0; i < lenDyn; i++) {
             var o1 = this.collisionDynamics[i];
@@ -59,38 +62,38 @@ A_.COLLISION.Collider = Class.extend({
 });
 
 A_.COLLISION.abbInjection = {
-    abbWidth: function() {
+    abbWidth: function () {
         return this.collisionPolygon.w;
     },
-    abbHeight: function() {
+    abbHeight: function () {
         return this.collisionPolygon.h;
     },
-    abbBottom: function() {
+    abbBottom: function () {
         return this.collisionPolygon.getBottom();
     },
-    abbTop: function() {
+    abbTop: function () {
         return this.collisionPolygon.getTop();
     },
-    abbLeft: function() {
+    abbLeft: function () {
         return this.collisionPolygon.getLeft();
     },
-    abbRight: function() {
+    abbRight: function () {
         return this.collisionPolygon.getRight();
     },
-    abbCenterX: function() {
+    abbCenterX: function () {
         return this.collisionPolygon.getCenterX();
     },
-    abbCenterY: function() {
+    abbCenterY: function () {
         return this.collisionPolygon.getCenterY();
     },
-    abbOverlapsSegment: function(axis, a, b) {
+    abbOverlapsSegment: function (axis, a, b) {
         if (axis === "y") {
             return (this.abbTop() < b && this.abbBottom() > a);
         } else if (axis === "x") {
             return (this.abbLeft() < b && this.abbRight() > a);
         }
     },
-    abbOverlapsEntity: function(entity) {
+    abbOverlapsEntity: function (entity) {
         return (this.abbTop() < entity.abbBottom() && this.abbBottom() > entity.abbTop()
                 && this.abbLeft() < entity.abbRight() && this.abbRight() > entity.abbLeft());
     }

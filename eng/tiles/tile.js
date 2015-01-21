@@ -48,14 +48,16 @@ A_.TILES.Tile = Class.extend({
     },
     moveToLayer: function(layer) {
         layer.addChild(this.sprite);
+        if (this.collisionPolygon) {
+            this.collisionPolygon.pos.x = this.getX();
+            this.collisionPolygon.pos.y = this.getY();
+//            this.collisionPolygon.pos.x = A_.level.container.toLocal(A_.level.origin, this.sprite).x;
+//            this.collisionPolygon.pos.y = A_.level.container.toLocal(A_.level.origin, this.sprite).y;
+        }
     },
     setPosition: function(x, y) {
         this.sprite.position.x = x;
         this.sprite.position.y = y;
-        if (this.collisionPolygon) {
-            this.collisionPolygon.pos.x = x;
-            this.collisionPolygon.pos.y = y;
-        }
     },
     getX: function() {
         return this.sprite.position.x;

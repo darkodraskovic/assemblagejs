@@ -6,11 +6,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     controlled: false,
     facing: "right",
     autoFlip: true,
-    init: function(layer, x, y, props) {
+    init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.gravity = new SAT.Vector(0, 20);
-        this.gravityMultiplier = 4;
-        this.recalcFallTreshold();
         this.friction = new SAT.Vector(48, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
@@ -24,11 +22,12 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             A_.INPUT.addMapping("right", A_.KEY.D);
             A_.INPUT.addMapping("jump", A_.KEY.SPACE);
         }
+//        this.overlap = new SAT.Response();
     },
     onCreation: function () {
         this._super();
     },
-    update: function() {
+    update: function () {
         if (this.controlled) {
             if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
                 this.applyForce = true;
@@ -53,15 +52,23 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
         // SLOPE
         if (!this.slope) {
-            var sprite;
+//            var sprite;
             var y = this.abbBottom() + this.scanDepth;
-            var xL = this.abbLeft() - 2;
-            var xR = this.abbRight() + 2;
-            sprite = A_.level.findSpriteContainingPoint(xL, y) || A_.level.findSpriteContainingPoint(xR, y);
-            if (sprite && sprite.slope) {
-                this.slope = sprite;
-                this.setY(this.getY() + 2);
-            }
+//            var xL = this.abbLeft() - 2;
+//            var xR = this.abbRight() + 2;
+            var xL = this.abbLeft();
+            var xR = this.abbRight();
+//            sprite = A_.level.findSpriteContainingPoint(xL, y) || A_.level.findSpriteContainingPoint(xR, y);
+//            if (sprite && sprite.slope) {
+//                this.slope = sprite;
+//                this.setY(this.getY() + 2);
+//            }
+            _.each(A_.level.findSpritesByPropertyValue("slope", true), function (slope) {
+                if (slope.containsPoint(xL, y) || slope.containsPoint(xR, y)) {
+//                    this.setY(this.getY() + 2);
+                    this.slope = slope;
+                }
+            }, this);
         }
         // PLATFORM
         if (this.platform) {
@@ -92,8 +99,11 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this._super();
 
         // STATES
+        // TODO: 4 is a magic number.
 //        if (this.velocity.y > this.gravity.y * 4 && (!this.slope && !this.platform)) {
-        if (this.velocity.y > this.fallTreshold && (!this.slope && !this.platform)) {
+//        if (this.velocity.y > this.gravity.y && (!this.slope && !this.platform)) {
+        if (this.velocity.y > this.gravity.y && !this.slope) {
+//        if (this.velocity.y > this.gravity.y) {
             this.platformerState = "falling";
         } else if (this.velocity.y < -this.gravity.y) {
             this.platformerState = "jumping";
@@ -116,8 +126,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
         this.slope = null;
         this.platform = null;
+        
     },
-    calculateVelocity: function() {
+    calculateVelocity: function () {
         this._super();
 
         if (this.slope) {
@@ -127,7 +138,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
     },
-    applyVelocity: function() {
+    applyVelocity: function () {
         this._super();
 
         if (this.slope) {
@@ -142,61 +153,105 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 //            this.slope = null;
         }
     },
-    collideWithStatic: function(other, response) {
+    collideWithStatic: function (other, response) {
         this._super(other, response);
+//        if (Math.abs(this.overlap) < Math.abs(response.overlap))
+//            this.overlap = response;
 
-        if (response.overlapN.y !== 0) {
-            // FLOOR
-            if (response.overlapN.y === 1) {
-                if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2)) {
+//        if (response.overlapN.y !== 0 && response.overlapV.y) {
+        if (response.overlap) {
+            if (response.overlapN.y !== 0) {
+                // FLOOR
+//            if (response.overlapN.y > 0) {
+//                        if (this instanceof Player)
+//                            window.console.log(response.overlap);
+
+                if (response.overlapN.y > 0) {
+//            if (response.overlap < 0) {
                     this.ground();
+                    if (other.platform) {
+                        if (this.getY() < other.getY()) {
+                            this.platform = other;
+                            this.platformDX = other.getX() - other.prevX;
+                            this.platformDY = other.getY() - other.prevY;
+                            this.setXRelative(this.platformDX);
+                        }
+                    }
+                    if (other.slope) {
+                        if (!other.slopeSet) {
+                            other.setSlope();
+                        }
+                        this.slope = other;
+                        this.setXRelative(response.overlapV.x);
+//                        this.setYRelative(-response.overlapV.y);
+                    }
                 }
-            }
-            // CEILING
-            else {
-                if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2) 
-                        && this.platformerState !== "grounded") {
+//                if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2)) {
+////                if (this.abbOverlapsSegment("x", other.abbLeft(), other.abbRight())) {
+//                    this.ground();
+//                }
+//            }
+                // CEILING
+                else {
+//                if (response.overlap > 0) {
                     this.onCeiling();
                     if (this.velocity.y < 0) {
                         this.velocity.y = 0;
                     }
-                    this.setYRelative(2);
+//                    this.setYRelative(2);
+//                }
+//                if (this.abbOverlapsSegment("x", other.abbLeft() + 2, other.abbRight() - 2)
+//                        && this.platformerState !== "grounded") {
+////                    ) {
+//                    this.onCeiling();
+//                    if (this.velocity.y < 0) {
+//                        this.velocity.y = 0;
+//                    }
+//                    this.setYRelative(2);
+//                }
                 }
             }
-        }
-        // WALL
-        else if (response.overlapN.x !== 0) {
-            if (this.abbOverlapsSegment("y", other.abbTop() + 2, other.abbBottom() - 2)) {
+            // WALL
+//        else if (response.overlapN.x !== 0 && response.overlapV.x) {
+//            else if (response.overlap !== 0) {
+            else {
+//            if (this.abbOverlapsSegment("y", other.abbTop() + 2, other.abbBottom() - 2)) {
                 this.velocity.x = 0;
                 this.onWall();
             }
         }
+//        }
         // SLOPE
-        if (other.slope) {
-            if (!other.slopeSet) {
-                other.setSlope();
-            }
-            if (other.containsPoint(this.abbLeft() - 2, this.abbBottom()) ||
-                    other.containsPoint(this.abbRight() + 2, this.abbBottom())) {
-                this.ground();
-                this.setX(this.getX() + response.overlapV.x);
-                this.slope = other;
-            }
-        }
+//        if (other.slope) {
+//            if (!other.slopeSet) {
+//                other.setSlope();
+//            }
+//            if (other.containsPoint(this.abbLeft() - 2, this.abbBottom()) ||
+//                    other.containsPoint(this.abbRight() + 2, this.abbBottom())) {
+//                this.ground();
+//                this.setX(this.getX() + response.overlapV.x);
+//                this.slope = other;
+//            }
+//        }
         // PLATFORM
-        if (other.platform) {
-            if (this.abbOverlapsSegment("x", other.abbLeft(), other.abbRight())) {
-                if (this.getY() < other.getY()) {
-                    this.platform = other;
-                    this.velocity.y = 0;
-                    this.platformDX = other.getX() - other.prevX;
-                    this.platformDY = other.getY() - other.prevY;
-                    this.setX(this.getX() + this.platformDX);
-                }
-            }
-        }
+//        if (other.platform) {
+//            if (this.abbOverlapsSegment("x", other.abbLeft(), other.abbRight())) {
+//                if (this.getY() < other.getY()) {
+//                    this.platform = other;
+////                    this.velocity.y = 0;
+//                    this.ground();
+//                    this.platformDX = other.getX() - other.prevX;
+//                    this.platformDY = other.getY() - other.prevY;
+//                    this.setX(this.getX() + this.platformDX);
+//                }
+//            }
+//        }
     },
-    ground: function() {
+    postupdate: function () {
+        this._super();
+        
+    },
+    ground: function () {
         if (this.platformerState !== "grounded") {
             this.onGrounded();
         }
@@ -204,30 +259,29 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.velocity.y = 0;
     },
     // CALLBACKS
-    onJumped: function() {
+    onJumped: function () {
 
     },
-    onGrounded: function() {
+    onGrounded: function () {
 
     },
-    onWall: function() {
+    onWall: function () {
     },
-    onCeiling: function() {
+    onCeiling: function () {
 
     },
     // UTILS
-    flipFacing: function() {
+    flipFacing: function () {
         if (this.facing === "right") {
             this.facing = "left";
         }
         else {
             this.facing = "right";
         }
-    },
-    recalcFallTreshold: function() {
-        this.fallTreshold = this.gravity.y * this.gravityMultiplier;
     }
 });
+
+//A_.SPRITES.Slopes = [];
 
 //var PlatformerProbe = A_.SPRITES.Colliding.extend({
 //    bounded: false,

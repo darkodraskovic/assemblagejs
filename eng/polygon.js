@@ -13,7 +13,8 @@ SAT.Polygon.prototype.setScale = function(x, y) {
     this.h *= relScaleY;
 
     this.offset.scale(relScaleX, relScaleY);
-    this.recalc();
+//    this.recalc();
+    
 };
 
 SAT.Polygon.prototype.setScaleX = function(x) {
@@ -27,7 +28,8 @@ SAT.Polygon.prototype.setScaleX = function(x) {
     this.w *= relScaleX;
 
     this.offset.x *= relScaleX;
-    this.recalc();
+//    this.recalc();
+
 };
 SAT.Polygon.prototype.setScaleY = function(y) {
     var relScaleY = y / this.scale.y;
@@ -40,7 +42,8 @@ SAT.Polygon.prototype.setScaleY = function(y) {
     this.h *= relScaleY;
 
     this.offset.y *= relScaleY;
-    this.recalc();
+//    this.recalc();
+    
 };
 
 SAT.Polygon.prototype.getTop = function () {

@@ -1,21 +1,21 @@
 A_.TILES.Tile.inject({
-    init: function(gid, sprite, x, y, tilemap) {
+    init: function (gid, sprite, x, y, tilemap) {
         this._super(gid, sprite, x, y, tilemap);
         if (this.tilemap.layer.name === "Thrus") {
             this.turned = "on";
         }
     },
-    turnOn: function() {
+    turnOn: function () {
         this.sprite.alpha = 1;
         this.collides = true;
         this.turned = "on";
     },
-    turnOff: function() {
+    turnOff: function () {
         this.sprite.alpha = 0.5;
         this.collides = false;
         this.turned = "off";
     },
-    toggleTurned: function() {
+    toggleTurned: function () {
         if (this.turned === "on") {
             this.turnOff();
         }
@@ -24,7 +24,7 @@ A_.TILES.Tile.inject({
         }
 //        window.console.log(this.turned);
     },
-    update: function() {
+    update: function () {
         this._super();
         if (this.leftpressed) {
             this.toggleTurned();
@@ -54,7 +54,7 @@ var Anime = A_.SPRITES.Platformer.extend({
     collisionW: 18,
     collisionH: 46,
     drawDebugGraphics: false,
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.jumpForce = 530;
         this.controlled = true;
@@ -63,7 +63,7 @@ var Anime = A_.SPRITES.Platformer.extend({
         this.addAnimation("jumping", [17], 0);
         this.addAnimation("falling", [18], 0);
     },
-    update: function() {
+    update: function () {
         this._super();
 
         if (this.platformerState === "grounded") {
@@ -81,34 +81,35 @@ var Player = Anime.extend({
     animSheet: "player.png",
     controlled: true,
     followee: true,
-    onCreation: function() {
+//    bounciness: 0.0000000001,
+    onCreation: function () {
         A_.INPUT.addMapping("jetpack", A_.KEY.SHIFT);
         this._super();
         this.thrus = A_.level.findLayerByName("Thrus");
     },
-    onJumped: function() {
+    onJumped: function () {
         this._super();
         A_.game.createSound({
             urls: ['jump.wav'],
             volume: 1
         }).play();
     },
-    onGrounded: function() {
+    onGrounded: function () {
         this._super();
         A_.game.createSound({
             urls: ['grounded.wav'],
             volume: 1
         }).play();
     },
-    onWall: function() {
+    onWall: function () {
         this._super();
 //        window.console.log("wall");
     },
-    onCeiling: function() {
+    onCeiling: function () {
         this._super();
         window.console.log("ceiling");
     },
-    update: function() {
+    update: function () {
         if (A_.level.leftdown) {
             var mpl = A_.INPUT.mousePosition.level;
             var tilemap = this.thrus.tilemap;
@@ -135,12 +136,13 @@ var Player = Anime.extend({
         }
         this._super();
 //        window.console.log(this.platformerState);
+//        window.console.log(this.platformerState);
     },
 //    collideWithDynamic: function (other, response) {
 //        if (other.collision.response === "sensor") {
 //        }
 //    }
-    collideWithStatic: function(other, response) {
+    collideWithStatic: function (other, response) {
 //        window.console.log(response.overlapN.y);
         this._super(other, response);
     }
@@ -148,21 +150,21 @@ var Player = Anime.extend({
 
 var Undead = Anime.extend({
     animSheet: "undead.png",
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.controlled = false;
         this.maxVelocity = new SAT.Vector(150, 600);
         this.jumpProbability = 25;
     },
-    onCreation: function() {
+    onCreation: function () {
         this._super();
         this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.getX(), this.getY(), {undead: this});
     },
-    update: function() {
+    update: function () {
         this.applyForce = true;
         this._super();
     },
-    onWall: function() {
+    onWall: function () {
         this._super();
         if (_.random(1, 100) < this.jumpProbability) {
             this.tryJump = true;
@@ -181,16 +183,16 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
     collisionResponse: "sensor",
     collisionW: 2,
     collisionH: 2,
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
     },
-    onCreation: function() {
+    onCreation: function () {
         this._super();
         this.addon("PinTo", {name: "probe", parent: this.undead,
             offsetX: 0, offsetY: this.undead.getHeight() / 2 + 4});
     },
-    update: function() {
+    update: function () {
         this._super();
 //    },
 //    postupdate: function() {
@@ -216,7 +218,7 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
 
     }
 });
-A_.game.preupdate = function() {
+A_.game.preupdate = function () {
     if (this.leftpressed) {
     }
 }
@@ -228,7 +230,7 @@ var Platform = A_.SPRITES.Colliding.extend({
     collisionResponse: "static",
     type: "horizontal",
 //    drawDebugGraphics: false,    
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.sine = this.addon("Sine");
         this.sine.period = 2;
@@ -236,11 +238,11 @@ var Platform = A_.SPRITES.Colliding.extend({
         this.sine.reset();
         this.platform = true;
     },
-    onCreation: function() {
+    onCreation: function () {
         this.origX = this.getX();
         this.origY = this.getY();
     },
-    update: function() {
+    update: function () {
         this._super();
 
         this.setX(this.origX + this.sine.value);
@@ -251,14 +253,14 @@ var Platform = A_.SPRITES.Colliding.extend({
 var Explosion = A_.SPRITES.Animated.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
         this.addAnimation("explode", _.range(0, 17), 0.5);
         this.setAnimation("explode");
         this.animations["explode"].loop = false;
         var that = this;
-        this.animations["explode"].onComplete = function() {
+        this.animations["explode"].onComplete = function () {
             that.destroy();
         };
         this.setScale(0.4, 0.4);

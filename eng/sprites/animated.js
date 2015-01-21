@@ -194,7 +194,7 @@ A_.SPRITES.Animated = Class.extend({
         }
     },
     // TRANSFORMATIONS
-    // PIXI/SAT dependent setters/getters, used to keep in sync PIXI, SAT and A_.
+    // PIXI dependent setters/getters, used to keep in sync PIXI and A_.
     setPosition: function(x, y) {
         this.position.x = x;
         this.position.y = y;
@@ -234,6 +234,9 @@ A_.SPRITES.Animated = Class.extend({
     },
     getPositionLevel: function() {
         return A_.level.container.toLocal(A_.level.origin, this.sprite);
+    },
+    getPositionScreen: function () {
+        return this.sprite.toGlobal(A_.level.origin);  
     },
     setSize: function(w, h) {
         var prevWidth = this.sprite.width;
@@ -352,8 +355,8 @@ A_.SPRITES.Animated = Class.extend({
     setOrigin: function(x, y) {
 //        var w = this.getWidth();
 //        var h = this.getHeight();
-        var deltaX = (x - this.sprite.anchor.x) * this.getWidth();
-        var deltaY = (y - this.sprite.anchor.y) * this.getHeight();
+        var deltaX = -(x - this.sprite.anchor.x) * this.getWidth();
+        var deltaY = -(y - this.sprite.anchor.y) * this.getHeight();
         var scale = this.getScale();
 
         this.sprite.anchor.x = x;
@@ -369,20 +372,15 @@ A_.SPRITES.Animated = Class.extend({
         _.each(this.sprites, function(sprite) {
             // Since the child coord sys is scaled, its positionRelative() 
             // is fed with the original parent's width.
-            sprite.setPositionRelative(-deltaX / scale.x, -deltaY / scale.y);
+            sprite.setPositionRelative(deltaX / scale.x, deltaY / scale.y);
         });
 
         _.each(this.spritePoints, function(sp) {
-            sp.point.x -= deltaX;
-            sp.point.y -= deltaY;
+            sp.point.x += deltaX;
+            sp.point.y += deltaY;
         });
 
-        var colPol = this.collisionPolygon;
-        if (colPol) {
-            colPol.offset.x -= deltaX;
-            colPol.offset.y -= deltaY;
-            colPol.recalc();
-        }
+        return [deltaX, deltaY];
     },
     getOrigin: function() {
         return this.sprite.anchor;
