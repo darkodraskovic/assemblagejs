@@ -100,9 +100,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
 
-        this.slope = null;
         this.platform = null;
-        this.walled = false;
     },
     calculateVelocity: function () {
         this._super();
@@ -133,7 +131,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             if (response.overlapN.y !== 0) {
                 // FLOOR
                 if (response.overlapN.y > 0) {
-
                     if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
                         this.processMovingPlatform(other);
                     }
@@ -168,9 +165,10 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             this.setXRelative(this.platformDX);
         }
     },
-    processSlope: function (slopeNormal, response) {
-        slopeNormal.perp();
-        var angle = A_.UTILS.angleTo(A_.level.origin, slopeNormal);
+    processSlope: function (response) {
+        this.slopeN.copy(response.overlapN);
+        this.slopeN.perp();
+        var angle = A_.UTILS.angleTo(A_.level.origin, this.slopeN);
         if (angle !== 0) {
             if (angle > -Math.PI / 2 && angle < Math.PI / 2) {
                 this.setXRelative(response.overlapV.x);

@@ -61,40 +61,40 @@ A_.COLLISION.Collider = Class.extend({
     }
 });
 
-A_.COLLISION.abbInjection = {
-    abbWidth: function () {
+A_.COLLISION.aabbInjection = {
+    aabbWidth: function () {
         return this.collisionPolygon.w;
     },
-    abbHeight: function () {
+    aabbHeight: function () {
         return this.collisionPolygon.h;
     },
-    abbBottom: function () {
+    aabbBottom: function () {
         return this.collisionPolygon.getBottom();
     },
-    abbTop: function () {
+    aabbTop: function () {
         return this.collisionPolygon.getTop();
     },
-    abbLeft: function () {
+    aabbLeft: function () {
         return this.collisionPolygon.getLeft();
     },
-    abbRight: function () {
+    aabbRight: function () {
         return this.collisionPolygon.getRight();
     },
-    abbCenterX: function () {
+    aabbCenterX: function () {
         return this.collisionPolygon.getCenterX();
     },
-    abbCenterY: function () {
+    aabbCenterY: function () {
         return this.collisionPolygon.getCenterY();
     },
-    abbOverlapsSegment: function (axis, a, b) {
+    aabbOverlapsSegment: function (axis, a, b) {
         if (axis === "y") {
-            return (this.abbTop() < b && this.abbBottom() > a);
+            return (this.aabbTop() < b && this.aabbBottom() > a);
         } else if (axis === "x") {
-            return (this.abbLeft() < b && this.abbRight() > a);
+            return (this.aabbLeft() < b && this.aabbRight() > a);
         }
     },
-    abbOverlapsEntity: function (entity) {
-        return (this.abbTop() < entity.abbBottom() && this.abbBottom() > entity.abbTop()
-                && this.abbLeft() < entity.abbRight() && this.abbRight() > entity.abbLeft());
+    aabbOverlapsEntity: function (entity) {
+        return (this.aabbTop() < entity.aabbBottom() && this.aabbBottom() > entity.aabbTop()
+                && this.aabbLeft() < entity.aabbRight() && this.aabbRight() > entity.aabbLeft());
     }
 };

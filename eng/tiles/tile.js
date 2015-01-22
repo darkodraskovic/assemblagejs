@@ -95,5 +95,5 @@ A_.TILES.Tile = Class.extend({
     }
 });
 
-A_.TILES.Tile.inject(A_.COLLISION.abbInjection);
+A_.TILES.Tile.inject(A_.COLLISION.aabbInjection);
 A_.TILES.Tile.inject(A_.INPUT.mouseReactivityInjection);

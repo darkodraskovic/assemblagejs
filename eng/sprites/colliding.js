@@ -330,4 +330,4 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     }
 });
 
-A_.SPRITES.Colliding.inject(A_.COLLISION.abbInjection);
+A_.SPRITES.Colliding.inject(A_.COLLISION.aabbInjection);

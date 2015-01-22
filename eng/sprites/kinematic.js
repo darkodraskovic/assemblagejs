@@ -13,8 +13,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.calcAcceleration = new SAT.Vector(0, 0);
         this.maxVelocity = new SAT.Vector(256, 256);
         this.maxSpeed = this.maxVelocity.len();
+
         this.slopeN = new SAT.Vector(0, 0);
-        this.bounced = {horizontal: false, vertical: false};
+//        this.bounced = {horizontal: false, vertical: false};
+        this.finalElasticity = new SAT.Vector(0, 0);
+        this.applyElasticity = false;
     },
     update: function () {
         this._super();
@@ -28,6 +31,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         } else {
             this.isRotating = false;
         }
+
+        this.applyElasticity = false;
     },
     calculateVelocity: function () {
         if (this.moveForward) {
@@ -88,6 +93,10 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 //            }
 //        }
 //        this.bounced.horizontal = this.bounced.vertical = false;
+        if (this.applyElasticity) {
+            this.velocity.sub(this.finalElasticity);
+            this.velocity.scale(this.elasticity, this.elasticity);
+        }
 
         if (this.moveAtAngle) {
             var spd = this.velocity.len();
@@ -111,26 +120,28 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
-        this.slopeN.copy(response.overlapN);
         if (response.overlap) {
             if (this.elasticity) {
-                this.processElasticity(this.slopeN, response);
+                this.processElasticity(response);
             } else {
-                this.processSlope(this.slopeN, response);
+                this.processSlope(response);
             }
         }
     },
-    processElasticity: function (elasticityVector, response) {
+    processElasticity: function (response) {
         // b * (V - 2 *  N * (V dot N))
-        var dot = this.velocity.dot(elasticityVector);
-        elasticityVector.scale(dot, dot);
-        elasticityVector.scale(2, 2);
-        this.velocity.sub(elasticityVector);
-        this.velocity.scale(this.elasticity, this.elasticity);
+        this.finalElasticity.copy(response.overlapN);
+        var dot = this.velocity.dot(response.overlapN);
+        this.finalElasticity.scale(dot, dot);
+        this.finalElasticity.scale(2, 2);
+//        this.velocity.sub(elasticityVector);
+//        this.velocity.scale(this.elasticity, this.elasticity);
+        this.applyElasticity = true;
     },
-    processSlope: function (slopeNormal, response) {
-        slopeNormal.perp();
-        this.velocity.project(slopeNormal);
+    processSlope: function (response) {
+        this.slopeN.copy(response.overlapN)
+        this.slopeN.perp();
+        this.velocity.project(this.slopeN);
 
         // Obsolete elasticity processing routine
 //        if (Math.abs(response.overlapV.x) > Math.abs(response.overlapV.y)) {

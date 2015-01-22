@@ -136,23 +136,21 @@ var Player = Anime.extend({
     },
     update: function () {
 //        window.console.log(this.walled);
-        if (A_.level.leftdown) {
-            var mpl = A_.INPUT.mousePosition.level;
-            var tilemap = this.thrus.tilemap;
-            var x = Math.floor(mpl.x / tilemap.tileW);
-            var y = Math.floor(mpl.y / tilemap.tileH);
-            if (!tilemap.getTile(x, y)) {
-                A_.game.createTile(this.thrus, 737, x, y);
-            }
-        }
-//        if (A_.level.leftpressed) {
-//            var ball = A_.game.createSprite(Ball, this.layer, this.getX(), this.getY());
-////           ball.movementAngle = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
-//            var angle = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
-//            ball.velocity.x = ball.maxSpeed * Math.cos(angle);
-//            ball.velocity.y = ball.maxSpeed * Math.sin(angle);
-////            window.console.log(ball.collisionResponse);
+//        if (A_.level.leftdown) {
+//            var mpl = A_.INPUT.mousePosition.level;
+//            var tilemap = this.thrus.tilemap;
+//            var x = Math.floor(mpl.x / tilemap.tileW);
+//            var y = Math.floor(mpl.y / tilemap.tileH);
+//            if (!tilemap.getTile(x, y)) {
+//                A_.game.createTile(this.thrus, 737, x, y);
+//            }
 //        }
+        if (A_.level.leftpressed) {
+            var ball = A_.game.createSprite(Ball, this.layer, this.getX(), this.getY());
+            var angle = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
+            ball.velocity.x = ball.maxSpeed * Math.cos(angle);
+            ball.velocity.y = ball.maxSpeed * Math.sin(angle);
+        }
         if (A_.INPUT.down["jetpack"]) {
             if (this.velocity.y > -200) {
                 this.velocity.y -= this.force.y;
