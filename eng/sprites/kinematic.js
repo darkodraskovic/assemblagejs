@@ -1,6 +1,6 @@
 A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     isMoving: false,
-    bounciness: 0.5,
+    elasticity: 0.5,
     angularSpeed: 0,
     movementAngle: 0,
     init: function (parent, x, y, props) {
@@ -13,6 +13,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.calcAcceleration = new SAT.Vector(0, 0);
         this.maxVelocity = new SAT.Vector(256, 256);
         this.maxSpeed = this.maxVelocity.len();
+        this.slopeN = new SAT.Vector(0, 0);
         this.bounced = {horizontal: false, vertical: false};
     },
     update: function () {
@@ -74,18 +75,19 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
         }
 
+
         this.velocity.add(this.calcAcceleration);
         this.velocity.add(this.gravity);
 
-        if (this.bounciness) {
-            if (this.bounced.horizontal) {
-                this.velocity.x = -this.velocity.x * this.bounciness;
-            }
-            if (this.bounced.vertical) {
-                this.velocity.y = -this.velocity.y * this.bounciness;
-            }
-        }
-        this.bounced.horizontal = this.bounced.vertical = false;
+//        if (this.elasticity) {
+//            if (this.bounced.horizontal) {
+//                this.velocity.x = -this.velocity.x * this.elasticity;
+//            }
+//            if (this.bounced.vertical) {
+//                this.velocity.y = -this.velocity.y * this.elasticity;
+//            }
+//        }
+//        this.bounced.horizontal = this.bounced.vertical = false;
 
         if (this.moveAtAngle) {
             var spd = this.velocity.len();
@@ -109,28 +111,34 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
-        this.processBounce(response);
-    },
-    processBounce: function (response) {
-        var currentOverlapN = response.overlapN;
-        // This method must be called before the collide* _super in order
-        // to fetch the correct this.previousOverlapN
-        // BUG: the sprite does not bounce in tilemap corners
-        if (this.bounciness) {
-//            if (currentOverlapN.x !== 0 && Math.abs(this.velocity.x) > this.calcAcceleration.x) {
-//            if (response.overlap) {
-                if (currentOverlapN.x !== 0) {
-                    this.bounced.horizontal = true;
-//                this.setXRelative(-currentOverlapN.x * A_.game.dt);
-//                window.console.log("x normal: " + currentOverlapN.x);
-//                this.setXRelative(-currentOverlapN.x);
-                }
-//            if (currentOverlapN.y !== 0 && Math.abs(this.velocity.y) > this.calcAcceleration.y) {
-                if (currentOverlapN.y !== 0) {
-                    this.bounced.vertical = true;
-//                this.setYRelative(-currentOverlapN.y);
-                }
-//            }
+        this.slopeN.copy(response.overlapN);
+        if (response.overlap) {
+            if (this.elasticity) {
+                this.processElasticity(this.slopeN, response);
+            } else {
+                this.processSlope(this.slopeN, response);
+            }
         }
+    },
+    processElasticity: function (elasticityVector, response) {
+        // b * (V - 2 *  N * (V dot N))
+        var dot = this.velocity.dot(elasticityVector);
+        elasticityVector.scale(dot, dot);
+        elasticityVector.scale(2, 2);
+        this.velocity.sub(elasticityVector);
+        this.velocity.scale(this.elasticity, this.elasticity);
+    },
+    processSlope: function (slopeNormal, response) {
+        slopeNormal.perp();
+        this.velocity.project(slopeNormal);
+
+        // Obsolete elasticity processing routine
+//        if (Math.abs(response.overlapV.x) > Math.abs(response.overlapV.y)) {
+//            this.bounced.horizontal = true;
+//            this.bounced.vertical = false;
+//        } else {
+//            this.bounced.vertical = true;
+//            this.bounced.horizontal = false;
+//        }
     }
 });

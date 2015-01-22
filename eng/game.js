@@ -290,9 +290,6 @@ A_.Game = Class.extend({
             sprite.update();
         });
         
-        _.each(this.level.sprites, function(sprite) {
-            sprite.postupdate();
-        });
         
         // Collision handling
 //        _.each(this.collider.collisionSprites, function(sprite) {
@@ -301,6 +298,9 @@ A_.Game = Class.extend({
 
         this.collider.processCollisions();
 
+        _.each(this.level.sprites, function(sprite) {
+            sprite.postupdate();
+        });
 //        _.each(this.collider.collisionSprites, function(sprite) {
 //            sprite.syncSprite();
 //        });

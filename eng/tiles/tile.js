@@ -58,6 +58,8 @@ A_.TILES.Tile = Class.extend({
     setPosition: function(x, y) {
         this.sprite.position.x = x;
         this.sprite.position.y = y;
+        this.prevX = x;
+        this.prevY = y;
     },
     getX: function() {
         return this.sprite.position.x;

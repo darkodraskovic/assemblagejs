@@ -49,7 +49,7 @@ var Anime = A_.SPRITES.Platformer.extend({
     bounded: false,
     wrap: true,
 //    collision: {response: "dynamic", offset: {x: 0, y: 8}, size: {w: 18, h: 46}},
-    collisionResponse: "dynamic",
+    collisionResponse: "passive",
     collisionOffsetY: 8,
     collisionW: 18,
     collisionH: 46,
@@ -74,6 +74,31 @@ var Anime = A_.SPRITES.Platformer.extend({
     }
 });
 
+var Ball = A_.SPRITES.Kinematic.extend({
+    bounded: false,
+    animSheet: "ball.png",
+    collisionResponse: "passive",
+    drawDebugGraphics: false,
+    elasticity: 1,
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
+        this.friction.x = 0;
+        this.friction.y = 0;
+        this.maxSpeed = 500;
+    },
+    update: function () {
+        this._super();
+        if (this.outOfBounds) {
+            this.destroy();
+        }
+    },
+    collideWithStatic: function (other, response) {
+        this._super(other, response);
+    },
+    collideWithDynamic: function (other, response) {
+        this._super(other, response);
+    }
+});
 
 
 // CLASSES
@@ -103,13 +128,14 @@ var Player = Anime.extend({
     },
     onWall: function () {
         this._super();
-//        window.console.log("wall");
+        window.console.log("wall");
     },
     onCeiling: function () {
         this._super();
         window.console.log("ceiling");
     },
     update: function () {
+//        window.console.log(this.walled);
         if (A_.level.leftdown) {
             var mpl = A_.INPUT.mousePosition.level;
             var tilemap = this.thrus.tilemap;
@@ -119,6 +145,14 @@ var Player = Anime.extend({
                 A_.game.createTile(this.thrus, 737, x, y);
             }
         }
+//        if (A_.level.leftpressed) {
+//            var ball = A_.game.createSprite(Ball, this.layer, this.getX(), this.getY());
+////           ball.movementAngle = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
+//            var angle = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
+//            ball.velocity.x = ball.maxSpeed * Math.cos(angle);
+//            ball.velocity.y = ball.maxSpeed * Math.sin(angle);
+////            window.console.log(ball.collisionResponse);
+//        }
         if (A_.INPUT.down["jetpack"]) {
             if (this.velocity.y > -200) {
                 this.velocity.y -= this.force.y;
@@ -135,6 +169,7 @@ var Player = Anime.extend({
 //            this.jetpackSound.stop();
         }
         this._super();
+//        window.console.log(this.velocity.x);
 //        window.console.log(this.platformerState);
 //        window.console.log(this.platformerState);
     },
@@ -236,7 +271,6 @@ var Platform = A_.SPRITES.Colliding.extend({
         this.sine.period = 2;
         this.sine.amplitude = this.frame.w;
         this.sine.reset();
-        this.platform = true;
     },
     onCreation: function () {
         this.origX = this.getX();
