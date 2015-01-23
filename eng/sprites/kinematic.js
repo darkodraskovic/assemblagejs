@@ -124,7 +124,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             if (this.elasticity) {
                 this.processElasticity(response);
             } else {
-                this.processSlope(response);
+//                this.processSlope(response);
             }
         }
     },

@@ -12,8 +12,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.friction = new SAT.Vector(48, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
-        this.slope = null;
-        this.scanDepth = 8;
+//        this.slope = null;
+//        this.scanDepth = 8;
         this.platform = null;
         this.platformDY = 0;
 
@@ -128,11 +128,15 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (response.overlap) {
             if (response.overlapN.y !== 0) {
                 // FLOOR
-                // Moving platform
                 if (response.overlapN.y > 0) {
+                    // Moving platform
                     if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
                         this.processMovingPlatform(other);
                     }
+                    // Slope
+//                    if (response.overlapN.x)
+//                        this.setXRelative(response.overlapV.x);
+
 //                    if (this.platformerState !== "grounded") {
 //                        this.onGrounded();
 //                    }
@@ -155,13 +159,14 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 //            }
             }
         }
+        this.processSlope(response);
 
     },
     postupdate: function () {
         _.each(A_.collider.collisionStatics, function (static) {
             if (static.collides) {
                 if (this.collidesWithEntityAtOffset(static, 1, 0) || this.collidesWithEntityAtOffset(static, -1, 0)) {
-                    if (this.response.overlap && !this.response.overlapN.y) {
+                    if (this.response.overlap && !this.response.overlapN.y && !this.slopeAngle) {
                         this.velocity.x = 0;
                         this.onWall();
                         this.setXRelative(-this.response.overlapN.x)

@@ -116,6 +116,7 @@ var Player = Anime.extend({
     controlled: true,
     followee: true,
 //    bounciness: 0.0000000001,
+//    drawDebugGraphics: true,
     onCreation: function () {
         A_.INPUT.addMapping("jetpack", A_.KEY.SHIFT);
         A_.INPUT.addMapping("toggleMode", A_.KEY.F);

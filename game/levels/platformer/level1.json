@@ -96,7 +96,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "collisionMask":"\"Player\""
                     },
                  "rotation":0,
                  "type":"Player",
