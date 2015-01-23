@@ -7,6 +7,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 //        this.prevOverlapN = new SAT.Vector(0, 0);
         this.containedPoint = new SAT.Vector(0, 0);
         this.response = new SAT.Response();
+        this.offset = new SAT.Vector();
     },
     onCreation: function () {
         this._super();
@@ -242,9 +243,16 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             }
         }
     },
-    collidesWith: function (other) {
+    collidesWithEntity: function (other) {
         this.response.clear();
         return (SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response));
+    },
+    collidesWithEntityAtOffset: function (other, offsetX, offsetY) {
+        this.response.clear();
+        this.collisionPolygon.translate(offsetX, offsetY);
+        var collides = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
+        this.collisionPolygon.translate(-offsetX, -offsetY);
+        return collides;
     },
     containsPoint: function (x, y) {
         this.containedPoint.x = x;

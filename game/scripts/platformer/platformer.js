@@ -26,7 +26,7 @@ A_.TILES.Tile.inject({
     },
     update: function () {
         this._super();
-        if (this.leftpressed) {
+        if (this.leftpressed && A_.player.mode === "building") {
             this.toggleTurned();
             A_.game.createSound({
                 urls: ['e.wav'],
@@ -54,6 +54,7 @@ var Anime = A_.SPRITES.Platformer.extend({
     collisionW: 18,
     collisionH: 46,
     drawDebugGraphics: false,
+    mode: "throwing",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.jumpForce = 530;
@@ -71,6 +72,14 @@ var Anime = A_.SPRITES.Platformer.extend({
         } else {
             this.setAnimation(this.platformerState);
         }
+    },
+    toggleMode: function () {
+        if (this.mode === "throwing") {
+            this.mode = "building";
+        } else {
+            this.mode = "throwing";
+        }
+
     }
 });
 
@@ -109,6 +118,7 @@ var Player = Anime.extend({
 //    bounciness: 0.0000000001,
     onCreation: function () {
         A_.INPUT.addMapping("jetpack", A_.KEY.SHIFT);
+        A_.INPUT.addMapping("toggleMode", A_.KEY.F);
         this._super();
         this.thrus = A_.level.findLayerByName("Thrus");
     },
@@ -136,16 +146,19 @@ var Player = Anime.extend({
     },
     update: function () {
 //        window.console.log(this.walled);
-//        if (A_.level.leftdown) {
-//            var mpl = A_.INPUT.mousePosition.level;
-//            var tilemap = this.thrus.tilemap;
-//            var x = Math.floor(mpl.x / tilemap.tileW);
-//            var y = Math.floor(mpl.y / tilemap.tileH);
-//            if (!tilemap.getTile(x, y)) {
-//                A_.game.createTile(this.thrus, 737, x, y);
-//            }
-//        }
-        if (A_.level.leftpressed) {
+        if (A_.INPUT.pressed["toggleMode"]) {
+            this.toggleMode();
+        }
+        if (A_.level.leftdown && this.mode === "building") {
+            var mpl = A_.INPUT.mousePosition.level;
+            var tilemap = this.thrus.tilemap;
+            var x = Math.floor(mpl.x / tilemap.tileW);
+            var y = Math.floor(mpl.y / tilemap.tileH);
+            if (!tilemap.getTile(x, y)) {
+                A_.game.createTile(this.thrus, 737, x, y);
+            }
+        }
+        if (A_.level.leftpressed && this.mode === "throwing") {
             var ball = A_.game.createSprite(Ball, this.layer, this.getX(), this.getY());
             var angle = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
             ball.velocity.x = ball.maxSpeed * Math.cos(angle);
@@ -196,6 +209,9 @@ var Undead = Anime.extend({
     update: function () {
         this.applyForce = true;
         this._super();
+//        if (_.random(0, 100) > 99) {
+//            window.console.log(this.platformerState);
+//        }
     },
     onWall: function () {
         this._super();

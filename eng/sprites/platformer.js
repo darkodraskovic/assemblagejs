@@ -49,7 +49,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
 
-
         // PLATFORM
         if (this.platform) {
             this.setY(this.getY() + this.platformDY + 2);
@@ -66,7 +65,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         else {
             this.acceleration.x = 0;
         }
-
 
         if (this.tryJump) {
             if (this.platformerState === "grounded") {
@@ -130,32 +128,67 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (response.overlap) {
             if (response.overlapN.y !== 0) {
                 // FLOOR
+                // Moving platform
                 if (response.overlapN.y > 0) {
                     if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
                         this.processMovingPlatform(other);
                     }
-                    if (this.platformerState !== "grounded") {
-                        this.onGrounded();
-                    }
-                    this.platformerState = "grounded";
-                    this.velocity.y = 0;
+//                    if (this.platformerState !== "grounded") {
+//                        this.onGrounded();
+//                    }
+//                    this.platformerState = "grounded";
+//                    this.velocity.y = 0;
+//                }
+//                // CEILING
+//                else {
+//                    this.onCeiling();
+//                    if (this.velocity.y < 0) {
+//                        this.velocity.y = 0;
+//                    }
+//                }
                 }
-                // CEILING
-                else {
-                    this.onCeiling();
-                    if (this.velocity.y < 0) {
-                        this.velocity.y = 0;
-                    }
-                }
-            }
-            // WALL
-//            if (response.overlapN.x !== 0 && response.overlapN.y <= 0) {
-            else if (response.overlapN.x !== 0) {
-                this.velocity.x = 0;
-                this.onWall();
+                // WALL
+//            else if (response.overlapN.x !== 0) {
+//            if (response.overlapN.x !== 0) {
+//                this.velocity.x = 0;
+//                this.onWall();
+//            }
             }
         }
 
+    },
+    postupdate: function () {
+        _.each(A_.collider.collisionStatics, function (static) {
+            if (static.collides) {
+                if (this.collidesWithEntityAtOffset(static, 1, 0) || this.collidesWithEntityAtOffset(static, -1, 0)) {
+                    if (this.response.overlap && !this.response.overlapN.y) {
+                        this.velocity.x = 0;
+                        this.onWall();
+                        this.setXRelative(-this.response.overlapN.x)
+                    }
+                }
+                if (this.collidesWithEntityAtOffset(static, 0, 1)) {
+                    if (this.response.overlap) {
+                        if (this.platformerState !== "grounded") {
+                            this.onGrounded();
+                        }
+                        this.platformerState = "grounded";
+                        this.velocity.y = 0;
+                    }
+                }
+                if (this.collidesWithEntityAtOffset(static, 0, -1)) {
+                    if (this.response.overlap && this.response.overlapN.y <= 0) {
+                        this.onCeiling();
+                        if (this.velocity.y < 0) {
+                            this.velocity.y = 0;
+                        }
+                        this.setYRelative(1);
+                    }
+                }
+            }
+        }, this);
+
+        this._super();
     },
     processMovingPlatform: function (other) {
         if (this.getY() < other.getY()) {
@@ -180,9 +213,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
     },
-    postupdate: function () {
-        this._super();
-    },
     // CALLBACKS
     onJumped: function () {
 
@@ -205,5 +235,3 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         }
     }
 });
-
-//A_.SPRITES.Slopes = [];
