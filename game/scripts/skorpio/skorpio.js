@@ -34,7 +34,7 @@ var Anime = A_.SPRITES.Topdown.extend({
     },
     update: function() {
         this._super();
-
+//        this.sprite.getLocalBounds();
         if (this.alive) {
             this.setAnimation(this.motionState + "_" + this.facing);
         }
@@ -161,6 +161,7 @@ var Rifle = A_.SPRITES.Animated.extend({
         this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
     update: function() {
+        this._super();
 //        var rot = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
 //        switch (this.holder.facing) {
 //            case "left": rot -= Math.PI; break;
@@ -256,6 +257,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.sine = this.addon("Sine", sineProps);
     },
     update: function() {
+        this._super();
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
 //        this.getPosition(this.spawner.getX(), this.spawner.getY());
         this.setPosition(sprPt.getX(), sprPt.getY());

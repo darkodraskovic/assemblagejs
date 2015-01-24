@@ -128,7 +128,7 @@ A_.Level = Class.extend({
         return sprite;
     },
     // TRANSFORMATIONS
-    position: function(x, y) {
+    setPosition: function(x, y) {
         if (typeof x === "number" && typeof y === "number") {
             this.container.position.x = x;
             this.container.position.y = y;
@@ -165,20 +165,22 @@ A_.Level = Class.extend({
             // position canvas in the center of the window if...
             // BUG: wrong behavior when screenBounded === false
             // BUG: zoom/in out camera movement strange behavior
-            if (A_.camera.followType === "bounded") {
-                if (this.container.width < A_.renderer.view.width) {
-                    this.container.position.x = (A_.renderer.view.width - this.container.width) / 2;
-                    this.container.position.x /= scale;
-                }
-                if (this.container.height < A_.renderer.view.height) {
-                    this.container.position.y = (A_.renderer.view.height - this.container.height) / 2;
-                    this.container.position.y /= scale;
-                }
-            }
+//            if (A_.camera.followType === "bounded") {
+//                if (this.container.width < A_.renderer.view.width) {
+//                    this.container.position.x = (A_.renderer.view.width - this.container.width) / 2;
+//                    this.container.position.x /= scale;
+//                }
+//                if (this.container.height < A_.renderer.view.height) {
+//                    this.container.position.y = (A_.renderer.view.height - this.container.height) / 2;
+//                    this.container.position.y /= scale;
+//                }
+//            }
 
             // If the world is scaled 2x, camera sees 2x less and vice versa. 
-            A_.camera.width = A_.renderer.view.width / scale;
-            A_.camera.height = A_.renderer.view.height / scale;
+//            A_.camera.width = A_.renderer.view.width / scale;
+//            A_.camera.height = A_.renderer.view.height / scale;
+            A_.camera.width /= scale / this.scale;
+            A_.camera.height /= scale / this.scale;
 
             this.scale = scale;
         }

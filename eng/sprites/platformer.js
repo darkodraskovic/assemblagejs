@@ -12,8 +12,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.friction = new SAT.Vector(48, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
-//        this.slope = null;
-//        this.scanDepth = 8;
         this.platform = null;
         this.platformDY = 0;
 
@@ -27,26 +25,10 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this._super();
     },
     update: function () {
-        if (this.controlled) {
-            if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
-                this.applyForce = true;
-                if (A_.INPUT.down["right"] && A_.INPUT.down["left"]) {
-                    this.applyForce = false;
-                }
-                else if (A_.INPUT.down["right"]) {
-                    this.facing = "right";
-                }
-                else if (A_.INPUT.down["left"]) {
-                    this.facing = "left";
-                }
-            }
-            else {
-                this.applyForce = false;
-            }
+        this.processPlatformerState();
 
-            if (A_.INPUT.down["jump"]) {
-                this.tryJump = true;
-            }
+        if (this.controlled) {
+            this.processControls();
         }
 
         // PLATFORM
@@ -80,7 +62,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (this.velocity.y > this.gravity.y) {
             this.platformerState = "falling";
         } else if (this.velocity.y < -this.gravity.y) {
-            this.platformerState = "jumping";
+            this.platformerState = "launching";
         }
 
         if (this.velocity.x !== 0) {
@@ -99,6 +81,58 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         }
 
         this.platform = null;
+    },
+    processPlatformerState: function () {        
+        _.each(A_.collider.collisionStatics, function (static) {
+            if (static.collides) {
+                if (this.collidesWithEntityAtOffset(static, 1, 0) || this.collidesWithEntityAtOffset(static, -1, 0)) {
+                    if (this.response.overlap && !this.response.overlapN.y) {
+                        this.velocity.x = 0;
+                        this.onWall();
+                        this.setXRelative(-this.response.overlapN.x)
+                    }
+                }
+                if (this.collidesWithEntityAtOffset(static, 0, 1)) {
+                    if (this.response.overlap && !(this.platformerState === "launching")) {
+                        if (this.platformerState !== "grounded") {
+                            this.onGrounded();
+                        }
+                        this.platformerState = "grounded";
+                        this.velocity.y = 0;
+                    }
+                }
+                if (this.collidesWithEntityAtOffset(static, 0, -1)) {
+                    if (this.response.overlap && this.response.overlapN.y <= 0) {
+                        this.onCeiling();
+                        if (this.velocity.y < 0) {
+                            this.velocity.y = 0;
+                        }
+                        this.setYRelative(1);
+                    }
+                }
+            }
+        }, this);
+    },
+    processControls: function () {
+        if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
+            this.applyForce = true;
+            if (A_.INPUT.down["right"] && A_.INPUT.down["left"]) {
+                this.applyForce = false;
+            }
+            else if (A_.INPUT.down["right"]) {
+                this.facing = "right";
+            }
+            else if (A_.INPUT.down["left"]) {
+                this.facing = "left";
+            }
+        }
+        else {
+            this.applyForce = false;
+        }
+
+        if (A_.INPUT.down["jump"]) {
+            this.tryJump = true;
+        }
     },
     calculateVelocity: function () {
         this._super();
@@ -124,10 +158,11 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
+        
+        this.processSlope(response);
 
         if (response.overlap) {
             if (response.overlapN.y !== 0) {
-                // FLOOR
                 if (response.overlapN.y > 0) {
                     // Moving platform
                     if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
@@ -136,64 +171,10 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                     // Slope
 //                    if (response.overlapN.x)
 //                        this.setXRelative(response.overlapV.x);
-
-//                    if (this.platformerState !== "grounded") {
-//                        this.onGrounded();
-//                    }
-//                    this.platformerState = "grounded";
-//                    this.velocity.y = 0;
-//                }
-//                // CEILING
-//                else {
-//                    this.onCeiling();
-//                    if (this.velocity.y < 0) {
-//                        this.velocity.y = 0;
-//                    }
-//                }
                 }
-                // WALL
-//            else if (response.overlapN.x !== 0) {
-//            if (response.overlapN.x !== 0) {
-//                this.velocity.x = 0;
-//                this.onWall();
-//            }
             }
         }
-        this.processSlope(response);
 
-    },
-    postupdate: function () {
-        _.each(A_.collider.collisionStatics, function (static) {
-            if (static.collides) {
-                if (this.collidesWithEntityAtOffset(static, 1, 0) || this.collidesWithEntityAtOffset(static, -1, 0)) {
-                    if (this.response.overlap && !this.response.overlapN.y && !this.slopeAngle) {
-                        this.velocity.x = 0;
-                        this.onWall();
-                        this.setXRelative(-this.response.overlapN.x)
-                    }
-                }
-                if (this.collidesWithEntityAtOffset(static, 0, 1)) {
-                    if (this.response.overlap) {
-                        if (this.platformerState !== "grounded") {
-                            this.onGrounded();
-                        }
-                        this.platformerState = "grounded";
-                        this.velocity.y = 0;
-                    }
-                }
-                if (this.collidesWithEntityAtOffset(static, 0, -1)) {
-                    if (this.response.overlap && this.response.overlapN.y <= 0) {
-                        this.onCeiling();
-                        if (this.velocity.y < 0) {
-                            this.velocity.y = 0;
-                        }
-                        this.setYRelative(1);
-                    }
-                }
-            }
-        }, this);
-
-        this._super();
     },
     processMovingPlatform: function (other) {
         if (this.getY() < other.getY()) {

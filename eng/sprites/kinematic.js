@@ -15,7 +15,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.maxSpeed = this.maxVelocity.len();
 
         this.slopeN = new SAT.Vector(0, 0);
-//        this.bounced = {horizontal: false, vertical: false};
         this.finalElasticity = new SAT.Vector(0, 0);
         this.applyElasticity = false;
     },
@@ -84,15 +83,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.velocity.add(this.calcAcceleration);
         this.velocity.add(this.gravity);
 
-//        if (this.elasticity) {
-//            if (this.bounced.horizontal) {
-//                this.velocity.x = -this.velocity.x * this.elasticity;
-//            }
-//            if (this.bounced.vertical) {
-//                this.velocity.y = -this.velocity.y * this.elasticity;
-//            }
-//        }
-//        this.bounced.horizontal = this.bounced.vertical = false;
         if (this.applyElasticity) {
             this.velocity.sub(this.finalElasticity);
             this.velocity.scale(this.elasticity, this.elasticity);
@@ -123,9 +113,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         if (response.overlap) {
             if (this.elasticity) {
                 this.processElasticity(response);
-            } else {
+            } 
+            // TODO: Wrongly implemented. See if needed at all.
+//            else {
 //                this.processSlope(response);
-            }
+//            }
         }
     },
     processElasticity: function (response) {
@@ -142,14 +134,5 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.slopeN.copy(response.overlapN)
         this.slopeN.perp();
         this.velocity.project(this.slopeN);
-
-        // Obsolete elasticity processing routine
-//        if (Math.abs(response.overlapV.x) > Math.abs(response.overlapV.y)) {
-//            this.bounced.horizontal = true;
-//            this.bounced.vertical = false;
-//        } else {
-//            this.bounced.vertical = true;
-//            this.bounced.horizontal = false;
-//        }
     }
 });

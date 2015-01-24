@@ -5,7 +5,7 @@ A_.SPRITES.Animated = Class.extend({
     outOfBounds: false,
     // init() is called when the sprite is instantiated with new keyword.
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         // Add all the properties of the prop obj to this instance.
         if (props) {
             for (var prop in props) {
@@ -78,7 +78,7 @@ A_.SPRITES.Animated = Class.extend({
     },
     // Create a transparent PIXI.Sprite that will store, as a parent,
     // all animations, ie. PIXI.MovieClip-s and all PIXI.Sprite-s.
-    createSprite: function(w, h) {
+    createSprite: function (w, h) {
         // We'll use the graphics PIXI obj to render an invisible texture,
         // which we'll pass to PIXI.Sprite's constructor.
         var graphic = new PIXI.Graphics();
@@ -109,12 +109,14 @@ A_.SPRITES.Animated = Class.extend({
         this.sprites = [];
 
         this.sprite = sprite;
+
         // Used to optimize x & y setting & getting.
         this.position = this.sprite.position;
+        this.origin = this.sprite.anchor;
     },
     // ANIMATION
     // frames is an array of nums refering to the index of texture in this.textures
-    addAnimation: function(name, frames, speed) {
+    addAnimation: function (name, frames, speed) {
         // set default speed to 1; 
         if (!speed) {
             speed = this.defaultAnimationSpeed;
@@ -137,7 +139,7 @@ A_.SPRITES.Animated = Class.extend({
         // Set the animations' key/value pair for easy reference.
         this.animations[name] = animation;
     },
-    setAnimation: function(name, frame, speed) {
+    setAnimation: function (name, frame, speed) {
         // Play from the start by default.
         if (typeof frame === 'undefined') {
             if (this.currentAnimationName === name)
@@ -164,7 +166,7 @@ A_.SPRITES.Animated = Class.extend({
         this.animations[name].gotoAndPlay(frame);
     },
     // SPRITE CHILDREN
-    addSprite: function(sprite) {
+    addSprite: function (sprite) {
         this.sprites.push(sprite);
         // The second child of this PIXI sprite is the parent of sprites added to this PIXI sprite.
         this.sprite.children[1].addChild(sprite.sprite);
@@ -174,7 +176,7 @@ A_.SPRITES.Animated = Class.extend({
         sprite.layer = this.layer;
         return sprite;
     },
-    removeSprite: function(sprite) {
+    removeSprite: function (sprite) {
         this.sprites.splice(this.sprites.indexOf(sprite), 1);
         this.sprite.children[1].removeChild(sprite.sprite);
         sprite.container = null;
@@ -182,69 +184,69 @@ A_.SPRITES.Animated = Class.extend({
         return sprite;
     },
     // SPRITE POINTS
-    spritePoint: function(name, x, y) {
+    spritePoint: function (name, x, y) {
         if (_.isNumber(x) && _.isNumber(y)) {
             var sprPt = new A_.SPRITES.SpritePoint(name, x, y);
             this.spritePoints.push(sprPt);
             return sprPt;
         } else {
-            return _.find(this.spritePoints, function(sprPt) {
+            return _.find(this.spritePoints, function (sprPt) {
                 return sprPt.name === name;
             });
         }
     },
     // TRANSFORMATIONS
     // PIXI dependent setters/getters, used to keep in sync PIXI and A_.
-    setPosition: function(x, y) {
+    setPosition: function (x, y) {
         this.position.x = x;
         this.position.y = y;
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setPosition(x, y);
         });
     },
-    getPosition: function() {
+    getPosition: function () {
         return this.position;
     },
-    setX: function(x) {
+    setX: function (x) {
         this.position.x = x;
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setX(x);
         });
     },
-    getX: function() {
+    getX: function () {
         return this.position.x;
     },
-    setY: function(y) {
+    setY: function (y) {
         this.position.y = y;
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setY(y);
         });
     },
-    getY: function() {
+    getY: function () {
         return this.position.y;
     },
-    setXRelative: function(x) {
+    setXRelative: function (x) {
         this.setX(this.getX() + x);
     },
-    setYRelative: function(y) {
+    setYRelative: function (y) {
         this.setY(this.getY() + y);
     },
-    setPositionRelative: function(x, y) {
+    setPositionRelative: function (x, y) {
         this.setPosition(this.getX() + x, this.getY() + y);
     },
-    getPositionLevel: function() {
+    getPositionLevel: function () {
         return A_.level.container.toLocal(A_.level.origin, this.sprite);
     },
     getPositionScreen: function () {
-        return this.sprite.toGlobal(A_.level.origin);  
+        return this.sprite.toGlobal(A_.level.origin);
     },
-    setSize: function(w, h) {
+    setSize: function (w, h) {
         var prevWidth = this.sprite.width;
         var prevHeight = this.sprite.height;
         this.sprite.width = w;
         this.sprite.height = h;
         // We scale proportionally sprite points.
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setScale(w / prevWidth, h / prevHeight);
         });
 
@@ -252,71 +254,71 @@ A_.SPRITES.Animated = Class.extend({
 //    getSize: function(w, h) {
 //        return {width: Math.abs(this.sprite.width), height: Math.abs(this.sprite.height)};
 //    },
-    setWidth: function(w) {
+    setWidth: function (w) {
         var relSpWidth = w / this.sprite.width;
         this.sprite.width = w;
         // We scale proportionally sprite points on the x axis.
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setScaleX(relSpWidth);
         }, this);
     },
-    getWidth: function() {
+    getWidth: function () {
         return Math.abs(this.sprite.width);
     },
-    setHeight: function(h) {
+    setHeight: function (h) {
         var relSpHeight = h / this.sprite.height;
         this.sprite.height = h;
         // We scale proportionally sprite points on the y axis.
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setScaleY(relSpHeight);
         }, this);
     },
-    getHeight: function() {
+    getHeight: function () {
         return Math.abs(this.sprite.height);
     },
-    setScale: function(x, y) {
+    setScale: function (x, y) {
         var relSpScaleX = x / this.sprite.scale.x;
         var relSpScaleY = y / this.sprite.scale.y;
         this.sprite.scale.x = x;
         this.sprite.scale.y = y;
         // We scale proportionally sprite points.
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setScale(relSpScaleX, relSpScaleY);
         });
     },
-    setScaleX: function(x) {
+    setScaleX: function (x) {
         var relSpScaleX = x / this.sprite.scale.x;
         this.sprite.scale.x = x;
         // We scale proportionally sprite points.
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setScaleX(relSpScaleX);
         });
     },
-    setScaleY: function(y) {
+    setScaleY: function (y) {
         var relSpScaleY = y / this.sprite.scale.y;
         this.sprite.scale.y = y;
         // We scale proportionally sprite points.
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setScaleY(relSpScaleY);
         });
     },
-    getScale: function() {
+    getScale: function () {
         return this.sprite.scale;
     },
-    getScaleX: function() {
+    getScaleX: function () {
         return this.sprite.scale.x;
     },
-    getScaleY: function() {
+    getScaleY: function () {
         return this.sprite.scale.y;
     },
     // Flip is a scaling with a negative factor.
-    flipX: function() {
+    flipX: function () {
         this.setScaleX(this.getScaleX() * -1);
     },
-    getFlippedX: function() {
+    getFlippedX: function () {
         return this.getScale().x < 0;
     },
-    setFlippedX: function(flipped) {
+    setFlippedX: function (flipped) {
         if (flipped) {
             if (!this.getFlippedX())
                 this.flipX();
@@ -326,13 +328,13 @@ A_.SPRITES.Animated = Class.extend({
                 this.flipX();
         }
     },
-    flipY: function() {
+    flipY: function () {
         this.setScaleY(this.getScaleY() * -1);
     },
-    getFlippedY: function() {
+    getFlippedY: function () {
         return this.getScale().y < 0;
     },
-    setFlippedY: function(flipped) {
+    setFlippedY: function (flipped) {
         if (flipped) {
             if (!this.getFlippedY())
                 this.flipY();
@@ -342,17 +344,17 @@ A_.SPRITES.Animated = Class.extend({
                 this.flipY();
         }
     },
-    setRotation: function(n) {
+    setRotation: function (n) {
         this.sprite.rotation = n;
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.setRotation(n);
         });
     },
-    getRotation: function() {
+    getRotation: function () {
         return this.sprite.rotation;
     },
     // ORIGIN (ANCHOR)
-    setOrigin: function(x, y) {
+    setOrigin: function (x, y) {
 //        var w = this.getWidth();
 //        var h = this.getHeight();
         var deltaX = -(x - this.sprite.anchor.x) * this.getWidth();
@@ -361,7 +363,7 @@ A_.SPRITES.Animated = Class.extend({
 
         this.sprite.anchor.x = x;
         this.sprite.anchor.y = y;
-        _.each(this.animations, function(animation) {
+        _.each(this.animations, function (animation) {
             animation.anchor.x = x;
             animation.anchor.y = y;
         });
@@ -369,31 +371,31 @@ A_.SPRITES.Animated = Class.extend({
         // Translate sprite children, sprite points and collision polygon (if any)
         // by -(delta * dim).
 
-        _.each(this.sprites, function(sprite) {
+        _.each(this.sprites, function (sprite) {
             // Since the child coord sys is scaled, its positionRelative() 
             // is fed with the original parent's width.
             sprite.setPositionRelative(deltaX / scale.x, deltaY / scale.y);
         });
 
-        _.each(this.spritePoints, function(sp) {
+        _.each(this.spritePoints, function (sp) {
             sp.point.x += deltaX;
             sp.point.y += deltaY;
         });
 
         return [deltaX, deltaY];
     },
-    getOrigin: function() {
+    getOrigin: function () {
         return this.sprite.anchor;
     },
     // TRANSPARENCY
-    setAlpha: function(n) {
+    setAlpha: function (n) {
         this.sprite.alpha = n;
     },
-    getAlpha: function() {
+    getAlpha: function () {
         return this.sprite.alpha;
     },
     // Z ORDER & LAYERS
-    getParent: function() {
+    getParent: function () {
         if (this.container) {
             // this.container is the instance of A_ sprite.
             return this.container.sprite.children[1];
@@ -402,7 +404,7 @@ A_.SPRITES.Animated = Class.extend({
             return this.layer;
         }
     },
-    setZ: function(position) {
+    setZ: function (position) {
         var parent = this.getParent();
 
         if (typeof position === "string") {
@@ -419,11 +421,11 @@ A_.SPRITES.Animated = Class.extend({
                 parent.setChildIndex(this.sprite, position);
         }
     },
-    getZ: function() {
+    getZ: function () {
         var parent = this.getParent();
         return parent.getChildIndex(this.sprite);
     },
-    moveToSprite: function(sprite, position) {
+    moveToSprite: function (sprite, position) {
         var parent;
 //        if (this.getLayerName() !== sprite.getLayerName())
         if (this.layer !== sprite.layer)
@@ -447,13 +449,13 @@ A_.SPRITES.Animated = Class.extend({
             }
         }
     },
-    getLayerName: function() {
+    getLayerName: function () {
         return this.layer.name;
     },
-    getLayerNumber: function() {
+    getLayerNumber: function () {
         return this.layer.parent.getChildIndex(this.layer);
     },
-    moveToLayer: function(layer) {
+    moveToLayer: function (layer) {
         if (_.isString(layer)) {
             var dest = A_.level.findLayerByName(layer);
         } else if (_.isNumber(layer)) {
@@ -467,13 +469,28 @@ A_.SPRITES.Animated = Class.extend({
 
             dest.addChild(this.sprite);
             this.layer = dest;
-            _.each(this.sprites, function(sprite) {
+            _.each(this.sprites, function (sprite) {
                 sprite.layer = layer;
             });
         }
     },
+    isOnScreen: function () {
+        var bounds = this.sprite.getBounds();
+        var view = A_.renderer.view;
+
+        if (bounds.x + bounds.width < 0)
+            return false;
+        if (bounds.x > view.width)
+            return false;
+        if (bounds.y + bounds.height < 0)
+            return false;
+        if (bounds.y > view.height)
+            return false;
+
+        return true;
+    },
     // ADDONS
-    addon: function(addonName, props) {
+    addon: function (addonName, props) {
         if (A_.SPRITES.ADDONS[addonName]) {
             var a = new A_.SPRITES.ADDONS[addonName](this, props);
             a.on();
@@ -481,7 +498,7 @@ A_.SPRITES.Animated = Class.extend({
             return a;
         }
     },
-    addoff: function(addon) {
+    addoff: function (addon) {
         var a = _.find(this.addons, addon);
         if (a) {
             a.off();
@@ -492,20 +509,7 @@ A_.SPRITES.Animated = Class.extend({
         }
     },
     // CREATION/DESTRUCTION & UPDATE
-    preupdate: function() {
-        this.prevRot = this.getRotation();
-        this.prevX = this.getX();
-        this.prevY = this.getY();
-
-        _.each(this.addons, function(addon) {
-            if (addon.active)
-                addon.update();
-        });
-    },
-    update: function() {
-
-    },
-    postupdate: function() {
+    update: function () {
         // TODO: Refactor to work with an arbitrary origin.
         if (!this.container) {
             var x = this.getX();
@@ -539,22 +543,32 @@ A_.SPRITES.Animated = Class.extend({
                 }
             }
         }
+        
+        this.prevRot = this.getRotation();
+        this.prevX = this.getX();
+        this.prevY = this.getY();
+
+        _.each(this.addons, function (addon) {
+            if (addon.active)
+                addon.update();
+        });
+        
     },
-    onCreation: function() {
+    onCreation: function () {
 //        this.setPosition(x, y);
     },
-    destroy: function() {
-        _.each(this.sprites, function(sprite) {
+    destroy: function () {
+        _.each(this.sprites, function (sprite) {
             sprite.destroy();
         });
 
         this.onDestruction();
         A_.game.spritesToDestroy.push(this);
     },
-    clear: function() {
+    clear: function () {
         this.sprite.parent.removeChild(this.sprite);
     },
-    onDestruction: function() {
+    onDestruction: function () {
 
     }
 });

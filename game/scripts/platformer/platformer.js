@@ -61,7 +61,7 @@ var Anime = A_.SPRITES.Platformer.extend({
         this.controlled = true;
         this.addAnimation("idle", [0], 0);
         this.addAnimation("moving", _.range(1, 7), 0.15);
-        this.addAnimation("jumping", [17], 0);
+        this.addAnimation("launching", [17], 0);
         this.addAnimation("falling", [18], 0);
     },
     update: function () {
@@ -147,6 +147,8 @@ var Player = Anime.extend({
     },
     update: function () {
 //        window.console.log(this.walled);
+//        this.sprite.getLocalBounds();
+//        window.console.log(this.currentAnimation.animationSpeed);
         if (A_.INPUT.pressed["toggleMode"]) {
             this.toggleMode();
         }
@@ -181,18 +183,7 @@ var Player = Anime.extend({
 //            this.jetpackSound.stop();
         }
         this._super();
-//        window.console.log(this.velocity.x);
-//        window.console.log(this.platformerState);
-//        window.console.log(this.platformerState);
     },
-//    collideWithDynamic: function (other, response) {
-//        if (other.collision.response === "sensor") {
-//        }
-//    }
-    collideWithStatic: function (other, response) {
-//        window.console.log(response.overlapN.y);
-        this._super(other, response);
-    }
 });
 
 var Undead = Anime.extend({
@@ -205,21 +196,30 @@ var Undead = Anime.extend({
     },
     onCreation: function () {
         this._super();
-        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.getX(), this.getY(), {undead: this});
+//        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.getX(), this.getY(), {undead: this});
     },
     update: function () {
+        if (!this.isOnScreen()) {
+            this.collides = false;
+            return;
+        } else {
+            this.collides = true;
+        }
+        
         this.applyForce = true;
         this._super();
-//        if (_.random(0, 100) > 99) {
-//            window.console.log(this.platformerState);
-//        }
     },
     onWall: function () {
         this._super();
-        if (_.random(1, 100) < this.jumpProbability) {
-            this.tryJump = true;
-        }
-        else if (this.platformerState === "grounded") {
+//        if (_.random(1, 100) < this.jumpProbability) {
+//            this.tryJump = true;
+//        }
+//        else if (this.platformerState === "grounded") {
+//            this.velocity.x = -this.velocity.x;
+//            this.setX(this.prevX);
+//            this.flipFacing();
+//        }
+        if (this.platformerState === "grounded") {
             this.velocity.x = -this.velocity.x;
             this.setX(this.prevX);
             this.flipFacing();
@@ -244,8 +244,6 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
     },
     update: function () {
         this._super();
-//    },
-//    postupdate: function() {
         var undead = this.undead;
         if (!this.collided && undead.platformerState === "grounded") {
             if (_.random(1, 100) < undead.jumpProbability) {
@@ -268,10 +266,6 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
 
     }
 });
-A_.game.preupdate = function () {
-    if (this.leftpressed) {
-    }
-}
 
 var Platform = A_.SPRITES.Colliding.extend({
     animSheet: "moving_platform.png",

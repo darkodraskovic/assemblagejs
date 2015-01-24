@@ -24,11 +24,15 @@ A_.CAMERA.Camera = Class.extend({
         if (!this.innerBoundOffset) {
             this.innerBoundOffset = 0.25;
         }
-        this.innerBounds = {};        
-        this.innerBounds.left = this.innerBoundOffset;
-        this.innerBounds.right = 1 - this.innerBoundOffset;
-        this.innerBounds.top = this.innerBoundOffset;
-        this.innerBounds.bottom = 1 - this.innerBoundOffset;
+        this.innerBounds = {};
+        this.setInnerBounds(this.innerBoundOffset);
+    },
+    setInnerBounds: function (innerBoundOffset) {
+        this.innerBoundOffset = innerBoundOffset;
+        this.innerBounds.left = innerBoundOffset;
+        this.innerBounds.right = 1 - innerBoundOffset;
+        this.innerBounds.top = innerBoundOffset;
+        this.innerBounds.bottom = 1 - innerBoundOffset;
     },
     getInnerBound: function (side) {
         switch (side) {
@@ -114,6 +118,6 @@ A_.CAMERA.Camera = Class.extend({
             this.bind();
         }
 
-        A_.level.position(-this.x, -this.y);
+        A_.level.setPosition(-this.x, -this.y);
     }
 });

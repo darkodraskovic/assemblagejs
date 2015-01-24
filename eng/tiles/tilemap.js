@@ -85,9 +85,9 @@ A_.TILES.Tilemap = Class.extend({
     },
     getTile: function(x, y) {
         if (x < 0 || x >= this.mapW)
-            return null;
+            return;
         if (y < 0 || y >= this.mapH)
-            return null;
+            return;
         return this.tiles[x][y];
     },
     setTile: function(gid, x, y) {
@@ -127,8 +127,8 @@ A_.TILES.Tilemap = Class.extend({
         this.tiles[x][y] = tile;
     },
     setTileInWorld: function(tile, x, y) {
-        tile.setPosition(x, y);
         tile.moveToLayer(this.layer);
+        tile.setPosition(x, y);
     },
     unsetTile: function(x, y) {
         if (this.layer.baked)
