@@ -166,6 +166,39 @@ A_.SPRITES.Animated = Class.extend({
         // Goes to a frame and begins playing the animation.
         this.animations[name].gotoAndPlay(frame);
     },
+    getLeft: function () {
+        return this.sprite.getBounds().x / A_.level.scale + A_.camera.x;
+    },
+    getRight: function () {
+        var bounds = this.sprite.getBounds();
+        return (bounds.x + bounds.width) / A_.level.scale + A_.camera.x;
+    },
+    getTop: function () {
+        return this.sprite.getBounds().y / A_.level.scale + A_.camera.y;
+    },
+    getBottom: function () {
+        var bounds = this.sprite.getBounds();
+        return (bounds.y + bounds.height) / A_.level.scale + A_.camera.y;
+    },
+    overlapsSprite: function (sprite) {
+        return (this.getTop() < sprite.getBottom() && this.getBottom() > sprite.getTop()
+                && this.getLeft() < sprite.getRight() && this.getRight() > sprite.getLeft());
+    },
+    isOnScreen: function () {
+        var bounds = this.sprite.getBounds();
+        var view = A_.renderer.view;
+
+        if (bounds.x + bounds.width < 0)
+            return false;
+        if (bounds.x > view.width)
+            return false;
+        if (bounds.y + bounds.height < 0)
+            return false;
+        if (bounds.y > view.height)
+            return false;
+
+        return true;
+    },
     // SPRITE CHILDREN
     addSprite: function (sprite) {
         this.sprites.push(sprite);
@@ -470,21 +503,6 @@ A_.SPRITES.Animated = Class.extend({
             });
         }
     },
-    isOnScreen: function () {
-        var bounds = this.sprite.getBounds();
-        var view = A_.renderer.view;
-
-        if (bounds.x + bounds.width < 0)
-            return false;
-        if (bounds.x > view.width)
-            return false;
-        if (bounds.y + bounds.height < 0)
-            return false;
-        if (bounds.y > view.height)
-            return false;
-
-        return true;
-    },
     // ADDONS
     addon: function (addonName, props) {
         if (A_.SPRITES.ADDONS[addonName]) {
@@ -539,7 +557,7 @@ A_.SPRITES.Animated = Class.extend({
                 }
             }
         }
-        
+
         this.prevRot = this.getRotation();
         this.prevX = this.getX();
         this.prevY = this.getY();
@@ -548,7 +566,7 @@ A_.SPRITES.Animated = Class.extend({
             if (addon.active)
                 addon.update();
         });
-        
+
     },
     onCreation: function () {
 //        this.setPosition(x, y);

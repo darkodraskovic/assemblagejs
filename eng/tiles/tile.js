@@ -42,8 +42,6 @@ A_.TILES.Tile = Class.extend({
         layer.addChild(this.sprite);
     },
     setPosition: function (x, y) {
-        this.prevX = x;
-        this.prevY = y;
         this.sprite.position.x = x;
         this.sprite.position.y = y;
         if (this.collisionPolygon) {
@@ -84,22 +82,6 @@ A_.TILES.Tile = Class.extend({
     },
     update: function () {
 
-    },
-    // BUG: Works only with non baked layers
-    isOnScreen: function () {
-        var bounds = this.sprite.getBounds();
-        var view = A_.renderer.view;
-
-        if (bounds.x + bounds.width < 0)
-            return false;
-        if (bounds.x > view.width)
-            return false;
-        if (bounds.y + bounds.height < 0)
-            return false;
-        if (bounds.y > view.height)
-            return false;
-
-        return true;
     }
 });
 

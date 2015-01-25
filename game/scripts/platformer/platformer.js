@@ -168,7 +168,7 @@ var Player = Anime.extend({
             ball.velocity.y = ball.maxSpeed * Math.sin(angle);
         }
         if (A_.INPUT.pressed["jetpack"]) {
-            this.fireJetpack();
+//            this.fireJetpack();
         }
 
         this._super();

@@ -169,17 +169,10 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
         this.processSlope(response);
 
-        if (response.overlap) {
-            if (response.overlapN.y !== 0) {
-                if (response.overlapN.y > 0) {
-                    // Moving platform
-                    if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
-                        this.processMovingPlatform(other);
-                    }
-                    // Slope
-//                    if (response.overlapN.x)
-//                        this.setXRelative(response.overlapV.x);
-                }
+        // Moving platform
+        if (response.overlap && response.overlapN.y > 0 && !(other instanceof A_.TILES.Tile)) {
+            if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
+                this.processMovingPlatform(other);
             }
         }
 
