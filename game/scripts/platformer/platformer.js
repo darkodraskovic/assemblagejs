@@ -145,10 +145,6 @@ var Player = Anime.extend({
         window.console.log("ceiling");
     },
     update: function () {
-//        window.console.log(this.walled);
-//        this.sprite.getLocalBounds();
-//        window.console.log(this.currentAnimation.animationSpeed);
-
         if (A_.INPUT.pressed["toggleMode"]) {
             this.toggleMode();
         }
@@ -172,6 +168,7 @@ var Player = Anime.extend({
         }
 
         this._super();
+//        window.console.log(this.platformerState);
     },
     fireJetpack: function () {
         if (this.platformerState !== "grounded") {

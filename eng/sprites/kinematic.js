@@ -84,7 +84,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
         }
 
-
         this.velocity.add(this.calcAcceleration);
         this.velocity.add(this.gravity);
 
@@ -131,8 +130,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         var dot = this.velocity.dot(response.overlapN);
         this.finalElasticity.scale(dot, dot);
         this.finalElasticity.scale(2, 2);
-//        this.velocity.sub(elasticityVector);
-//        this.velocity.scale(this.elasticity, this.elasticity);
         this.applyElasticity = true;
     },
     processSlope: function (response) {

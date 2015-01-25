@@ -181,8 +181,8 @@ A_.SPRITES.Animated = Class.extend({
         return (bounds.y + bounds.height) / A_.level.scale + A_.camera.y;
     },
     overlapsSprite: function (sprite) {
-        return (this.getTop() < sprite.getBottom() && this.getBottom() > sprite.getTop()
-                && this.getLeft() < sprite.getRight() && this.getRight() > sprite.getLeft());
+        return (this.getTop() <= sprite.getBottom() && this.getBottom() >= sprite.getTop()
+                && this.getLeft() <= sprite.getRight() && this.getRight() >= sprite.getLeft());
     },
     isOnScreen: function () {
         var bounds = this.sprite.getBounds();

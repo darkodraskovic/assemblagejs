@@ -12,7 +12,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.friction = new SAT.Vector(48, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
         this.force = new SAT.Vector(100, 100);
-        this.platform = null;
+        this.movingPlatform = null;
         this.platformDY = 0;
         this.collisionEntities = [];
 
@@ -33,7 +33,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         }
 
         // PLATFORM
-        if (this.platform) {
+        if (this.movingPlatform) {
             this.setY(this.getY() + this.platformDY + 2);
         }
 
@@ -60,20 +60,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
 
         this._super();
 
-        // STATES
-        if (this.velocity.y > this.gravity.y) {
-            this.platformerState = "falling";
-            this.jumps = false;
-        } else if (this.velocity.y < -this.gravity.y) {
-            this.platformerState = "launching";
-        }
-
-        if (this.velocity.x !== 0) {
-            this.movingState = "moving";
-        } else {
-            this.movingState = "idle";
-        }
-
         // FLIP
         if (this.autoFlip) {
             if (this.facing === "right") {
@@ -83,13 +69,18 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             }
         }
 
-        this.platform = null;
+        this.movingPlatform = null;
         this.collisionEntities.length = 0;
     },
     processPlatformerState: function () {
-//        _.each(A_.collider.collisionStatics, function (static) {
-        _.each(this.collisionEntities, function (entity) {
+        if (this.velocity.y > this.gravity.y) {
+            this.platformerState = "falling";
+            this.jumps = false;
+        } else if (this.velocity.y < -this.gravity.y) {
+            this.platformerState = "launching";
+        }
 
+        _.each(this.collisionEntities, function (entity) {
             if (entity.collides) {
                 if (this.collidesWithEntityAtOffset(entity, 1, 0) || this.collidesWithEntityAtOffset(entity, -1, 0)) {
                     if (this.response.overlap && !this.response.overlapN.y) {
@@ -118,6 +109,12 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                 }
             }
         }, this);
+
+        if (this.velocity.x !== 0) {
+            this.movingState = "moving";
+        } else {
+            this.movingState = "idle";
+        }
     },
     processControls: function () {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
@@ -175,11 +172,10 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                 this.processMovingPlatform(other);
             }
         }
-
     },
     processMovingPlatform: function (other) {
         if (this.getY() < other.getY()) {
-            this.platform = other;
+            this.movingPlatform = other;
             this.platformDX = other.getX() - other.prevX;
             this.platformDY = other.getY() - other.prevY;
             this.setXRelative(this.platformDX);
