@@ -4,7 +4,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.initCollision(this.collisionPolygon);
-//        this.prevOverlapN = new SAT.Vector(0, 0);
         this.containedPoint = new SAT.Vector(0, 0);
         this.response = new SAT.Response();
         this.offset = new SAT.Vector();
@@ -13,28 +12,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._super();
     },
     createCollisionPolygon: function (polygon) {
-//        if (!this.collision)
-//            this.collision = {};
-//
-//        if (!this.collision.size)
-//            this.collision.size = {};
-//        if (!this.collision.size.w) {
-//            this.collision.size.w = this.getWidth();
-//        }
-//        if (!this.collision.size.h) {
-//            this.collision.size.h = this.getHeight();
-//        }
-//
-//        if (!this.collision.offset) {
-//            this.collision.offset = {};
-//        }
-//        if (!this.collision.offset.x) {
-//            this.collision.offset.x = 0;
-//        }
-//        if (!this.collision.offset.y) {
-//            this.collision.offset.y = 0;
-//        }
-//
         if (!this.collisionPolygons) {
             this.collisionPolygons = [];
         }
@@ -47,16 +24,9 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         if (!_.isNumber(this.collisionOffsetY))
             this.collisionOffsetY = 0;
 
-//        var w = this.collision.size.w;
-//        var h = this.collision.size.h;
-//
-//        var offsetX = this.collision.offset.x;
-//        var offsetY = this.collision.offset.y;
         var w = this.collisionW;
         var h = this.collisionH;
 
-//        var offsetX = this.collision.offset.x;
-//        var offsetY = this.collision.offset.y;
         var offsetX = this.collisionOffsetX;
         var offsetY = this.collisionOffsetY;
 
@@ -120,13 +90,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     setCollisionResponse: function () {
         var collider = A_.collider;
 
-//        if (!this.collision.response) {
         if (!this.collisionResponse) {
-//            this.collision.response = "sensor";
             this.collisionResponse = "sensor";
             collider.collisionDynamics.push(this);
         } else {
-//            if (this.collision.response === "static")
             if (this.collisionResponse === "static")
                 collider.collisionStatics.push(this);
             else
@@ -171,61 +138,14 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
     },
     collideWithStatic: function (other, response) {
-//        this.prevOverlapN = response.overlapN;
         this.collided = true;
 
-//        if (this.collision.response !== "sensor")
         if (this.collisionResponse !== "sensor") {
             this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-//            this.setXRelative(-response.overlapN.x);
-//            this.setYRelative(-response.overlapN.y);
-//            this.setXRelative(-response.overlapN.x * A_.game.dt);
-//            this.setYRelative(-response.overlapN.y * A_.game.dt);
         }
     },
     collideWithDynamic: function (other, response) {
         this.collided = true;
-
-        if (this.collisionResponse === "static") {
-            return;
-        }
-        if (this.collisionResponse === "sensor") {
-            return;
-        }
-        
-        
-//        var thisResponse = this.collisionResponse;
-//
-//        var otherResponse = other.collisionResponse;
-//        if (otherResponse === "active") {
-//            if (thisResponse === "active" || thisResponse === "passive") {
-//                if (this.collisionPolygon === response.a) {
-//                    this.setPositionRelative(-response.overlapV.x * 0.5,
-//                            -response.overlapV.y * 0.5);
-//                } else {
-//                    this.setPositionRelative(response.overlapV.x * 0.5,
-//                            response.overlapV.y * 0.5);
-//                }
-//            }
-//            else if (thisResponse === "light") {
-//                if (this.collisionPolygon === response.a) {
-//                    this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-//                } else {
-//                    this.setPositionRelative(response.overlapV.x, response.overlapV.y);
-//                }
-//            }
-//        }
-//        else if (otherResponse === "passive") {
-//            if (thisResponse === "active") {
-//                if (this.collisionPolygon === response.a) {
-//                    this.setPositionRelative(-response.overlapV.x * 0.5,
-//                            -response.overlapV.y * 0.5);
-//                } else {
-//                    this.setPositionRelative(response.overlapV.x * 0.5,
-//                            response.overlapV.y * 0.5);
-//                }
-//            }
-//        }
     },
     collidesWithEntity: function (other) {
         this.response.clear();
@@ -272,12 +192,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     },
     setScaleX: function (x) {
         this._super(x);
-//        this.collisionPolygon.setScale(x, this.getScaleY());
         this.collisionPolygon.setScaleX(x);
     },
     setScaleY: function (y) {
         this._super(y);
-//        this.collisionPolygon.setScale(this.getScaleX(), y);
         this.collisionPolygon.setScaleY(y);
     },
     setSize: function (x, y) {
@@ -286,14 +204,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     },
     setWidth: function (w) {
         this._super(w);
-//        this.collisionPolygon.setScale(this.getScaleX(), this.collisionPolygon.scale.y);
-//        this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
         this.collisionPolygon.setScaleX(this.getScaleX());
     },
     setHeight: function (h) {
         this._super(h);
-//        this.collisionPolygon.setScale(this.collisionPolygon.scale.x, this.getScaleY());
-//        this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
         this.collisionPolygon.setScaleY(this.getScaleY());
     },
     setOrigin: function (x, y) {
