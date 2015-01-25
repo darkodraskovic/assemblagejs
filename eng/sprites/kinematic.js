@@ -114,11 +114,13 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     collideWithDynamic: function (other, response) {
         this._super(other, response);
+        
+        if (!response.overlap )
+            return;
 
-        var thisResponse = this.collisionResponse;
         var otherResponse = other.collisionResponse;
-
         if (otherResponse === "active" || otherResponse === "passive") {
+            var thisResponse = this.collisionResponse;
             if (thisResponse === "lite") {
                 if (this.collisionPolygon === response.a) {
                     this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
@@ -157,6 +159,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
                 this.setPositionRelative(sign * response.overlapV.x * velPercentX,
                         sign * response.overlapV.y * velPercentY);
+                other.setPositionRelative(-sign * response.overlapV.x * (1 - velPercentX),
+                        -sign * response.overlapV.y * (1 - velPercentY));
             }
         }
     },

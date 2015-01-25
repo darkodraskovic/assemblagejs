@@ -111,7 +111,7 @@ var Agent = Anime.extend({
     collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.maxVelocity = new SAT.Vector(64, 64);
+        this.maxVelocity = new SAT.Vector(96, 96);
         this.motionState = "moving";
         this.timer = 2;
     },

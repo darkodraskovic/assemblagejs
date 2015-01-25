@@ -101,6 +101,11 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
         collider.collisionSprites.push(this);
     },
+    resetCollisionResponse: function (collisionResponse) {
+        this.removeCollisionResponse();
+        this.collisionResponse = collisionResponse;
+        this.setCollisionResponse();
+    },
     setCollisionDebug: function () {
         if (this.drawDebugGraphics && A_.game.debug) {
             this.debugGraphics = new PIXI.Graphics();
