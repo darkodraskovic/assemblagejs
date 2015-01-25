@@ -63,6 +63,7 @@ var Player = Anime.extend({
     init: function(parent, x, y, props) {
         this.collisionResponse = "active";
         this._super(parent, x, y, props);
+        this.maxVelocity = new SAT.Vector(128, 128);
 //        this.collision = A_.UTILS.copy(this.collision);
         
         this.rifle = A_.game.createSprite(Rifle, this.layer,

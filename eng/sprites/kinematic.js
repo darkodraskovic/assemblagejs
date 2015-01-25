@@ -112,12 +112,60 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.isMoving = false;
         }
     },
+    collideWithDynamic: function (other, response) {
+        this._super(other, response);
+
+        var thisResponse = this.collisionResponse;
+        var otherResponse = other.collisionResponse;
+
+        if (otherResponse === "active" || otherResponse === "passive") {
+            if (thisResponse === "lite") {
+                if (this.collisionPolygon === response.a) {
+                    this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+                } else {
+                    this.setPositionRelative(response.overlapV.x, response.overlapV.y);
+                }
+            } else {
+                var velPercentX = 1;
+                var velPercentY = 1;
+                var absVelX = Math.abs(this.velocity.x);
+                var absVelY = Math.abs(this.velocity.y);
+                if (absVelX) {
+                    velPercentX -= absVelX / (absVelX + Math.abs(other.velocity.x));
+                }
+                if (absVelY) {
+                    velPercentY -= absVelY / (absVelY + Math.abs(other.velocity.y));
+                }
+
+                var sign = 0;
+                if (thisResponse === "active") {
+                    if (this.collisionPolygon === response.a) {
+                        sign = -1;
+                    } else {
+                        sign = 1;
+                    }
+                }
+                else if (thisResponse === "passive") {
+                    if (otherResponse === "active") {
+                        if (this.collisionPolygon === response.a) {
+                            sign = -1;
+                        } else {
+                            sign = 1;
+                        }
+                    }
+                }
+
+                this.setPositionRelative(sign * response.overlapV.x * velPercentX,
+                        sign * response.overlapV.y * velPercentY);
+            }
+        }
+    },
     collideWithStatic: function (other, response) {
         this._super(other, response);
         if (response.overlap) {
             if (this.elasticity) {
                 this.processElasticity(response);
-            } 
+            }
             // TODO: Wrongly implemented. See if needed at all.
 //            else {
 //                this.processSlope(response);

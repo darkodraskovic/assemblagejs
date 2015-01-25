@@ -184,49 +184,48 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
     },
     collideWithDynamic: function (other, response) {
-//        this.prevOverlapN = response.overlapN;
         this.collided = true;
 
-//        var thisResponse = this.collision.response;
-//        var otherResponse = other.collision.response;
-        var thisResponse = this.collisionResponse;
-        var otherResponse = other.collisionResponse;
-        if (thisResponse === "static") {
+        if (this.collisionResponse === "static") {
             return;
         }
-        else if (thisResponse === "sensor") {
+        if (this.collisionResponse === "sensor") {
             return;
-        } else {
-            if (otherResponse === "active") {
-                if (thisResponse === "active" || thisResponse === "passive") {
-                    if (this.collisionPolygon === response.a) {
-                        this.setPositionRelative(-response.overlapV.x * 0.5,
-                                -response.overlapV.y * 0.5);
-                    } else {
-                        this.setPositionRelative(response.overlapV.x * 0.5,
-                                response.overlapV.y * 0.5);
-                    }
-                }
-                else if (thisResponse === "light") {
-                    if (this.collisionPolygon === response.a) {
-                        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-                    } else {
-                        this.setPositionRelative(response.overlapV.x, response.overlapV.y);
-                    }
-                }
-            }
-            else if (otherResponse === "passive") {
-                if (thisResponse === "active") {
-                    if (this.collisionPolygon === response.a) {
-                        this.setPositionRelative(-response.overlapV.x * 0.5,
-                                -response.overlapV.y * 0.5);
-                    } else {
-                        this.setPositionRelative(response.overlapV.x * 0.5,
-                                response.overlapV.y * 0.5);
-                    }
-                }
-            }
         }
+        
+        
+//        var thisResponse = this.collisionResponse;
+//
+//        var otherResponse = other.collisionResponse;
+//        if (otherResponse === "active") {
+//            if (thisResponse === "active" || thisResponse === "passive") {
+//                if (this.collisionPolygon === response.a) {
+//                    this.setPositionRelative(-response.overlapV.x * 0.5,
+//                            -response.overlapV.y * 0.5);
+//                } else {
+//                    this.setPositionRelative(response.overlapV.x * 0.5,
+//                            response.overlapV.y * 0.5);
+//                }
+//            }
+//            else if (thisResponse === "light") {
+//                if (this.collisionPolygon === response.a) {
+//                    this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+//                } else {
+//                    this.setPositionRelative(response.overlapV.x, response.overlapV.y);
+//                }
+//            }
+//        }
+//        else if (otherResponse === "passive") {
+//            if (thisResponse === "active") {
+//                if (this.collisionPolygon === response.a) {
+//                    this.setPositionRelative(-response.overlapV.x * 0.5,
+//                            -response.overlapV.y * 0.5);
+//                } else {
+//                    this.setPositionRelative(response.overlapV.x * 0.5,
+//                            response.overlapV.y * 0.5);
+//                }
+//            }
+//        }
     },
     collidesWithEntity: function (other) {
         this.response.clear();

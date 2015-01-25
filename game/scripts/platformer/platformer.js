@@ -22,7 +22,6 @@ A_.TILES.Tile.inject({
         else {
             this.turnOn();
         }
-//        window.console.log(this.turned);
     },
     update: function () {
         this._super();
@@ -48,7 +47,6 @@ var Anime = A_.SPRITES.Platformer.extend({
     frame: {w: 32, h: 64},
     bounded: false,
     wrap: true,
-//    collision: {response: "dynamic", offset: {x: 0, y: 8}, size: {w: 18, h: 46}},
     collisionResponse: "passive",
     collisionOffsetY: 8,
     collisionW: 18,
@@ -266,7 +264,6 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
 var Platform = A_.SPRITES.Colliding.extend({
     animSheet: "moving_platform.png",
     frame: {w: 128, h: 32},
-//    collision: {response: "static"},
     collisionResponse: "static",
     type: "horizontal",
 //    drawDebugGraphics: false,    

@@ -109,8 +109,8 @@ var inject = function (prop) {
     var _super = {};
     for (var name in prop) {
         if (
-                typeof (prop[name]) == "function" &&
-                typeof (proto[name]) == "function" &&
+                typeof (prop[name]) === "function" &&
+                typeof (proto[name]) === "function" &&
                 fnTest.test(prop[name])
                 ) {
             _super[name] = proto[name]; // save original function

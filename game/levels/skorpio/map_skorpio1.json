@@ -66,8 +66,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":1,
-                 "x":1088,
-                 "y":800
+                 "x":152,
+                 "y":272
                 }, 
                 {
                  "gid":258,
@@ -454,7 +454,7 @@
 
                     },
                  "rotation":0,
-                 "type":"Player",
+                 "type":"",
                  "visible":true,
                  "width":0,
                  "x":768,
