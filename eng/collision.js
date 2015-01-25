@@ -62,10 +62,12 @@ A_.COLLISION.Collider = Class.extend({
 
 A_.COLLISION.aabbInjection = {
     aabbWidth: function () {
-        return this.collisionPolygon.w;
+//        return Math.abs(this.collisionPolygon.w);
+        return this.collisionPolygon.getWidth();
     },
     aabbHeight: function () {
-        return this.collisionPolygon.h;
+//        return Math.abs(this.collisionPolygon.h);
+        return this.collisionPolygon.getHeight();
     },
     aabbBottom: function () {
         return this.collisionPolygon.getBottom();

@@ -3,6 +3,7 @@ A_.SPRITES.Animated = Class.extend({
     bounded: true,
     wrap: false,
     outOfBounds: false,
+    updates: true,
     // init() is called when the sprite is instantiated with new keyword.
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
     init: function (parent, x, y, props) {
@@ -355,8 +356,6 @@ A_.SPRITES.Animated = Class.extend({
     },
     // ORIGIN (ANCHOR)
     setOrigin: function (x, y) {
-//        var w = this.getWidth();
-//        var h = this.getHeight();
         var deltaX = -(x - this.sprite.anchor.x) * this.getWidth();
         var deltaY = -(y - this.sprite.anchor.y) * this.getHeight();
         var scale = this.getScale();
@@ -367,9 +366,6 @@ A_.SPRITES.Animated = Class.extend({
             animation.anchor.x = x;
             animation.anchor.y = y;
         });
-
-        // Translate sprite children, sprite points and collision polygon (if any)
-        // by -(delta * dim).
 
         _.each(this.sprites, function (sprite) {
             // Since the child coord sys is scaled, its positionRelative() 

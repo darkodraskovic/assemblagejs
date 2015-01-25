@@ -79,7 +79,6 @@ var Anime = A_.SPRITES.Platformer.extend({
         } else {
             this.mode = "throwing";
         }
-
     }
 });
 
@@ -93,7 +92,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this._super(parent, x, y, props);
         this.friction.x = 0;
         this.friction.y = 0;
-        this.maxSpeed = 500;
+        this.setMaxVelocity(400, 400);
     },
     update: function () {
         this._super();
@@ -118,8 +117,8 @@ var Player = Anime.extend({
 //    bounciness: 0.0000000001,
 //    drawDebugGraphics: true,
     onCreation: function () {
-        A_.INPUT.addMapping("jetpack", A_.KEY.SHIFT);
-        A_.INPUT.addMapping("toggleMode", A_.KEY.F);
+        A_.INPUT.addMapping("jetpack", A_.KEY.SPACE);
+        A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
         this._super();
         this.thrus = A_.level.findLayerByName("Thrus");
     },
@@ -149,6 +148,7 @@ var Player = Anime.extend({
 //        window.console.log(this.walled);
 //        this.sprite.getLocalBounds();
 //        window.console.log(this.currentAnimation.animationSpeed);
+
         if (A_.INPUT.pressed["toggleMode"]) {
             this.toggleMode();
         }
@@ -167,23 +167,22 @@ var Player = Anime.extend({
             ball.velocity.x = ball.maxSpeed * Math.cos(angle);
             ball.velocity.y = ball.maxSpeed * Math.sin(angle);
         }
-        if (A_.INPUT.down["jetpack"]) {
-            if (this.velocity.y > -200) {
-                this.velocity.y -= this.force.y;
-            }
-        }
         if (A_.INPUT.pressed["jetpack"]) {
+            this.fireJetpack();
+        }
+
+        this._super();
+    },
+    fireJetpack: function () {
+        if (this.platformerState !== "grounded") {
+            this.velocity.y = -this.jumpForce * 0.75;
             this.jetpackSound = A_.game.createSound({
                 urls: ['jetpack.wav'],
                 volume: 1,
             });
             this.jetpackSound.play();
         }
-        if (A_.INPUT.released["jetpack"]) {
-//            this.jetpackSound.stop();
-        }
-        this._super();
-    },
+    }
 });
 
 var Undead = Anime.extend({
@@ -205,7 +204,7 @@ var Undead = Anime.extend({
         } else {
             this.collides = true;
         }
-        
+
         this.applyForce = true;
         this._super();
     },

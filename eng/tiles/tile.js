@@ -27,7 +27,9 @@ A_.TILES.Tile = Class.extend({
         collisionPolygon = box.toPolygon();
         collisionPolygon.w = box.w;
         collisionPolygon.h = box.h;
+        collisionPolygon.calcBounds();
         this.collisionPolygon = collisionPolygon;
+        
         this.collisionResponse = this.tilemap.collisionResponse;
         if (this.collisionResponse === "sensor") {
             A_.collider.collisionDynamics.push(this);

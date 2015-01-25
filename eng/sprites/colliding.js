@@ -89,6 +89,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         collisionPolygon.origH = collisionPolygon.h;
 
         collisionPolygon.scale = new SAT.Vector(1, 1);
+        collisionPolygon.calcBounds();
 
 //        if (this.interactive())
 //            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
@@ -161,22 +162,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             A_.level.debugLayer.removeChild(this.debugGraphics);
             this.debugGraphics = null;
         }
-    },
-    setSlope: function () {
-        this.slopeAngle = this.collisionPolygon.diagonalAngle;
-        this.slopeFactor = 1 - (this.slopeAngle / (Math.PI / 2));
-        var colPol = this.collisionPolygon;
-        if (_.find(colPol.points, function (point) {
-            return point.x === colPol.minX && point.y === colPol.minY
-        })) {
-            this.slopeRiseDirection = "left";
-//            this.slopeAngle += Math.PI / 2;
-        }
-        else {
-            this.slopeRiseDirection = "right";
-        }
-        this.slopeSet = true;
-//        A_.SPRITES.Slopes.push(this);
     },
     drawDebug: function () {
         var debugGraphics = this.debugGraphics;

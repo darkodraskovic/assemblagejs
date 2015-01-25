@@ -18,6 +18,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.finalElasticity = new SAT.Vector(0, 0);
         this.applyElasticity = false;
     },
+    setMaxVelocity: function (x, y) {
+        this.maxVelocity.x = x;
+        this.maxVelocity.y = y;
+        this.maxSpeed = this.maxVelocity.len();
+    },
     update: function () {
         this._super();
 

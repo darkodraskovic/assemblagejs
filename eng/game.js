@@ -1,6 +1,6 @@
 A_.Game = Class.extend({
     isRunning: false,
-    init: function() {
+    init: function () {
         this.createRenderer();
 
         // Level management
@@ -24,7 +24,7 @@ A_.Game = Class.extend({
         // Cf. run.js
         requestAnimFrame(runGame);
     },
-    createRenderer: function() {
+    createRenderer: function () {
         this.rendererOptions = A_.CONFIG.renderer;
         this.screen = A_.CONFIG.screen;
 
@@ -34,7 +34,7 @@ A_.Game = Class.extend({
         A_.renderer = this.renderer;
     },
     // LEVEL LOADING
-    loadGenericLevel: function(level) {
+    loadGenericLevel: function (level) {
         this.levelType = "generic";
         if (!level) {
             level = {
@@ -57,9 +57,9 @@ A_.Game = Class.extend({
             this.activateLevelLoader();
         }
     },
-    loadTiledLevel: function(level) {
+    loadTiledLevel: function (level) {
         this.levelType = "tiled";
-        if (!_.find(this.levels, function(level) {
+        if (!_.find(this.levels, function (level) {
             return level.name === level.name;
         })) {
             this.levels.push(level);
@@ -82,35 +82,35 @@ A_.Game = Class.extend({
         if (this.levelType === "generic") {
             window.console.log("Loaded GENERIC LEVEL :)");
             this.level.createDummyLayer();
-        } 
+        }
         else {
             window.console.log("Loaded TILED LEVEL :)");
             A_.TILES.createTiledMap(this.levelLoader.mapDataParsed);
         }
         this.startLevel();
     },
-    activateLevelLoader: function() {
+    activateLevelLoader: function () {
         this.levelLoader = new A_.LevelLoader(this.levelToLoad.directoryPrefix);
         A_.levelLoader = this.levelLoader;
         this.levelLoader.loadScripts(this.onScriptsLoaded.bind(this), this.levelToLoad.scripts);
     },
-    onScriptsLoaded: function() {
+    onScriptsLoaded: function () {
         window.console.log("Loaded scripts");
         this.levelLoader.loadMap(this.onMapLoaded.bind(this), this.levelToLoad.map);
     },
-    onMapLoaded: function() {
+    onMapLoaded: function () {
         window.console.log("Loaded map");
         this.levelLoader.loadGraphics(this.onGraphicsLoaded.bind(this), this.levelToLoad.graphics);
     },
-    onGraphicsLoaded: function() {
+    onGraphicsLoaded: function () {
         window.console.log("Loaded graphics");
         this.levelLoader.loadSounds(this.onSoundsLoaded.bind(this), this.levelToLoad.sounds);
     },
-    onSoundsLoaded: function() {
+    onSoundsLoaded: function () {
         window.console.log("Loaded sounds");
         this.onLevelLoaded();
     },
-    createLevelTemplate: function() {
+    createLevelTemplate: function () {
         this.level = new A_.Level();
         A_.level = this.level;
 
@@ -126,7 +126,7 @@ A_.Game = Class.extend({
         else
             this.level.directoryPrefix = "";
     },
-    startLevel: function() {
+    startLevel: function () {
         this.setupCamera();
 
         this.level.setScale(this.level.scale);
@@ -140,10 +140,10 @@ A_.Game = Class.extend({
         this.isRunning = true;
         this.onLevelStarted();
     },
-    onLevelStarted: function() {
+    onLevelStarted: function () {
         window.console.log("Level STARTS...");
     },
-    clearLevel: function() {
+    clearLevel: function () {
         this.collider = null;
         A_.collider = null;
 
@@ -168,12 +168,12 @@ A_.Game = Class.extend({
         this.destroyLevel = false;
     },
     // CAMERA
-    setupCamera: function() {
+    setupCamera: function () {
         this.camera = new A_.CAMERA.Camera(A_.game.renderer.view.width, A_.game.renderer.view.height, this.cameraOptions);
         A_.camera = this.camera;
     },
     // SPRITE CREATION and DESTRUCTION
-    createSprite: function(SpriteClass, layer, x, y, props) {
+    createSprite: function (SpriteClass, layer, x, y, props) {
         if (!SpriteClass)
             return;
 
@@ -190,7 +190,7 @@ A_.Game = Class.extend({
         this.spritesToCreate.push(sprite);
         return sprite;
     },
-    createTile: function(tileLayer, gid, x, y) {
+    createTile: function (tileLayer, gid, x, y) {
         if (_.isString(tileLayer)) {
             tileLayer = A_.level.findLayerByName(tileLayer)
         }
@@ -200,17 +200,17 @@ A_.Game = Class.extend({
         var tile = tileLayer.tilemap.setTile(gid, x, y);
         return tile;
     },
-    createEntities: function(entities) {
+    createEntities: function (entities) {
         if (!entities.length)
             return;
         var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
                 this.level.sprites : this.level.tiles;
-        _.each(entities, function(entity) {
+        _.each(entities, function (entity) {
             levelEntities.push(entity);
         });
         entities.length = 0;
     },
-    destroyEntity: function(entity) {
+    destroyEntity: function (entity) {
         if (entity instanceof A_.SPRITES.Animated) {
             if (!_.contains(this.level.sprites, entity))
                 return;
@@ -230,29 +230,29 @@ A_.Game = Class.extend({
             entity.tilemap.unsetTile(entity.mapPosition.x, entity.mapPosition.y);
         }
     },
-    destroyEntities: function(entities) {
-        _.each(entities, function(entity) {
+    destroyEntities: function (entities) {
+        _.each(entities, function (entity) {
             this.destroyEntity(entity)
         }, this);
         entities.length = 0;
     },
     // TODO: Create a separate js to handle sound
-    createSound: function(props) {
-        _.each(props["urls"], function(url, i, list) {
+    createSound: function (props) {
+        _.each(props["urls"], function (url, i, list) {
             list[i] = "sounds/" + this.level.directoryPrefix + url;
         }, this);
         var sound = new Howl(props);
         this.sounds.push(sound);
         return sound;
     },
-    destroySounds: function() {
-        _.each(this.sounds, function(sound) {
+    destroySounds: function () {
+        _.each(this.sounds, function (sound) {
             sound.unload();
         });
         this.sounds.length = 0;
     },
     // GAME LOOP
-    run: function() {
+    run: function () {
         if (!this.isRunning)
             return;
         var now = new Date().getTime();
@@ -272,19 +272,19 @@ A_.Game = Class.extend({
 
         this.manageLevels();
     },
-    update: function() {
+    update: function () {
         // User-defined global routine hook.
         this.preupdate();
 
         // Active tiles' update
-        _.each(this.level.tiles, function(sprite) {
+        _.each(this.level.tiles, function (sprite) {
             sprite.update();
         });
 
-        _.each(this.level.sprites, function(sprite) {
+        _.each(this.level.sprites, function (sprite) {
             sprite.update();
         });
-        
+
         // Collision handling
 //        _.each(this.collider.collisionSprites, function(sprite) {
 //            sprite.syncCollisionPolygon();
@@ -299,29 +299,29 @@ A_.Game = Class.extend({
         // User-defined global routine hook.
         this.postupdate();
     },
-    preupdate: function() {
+    preupdate: function () {
 
     },
-    postupdate: function() {
+    postupdate: function () {
 
     },
-    manageEntities: function() {
+    manageEntities: function () {
         this.destroyEntities(this.tilesToDestroy);
         this.destroyEntities(this.spritesToDestroy);
         this.createEntities(this.tilesToCreate);
         this.createEntities(this.spritesToCreate);
     },
-    render: function() {
+    render: function () {
         // TODO: Currently only sorting on y axis. Add a generic sort routine
         // based on an arbitrary property.
-        _.each(this.level.spriteLayers, function(layer) {
+        _.each(this.level.spriteLayers, function (layer) {
             if (layer["sort"]) {
                 A_.level.sortLayer(layer);
             }
         });
 
         if (this.debug) {
-            _.each(this.collider.collisionSprites, function(sprite) {
+            _.each(this.collider.collisionSprites, function (sprite) {
                 sprite.drawDebug();
             });
         }
@@ -330,7 +330,7 @@ A_.Game = Class.extend({
 
         this.renderer.render(this.stage);
     },
-    manageLevels: function() {
+    manageLevels: function () {
         if (this.destroyLevel) {
             this.isRunning = false;
             this.clearLevel();

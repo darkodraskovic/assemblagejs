@@ -14,6 +14,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this.force = new SAT.Vector(100, 100);
         this.platform = null;
         this.platformDY = 0;
+        this.collisionEntities = [];
 
         if (this.controlled) {
             A_.INPUT.addMapping("left", A_.KEY.A);
@@ -51,6 +52,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         if (this.tryJump) {
             if (this.platformerState === "grounded") {
                 this.velocity.y = -this.jumpForce;
+                this.jumps = true;
                 this.onJumped();
             }
             this.tryJump = false;
@@ -61,6 +63,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         // STATES
         if (this.velocity.y > this.gravity.y) {
             this.platformerState = "falling";
+            this.jumps = false;
         } else if (this.velocity.y < -this.gravity.y) {
             this.platformerState = "launching";
         }
@@ -81,19 +84,22 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         }
 
         this.platform = null;
+        this.collisionEntities.length = 0;
     },
-    processPlatformerState: function () {        
-        _.each(A_.collider.collisionStatics, function (static) {
-            if (static.collides) {
-                if (this.collidesWithEntityAtOffset(static, 1, 0) || this.collidesWithEntityAtOffset(static, -1, 0)) {
+    processPlatformerState: function () {
+//        _.each(A_.collider.collisionStatics, function (static) {
+        _.each(this.collisionEntities, function (entity) {
+
+            if (entity.collides) {
+                if (this.collidesWithEntityAtOffset(entity, 1, 0) || this.collidesWithEntityAtOffset(entity, -1, 0)) {
                     if (this.response.overlap && !this.response.overlapN.y) {
-                        this.velocity.x = 0;
+//                        this.velocity.x = 0;
                         this.onWall();
                         this.setXRelative(-this.response.overlapN.x)
                     }
                 }
-                if (this.collidesWithEntityAtOffset(static, 0, 1)) {
-                    if (this.response.overlap && !(this.platformerState === "launching")) {
+                if (this.collidesWithEntityAtOffset(entity, 0, 1)) {
+                    if (this.response.overlap && this.platformerState !== "launching") {
                         if (this.platformerState !== "grounded") {
                             this.onGrounded();
                         }
@@ -101,7 +107,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                         this.velocity.y = 0;
                     }
                 }
-                if (this.collidesWithEntityAtOffset(static, 0, -1)) {
+                if (this.collidesWithEntityAtOffset(entity, 0, -1)) {
                     if (this.response.overlap && this.response.overlapN.y <= 0) {
                         this.onCeiling();
                         if (this.velocity.y < 0) {
@@ -158,7 +164,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
-        
+
+        this.collisionEntities.push(other);
+
         this.processSlope(response);
 
         if (response.overlap) {
