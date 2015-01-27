@@ -1,5 +1,5 @@
 // CLASSES
-var Anime = A_.SPRITES.Topdown.extend({
+var AnimeSkorpio = A_.SPRITES.Topdown.extend({
     frame: {w: 64, h: 64},
 //    collision: {response: "passive", offset: {x: 0, y: 6}, size: {w: 26, h: 48}},
     collisionResponse: "passive", 
@@ -54,7 +54,7 @@ var Anime = A_.SPRITES.Topdown.extend({
 
 //Anime.inject(A_.MODULES.Topdown);
 
-var Player = Anime.extend({
+var PlayerSkorpio = AnimeSkorpio.extend({
     animSheet: "PlayerComplete.png",
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
@@ -63,7 +63,7 @@ var Player = Anime.extend({
     init: function(parent, x, y, props) {
         this.collisionResponse = "active";
         this._super(parent, x, y, props);
-        this.maxVelocity = new SAT.Vector(128, 128);
+        this.maxVelocity = new SAT.Vector(256, 256);
 //        this.collision = A_.UTILS.copy(this.collision);
         
         this.rifle = A_.game.createSprite(Rifle, this.layer,
@@ -83,7 +83,9 @@ var Player = Anime.extend({
             this.facing = "left";
         } else
             this.facing = "up";
-
+        
+        window.console.log("updt skorpio");
+        
         if (A_.level.leftpressed) {
             this.shootBullet();
         }
@@ -104,7 +106,7 @@ var Player = Anime.extend({
     }
 });
 
-var Agent = Anime.extend({
+var Agent = AnimeSkorpio.extend({
     animSheet: "AgentComplete.png",
     timer: 0,
     collisionType: A_.COLLISION.Type.ENEMY,
@@ -308,7 +310,7 @@ var LaserTip = A_.SPRITES.Colliding.extend({
                 this.timer -= A_.game.dt;
             }
             if (this.timer < 0) {
-                A_.game.createSprite(Explosion, A_.level.findLayerByName("Effects"),
+                A_.game.createSprite(ExplosionSkorpio, A_.level.findLayerByName("Effects"),
                         other.getX(), other.getY());
                 other.destroy();
                 this.timer = null;
@@ -357,7 +359,7 @@ var LaserFire = A_.SPRITES.Animated.extend({
 });
 
 
-var Explosion = A_.SPRITES.Animated.extend({
+var ExplosionSkorpio = A_.SPRITES.Animated.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
     init: function(parent, x, y, props) {
@@ -393,17 +395,17 @@ var Computer = A_.SPRITES.Colliding.extend({
 })
 
 // GAME LOGIC
-A_.game.preupdate = function() {
-};
-
-A_.game.postupdate = function() {
-    if (!A_.level.findSpriteByClass(Agent) && !A_.level.findSpriteByClass(Computer)) {
-        if (this.level.name === "level1") {
-            A_.game.loadTiledLevel(level2);
-        } else {
-            A_.game.loadTiledLevel(level1);
-        }
-    }
-
-};
+//A_.game.preupdate = function() {
+//};
+//
+//A_.game.postupdate = function() {
+//    if (!A_.level.findSpriteByClass(Agent) && !A_.level.findSpriteByClass(Computer)) {
+//        if (this.level.name === "level1") {
+//            A_.game.loadLevel(level2);
+//        } else {
+//            A_.game.loadLevel(level1);
+//        }
+//    }
+//
+//};
 

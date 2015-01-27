@@ -25,7 +25,8 @@ A_.TILES.Tile.inject({
     },
     update: function () {
         this._super();
-        if (this.leftpressed && A_.player.mode === "building") {
+//        if (this.leftpressed && A_.player.mode === "building") {
+        if (this.leftpressed) {
             this.toggleTurned();
             A_.game.createSound({
                 urls: ['e.wav'],
@@ -35,7 +36,7 @@ A_.TILES.Tile.inject({
         if (A_.level.rightdown) {
             var mpl = A_.INPUT.mousePosition.level;
             if (this.containsPoint(mpl.x, mpl.y)) {
-                A_.game.createSprite(Explosion, A_.level.findLayerByName("Thrus"),
+                A_.game.createSprite(ExplosionPlatformer, A_.level.findLayerByName("Thrus"),
                         this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
                 this.destroy();
             }
@@ -43,7 +44,7 @@ A_.TILES.Tile.inject({
     }
 });
 
-var Anime = A_.SPRITES.Platformer.extend({
+var AnimePlatformer = A_.SPRITES.Platformer.extend({
     frame: {w: 32, h: 64},
     bounded: false,
     wrap: true,
@@ -108,7 +109,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
 
 
 // CLASSES
-var Player = Anime.extend({
+var PlayerPlatformer = AnimePlatformer.extend({
     animSheet: "player.png",
     controlled: true,
     followee: true,
@@ -118,7 +119,8 @@ var Player = Anime.extend({
         A_.INPUT.addMapping("jetpack", A_.KEY.SPACE);
         A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
         this._super();
-        this.thrus = A_.level.findLayerByName("Thrus");
+//        this.thrus = A_.level.findLayerByName("Thrus");
+        this.thrus = this.level.findLayerByName("Thrus");
     },
     onJumped: function () {
         this._super();
@@ -143,6 +145,7 @@ var Player = Anime.extend({
         window.console.log("ceiling");
     },
     update: function () {
+        window.console.log("updt platformer");
         if (A_.INPUT.pressed["toggleMode"]) {
             this.toggleMode();
         }
@@ -162,7 +165,7 @@ var Player = Anime.extend({
             ball.velocity.y = ball.maxSpeed * Math.sin(angle);
         }
         if (A_.INPUT.pressed["jetpack"]) {
-//            this.fireJetpack();
+            this.fireJetpack();
         }
 
         this._super();
@@ -180,7 +183,7 @@ var Player = Anime.extend({
     }
 });
 
-var Undead = Anime.extend({
+var Undead = AnimePlatformer.extend({
     animSheet: "undead.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -286,7 +289,7 @@ var Platform = A_.SPRITES.Colliding.extend({
     }
 });
 
-var Explosion = A_.SPRITES.Animated.extend({
+var ExplosionPlatformer = A_.SPRITES.Animated.extend({
     animSheet: "Explosion.png",
     frame: {w: 128, h: 128},
     init: function (parent, x, y, props) {

@@ -1,7 +1,8 @@
-A_.TILES.createTiledMap = function(mapData) {
+A_.TILES.createTiledMap = function (mapData, level) {
     var game = A_.game;
-    var level = A_.level;
-    var collider = A_.collider;
+//    var level = A_.level;
+    var level = level;
+    var collider = level.collider;
 
     level.width = mapData["width"] * mapData["tilewidth"];
     level.height = mapData["height"] * mapData["tileheight"];
@@ -10,7 +11,7 @@ A_.TILES.createTiledMap = function(mapData) {
     // The type of the collision mask polygon has to correspond to the type,
     // ie. to the class of the sprite whose mask it is.
     var layersData = mapData["layers"];
-    var collisionMasksLayer = _.find(layersData, function(layerData) {
+    var collisionMasksLayer = _.find(layersData, function (layerData) {
         return layerData["name"] === "CollisionMasks";
     });
 
@@ -25,7 +26,7 @@ A_.TILES.createTiledMap = function(mapData) {
     for (i = 0; i < layersData.length; i++) {
         var layer = level.createEmptyLayer();
         var layerData = layersData[i];
-        
+
         for (var prop in layerData) {
             layer[prop] = layerData[prop];
         }
@@ -35,7 +36,7 @@ A_.TILES.createTiledMap = function(mapData) {
             var customLayerProps = layerData["properties"];
             for (var prop in customLayerProps) {
                 layer[prop] = eval(customLayerProps[prop]);
-            }            
+            }
         }
 
         // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld.
@@ -54,7 +55,7 @@ A_.TILES.createTiledMap = function(mapData) {
             // a tilemap. We'll bake the tilemap later if needed.
             var baked = layer.baked;
             layer.baked = false;
-            
+
             // This layer property must be set by user.
             var img = layer["image"];
             var tileset;
@@ -84,7 +85,7 @@ A_.TILES.createTiledMap = function(mapData) {
             }
             for (var j = 0; j < tileData.length; j++) {
                 if (tileData[j] !== 0) {
-                    var gid  = tileData[j] - tileset.firstgid + 1;
+                    var gid = tileData[j] - tileset.firstgid + 1;
                     var mapX = j % mapData["width"];
                     var mapY = Math.floor(j / mapData["width"]);
                     tileData2D[mapX][mapY] = gid;
@@ -116,6 +117,7 @@ A_.TILES.createTiledMap = function(mapData) {
 
                 args["name"] = oData["name"];
                 args["type"] = oData["type"];
+//                args.level = level;
 
                 // POLY || RECT
                 if (oData.polygon || oData.type === "Rectangle") {
@@ -130,29 +132,32 @@ A_.TILES.createTiledMap = function(mapData) {
 
                     } else {
 //                        args.collision.size = {w: oData["width"], h: oData["height"]};
-                        args.collisionW = oData["width"]; 
-                        args.collisionH = oData["height"]; 
+                        args.collisionW = oData["width"];
+                        args.collisionH = oData["height"];
                         var o = game.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                         o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
 //                    A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
                 }
                 else {
-                    var colPolyData = _.find(collider.collisionMasks, function(mask) {
+                    var colPolyData = _.find(collider.collisionMasks, function (mask) {
                         return mask.type === args.collisionMask;
                     });
                     if (colPolyData) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData);
                         args.collisionPolygon = collisionPolygon;
-                    } 
+                    }
 //                    else {
 //                        collisionPolygon = null;
 //                    }
+
+//                    window.console.log(args.level);
                     var o = game.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(o.getWidth() / 2, -o.getHeight() / 2);
 
                     if (o.followee) {
-                        game.cameraOptions.followee = o;
+//                        game.cameraOptions.followee = o;
+                        level.camera.followee = o;
                     }
                     if (oData["type"] === "Player") {
                         A_.player = o;

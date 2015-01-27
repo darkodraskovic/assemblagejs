@@ -88,7 +88,8 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.setCollisionDebug();
     },
     setCollisionResponse: function () {
-        var collider = A_.collider;
+//        var collider = A_.collider;
+        var collider = this.level.collider;
 
         if (!this.collisionResponse) {
             this.collisionResponse = "sensor";
@@ -109,16 +110,18 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     setCollisionDebug: function () {
         if (this.drawDebugGraphics && A_.game.debug) {
             this.debugGraphics = new PIXI.Graphics();
-            A_.level.debugLayer.addChild(this.debugGraphics);
+//            A_.level.debugLayer.addChild(this.debugGraphics);
+            this.level.debugLayer.addChild(this.debugGraphics);
         }
     },
     removeCollision: function () {
         this.removeCollisionResponse();
         this.removeCollisionDebug();
-        this.destroyCollisionPolygon(this.collisionPolygon)
+        this.destroyCollisionPolygon(this.collisionPolygon);
     },
     removeCollisionResponse: function () {
-        var collider = A_.collider;
+//        var collider = A_.collider;
+        var collider = this.level.collider;
         if (_.contains(collider.collisionSprites, this)) {
             collider.collisionSprites.splice(collider.collisionSprites.indexOf(this), 1);
         }

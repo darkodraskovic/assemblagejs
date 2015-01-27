@@ -1,9 +1,9 @@
 A_.TILES.Tilemap = Class.extend({
-    init: function(layer, img, tileW, tileH) {
+    init: function (layer, img, tileW, tileH) {
         this.layer = layer;
         this.baked = false;
 
-        this.img = "graphics/" + A_.level.directoryPrefix + img;
+        this.img = "graphics/" + this.layer.level.directoryPrefix + img;
         this.baseTexture = new PIXI.BaseTexture.fromImage(this.img, PIXI.scaleModes.LINEAR);
         this.imgW = this.baseTexture.width;
         this.imgH = this.baseTexture.height;
@@ -16,7 +16,7 @@ A_.TILES.Tilemap = Class.extend({
         this.tiles = [];
 
     },
-    populateTilelayer: function(layerData) {
+    populateTilelayer: function (layerData) {
         if (this.layer.collisionResponse) {
 //            this.collision = {};
 //            this.collision.size = {};
@@ -52,45 +52,45 @@ A_.TILES.Tilemap = Class.extend({
 //        this.applyLayerAttributesToTiles();
         this.layer.tilemap = this;
     },
-    applyLayerAttributesToTiles: function() {
+    applyLayerAttributesToTiles: function () {
         if (this.collisionResponse) {
             var w = this.tileW;
             var h = this.tileH;
-            _.each(this.tiles, function(tileCol) {
-                _.each(tileCol, function(tile) {
+            _.each(this.tiles, function (tileCol) {
+                _.each(tileCol, function (tile) {
                     if (tile)
                         tile.setupCollision(w, h);
                 });
             });
         }
         if (this.layer.mouseReactive) {
-            _.each(this.tiles, function(tileCol) {
-                _.each(tileCol, function(tile) {
+            _.each(this.tiles, function (tileCol) {
+                _.each(tileCol, function (tile) {
                     if (tile)
-//                        A_.INPUT.addMouseReacivity(tile);
                         tile.initMouseReactivity();
                     tile.setmouseReactivity(true);
                 });
             });
         }
         if (this.layer.active) {
-            _.each(this.tiles, function(tileCol) {
-                _.each(tileCol, function(tile) {
+            var level = this.layer.level;
+            _.each(this.tiles, function (tileCol) {
+                _.each(tileCol, function (tile) {
                     if (tile)
-                        A_.level.tiles.push(tile);
+                        level.tiles.push(tile);
                 });
             });
         }
 
     },
-    getTile: function(x, y) {
+    getTile: function (x, y) {
         if (x < 0 || x >= this.mapW)
             return;
         if (y < 0 || y >= this.mapH)
             return;
         return this.tiles[x][y];
     },
-    setTile: function(gid, x, y) {
+    setTile: function (gid, x, y) {
         if (this.layer.baked)
             return;
         if (!_.isNumber(gid) || !_.isNumber(x) || !_.isNumber(y))
@@ -108,12 +108,21 @@ A_.TILES.Tilemap = Class.extend({
         }
 
         var tile = new A_.TILES.Tile(gid, x, y, this);
+
+        if (this.collisionResponse) {
+            tile.initCollision();
+            if (this.collisionResponse === "sensor") {
+                this.layer.level.collider.collisionDynamics.push(tile);
+            }
+            else {
+                this.layer.level.collider.collisionStatics.push(tile);
+            }
+        }
+
         this.setTileInMap(tile, x, y);
         var worldCoords = this.mapToWorld(x, y);
         this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
 
-//        if (this.collision)
-//            tile.setupCollision(this.tileW, this.tileH);
         if (this.layer.mouseReactive) {
             tile.initMouseReactivity();
             tile.setMouseReactivity(true);
@@ -123,50 +132,52 @@ A_.TILES.Tilemap = Class.extend({
 
         return tile;
     },
-    setTileInMap: function(tile, x, y) {
+    setTileInMap: function (tile, x, y) {
         this.tiles[x][y] = tile;
     },
-    setTileInWorld: function(tile, x, y) {
+    setTileInWorld: function (tile, x, y) {
         tile.moveToLayer(this.layer);
         tile.setPosition(x, y);
     },
-    unsetTile: function(x, y) {
+    unsetTile: function (x, y) {
         if (this.layer.baked)
             return;
 
         if (this.tiles[x] && this.tiles[x][y]) {
             var tile = this.tiles[x][y];
             var sprite = this.tiles[x][y].sprite;
-            
+
             // REMOVE FROM
             // Pixi
             this.layer.removeChild(sprite);
+
+            var level = this.layer.level;
             // Collisions
             if (this.collisionResponse) {
                 var ind;
 
-                ind = A_.collider.collisionStatics.indexOf(tile);
+                ind = level.collider.collisionStatics.indexOf(tile);
                 if (ind > -1)
-                    A_.collider.collisionStatics.splice(ind, 1);
+                    level.collider.collisionStatics.splice(ind, 1);
 
-                ind = A_.collider.collisionDynamics.indexOf(tile);
+                ind = level.collider.collisionDynamics.indexOf(tile);
                 if (ind > -1)
-                    A_.collider.collisionDynamics.splice(ind, 1);
+                    level.collider.collisionDynamics.splice(ind, 1);
             }
             // Active tiles
             if (this.layer.active) {
-                ind = A_.level.tiles.indexOf(tile);
-                A_.level.tiles.splice(ind, 1);
+                ind = level.tiles.indexOf(tile);
+                level.tiles.splice(ind, 1);
             }
             // Tilemap
             this.tiles[x][y] = null;
         }
     },
     // UTILS
-    worldToMap: function(x, y) {
+    worldToMap: function (x, y) {
         return [Math.round(x / this.tileW), Math.round(y / this.tileH)];
     },
-    mapToWorld: function(x, y) {
+    mapToWorld: function (x, y) {
         return [x * this.tileW, y * this.tileH];
     }
 });

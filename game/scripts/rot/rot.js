@@ -51,7 +51,7 @@ function createRoguelikeMap() {
 
         if (x * y >= (this.mapDataFloors.length - 1) * (this.mapDataFloors[0].length - 1)) {
             this.createRotLayers();
-            window.console.log("created");
+//            window.console.log("created");
         }
     };
     map.create(userCallback.bind(this));

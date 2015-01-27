@@ -63,7 +63,7 @@
                      "collisionMask":"\"Player\""
                     },
                  "rotation":0,
-                 "type":"Player",
+                 "type":"PlayerSkorpio",
                  "visible":true,
                  "width":1,
                  "x":152,

@@ -99,7 +99,7 @@
                      "collisionMask":"\"Player\""
                     },
                  "rotation":0,
-                 "type":"Player",
+                 "type":"PlayerPlatformer",
                  "visible":true,
                  "width":0,
                  "x":1112,

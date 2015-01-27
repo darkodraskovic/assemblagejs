@@ -7,9 +7,6 @@ A_.TILES.Tile = Class.extend({
         this.tilemap = tilemap;
         this.containedPoint = new SAT.Vector(0, 0);
         this.createSprite();
-        if (this.tilemap.collisionResponse) {
-            this.initCollision();
-        }
     },
     createSprite: function () {
         var frameInd = this.gid - 1;
@@ -29,14 +26,6 @@ A_.TILES.Tile = Class.extend({
         collisionPolygon.h = box.h;
         collisionPolygon.calcBounds();
         this.collisionPolygon = collisionPolygon;
-        
-        this.collisionResponse = this.tilemap.collisionResponse;
-        if (this.collisionResponse === "sensor") {
-            A_.collider.collisionDynamics.push(this);
-        }
-        else {
-            A_.collider.collisionStatics.push(this);
-        }
     },
     moveToLayer: function (layer) {
         layer.addChild(this.sprite);
