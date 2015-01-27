@@ -101,15 +101,15 @@ A_.Game = Class.extend({
         if (level.data.type === "tiled") {
             window.console.log("Created TILED LEVEL :)");
             A_.TILES.createTiledMap(this.mapsData[level.name], level);
+            this.createEntities(this.spritesToCreate, level);
+            this.createEntities(this.tilesToCreate, level);
         }
         else {
             window.console.log("Created GENERIC LEVEL :)");
             level.createDummyLayer();
         }
 
-        this.createEntities(this.spritesToCreate, level);
-        this.createEntities(this.tilesToCreate, level);
-        
+
         return level;
     },
     activateLevel: function (level) {
@@ -125,7 +125,7 @@ A_.Game = Class.extend({
 
         this.stage.addChild(this.level.container);
         window.console.log("Level STARTS...");
-        
+
         this.start();
     },
     deactivateLevel: function () {
@@ -144,6 +144,18 @@ A_.Game = Class.extend({
 //        delete(A_.game.collider);
 //        delete(A_.game.camera);
 //        delete(A_.game.levelLoader);
+    },
+    destroyLevel: function (level) {
+//        delete A_.game.mapsData[level.name];
+        delete this.mapsData[level.name];
+
+//        if (this.stage.getChildIndex(level.container) >= 0)
+        this.stage.removeChild(level.container);
+
+        this.destroySounds(level);
+
+//        delete A_.game.levels[level];
+        delete this.levels[level.name];
     },
     // SPRITE CREATION and DESTRUCTION
     createSprite: function (SpriteClass, layer, x, y, props) {
@@ -176,10 +188,10 @@ A_.Game = Class.extend({
     createEntities: function (entities, level) {
         if (!entities.length)
             return;
-        
+
         if (!level)
             level = this.level;
-        
+
         var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
                 level.sprites : level.tiles;
         _.each(entities, function (entity) {
@@ -215,15 +227,16 @@ A_.Game = Class.extend({
     },
     // TODO: Create a separate js to handle sound
     createSound: function (props) {
+        var level = props.parent.level;
         _.each(props["urls"], function (url, i, list) {
-            list[i] = "sounds/" + this.level.directoryPrefix + url;
+            list[i] = "sounds/" + level.directoryPrefix + url;
         }, this);
         var sound = new Howl(props);
-        this.level.sounds.push(sound);
+        level.sounds.push(sound);
         return sound;
     },
-    destroySounds: function () {
-        _.each(this.level.sounds, function (sound) {
+    destroySounds: function (level) {
+        _.each(level.sounds, function (sound) {
             sound.unload();
         });
         this.sounds.length = 0;

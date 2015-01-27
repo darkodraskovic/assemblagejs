@@ -30,9 +30,11 @@ var mapDataWalls = [];
 var player;
 
 // PROCEDURES
-function createRoguelikeMap() {
-    var mapW = A_.level.width / tileW;
-    var mapH = A_.level.height / tileH;
+function createRoguelikeMap(level) {
+    level.width = 960;
+    level.height = 960;
+    var mapW = level.width / tileW;
+    var mapH = level.height / tileH;
     for (var i = 0; i < mapW; i++) {
         mapDataFloors[i] = [];
         mapDataWalls[i] = [];
@@ -50,28 +52,24 @@ function createRoguelikeMap() {
             this.mapDataWalls[x][y] = 43;
 
         if (x * y >= (this.mapDataFloors.length - 1) * (this.mapDataFloors[0].length - 1)) {
-            this.createRotLayers();
+            this.createRotLayers(level);
 //            window.console.log("created");
         }
     };
     map.create(userCallback.bind(this));
 }
-function createRotLayers() {
-    var layerFloors = A_.level.createTileLayer("Floor", "tilemap.png", tileW, tileH);
+function createRotLayers(level) {
+    var layerFloors = level.createTileLayer("Floor", "tilemap.png", tileW, tileH);
     layerFloors.tilemap.populateTilelayer(mapDataFloors);
-    var layerWalls = A_.level.createTileLayer("Walls", "tilemap.png", tileW, tileH);
+    var layerWalls = level.createTileLayer("Walls", "tilemap.png", tileW, tileH);
     layerWalls.collisionResponse = "static";    
     layerWalls.tilemap.populateTilelayer(mapDataWalls);
 
 
-    var layer = A_.level.createSpriteLayer();
+    var layer = level.createSpriteLayer();
     player = A_.game.createSprite(Ball, layer, 256, 256);
-    A_.game.camera.followee = player;
+    level.camera.followee = player;
+    
+    A_.game.activateLevel(level);
 }
 
-A_.game.onLevelStarted = function () {
-    this.level.width = 960;
-    this.level.height = 960;
-
-    createRoguelikeMap();
-}

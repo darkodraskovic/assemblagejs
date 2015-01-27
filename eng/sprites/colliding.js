@@ -33,8 +33,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         var collisionPolygon;
 
         if (!polygon) {
-//            offsetX -= w / 2;
-//            offsetY -= h / 2;
             offsetX -= w * this.getOrigin().x;
             offsetY -= h * this.getOrigin().y;
             var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
@@ -64,8 +62,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 //        if (this.interactive())
 //            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
-//        collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
-
         this.collisionPolygons.push(collisionPolygon);
 
         delete this.collisionW;
@@ -88,7 +84,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.setCollisionDebug();
     },
     setCollisionResponse: function () {
-//        var collider = A_.collider;
         var collider = this.level.collider;
 
         if (!this.collisionResponse) {
@@ -109,9 +104,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     },
     setCollisionDebug: function () {
         if (this.drawDebugGraphics && A_.game.debug) {
+            this.collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(this.collisionPolygon, false);
             this.debugGraphics = new PIXI.Graphics();
-//            A_.level.debugLayer.addChild(this.debugGraphics);
             this.level.debugLayer.addChild(this.debugGraphics);
+            A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon);
         }
     },
     removeCollision: function () {
@@ -134,15 +130,19 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     },
     removeCollisionDebug: function () {
         if (this.debugGraphics) {
-            A_.level.debugLayer.removeChild(this.debugGraphics);
+            this.level.debugLayer.removeChild(this.debugGraphics);
             this.debugGraphics = null;
         }
     },
     drawDebug: function () {
+        // Update debug transform
         var debugGraphics = this.debugGraphics;
-        if (this.drawDebugGraphics && debugGraphics) {
-            debugGraphics.clear();
-            A_.POLYGON.Utils.drawSATPolygon(debugGraphics, this.collisionPolygon);
+        if (debugGraphics) {
+            var colPol = this.collisionPolygon;
+            debugGraphics.position.x = colPol.pos.x;
+            debugGraphics.position.y = colPol.pos.y;
+            debugGraphics.rotation = colPol.angle;
+            debugGraphics.scale = colPol.scale;
         }
     },
     collideWithStatic: function (other, response) {
@@ -176,6 +176,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._super(x, y);
         this.collisionPolygon.pos.x = x;
         this.collisionPolygon.pos.y = y;
+
 //        this.collisionPolygon.pos.x = this.getPositionLevel().x;
 //        this.collisionPolygon.pos.y = this.getPositionLevel().y;
 
@@ -222,6 +223,11 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         var delta = this._super(x, y);
         this.collisionPolygon.offset.x += delta[0];
         this.collisionPolygon.offset.y += delta[1];
+        
+        if (this.debugGraphics) {
+            this.debugGraphics.pivot.x -= delta[0] / this.collisionPolygon.scale.x;
+            this.debugGraphics.pivot.y -= delta[1] / this.collisionPolygon.scale.y;
+        }
         //            colPol.recalc();
     },
 //    syncCollisionPolygon: function() {

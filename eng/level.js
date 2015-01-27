@@ -49,6 +49,9 @@ A_.Level = Class.extend({
         if (!props.height) {
             props.height = this.height;
         }
+        if (!props.level) {
+            props.level = this;
+        }
         layer.addChild(new A_.SCENERY.TiledSprite(props).sprite);
 
         this.addImageLayer(layer);

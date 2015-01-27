@@ -41,6 +41,7 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
         else {
             if (!this.groaned) {
                 var sound = A_.game.createSound({
+                    parent: this,
                     urls: ['grunt.wav'],
                     volume: 0.5
                 })
@@ -84,7 +85,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         } else
             this.facing = "up";
         
-        window.console.log("updt skorpio");
+//        window.console.log("updt skorpio");
         
         if (A_.level.leftpressed) {
             this.shootBullet();
@@ -201,6 +202,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.moveForward = true;
         this.bounded = false;
         A_.game.createSound({
+            parent: this,
             urls: ['gunshot.mp3'],
             volume: 0.5
         }).play();
@@ -250,6 +252,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
                 {collisionW: 4, collisionH: 4});
         this.laserTip.laser = this;
         this.sound = A_.game.createSound({
+            parent: this,
             urls: ['laser-beam.mp3'],
             loop: true,
             volume: 0.4
@@ -333,6 +336,7 @@ var LaserFire = A_.SPRITES.Animated.extend({
         this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
         this.sound = A_.game.createSound({
+            parent: this,
             urls: ['fire.wav'],
             loop: true,
             volume: 0.3
@@ -373,6 +377,7 @@ var ExplosionSkorpio = A_.SPRITES.Animated.extend({
             that.destroy();
         };
         A_.game.createSound({
+            parent: this,
             urls: ['explosion.mp3'],
             volume: 0.6
         }).play();

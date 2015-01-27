@@ -123,7 +123,6 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 if (oData.polygon || oData.type === "Rectangle") {
 //                    args.collision = {};
 //                    args.collision.response = args.collisionResponse;
-
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
                         args.collisionPolygon = collisionPolygon;

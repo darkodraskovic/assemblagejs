@@ -122,30 +122,22 @@ A_.POLYGON.Utils.createSATPolygonFromTiled = function (oData) {
         return new SAT.Vector(vertex.x, vertex.y)
     });
 
-    var collisionPolygon = new SAT.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
-    collisionPolygon.calcSize();
+    var SATPolygon = new SAT.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
+    SATPolygon.calcSize();
 
-    var offsetX = (collisionPolygon.minX + collisionPolygon.w / 2);
-    var offsetY = (collisionPolygon.minY + collisionPolygon.h / 2);
+    var offsetX = (SATPolygon.minX + SATPolygon.w / 2);
+    var offsetY = (SATPolygon.minY + SATPolygon.h / 2);
     var offset = new SAT.Vector(-offsetX, -offsetY);
-    collisionPolygon.setOffset(offset);
+    SATPolygon.setOffset(offset);
 
-    return collisionPolygon;
+    return SATPolygon;
 };
 
 A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon, translated) {
-    var calcPoints;
-    if (translated) {
-        calcPoints = _.map(SATPolygon.calcPoints,
-                function (calcPoint) {
-                    return calcPoint.clone().add(new SAT.Vector(SATPolygon.pos.x, SATPolygon.pos.y));
-                });
-    } else {
-        calcPoints = _.map(SATPolygon.calcPoints,
-                function (calcPoint) {
-                    return calcPoint.clone();
-                });
-    }
+    var calcPoints = _.map(SATPolygon.calcPoints,
+            function (calcPoint) {
+                return calcPoint.clone();
+            });
 
     var calcPointsArr = _.reduce(calcPoints, function (points, vector) {
         return points.concat(_.reduce(vector, function (coords, point) {
@@ -154,25 +146,21 @@ A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon, translated) {
     }, []);
     calcPointsArr[calcPointsArr.length] = calcPointsArr[0];
     calcPointsArr[calcPointsArr.length] = calcPointsArr[1];
+
     return new PIXI.Polygon(calcPointsArr);
 };
 
-A_.POLYGON.Utils.drawSATPolygon = function (graphics, polygon) {
+A_.POLYGON.Utils.drawSATPolygon = function (graphics, SATPolygon) {
     var calcPointsArr = [];
-    if (polygon.baked) {
-        _.each(polygon.baked.points, function (point, i) {
-            if (i % 2 === 0) {
-                calcPointsArr[i] = point + polygon.pos.x;
-            } else {
-                calcPointsArr[i] = point + polygon.pos.y;
-            }
+    if (SATPolygon.baked) {
+        _.each(SATPolygon.baked.points, function (point, i) {
+            calcPointsArr[i] = point;
         });
     } else {
-        calcPointsArr = (this.SATPolygonToPIXIPolygon(polygon, true)).points;
+        calcPointsArr = (this.SATPolygonToPIXIPolygon(SATPolygon, true)).points;
     }
 
     graphics.lineStyle(2, 0xff0000);
-
     graphics.drawPolygon(calcPointsArr);
     graphics.endFill();
 };

@@ -75,6 +75,7 @@ var Laser = A_.SPRITES.Animated.extend({
         this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
         this.sound = A_.game.createSound({
+            parent: this,
             urls: ['laser-beam.mp3'],
             loop: true,
             volume: 0.75
@@ -139,6 +140,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.maxSpeed = 1200;
         this.bounded = false;
         A_.game.createSound({
+            parent: this,
             urls: ['bullet.wav'],
             volume: 0.75
         }).play();
@@ -167,7 +169,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
 var Rotor = A_.SPRITES.Kinematic.extend({
     animSheet: "rotor.png",
     frame: {w: 45, h: 45},
-    collisionResponse: "static",
+    collisionResponse: "passive",
     angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -192,6 +194,7 @@ var Explosion = A_.SPRITES.Animated.extend({
         };
         
         A_.game.createSound({
+            parent: this,
             urls: ['explosion.mp3'],
             volume: 0.2
         }).play();
@@ -203,21 +206,25 @@ var player;
 var numRotors = 40;
 
 // PROCEDURES
-A_.game.onLevelStarted = function () {
-    this.level.width = 2048;
-    this.level.height = 2048;
+//A_.game.onLevelStarted = function () {
+populateLevel = function (level) {
+    level.width = 2048;
+    level.height = 2048;
 
-    var layer = this.level.createImageLayer("Starfield", {image: "starfield.png"});
+    var layer = level.createImageLayer("Starfield", {image: "starfield.png"});
     layer.parallax = 10;
 
-    var layer = this.level.createImageLayer("Nebula", {image: "nebula.png"});
+    layer = level.createImageLayer("Nebula", {image: "nebula.png"});
     layer.parallax = 20;
 
-    var spriteLayer = this.level.createSpriteLayer("Sprites");
-    this.level.createSpriteLayer("Effects");
+    var spriteLayer = level.createSpriteLayer("Sprites");
+    level.createSpriteLayer("Effects");
+    
+    window.console.log("created FARER levels");
 
-    player = this.camera.followee = this.createSprite(Player, spriteLayer, this.level.width / 2, this.level.height / 2);
+    player = level.camera.followee = A_.game.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
     for (var i = 0; i < numRotors; i++) {
-        this.createSprite(Rotor, spriteLayer, _.random(0, this.level.width), _.random(0, this.level.height));
+        A_.game.createSprite(Rotor, spriteLayer, _.random(0, level.width), _.random(0, level.height));
     }
 };
+
