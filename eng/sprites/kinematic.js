@@ -114,8 +114,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     collideWithDynamic: function (other, response) {
         this._super(other, response);
-        
-        if (!response.overlap )
+
+        if (!response.overlap)
             return;
 
         var otherResponse = other.collisionResponse;
@@ -159,8 +159,12 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
                 this.setPositionRelative(sign * response.overlapV.x * velPercentX,
                         sign * response.overlapV.y * velPercentY);
+                // REVISION: should every sprite resolve by itself the collision?
+                // If yes, then comment or delete next lines.
                 other.setPositionRelative(-sign * response.overlapV.x * (1 - velPercentX),
                         -sign * response.overlapV.y * (1 - velPercentY));
+                        
+                this.synchCollisionPolygon();
             }
         }
     },

@@ -299,15 +299,16 @@ A_.Game = Class.extend({
         });
 
         // Collision handling
-//        _.each(this.collider.collisionSprites, function(sprite) {
-//            sprite.syncCollisionPolygon();
-//        });
+        _.each(this.collider.collisionSprites, function(sprite) {
+            sprite.synchCollisionPolygon();
+        });
 
         this.collider.processCollisions();
 
 //        _.each(this.collider.collisionSprites, function(sprite) {
-//            sprite.syncSprite();
+//            sprite.syncCollisionPolygon();
 //        });
+
     },
     manageEntities: function () {
         this.destroyEntities(this.tilesToDestroy);

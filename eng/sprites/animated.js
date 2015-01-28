@@ -530,6 +530,7 @@ A_.SPRITES.Animated = Class.extend({
     },
     // CREATION/DESTRUCTION & UPDATE
     update: function () {        
+        
         // TODO: Refactor to work with an arbitrary origin.
         if (!this.container) {
             var x = this.getX();

@@ -86,7 +86,8 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                     if (this.response.overlap && !this.response.overlapN.y) {
 //                        this.velocity.x = 0;
                         this.onWall();
-                        this.setXRelative(-this.response.overlapN.x)
+                        this.setXRelative(-this.response.overlapN.x);
+                        this.synchCollisionPolygon();
                     }
                 }
                 if (this.collidesWithEntityAtOffset(entity, 0, 1)) {
@@ -105,6 +106,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
                             this.velocity.y = 0;
                         }
                         this.setYRelative(1);
+                        this.synchCollisionPolygon();
                     }
                 }
             }
@@ -178,7 +180,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             this.movingPlatform = other;
             this.platformDX = other.getX() - other.prevX;
             this.platformDY = other.getY() - other.prevY;
+            
             this.setXRelative(this.platformDX);
+            this.synchCollisionPolygon();
         }
     },
     processSlope: function (response) {

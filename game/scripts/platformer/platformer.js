@@ -172,6 +172,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
         }
 
         this._super();
+//        window.console.log(this.velocity.y);
 //        window.console.log(this.platformerState);
     },
     fireJetpack: function () {
@@ -184,7 +185,13 @@ var PlayerPlatformer = AnimePlatformer.extend({
             });
             this.jetpackSound.play();
         }
-    }
+    },
+    collideWithStatic: function (other, response) {
+        this._super(other, response);
+//        window.console.log(response.overlapN.y);
+//        window.console.log(response.overlap);
+//        window.console.log(new Date().getTime());
+    },
 });
 
 var Undead = AnimePlatformer.extend({

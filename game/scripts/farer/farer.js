@@ -22,14 +22,6 @@ var Player = A_.SPRITES.Kinematic.extend({
         this.spritePoint("bullet2", 18, 12);
     },
     update: function () {
-        var rot = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
-        this.setRotation(rot);
-        var speedSign = 0;
-        if (this.getRotation() < 0)
-            speedSign = -1;
-        else
-            speedSign = 1;
-
         if (A_.INPUT.down["up"]) {
             this.movementAngle = this.getRotation();
             this.acceleration.x = this.acceleration.y = 64;
@@ -55,6 +47,17 @@ var Player = A_.SPRITES.Kinematic.extend({
         }
 
         this._super();
+        
+        var rot = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
+        this.setRotation(rot);
+        var speedSign = 0;
+        if (this.getRotation() < 0)
+            speedSign = -1;
+        else
+            speedSign = 1;
+
+        
+
     },
     shootBullet: function () {
         var pos1 = this.spritePoint("bullet1").getPosition();
@@ -169,7 +172,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
 var Rotor = A_.SPRITES.Kinematic.extend({
     animSheet: "rotor.png",
     frame: {w: 45, h: 45},
-    collisionResponse: "passive",
+    collisionResponse: "static",
     angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
