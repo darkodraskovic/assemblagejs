@@ -1,4 +1,4 @@
-A_.Level = Class.extend({
+A_.LEVEL.Level = Class.extend({
     width: 0,
     height: 0,
     scale: 1,
@@ -6,11 +6,9 @@ A_.Level = Class.extend({
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.addMouseReactivity
         this.sprite = this.container;
-//        A_.INPUT.addMouseReacivity(this);
         this.initMouseReactivity();
         this.setMouseReactivity(true);
 
-//        this.followee = null;
         this.sprites = [];
         this.tiles = [];
         this.tileLayers = [];
@@ -20,12 +18,16 @@ A_.Level = Class.extend({
         this.sounds = [];
         this.debugLayer = null;
 
+        this.spritesToCreate = [];
+        this.tilesToCreate = [];
+        this.spritesToDestroy = [];
+        this.tilesToDestroy = [];
+
         this.origin = new PIXI.Point(0, 0);
 
-//        A_.game.stage.addChild(this.container);
         this.width = A_.game.screen.width;
         this.height = A_.game.screen.height;
-        
+
         this.collider = new A_.COLLISION.Collider();
     },
     createEmptyLayer: function (name) {
@@ -85,7 +87,82 @@ A_.Level = Class.extend({
         text.position.y = A_.game.renderer.height / 2;
         this.addLayer(layer);
     },
-    // LAYER MANAGEMENT
+    // ENTITIES management
+    createSprite: function (SpriteClass, layer, x, y, props) {
+        if (!SpriteClass)
+            return;
+
+        if (!layer) {
+            layer = this.layers[0];
+        }
+
+        var sprite = new SpriteClass(layer, x, y, props);
+//        if (sprite instanceof A_.SPRITES.Colliding)
+//            sprite.setCollision(collisionPolygon);
+        sprite.setPosition(x, y);
+        sprite.onCreation();
+
+        this.spritesToCreate.push(sprite);
+        return sprite;
+    },
+    createTile: function (tileLayer, gid, x, y) {
+        if (_.isString(tileLayer)) {
+            tileLayer = A_.level.findLayerByName(tileLayer);
+        }
+        if (!tileLayer) {
+            return;
+        }
+        var tile = tileLayer.tilemap.setTile(gid, x, y);
+        return tile;
+    },
+    createEntities: function (entities) {
+        if (!entities.length)
+            return;
+
+        var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
+                this.sprites : this.tiles;
+        _.each(entities, function (entity) {
+            levelEntities.push(entity);
+        });
+        entities.length = 0;
+    },
+    destroyEntity: function (entity) {
+        if (entity instanceof A_.SPRITES.Animated) {
+            if (!_.contains(this.sprites, entity))
+                return;
+            entity.clear();
+            this.sprites.splice(this.sprites.indexOf(entity), 1);
+        }
+        else if (entity instanceof A_.TILES.Tile) {
+            if (!_.contains(this.tiles, entity))
+                return;
+            entity.tilemap.unsetTile(entity.mapPosition.x, entity.mapPosition.y);
+        }
+    },
+    destroyEntities: function (entities) {
+        _.each(entities, function (entity) {
+            this.destroyEntity(entity)
+        }, this);
+        entities.length = 0;
+    },
+    // TODO: Create a separate js to handle sound
+    createSound: function (props) {
+//        var level = props.parent.level;
+        var level = this;
+        _.each(props["urls"], function (url, i, list) {
+            list[i] = "sounds/" + level.directoryPrefix + url;
+        }, this);
+        var sound = new Howl(props);
+        level.sounds.push(sound);
+        return sound;
+    },
+    destroySounds: function () {
+        _.each(this.sounds, function (sound) {
+            sound.unload();
+        });
+        this.sounds.length = 0;
+    },
+    // LAYER management
     addLayer: function (layer) {
         this.layers.push(layer);
         this.container.addChild(layer);
@@ -134,6 +211,51 @@ A_.Level = Class.extend({
         sprite.baked = true;
         return sprite;
     },
+    update: function () {
+        this.updateEntities();
+
+        this.manageEntities();
+
+        if (this.debugLayer) {
+            _.each(this.collider.collisionSprites, function (sprite) {
+                sprite.updateDebug();
+            });
+        }
+        // TODO: Currently only sorting on y axis. Add a generic sort routine
+        // based on an arbitrary property.
+        _.each(this.spriteLayers, function (layer) {
+            if (layer["sort"]) {
+                this.sortLayer(layer);
+            }
+        }, this);
+
+        this.camera.update();
+
+        this.setPosition(-this.camera.x, -this.camera.y);
+
+    },
+    updateEntities: function () {
+        // Active tiles' update
+        _.each(this.tiles, function (sprite) {
+            sprite.update();
+        });
+
+        _.each(this.sprites, function (sprite) {
+            if (sprite.updates) {
+                sprite.preupdate();
+                sprite.update();
+                sprite.postupdate();
+            }
+        });
+
+        this.collider.processCollisions();
+    },
+    manageEntities: function () {
+        this.destroyEntities(this.tilesToDestroy);
+        this.destroyEntities(this.spritesToDestroy);
+        this.createEntities(this.tilesToCreate);
+        this.createEntities(this.spritesToCreate);
+    },
     // TRANSFORMATIONS && CAMERA
     setPosition: function (x, y) {
         if (typeof x === "number" && typeof y === "number") {
@@ -172,25 +294,8 @@ A_.Level = Class.extend({
             // scale the game world according to scale
             this.container.scale = new PIXI.Point(scale, scale);
 
-            // position canvas in the center of the window if...
-            // BUG: wrong behavior when screenBounded === false
-            // BUG: zoom/in out camera movement strange behavior
-//            if (A_.camera.followType === "bounded") {
-//                if (this.container.width < A_.renderer.view.width) {
-//                    this.container.position.x = (A_.renderer.view.width - this.container.width) / 2;
-//                    this.container.position.x /= scale;
-//                }
-//                if (this.container.height < A_.renderer.view.height) {
-//                    this.container.position.y = (A_.renderer.view.height - this.container.height) / 2;
-//                    this.container.position.y /= scale;
-//                }
-//            }
-
-            // If the world is scaled 2x, camera sees 2x less and vice versa. 
-//            A_.camera.width = A_.renderer.view.width / scale;
-//            A_.camera.height = A_.renderer.view.height / scale;
-            A_.camera.width /= scale / this.scale;
-            A_.camera.height /= scale / this.scale;
+            this.camera.width /= scale / this.scale;
+            this.camera.height /= scale / this.scale;
 
             this.scale = scale;
         }
@@ -213,8 +318,24 @@ A_.Level = Class.extend({
         // the unscaled scaled gameWorld.container's system. 
         mousePosition.x /= this.scale;
         mousePosition.y /= this.scale;
-        mousePosition.x += A_.camera.x;
-        mousePosition.y += A_.camera.y;
+        mousePosition.x += this.camera.x;
+        mousePosition.y += this.camera.y;
+        return mousePosition;
+    },
+    getMouseX: function () {
+        var x = this.container.stage.getMousePosition().x / this.scale;
+        return x += this.camera.x;
+    },
+    getMouseY: function () {
+        var y = this.container.stage.getMousePosition().y / this.scale;
+        return y += this.camera.y;
+    },
+    getMousePosition: function () {
+        var mousePosition = this.container.stage.getMousePosition().clone();
+        mousePosition.x /= this.scale;
+        mousePosition.y /= this.scale;
+        mousePosition.x += this.camera.x;
+        mousePosition.y += this.camera.y;
         return mousePosition;
     },
     // FIND
@@ -274,7 +395,7 @@ A_.Level = Class.extend({
 
     }
 });
-A_.Level.inject(A_.INPUT.mouseReactivityInjection);
+A_.LEVEL.Level.inject(A_.INPUT.mouseReactivityInjection);
 
 // TEMPORARY - for debugging purposes only
 window.addEventListener("mousewheel", mouseWheelHandler, false);

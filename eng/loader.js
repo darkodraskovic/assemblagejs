@@ -1,4 +1,4 @@
-A_.LevelLoader = Class.extend({
+A_.LEVEL.Loader = Class.extend({
     // SCRIPT loader
     init: function (dirPref) {
         if (dirPref)

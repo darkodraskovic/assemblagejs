@@ -1,7 +1,6 @@
 // CLASSES
 var Player = A_.SPRITES.Kinematic.extend({
     animSheet: "player.png",
-//    collision: {response: "active"},
     collisionResponse: "active",
     moveAtAngle: true,
     init: function (parent, x, y, props) {
@@ -16,8 +15,8 @@ var Player = A_.SPRITES.Kinematic.extend({
     },
     onCreation: function () {
         this._super();
-        this.laser1 = A_.game.createSprite(Laser, this, 18, -12);
-        this.laser2 = A_.game.createSprite(Laser, this, 18, 12);
+        this.laser1 = this.level.createSprite(Laser, this, 18, -12);
+        this.laser2 = this.level.createSprite(Laser, this, 18, 12);
         this.spritePoint("bullet1", 18, -12);
         this.spritePoint("bullet2", 18, 12);
     },
@@ -42,30 +41,28 @@ var Player = A_.SPRITES.Kinematic.extend({
             this.acceleration.x = this.acceleration.y = 0;            
         }
 
-        if (A_.level.leftpressed) {
-            this.shootBullet();
-        }
 
         this._super();
         
-        var rot = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
+        if (this.level.leftpressed) {
+            this.shootBullet();
+        }
+        
+        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
         this.setRotation(rot);
         var speedSign = 0;
         if (this.getRotation() < 0)
             speedSign = -1;
         else
             speedSign = 1;
-
-        
-
     },
     shootBullet: function () {
         var pos1 = this.spritePoint("bullet1").getPosition();
-        var bullet1 = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos1.x, pos1.y);
+        var bullet1 = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), pos1.x, pos1.y);
         bullet1.setRotation(this.getRotation());
 
         var pos2 = this.spritePoint("bullet2").getPosition();
-        var bullet2 = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), pos2.x, pos2.y);
+        var bullet2 = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), pos2.x, pos2.y);
         bullet2.setRotation(this.getRotation());
     }
 });
@@ -77,7 +74,7 @@ var Laser = A_.SPRITES.Animated.extend({
         this.setAlpha(0.4);
         this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
-        this.sound = A_.game.createSound({
+        this.sound = this.level.createSound({
             parent: this,
             urls: ['laser-beam.mp3'],
             loop: true,
@@ -91,14 +88,14 @@ var Laser = A_.SPRITES.Animated.extend({
         this.sine = this.addon("Sine", sineProps);
     },
     update: function () {
-        if (A_.level.rightpressed) {
+        if (this.level.rightpressed) {
             this.toggleFire("on");
         }
-        if (A_.level.rightreleased) {
+        if (this.level.rightreleased) {
             this.toggleFire("off");
         }
-        if (A_.level.rightdown) {
-            this.setWidth(A_.UTILS.distanceTo(this.getPositionLevel(), A_.INPUT.mousePosition.level));
+        if (this.level.rightdown) {
+            this.setWidth(A_.UTILS.distanceTo(this.getPositionLevel(), this.level.getMousePosition()));
         }
 
         this._super();
@@ -113,7 +110,7 @@ var Laser = A_.SPRITES.Animated.extend({
         if (state === "on") {
             this.on = true;
             this.setAlpha(0.75);
-            this.setWidth(A_.UTILS.distanceTo(this.getPositionLevel(), A_.INPUT.mousePosition.level));
+            this.setWidth(A_.UTILS.distanceTo(this.getPositionLevel(), this.level.getMousePosition()));
 
             this.sound.play(function (id) {
                 this.soundId = id;
@@ -132,7 +129,6 @@ var Laser = A_.SPRITES.Animated.extend({
 
 var Bullet = A_.SPRITES.Kinematic.extend({
     animSheet: "bullet.png",
-//    collision: {response: "sensor"},
     collisionResponse: "sensor",
     moveAtAngle: true,
 //    drawDebugGraphics: false,
@@ -142,7 +138,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.acceleration.x = this.acceleration.y = 600;
         this.maxSpeed = 1200;
         this.bounded = false;
-        A_.game.createSound({
+        this.level.createSound({
             parent: this,
             urls: ['bullet.wav'],
             volume: 0.75
@@ -162,7 +158,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         }
     },
     collideWithStatic: function (other, response) {
-        A_.game.createSprite(Explosion, A_.level.findLayerByName("Effects"),
+        this.level.createSprite(Explosion, this.level.findLayerByName("Effects"),
                 other.getX(), other.getY());
         other.destroy();
         this.destroy();
@@ -196,7 +192,7 @@ var Explosion = A_.SPRITES.Animated.extend({
             that.destroy();
         };
         
-        A_.game.createSound({
+        this.level.createSound({
             parent: this,
             urls: ['explosion.mp3'],
             volume: 0.2
@@ -209,7 +205,6 @@ var player;
 var numRotors = 40;
 
 // PROCEDURES
-//A_.game.onLevelStarted = function () {
 populateLevel = function (level) {
     level.width = 2048;
     level.height = 2048;
@@ -225,9 +220,9 @@ populateLevel = function (level) {
     
     window.console.log("created FARER levels");
 
-    player = level.camera.followee = A_.game.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
+    player = level.camera.followee = level.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
     for (var i = 0; i < numRotors; i++) {
-        A_.game.createSprite(Rotor, spriteLayer, _.random(0, level.width), _.random(0, level.height));
+        level.createSprite(Rotor, spriteLayer, _.random(0, level.width), _.random(0, level.height));
     }
 };
 

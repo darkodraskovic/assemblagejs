@@ -67,7 +67,7 @@ A_.TILES.Tile = Class.extend({
         return SAT.pointInPolygon(this.containedPoint, this.collisionPolygon);
     },
     destroy: function () {
-        A_.game.tilesToDestroy.push(this);
+        this.tilemap.level.tilesToDestroy.push(this);
     },
     update: function () {
 

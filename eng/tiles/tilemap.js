@@ -2,6 +2,7 @@ A_.TILES.Tilemap = Class.extend({
     init: function (layer, img, tileW, tileH) {
         this.layer = layer;
         this.baked = false;
+        this.level = layer.level;
 
         this.img = "graphics/" + this.layer.level.directoryPrefix + img;
         this.baseTexture = new PIXI.BaseTexture.fromImage(this.img, PIXI.scaleModes.LINEAR);
@@ -128,7 +129,7 @@ A_.TILES.Tilemap = Class.extend({
             tile.setMouseReactivity(true);
         }
         if (this.layer.active)
-            A_.game.tilesToCreate.push(tile);
+            this.layer.level.tilesToCreate.push(tile);
 
         return tile;
     },

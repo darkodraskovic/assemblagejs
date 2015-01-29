@@ -118,6 +118,6 @@ A_.CAMERA.Camera = Class.extend({
             this.bind();
         }
 
-        A_.level.setPosition(-this.x, -this.y);
+//        A_.level.setPosition(-this.x, -this.y);
     }
 });

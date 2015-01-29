@@ -27,6 +27,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     },
     preupdate: function () {
         this.processPlatformerState();
+        
         this._super();
     },
     processPlatformerState: function () {

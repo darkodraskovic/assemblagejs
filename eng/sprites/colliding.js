@@ -134,7 +134,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             this.debugGraphics = null;
         }
     },
-    drawDebug: function () {
+    updateDebug: function () {
         // Update debug transform
         var debugGraphics = this.debugGraphics;
         if (debugGraphics) {
@@ -232,11 +232,13 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         //            colPol.recalc();
     },
     synchCollisionPolygon: function() {
-        if (this.getRotation() !== this.prevRot)
-            this.collisionPolygon.setAngle(this.getRotation());
+        var colPol = this.collisionPolygon;
+        
+        if (this.getRotation() !== colPol.angle)
+            colPol.setAngle(this.getRotation());
 
-        this.collisionPolygon.pos.x = this.getX();
-        this.collisionPolygon.pos.y = this.getY();
+        colPol.pos.x = this.getX();
+        colPol.pos.y = this.getY();
     },
 //    syncSprite: function() {
 //        if (this.getRotation() !== this.prevRot)

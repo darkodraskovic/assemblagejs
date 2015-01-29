@@ -126,14 +126,14 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
                         args.collisionPolygon = collisionPolygon;
-                        var o = game.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
+                        var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                         o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
 //                        args.collision.size = {w: oData["width"], h: oData["height"]};
                         args.collisionW = oData["width"];
                         args.collisionH = oData["height"];
-                        var o = game.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
+                        var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                         o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                     }
 //                    A_.EXTENSIONS.Polygon.addTo(o, A_.POLYGON.Utils.SATPolygonToPIXIPolygon(o.collisionPolygon, false));
@@ -151,7 +151,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
 //                    }
 
 //                    window.console.log(args.level);
-                    var o = game.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args);
+                    var o = level.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(o.getWidth() / 2, -o.getHeight() / 2);
 
                     if (o.followee) {

@@ -5,6 +5,7 @@ A_.TILES = {};
 A_.SCENERY = {};
 A_.COLLISION = {};
 A_.MODULES = {};
+A_.LEVEL = {};
 A_.EXTENSIONS = {};
 A_.POLYGON = {};
 A_.CAMERA = {};

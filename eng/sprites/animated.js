@@ -173,18 +173,18 @@ A_.SPRITES.Animated = Class.extend({
         this.animations[name].gotoAndPlay(frame);
     },
     getLeft: function () {
-        return this.sprite.getBounds().x / A_.level.scale + A_.camera.x;
+        return this.sprite.getBounds().x / this.level.scale + this.level.camera.x;
     },
     getRight: function () {
         var bounds = this.sprite.getBounds();
-        return (bounds.x + bounds.width) / A_.level.scale + A_.camera.x;
+        return (bounds.x + bounds.width) / this.level.scale + this.level.camera.x;
     },
     getTop: function () {
-        return this.sprite.getBounds().y / A_.level.scale + A_.camera.y;
+        return this.sprite.getBounds().y / this.level.scale + this.level.camera.y;
     },
     getBottom: function () {
         var bounds = this.sprite.getBounds();
-        return (bounds.y + bounds.height) / A_.level.scale + A_.camera.y;
+        return (bounds.y + bounds.height) / this.level.scale + this.level.camera.y;
     },
     overlapsSprite: function (sprite) {
         return (this.getTop() <= sprite.getBottom() && this.getBottom() >= sprite.getTop()
@@ -275,10 +275,10 @@ A_.SPRITES.Animated = Class.extend({
         this.setPosition(this.getX() + x, this.getY() + y);
     },
     getPositionLevel: function () {
-        return A_.level.container.toLocal(A_.level.origin, this.sprite);
+        return this.level.container.toLocal(this.level.origin, this.sprite);
     },
     getPositionScreen: function () {
-        return this.sprite.toGlobal(A_.level.origin);
+        return this.sprite.toGlobal(this.level.origin);
     },
     setSize: function (w, h) {
         var prevWidth = this.sprite.width;
@@ -385,9 +385,10 @@ A_.SPRITES.Animated = Class.extend({
         }
     },
     setRotation: function (n) {
+        var prevRot = this.getRotation();
         this.sprite.rotation = n;
         _.each(this.spritePoints, function (sp) {
-            sp.setRotation(n);
+            sp.setRotationRelative(n - prevRot);
         });
     },
     getRotation: function () {
@@ -492,9 +493,9 @@ A_.SPRITES.Animated = Class.extend({
     },
     moveToLayer: function (layer) {
         if (_.isString(layer)) {
-            var dest = A_.level.findLayerByName(layer);
+            var dest = this.level.findLayerByName(layer);
         } else if (_.isNumber(layer)) {
-            var dest = A_.level.findLayerByNumber(layer);
+            var dest = this.level.findLayerByNumber(layer);
         }
         if (dest) {
             if (this.container) {
@@ -543,9 +544,7 @@ A_.SPRITES.Animated = Class.extend({
 
     },
     postupdate: function () {
-        // TODO: Refactor to work with an arbitrary origin.
         if (!this.container) {
-
             if (this.bounded) {
                 this.setPosition(Math.max(0, Math.min(this.getX(), this.level.width)),
                         Math.max(0, Math.min(this.getY(), this.level.height)));
@@ -562,7 +561,7 @@ A_.SPRITES.Animated = Class.extend({
                 }
             }
             else {
-                if (this.getX() < 0 || this.getX() > this.level.width || 
+                if (this.getX() < 0 || this.getX() > this.level.width ||
                         this.getY() < 0 || this.getY() > this.level.height) {
                     this.outOfBounds = true;
                 } else {
@@ -580,9 +579,12 @@ A_.SPRITES.Animated = Class.extend({
         });
 
         this.onDestruction();
-        A_.game.spritesToDestroy.push(this);
+        this.level.spritesToDestroy.push(this);
     },
     clear: function () {
+        if (this === this.level.camera.followee) {
+            this.level.camera.followee = null;
+        }
         this.sprite.parent.removeChild(this.sprite);
     },
     onDestruction: function () {

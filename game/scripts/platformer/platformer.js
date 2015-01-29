@@ -28,16 +28,16 @@ A_.TILES.Tile.inject({
 //        if (this.leftpressed && A_.player.mode === "building") {
         if (this.leftpressed) {
             this.toggleTurned();
-            A_.game.createSound({
+            this.tilemap.level.createSound({
                 parent: this.tilemap.layer,
                 urls: ['e.wav'],
                 volume: 1
             }).play();
         }
-        if (A_.level.rightdown) {
-            var mpl = A_.INPUT.mousePosition.level;
+        if (this.tilemap.level.rightdown) {
+            var mpl = this.tilemap.level.getMousePosition();
             if (this.containsPoint(mpl.x, mpl.y)) {
-                A_.game.createSprite(ExplosionPlatformer, A_.level.findLayerByName("Thrus"),
+                this.tilemap.level.createSprite(ExplosionPlatformer, this.tilemap.level.findLayerByName("Thrus"),
                         this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
                 this.destroy();
             }
@@ -120,12 +120,11 @@ var PlayerPlatformer = AnimePlatformer.extend({
         A_.INPUT.addMapping("jetpack", A_.KEY.SPACE);
         A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
         this._super();
-//        this.thrus = A_.level.findLayerByName("Thrus");
         this.thrus = this.level.findLayerByName("Thrus");
     },
     onJumped: function () {
         this._super();
-        A_.game.createSound({
+        this.level.createSound({
             parent: this,
             urls: ['jump.wav'],
             volume: 1
@@ -133,7 +132,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     },
     onGrounded: function () {
         this._super();
-        A_.game.createSound({
+        this.level.createSound({
             parent: this,
             urls: ['grounded.wav'],
             volume: 1
@@ -152,18 +151,18 @@ var PlayerPlatformer = AnimePlatformer.extend({
         if (A_.INPUT.pressed["toggleMode"]) {
             this.toggleMode();
         }
-        if (A_.level.leftdown && this.mode === "building") {
-            var mpl = A_.INPUT.mousePosition.level;
+        if (this.level.leftdown && this.mode === "building") {
+            var mpl = this.level.getMousePosition();
             var tilemap = this.thrus.tilemap;
             var x = Math.floor(mpl.x / tilemap.tileW);
             var y = Math.floor(mpl.y / tilemap.tileH);
             if (!tilemap.getTile(x, y)) {
-                A_.game.createTile(this.thrus, 737, x, y);
+                this.level.createTile(this.thrus, 737, x, y);
             }
         }
-        if (A_.level.leftpressed && this.mode === "throwing") {
-            var ball = A_.game.createSprite(Ball, this.layer, this.getX(), this.getY());
-            var angle = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
+        if (this.level.leftpressed && this.mode === "throwing") {
+            var ball = this.level.createSprite(Ball, this.layer, this.getX(), this.getY());
+            var angle = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
             ball.velocity.x = ball.maxSpeed * Math.cos(angle);
             ball.velocity.y = ball.maxSpeed * Math.sin(angle);
         }
@@ -178,7 +177,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     fireJetpack: function () {
         if (this.platformerState !== "grounded") {
             this.velocity.y = -this.jumpForce * 0.75;
-            this.jetpackSound = A_.game.createSound({
+            this.jetpackSound = this.level.createSound({
                 parent: this,
                 urls: ['jetpack.wav'],
                 volume: 1,
@@ -237,7 +236,6 @@ var Undead = AnimePlatformer.extend({
 
 var UndeadProbe = A_.SPRITES.Colliding.extend({
     bounded: false,
-//    collision: {response: "sensor", offset: {x: 0, y: 0}, size: {w: 2, h: 2}},
     collisionResponse: "sensor",
     collisionW: 2,
     collisionH: 2,
@@ -314,7 +312,7 @@ var ExplosionPlatformer = A_.SPRITES.Animated.extend({
             that.destroy();
         };
         this.setScale(0.4, 0.4);
-        A_.game.createSound({
+        this.level.createSound({
             parent: this,
             urls: ['dull.wav'],
             volume: 1

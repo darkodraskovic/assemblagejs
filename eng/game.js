@@ -8,6 +8,7 @@ A_.Game = Class.extend({
         this.mapsData = {};
         this.level = null;
 
+        this.levelManager = new A_.LEVEL.LevelManager();
         // Entity management
         this.spritesToCreate = [];
         this.spritesToDestroy = [];
@@ -53,7 +54,7 @@ A_.Game = Class.extend({
         this.activateLevelDataLoader();
     },
     activateLevelDataLoader: function () {
-        this.levelLoader = new A_.LevelLoader(this.levelData.directoryPrefix);
+        this.levelLoader = new A_.LEVEL.Loader(this.levelData.directoryPrefix);
 //        A_.levelLoader = this.levelLoader;
         this.levelLoader.loadScripts(this.onScriptsLoaded.bind(this), this.levelData.scripts);
     },
@@ -84,7 +85,7 @@ A_.Game = Class.extend({
 //
 //    },
     createLevel: function (levelData) {
-        var level = new A_.Level();
+        var level = new A_.LEVEL.Level();
         level.data = levelData;
 
         level.name = level.data.name;
@@ -101,8 +102,8 @@ A_.Game = Class.extend({
         if (level.data.type === "tiled") {
             window.console.log("Created TILED LEVEL :)");
             A_.TILES.createTiledMap(this.mapsData[level.name], level);
-            this.createEntities(this.spritesToCreate, level);
-            this.createEntities(this.tilesToCreate, level);
+            level.createEntities(this.spritesToCreate, level);
+            level.createEntities(this.tilesToCreate, level);
         }
         else {
             window.console.log("Created GENERIC LEVEL :)");
@@ -119,8 +120,6 @@ A_.Game = Class.extend({
         this.collider = level.collider;
         A_.collider = level.collider;
 
-        this.camera = level.camera;
-        A_.camera = level.camera;
         this.level.setScale(this.level.scale);
 
         this.stage.addChild(this.level.container);
@@ -136,9 +135,6 @@ A_.Game = Class.extend({
 
         this.level = null;
         A_.level = null;
-
-        this.camera = null;
-        A_.camera = null;
 
 //        delete(A_.game.level);
 //        delete(A_.game.collider);
@@ -158,89 +154,89 @@ A_.Game = Class.extend({
         delete this.levels[level.name];
     },
     // SPRITE CREATION and DESTRUCTION
-    createSprite: function (SpriteClass, layer, x, y, props) {
-        if (!SpriteClass)
-            return;
-
-        if (!layer) {
-            layer = this.level.layers[0];
-        }
-
-        var sprite = new SpriteClass(layer, x, y, props);
-//        if (sprite instanceof A_.SPRITES.Colliding)
-//            sprite.setCollision(collisionPolygon);
-        sprite.setPosition(x, y);
-        sprite.onCreation();
-
-        this.spritesToCreate.push(sprite);
-        return sprite;
-    },
-    createTile: function (tileLayer, gid, x, y) {
-        if (_.isString(tileLayer)) {
-            tileLayer = A_.level.findLayerByName(tileLayer)
-        }
-        if (!tileLayer) {
-            return;
-        }
-        var tile = tileLayer.tilemap.setTile(gid, x, y);
-        return tile;
-    },
-    createEntities: function (entities, level) {
-        if (!entities.length)
-            return;
-
-        if (!level)
-            level = this.level;
-
-        var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
-                level.sprites : level.tiles;
-        _.each(entities, function (entity) {
-            levelEntities.push(entity);
-        });
-        entities.length = 0;
-    },
-    destroyEntity: function (entity) {
-        if (entity instanceof A_.SPRITES.Animated) {
-            if (!_.contains(this.level.sprites, entity))
-                return;
-
-            entity.clear();
-
-            if (entity === this.camera.followee) {
-                this.camera.followee = null;
-            }
-
-            this.level.sprites.splice(this.level.sprites.indexOf(entity), 1);
-        }
-        else if (entity instanceof A_.TILES.Tile) {
-            if (!_.contains(this.level.tiles, entity))
-                return;
-
-            entity.tilemap.unsetTile(entity.mapPosition.x, entity.mapPosition.y);
-        }
-    },
-    destroyEntities: function (entities) {
-        _.each(entities, function (entity) {
-            this.destroyEntity(entity)
-        }, this);
-        entities.length = 0;
-    },
-    // TODO: Create a separate js to handle sound
-    createSound: function (props) {
-        var level = props.parent.level;
-        _.each(props["urls"], function (url, i, list) {
-            list[i] = "sounds/" + level.directoryPrefix + url;
-        }, this);
-        var sound = new Howl(props);
-        level.sounds.push(sound);
-        return sound;
-    },
-    destroySounds: function (level) {
-        _.each(level.sounds, function (sound) {
-            sound.unload();
-        });
-        this.sounds.length = 0;
-    },
+//    createSprite: function (SpriteClass, layer, x, y, props) {
+//        if (!SpriteClass)
+//            return;
+//
+//        if (!layer) {
+//            layer = this.level.layers[0];
+//        }
+//
+//        var sprite = new SpriteClass(layer, x, y, props);
+////        if (sprite instanceof A_.SPRITES.Colliding)
+////            sprite.setCollision(collisionPolygon);
+//        sprite.setPosition(x, y);
+//        sprite.onCreation();
+//
+//        this.spritesToCreate.push(sprite);
+//        return sprite;
+//    },
+//    createTile: function (tileLayer, gid, x, y) {
+//        if (_.isString(tileLayer)) {
+//            tileLayer = A_.level.findLayerByName(tileLayer)
+//        }
+//        if (!tileLayer) {
+//            return;
+//        }
+//        var tile = tileLayer.tilemap.setTile(gid, x, y);
+//        return tile;
+//    },
+//    createEntities: function (entities, level) {
+//        if (!entities.length)
+//            return;
+//
+//        if (!level)
+//            level = this.level;
+//
+//        var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
+//                level.sprites : level.tiles;
+//        _.each(entities, function (entity) {
+//            levelEntities.push(entity);
+//        });
+//        entities.length = 0;
+//    },
+//    destroyEntity: function (entity) {
+//        if (entity instanceof A_.SPRITES.Animated) {
+//            if (!_.contains(this.level.sprites, entity))
+//                return;
+//
+//            entity.clear();
+//
+//            if (entity === this.level.camera.followee) {
+//                this.level.camera.followee = null;
+//            }
+//
+//            this.level.sprites.splice(this.level.sprites.indexOf(entity), 1);
+//        }
+//        else if (entity instanceof A_.TILES.Tile) {
+//            if (!_.contains(this.level.tiles, entity))
+//                return;
+//
+//            entity.tilemap.unsetTile(entity.mapPosition.x, entity.mapPosition.y);
+//        }
+//    },
+//    destroyEntities: function (entities) {
+//        _.each(entities, function (entity) {
+//            this.destroyEntity(entity)
+//        }, this);
+//        entities.length = 0;
+//    },
+//    // TODO: Create a separate js to handle sound
+//    createSound: function (props) {
+//        var level = props.parent.level;
+//        _.each(props["urls"], function (url, i, list) {
+//            list[i] = "sounds/" + level.directoryPrefix + url;
+//        }, this);
+//        var sound = new Howl(props);
+//        level.sounds.push(sound);
+//        return sound;
+//    },
+//    destroySounds: function (level) {
+//        _.each(level.sounds, function (sound) {
+//            sound.unload();
+//        });
+//        this.sounds.length = 0;
+//    },
     // GAME LOOP
     stop: function () {
         if (this.isRunning) {
@@ -273,79 +269,41 @@ A_.Game = Class.extend({
 
         A_.INPUT.process();
 
-        this.update();
+//        this.level.updateEntities();
+        
+//        this.manageEntities();
 
-        this.manageEntities();
+        this.level.update();
 
-        this.render();
-
+        this.renderer.render(this.stage);
+        
         A_.INPUT.postprocess();
 
         // State changed during the game loop
         if (!this.isRunning) {
             this.onStopped();
         }
-
-//        this.manageLevels();
     },
-    update: function () {
-        // Active tiles' update
-        _.each(this.level.tiles, function (sprite) {
-            sprite.update();
-        });
-
-        _.each(this.level.sprites, function (sprite) {
-            if (sprite.updates) {
-                sprite.preupdate();
-                sprite.update();
-                sprite.postupdate();
-            }
-        });
-
-        // Collision handling
-//        _.each(this.collider.collisionSprites, function (sprite) {
-//            sprite.synchCollisionPolygon();
+//    update: function () {
+//        // Active tiles' update
+//        _.each(this.level.tiles, function (sprite) {
+//            sprite.update();
 //        });
-
-        this.collider.processCollisions();
-
-//        _.each(this.collider.collisionSprites, function(sprite) {
-//            sprite.syncCollisionPolygon();
+//
+//        _.each(this.level.sprites, function (sprite) {
+//            if (sprite.updates) {
+//                sprite.preupdate();
+//                sprite.update();
+//                sprite.postupdate();
+//            }
 //        });
-
-    },
+//
+//        this.collider.processCollisions();
+//    },
     manageEntities: function () {
         this.destroyEntities(this.tilesToDestroy);
         this.destroyEntities(this.spritesToDestroy);
         this.createEntities(this.tilesToCreate);
         this.createEntities(this.spritesToCreate);
-    },
-    render: function () {
-        // TODO: Currently only sorting on y axis. Add a generic sort routine
-        // based on an arbitrary property.
-        _.each(this.level.spriteLayers, function (layer) {
-            if (layer["sort"]) {
-                A_.level.sortLayer(layer);
-            }
-        });
-
-        if (this.debug) {
-            _.each(this.collider.collisionSprites, function (sprite) {
-                sprite.drawDebug();
-            });
-        }
-
-        this.camera.update();
-
-        this.renderer.render(this.stage);
-    },
-    manageLevels: function () {
-        if (this.destroyLevel) {
-            this.isRunning = false;
-            this.deactivateLevel();
-            if (this.levelToStart) {
-                this.startLevel(this.levelToStart);
-            }
-        }
     }
 });

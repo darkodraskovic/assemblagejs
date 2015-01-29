@@ -26,15 +26,17 @@ A_.SPRITES.SpritePoint = Class.extend({
     getY: function() {
         return this.calcPoint.y;
     },
-    setRotation: function(rotation) {
+    setRotationRelative: function(rotation) {
         // Calculate the vector from the point to the rotated point.
+//        var rotVec = this.point.clone().rotate(rotation).sub(this.point);
         var rotVec = this.point.clone().rotate(rotation).sub(this.point);
         // Add the vector to the position in the parent's coord sys.
-        this.calcPoint.add(rotVec);
+//        this.calcPoint.add(rotVec);
+        this.point.add(rotVec);
     },
-    getRotation: function() {
-        return this.rotation;
-    },
+//    getRotation: function() {
+//        return this.rotation;
+//    },
     setScale: function(x, y) {
         this.point.x *= x;
         this.point.y *= y;
