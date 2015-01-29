@@ -25,52 +25,9 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     onCreation: function () {
         this._super();
     },
-    update: function () {
+    preupdate: function () {
         this.processPlatformerState();
-
-        if (this.controlled) {
-            this.processControls();
-        }
-
-        // PLATFORM
-        if (this.movingPlatform) {
-            this.setY(this.getY() + this.platformDY + 2);
-        }
-
-        if (this.applyForce) {
-            if (this.facing === "right") {
-                this.acceleration.x = this.force.x;
-            }
-            else if (this.facing === "left") {
-                this.acceleration.x = -this.force.x;
-            }
-        }
-        else {
-            this.acceleration.x = 0;
-        }
-
-        if (this.tryJump) {
-            if (this.platformerState === "grounded") {
-                this.velocity.y = -this.jumpForce;
-                this.jumps = true;
-                this.onJumped();
-            }
-            this.tryJump = false;
-        }
-
         this._super();
-
-        // FLIP
-        if (this.autoFlip) {
-            if (this.facing === "right") {
-                this.setFlippedX(false);
-            } else {
-                this.setFlippedX(true);
-            }
-        }
-
-        this.movingPlatform = null;
-        this.collisionEntities.length = 0;
     },
     processPlatformerState: function () {
         if (this.velocity.y > this.gravity.y) {
@@ -117,6 +74,51 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         } else {
             this.movingState = "idle";
         }
+    },
+    update: function () {
+        if (this.controlled) {
+            this.processControls();
+        }
+
+        // PLATFORM
+        if (this.movingPlatform) {
+            this.setY(this.getY() + this.platformDY + 2);
+        }
+
+        if (this.applyForce) {
+            if (this.facing === "right") {
+                this.acceleration.x = this.force.x;
+            }
+            else if (this.facing === "left") {
+                this.acceleration.x = -this.force.x;
+            }
+        }
+        else {
+            this.acceleration.x = 0;
+        }
+
+        if (this.tryJump) {
+            if (this.platformerState === "grounded") {
+                this.velocity.y = -this.jumpForce;
+                this.jumps = true;
+                this.onJumped();
+            }
+            this.tryJump = false;
+        }
+
+        this._super();
+
+        // FLIP
+        if (this.autoFlip) {
+            if (this.facing === "right") {
+                this.setFlippedX(false);
+            } else {
+                this.setFlippedX(true);
+            }
+        }
+
+        this.movingPlatform = null;
+        this.collisionEntities.length = 0;
     },
     processControls: function () {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {

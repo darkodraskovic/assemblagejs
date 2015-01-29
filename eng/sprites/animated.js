@@ -529,42 +529,7 @@ A_.SPRITES.Animated = Class.extend({
         }
     },
     // CREATION/DESTRUCTION & UPDATE
-    update: function () {        
-        
-        // TODO: Refactor to work with an arbitrary origin.
-        if (!this.container) {
-            var x = this.getX();
-            var y = this.getY();
-            var halfW = this.getWidth() / 2;
-            var halfH = this.getHeight() / 2;
-//            if (this.collisionPolygon) {
-//                halfW = Math.abs(this.collisionPolygon.w / 2);
-//                halfH = Math.abs(this.collisionPolygon.h / 2);
-//            }
-            if (this.bounded) {
-                this.setPosition(Math.max(halfW, Math.min(x, A_.game.level.width - halfW)),
-                        Math.max(halfH, Math.min(y, A_.game.level.height - halfH)));
-            } else if (this.wrap) {
-                if (x + halfW < 0) {
-                    this.setX(A_.game.level.width + halfW);
-                } else if (x - halfW > A_.game.level.width) {
-                    this.setX(0 - halfW);
-                }
-                if (y + halfH < 0) {
-                    this.setY(A_.game.level.height + halfH);
-                } else if (y - halfH > A_.game.level.height) {
-                    this.setY(0 - halfH);
-                }
-            }
-            else {
-                if (x < 0 || x > A_.game.level.width || y < 0 || y > A_.game.level.height) {
-                    this.outOfBounds = true;
-                } else {
-                    this.outOfBounds = false;
-                }
-            }
-        }
-
+    preupdate: function () {
         this.prevRot = this.getRotation();
         this.prevX = this.getX();
         this.prevY = this.getY();
@@ -573,7 +538,38 @@ A_.SPRITES.Animated = Class.extend({
             if (addon.active)
                 addon.update();
         });
+    },
+    update: function () {
 
+    },
+    postupdate: function () {
+        // TODO: Refactor to work with an arbitrary origin.
+        if (!this.container) {
+
+            if (this.bounded) {
+                this.setPosition(Math.max(0, Math.min(this.getX(), this.level.width)),
+                        Math.max(0, Math.min(this.getY(), this.level.height)));
+            } else if (this.wrap) {
+                if (this.getX() < 0) {
+                    this.setX(this.level.width);
+                } else if (this.getX() > this.level.width) {
+                    this.setX(0);
+                }
+                if (this.getY() < 0) {
+                    this.setY(this.level.height);
+                } else if (this.getY() > this.level.height) {
+                    this.setY(0);
+                }
+            }
+            else {
+                if (this.getX() < 0 || this.getX() > this.level.width || 
+                        this.getY() < 0 || this.getY() > this.level.height) {
+                    this.outOfBounds = true;
+                } else {
+                    this.outOfBounds = false;
+                }
+            }
+        }
     },
     onCreation: function () {
 //        this.setPosition(x, y);

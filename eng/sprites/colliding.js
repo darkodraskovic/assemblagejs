@@ -247,6 +247,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     clear: function () {
         this.removeCollision();
         this._super();
+    },
+    postupdate: function () {
+        this._super();
+        this.synchCollisionPolygon();
     }
 });
 

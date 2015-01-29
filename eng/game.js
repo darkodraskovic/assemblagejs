@@ -295,13 +295,17 @@ A_.Game = Class.extend({
         });
 
         _.each(this.level.sprites, function (sprite) {
-            sprite.update();
+            if (sprite.updates) {
+                sprite.preupdate();
+                sprite.update();
+                sprite.postupdate();
+            }
         });
 
         // Collision handling
-        _.each(this.collider.collisionSprites, function(sprite) {
-            sprite.synchCollisionPolygon();
-        });
+//        _.each(this.collider.collisionSprites, function (sprite) {
+//            sprite.synchCollisionPolygon();
+//        });
 
         this.collider.processCollisions();
 
