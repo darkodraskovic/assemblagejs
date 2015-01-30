@@ -75,7 +75,6 @@ var Laser = A_.SPRITES.Animated.extend({
         this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
         this.sound = this.level.createSound({
-            parent: this,
             urls: ['laser-beam.mp3'],
             loop: true,
             volume: 0.75
@@ -139,7 +138,6 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.maxSpeed = 1200;
         this.bounded = false;
         this.level.createSound({
-            parent: this,
             urls: ['bullet.wav'],
             volume: 0.75
         }).play();
@@ -193,7 +191,6 @@ var Explosion = A_.SPRITES.Animated.extend({
         };
         
         this.level.createSound({
-            parent: this,
             urls: ['explosion.mp3'],
             volume: 0.2
         }).play();

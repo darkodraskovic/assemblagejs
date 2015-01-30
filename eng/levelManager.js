@@ -1,5 +1,6 @@
 A_.LEVEL.LevelManager = Class.extend({
-    init: function () {
+    init: function (game) {
+        this.game = game;
         this.mapsData = {};
         this.levels = {};
     },
@@ -47,7 +48,7 @@ A_.LEVEL.LevelManager = Class.extend({
             this.callback();
     },
     createLevel: function (data) {
-        var level = new A_.LEVEL.Level();
+        var level = new A_.LEVEL.Level(this.game);
         level.data = data;
 
         level.name = level.data.name;
@@ -58,14 +59,14 @@ A_.LEVEL.LevelManager = Class.extend({
         level.cameraOptions = level.data.camera;
         level.createCamera();
 
-        if (A_.game.debug)
+        if (this.game.debug)
             level.createDebugLayer();
 
         if (level.data.type === "tiled") {
             window.console.log("Created TILED LEVEL :)");
             A_.TILES.createTiledMap(this.mapsData[level.name], level);
-            A_.game.createEntities(this.spritesToCreate, level);
-            A_.game.createEntities(this.tilesToCreate, level);
+            level.createEntities(level.spritesToCreate, level);
+            level.createEntities(level.tilesToCreate, level);
         }
         else {
             window.console.log("Created GENERIC LEVEL :)");
@@ -84,16 +85,16 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.level.setScale(this.level.scale);
 
-        A_.game.stage.addChild(this.level.container);
+        this.game.stage.addChild(this.level.container);
         window.console.log("Level STARTS...");
 
-        A_.game.start();
+        this.game.start();
     },
     deactivateLevel: function () {
         this.collider = null;
         A_.collider = null;
 
-        A_.game.stage.removeChild(this.level.container);
+        this.game.stage.removeChild(this.level.container);
 
         this.level = null;
         A_.level = null;

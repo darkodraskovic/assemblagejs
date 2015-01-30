@@ -29,7 +29,6 @@ A_.TILES.Tile.inject({
         if (this.leftpressed) {
             this.toggleTurned();
             this.tilemap.level.createSound({
-                parent: this.tilemap.layer,
                 urls: ['e.wav'],
                 volume: 1
             }).play();
@@ -125,7 +124,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
     onJumped: function () {
         this._super();
         this.level.createSound({
-            parent: this,
             urls: ['jump.wav'],
             volume: 1
         }).play();
@@ -133,7 +131,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
     onGrounded: function () {
         this._super();
         this.level.createSound({
-            parent: this,
             urls: ['grounded.wav'],
             volume: 1
         }).play();
@@ -178,7 +175,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
         if (this.platformerState !== "grounded") {
             this.velocity.y = -this.jumpForce * 0.75;
             this.jetpackSound = this.level.createSound({
-                parent: this,
                 urls: ['jetpack.wav'],
                 volume: 1,
             });
@@ -313,7 +309,6 @@ var ExplosionPlatformer = A_.SPRITES.Animated.extend({
         };
         this.setScale(0.4, 0.4);
         this.level.createSound({
-            parent: this,
             urls: ['dull.wav'],
             volume: 1
         }).play();

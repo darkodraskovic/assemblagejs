@@ -1,6 +1,4 @@
 A_.TILES.createTiledMap = function (mapData, level) {
-    var game = A_.game;
-//    var level = A_.level;
     var level = level;
     var collider = level.collider;
 

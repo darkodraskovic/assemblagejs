@@ -1,7 +1,6 @@
 // CLASSES
 var AnimeSkorpio = A_.SPRITES.Topdown.extend({
     frame: {w: 64, h: 64},
-//    collision: {response: "passive", offset: {x: 0, y: 6}, size: {w: 26, h: 48}},
     collisionResponse: "passive", 
     collisionOffsetY: 6,
     collisionW: 26,
@@ -34,14 +33,12 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
     },
     update: function() {
         this._super();
-//        this.sprite.getLocalBounds();
         if (this.alive) {
             this.setAnimation(this.motionState + "_" + this.facing);
         }
         else {
             if (!this.groaned) {
-                var sound = A_.game.createSound({
-                    parent: this,
+                var sound = this.level.createSound({
                     urls: ['grunt.wav'],
                     volume: 0.5
                 })
@@ -53,8 +50,6 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
     }
 });
 
-//Anime.inject(A_.MODULES.Topdown);
-
 var PlayerSkorpio = AnimeSkorpio.extend({
     animSheet: "PlayerComplete.png",
     collisionType: A_.COLLISION.Type.PLAYER,
@@ -65,9 +60,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.collisionResponse = "active";
         this._super(parent, x, y, props);
         this.maxVelocity = new SAT.Vector(256, 256);
-//        this.collision = A_.UTILS.copy(this.collision);
-        
-        this.rifle = A_.game.createSprite(Rifle, this.layer,
+        this.rifle = this.level.createSprite(Rifle, this.layer,
                 this.getX(), this.getY(),
                 {holder: this, animSpeed: this.animSpeed});                
     },
@@ -75,7 +68,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this._super();
     },
     update: function() {
-        var rot = (A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level)).toDeg();
+        var rot = (A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition())).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
@@ -97,13 +90,13 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     },
     shootBullet: function() {
         var sprPt = this.rifle.spritePoint(this.facing);
-        var bullet = A_.game.createSprite(Bullet, A_.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
-        bullet.setRotation(A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level));
+        var bullet = this.level.createSprite(Bullet, A_.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
+        bullet.setRotation(A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition()));
         bullet.setAnimation("all", 16, 0);
     },
     shootLaser: function() {
         var pos = this.getPosition();
-        A_.game.createSprite(LaserBeam, A_.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
+        this.level.createSprite(LaserBeam, A_.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
     }
 });
 
@@ -166,7 +159,7 @@ var Rifle = A_.SPRITES.Animated.extend({
     },
     update: function() {
         this._super();
-//        var rot = A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level);
+//        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
 //        switch (this.holder.facing) {
 //            case "left": rot -= Math.PI; break;
 //            case "up": rot += Math.PI / 2; break;
@@ -187,7 +180,6 @@ var Rifle = A_.SPRITES.Animated.extend({
 var Bullet = A_.SPRITES.Kinematic.extend({
     animSheet: "Muzzleflashes-Shots.png",
     frame: {w: 32, h: 32},
-//    collision : {size: {w: 12, h: 10}, response: "sensor"},
     collisionResponse: "sensor",
     collisionW: 12,
     collisionH: 10,
@@ -201,14 +193,12 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.moveAtAngle = true;
         this.moveForward = true;
         this.bounded = false;
-        A_.game.createSound({
-            parent: this,
+        this.level.createSound({
             urls: ['gunshot.mp3'],
             volume: 0.5
         }).play();
     },
     update: function() {
-//        this.origin(0, 0.5);
         this._super();
         if (this.outOfBounds) {
             this.destroy();
@@ -240,19 +230,17 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.setAnimation("all", 18, 0);
         this.setOrigin(0, 0.5);
 
-        this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), A_.INPUT.mousePosition.level));
+        this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), this.level.getMousePosition()));
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
 
         this.tip = {x: this.getX(), y: this.getY()};
-        this.laserTip = A_.game.createSprite(LaserTip, A_.level.findLayerByName("Effects"),
+        this.laserTip = this.level.createSprite(LaserTip, A_.level.findLayerByName("Effects"),
                 this.getX() + Math.cos(this.getRotation()) * this.getWidth(),
                 this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
-//                {collision : {size: {w: 4, h: 4}}});
                 {collisionW: 4, collisionH: 4});
         this.laserTip.laser = this;
-        this.sound = A_.game.createSound({
-            parent: this,
+        this.sound = this.level.createSound({
             urls: ['laser-beam.mp3'],
             loop: true,
             volume: 0.4
@@ -265,11 +253,10 @@ var LaserBeam = A_.SPRITES.Animated.extend({
     update: function() {
         this._super();
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
-//        this.getPosition(this.spawner.getX(), this.spawner.getY());
         this.setPosition(sprPt.getX(), sprPt.getY());
 
-        this.setRotation(A_.UTILS.angleTo(this.getPosition(), A_.INPUT.mousePosition.level));
-        this.setWidth(A_.UTILS.distanceTo(this.getPosition(), A_.INPUT.mousePosition.level));
+        this.setRotation(A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition()));
+        this.setWidth(A_.UTILS.distanceTo(this.getPosition(), this.level.getMousePosition()));
         this.tip.x = this.getX() + Math.cos(this.getRotation()) * this.getWidth();
         this.tip.y = this.getY() + Math.sin(this.getRotation()) * this.getWidth();
 
@@ -313,13 +300,13 @@ var LaserTip = A_.SPRITES.Colliding.extend({
                 this.timer -= A_.game.dt;
             }
             if (this.timer < 0) {
-                A_.game.createSprite(ExplosionSkorpio, A_.level.findLayerByName("Effects"),
+                this.level.createSprite(ExplosionSkorpio, A_.level.findLayerByName("Effects"),
                         other.getX(), other.getY());
                 other.destroy();
                 this.timer = null;
             }
             if (!this.fire) {
-                this.fire = A_.game.createSprite(LaserFire, A_.level.findLayerByName("Effects"),
+                this.fire = this.level.createSprite(LaserFire, A_.level.findLayerByName("Effects"),
                         this.getX(), this.getY());
                 this.fire.laserTip = this;
             }
@@ -335,8 +322,7 @@ var LaserFire = A_.SPRITES.Animated.extend({
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
-        this.sound = A_.game.createSound({
-            parent: this,
+        this.sound = this.level.createSound({
             urls: ['fire.wav'],
             loop: true,
             volume: 0.3
@@ -376,8 +362,7 @@ var ExplosionSkorpio = A_.SPRITES.Animated.extend({
         this.animations["explode"].onComplete = function() {
             that.destroy();
         };
-        A_.game.createSound({
-            parent: this,
+        this.level.createSound({
             urls: ['explosion.mp3'],
             volume: 0.6
         }).play();
@@ -387,7 +372,6 @@ var ExplosionSkorpio = A_.SPRITES.Animated.extend({
 // ITEMS
 var Computer = A_.SPRITES.Colliding.extend({
     animSheet: "Computer1.png",
-//    collision: {response: "static"},
     collisionResponse: "static",
 //    collisionType: A_.COLLISION.Type.ITEM,
 //    collidesWith: A_.COLLISION.Type.NONE,

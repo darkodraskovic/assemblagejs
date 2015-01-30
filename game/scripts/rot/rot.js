@@ -67,7 +67,7 @@ function createRotLayers(level) {
 
 
     var layer = level.createSpriteLayer();
-    player = A_.game.createSprite(Ball, layer, 256, 256);
+    player = level.createSprite(Ball, layer, 256, 256);
     level.camera.followee = player;
     
     A_.game.activateLevel(level);

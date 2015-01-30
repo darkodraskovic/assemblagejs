@@ -192,7 +192,7 @@ A_.SPRITES.Animated = Class.extend({
     },
     isOnScreen: function () {
         var bounds = this.sprite.getBounds();
-        var view = A_.renderer.view;
+        var view = this.level.game.renderer.view;
 
         if (bounds.x + bounds.width < 0)
             return false;

@@ -6,38 +6,39 @@
 //var levelData = rot1;
 //var levelData = platformer1;
 
+var levelManager = A_.game.levelManager;
 
 // SKORPIO
-//A_.game.loadLevelData(skorpio1, function () {
-//    A_.game.createLevel(skorpio1);
-//    A_.game.activateLevel(A_.game.levels.skorpio1);
+//levelManager.loadAssets(skorpio1, function () {
+//    levelManager.createLevel(skorpio1);
+//    levelManager.activateLevel(levelManager.levels.skorpio1);
 //});
 
 // PLATFORMER
-A_.game.loadLevelData(platformer1, function () {
-    A_.game.createLevel(platformer1);
-    A_.game.activateLevel(A_.game.levels.platformer1);
-});
-
-//A_.game.loadLevelData(skorpio1, function () {
-//    A_.game.createLevel(skorpio1);
-//    A_.game.loadLevelData(platformer1, function () {
-//        A_.game.createLevel(platformer1);
-//        A_.game.activateLevel(A_.game.levels.platformer1);
-//    });
+//levelManager.loadAssets(platformer1, function () {
+//    levelManager.createLevel(platformer1);
+//    levelManager.activateLevel(levelManager.levels.platformer1);
 //});
+
+levelManager.loadAssets(skorpio1, function () {
+    levelManager.createLevel(skorpio1);
+    levelManager.loadAssets(platformer1, function () {
+        levelManager.createLevel(platformer1);
+        levelManager.activateLevel(levelManager.levels.platformer1);
+    });
+});
 
 
 // FARER
-//A_.game.loadLevelData(farer1, function () {
-//    var level = A_.game.createLevel(farer1);
+//levelManager.loadAssets(farer1, function () {
+//    var level = levelManager.createLevel(farer1);
 //    populateLevel(level);
-//    A_.game.activateLevel(level);
+//    levelManager.activateLevel(level);
 //});
 
 // ROT
-//A_.game.loadLevelData(rot1, function () {
-//    var level = A_.game.createLevel(rot1);
+//levelManager.loadAssets(rot1, function () {
+//    var level = levelManager.createLevel(rot1);
 //    createRoguelikeMap(level);
 //    
 //});

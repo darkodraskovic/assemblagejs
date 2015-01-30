@@ -2,22 +2,23 @@ A_.LEVEL.Level = Class.extend({
     width: 0,
     height: 0,
     scale: 1,
-    init: function () {
+    init: function (game) {
+        this.game = game;
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.addMouseReactivity
         this.sprite = this.container;
         this.initMouseReactivity();
         this.setMouseReactivity(true);
 
-        this.sprites = [];
-        this.tiles = [];
         this.tileLayers = [];
         this.spriteLayers = [];
         this.imageLayers = [];
         this.layers = [];
-        this.sounds = [];
         this.debugLayer = null;
 
+        this.sprites = [];
+        this.tiles = [];
+        this.sounds = [];
         this.spritesToCreate = [];
         this.tilesToCreate = [];
         this.spritesToDestroy = [];
@@ -25,11 +26,14 @@ A_.LEVEL.Level = Class.extend({
 
         this.origin = new PIXI.Point(0, 0);
 
-        this.width = A_.game.screen.width;
-        this.height = A_.game.screen.height;
+        this.width = this.game.screen.width;
+        this.height = this.game.screen.height;
+
+        this.tmpMousePositionHolder = {x: 0, y: 0};
 
         this.collider = new A_.COLLISION.Collider();
     },
+    // LAYER management
     createEmptyLayer: function (name) {
         var layer = new PIXI.DisplayObjectContainer();
         layer.baked = false;
@@ -83,86 +87,10 @@ A_.LEVEL.Level = Class.extend({
             dropShadow: true, dropShadowColor: '#444444', dropShadowAngle: Math.PI / 4, dropShadowDistance: 4});
         layer.addChild(text);
         text.anchor = new PIXI.Point(0.5, 0.5);
-        text.position.x = A_.game.renderer.width / 2;
-        text.position.y = A_.game.renderer.height / 2;
+        text.position.x = this.game.renderer.width / 2;
+        text.position.y = this.game.renderer.height / 2;
         this.addLayer(layer);
     },
-    // ENTITIES management
-    createSprite: function (SpriteClass, layer, x, y, props) {
-        if (!SpriteClass)
-            return;
-
-        if (!layer) {
-            layer = this.layers[0];
-        }
-
-        var sprite = new SpriteClass(layer, x, y, props);
-//        if (sprite instanceof A_.SPRITES.Colliding)
-//            sprite.setCollision(collisionPolygon);
-        sprite.setPosition(x, y);
-        sprite.onCreation();
-
-        this.spritesToCreate.push(sprite);
-        return sprite;
-    },
-    createTile: function (tileLayer, gid, x, y) {
-        if (_.isString(tileLayer)) {
-            tileLayer = A_.level.findLayerByName(tileLayer);
-        }
-        if (!tileLayer) {
-            return;
-        }
-        var tile = tileLayer.tilemap.setTile(gid, x, y);
-        return tile;
-    },
-    createEntities: function (entities) {
-        if (!entities.length)
-            return;
-
-        var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
-                this.sprites : this.tiles;
-        _.each(entities, function (entity) {
-            levelEntities.push(entity);
-        });
-        entities.length = 0;
-    },
-    destroyEntity: function (entity) {
-        if (entity instanceof A_.SPRITES.Animated) {
-            if (!_.contains(this.sprites, entity))
-                return;
-            entity.clear();
-            this.sprites.splice(this.sprites.indexOf(entity), 1);
-        }
-        else if (entity instanceof A_.TILES.Tile) {
-            if (!_.contains(this.tiles, entity))
-                return;
-            entity.tilemap.unsetTile(entity.mapPosition.x, entity.mapPosition.y);
-        }
-    },
-    destroyEntities: function (entities) {
-        _.each(entities, function (entity) {
-            this.destroyEntity(entity)
-        }, this);
-        entities.length = 0;
-    },
-    // TODO: Create a separate js to handle sound
-    createSound: function (props) {
-//        var level = props.parent.level;
-        var level = this;
-        _.each(props["urls"], function (url, i, list) {
-            list[i] = "sounds/" + level.directoryPrefix + url;
-        }, this);
-        var sound = new Howl(props);
-        level.sounds.push(sound);
-        return sound;
-    },
-    destroySounds: function () {
-        _.each(this.sounds, function (sound) {
-            sound.unload();
-        });
-        this.sounds.length = 0;
-    },
-    // LAYER management
     addLayer: function (layer) {
         this.layers.push(layer);
         this.container.addChild(layer);
@@ -211,6 +139,78 @@ A_.LEVEL.Level = Class.extend({
         sprite.baked = true;
         return sprite;
     },
+    // ENTITIES management
+    createSprite: function (SpriteClass, layer, x, y, props) {
+        if (!SpriteClass)
+            return;
+
+        if (!layer) {
+            layer = this.layers[0];
+        }
+
+        var sprite = new SpriteClass(layer, x, y, props);
+        sprite.setPosition(x, y);
+        sprite.onCreation();
+
+        this.spritesToCreate.push(sprite);
+        return sprite;
+    },
+    createTile: function (tileLayer, gid, x, y) {
+        if (_.isString(tileLayer)) {
+            tileLayer = this.level.findLayerByName(tileLayer);
+        }
+        if (!tileLayer) {
+            return;
+        }
+        var tile = tileLayer.tilemap.setTile(gid, x, y);
+        return tile;
+    },
+    createEntities: function (entities) {
+        if (!entities.length)
+            return;
+
+        var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
+                this.sprites : this.tiles;
+        _.each(entities, function (entity) {
+            levelEntities.push(entity);
+        });
+        entities.length = 0;
+    },
+    destroyEntity: function (entity) {
+        if (entity instanceof A_.SPRITES.Animated) {
+            if (!_.contains(this.sprites, entity))
+                return;
+            entity.clear();
+            this.sprites.splice(this.sprites.indexOf(entity), 1);
+        }
+        else if (entity instanceof A_.TILES.Tile) {
+            if (!_.contains(this.tiles, entity))
+                return;
+            entity.tilemap.unsetTile(entity.mapPosition.x, entity.mapPosition.y);
+        }
+    },
+    destroyEntities: function (entities) {
+        _.each(entities, function (entity) {
+            this.destroyEntity(entity)
+        }, this);
+        entities.length = 0;
+    },
+    createSound: function (props) {
+        var level = this;
+        _.each(props["urls"], function (url, i, list) {
+            list[i] = "sounds/" + level.directoryPrefix + url;
+        }, this);
+        var sound = new Howl(props);
+        level.sounds.push(sound);
+        return sound;
+    },
+    destroySounds: function () {
+        _.each(this.sounds, function (sound) {
+            sound.unload();
+        });
+        this.sounds.length = 0;
+    },
+    // Level LOOP/UPDATE
     update: function () {
         this.updateEntities();
 
@@ -258,17 +258,13 @@ A_.LEVEL.Level = Class.extend({
     },
     // TRANSFORMATIONS && CAMERA
     setPosition: function (x, y) {
-        if (typeof x === "number" && typeof y === "number") {
-            this.container.position.x = x;
-            this.container.position.y = y;
-            this.processParallax(x, y);
-            this.processScale();
+        this.container.position.x = x;
+        this.container.position.y = y;
+        this.processParallax(x, y);
+        this.processScale();
 
-            this.container.position.x = Math.round(this.container.position.x);
-            this.container.position.y = Math.round(this.container.position.y);
-        } else {
-            return this.container.position;
-        }
+        this.container.position.x = Math.round(this.container.position.x);
+        this.container.position.y = Math.round(this.container.position.y);
     },
     getPosition: function () {
         return this.container.position;
@@ -279,9 +275,6 @@ A_.LEVEL.Level = Class.extend({
             layer.position.x = -x + x * layer.parallax / 100;
             layer.position.y = -y + y * layer.parallax / 100;
         }
-    },
-    createCamera: function () {
-        this.camera = new A_.CAMERA.Camera(A_.game.renderer.view.width, A_.game.renderer.view.height, this.cameraOptions);
     },
     processScale: function () {
         // Transform the position from container's scaled local system  
@@ -300,6 +293,9 @@ A_.LEVEL.Level = Class.extend({
             this.scale = scale;
         }
     },
+    createCamera: function () {
+        this.camera = new A_.CAMERA.Camera(this.game.renderer.view.width, this.game.renderer.view.height, this.cameraOptions);
+    },
     // Layer Z POSITION
     toTopOfContainer: function (layer) {
         this.container.setChildIndex(layer, this.container.children.length - 1);
@@ -313,15 +309,6 @@ A_.LEVEL.Level = Class.extend({
         });
     },
     // MOUSE POSITION
-    mousePosition: function (mousePosition) {
-        // Transform the mouse position from the unscaled stage's global system to
-        // the unscaled scaled gameWorld.container's system. 
-        mousePosition.x /= this.scale;
-        mousePosition.y /= this.scale;
-        mousePosition.x += this.camera.x;
-        mousePosition.y += this.camera.y;
-        return mousePosition;
-    },
     getMouseX: function () {
         var x = this.container.stage.getMousePosition().x / this.scale;
         return x += this.camera.x;
@@ -331,12 +318,17 @@ A_.LEVEL.Level = Class.extend({
         return y += this.camera.y;
     },
     getMousePosition: function () {
-        var mousePosition = this.container.stage.getMousePosition().clone();
-        mousePosition.x /= this.scale;
-        mousePosition.y /= this.scale;
-        mousePosition.x += this.camera.x;
-        mousePosition.y += this.camera.y;
-        return mousePosition;
+        var levelPosition = this.tmpMousePositionHolder;
+        var stagePosition = this.container.stage.getMousePosition();
+        levelPosition.x = stagePosition.x;
+        levelPosition.y = stagePosition.y;
+        
+        levelPosition.x /= this.scale;
+        levelPosition.y /= this.scale;
+        levelPosition.x += this.camera.x;
+        levelPosition.y += this.camera.y;
+        
+        return levelPosition;
     },
     // FIND
     // Layer
@@ -385,7 +377,7 @@ A_.LEVEL.Level = Class.extend({
         });
     },
     findSpriteContainingPoint: function (x, y) {
-        var sprite = _.find(A_.collider.collisionSprites, function (sprite) {
+        var sprite = _.find(this.collider.collisionSprites, function (sprite) {
             return sprite.containsPoint(x, y);
         });
         return sprite;
@@ -395,6 +387,7 @@ A_.LEVEL.Level = Class.extend({
 
     }
 });
+
 A_.LEVEL.Level.inject(A_.INPUT.mouseReactivityInjection);
 
 // TEMPORARY - for debugging purposes only

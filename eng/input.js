@@ -143,35 +143,6 @@ A_.INPUT.processMouseWheel = function(e) {
 }
 window.addEventListener("mousewheel", A_.INPUT.processMouseWheel, false);
 
-A_.INPUT.process = function() {
-    var stageMousePosition = A_.game.stage.getMousePosition().clone();
-    this.mousePosition.screen.x = stageMousePosition.x;
-    this.mousePosition.screen.y = stageMousePosition.y;
-    this.mousePosition.level = A_.level.mousePosition(stageMousePosition);
-};
-A_.INPUT.postprocess = function() {
-    for (var action in this.actions) {
-        this.pressed[action] = false;
-        this.released[action] = false;
-    }
-
-    _.each(A_.level.sprites, function(sprite) {
-        if (sprite.sprite.interactive) {
-            sprite.resetMouseReaction();
-        }
-    });
-
-    _.each(A_.level.tiles, function(tile) {
-        if (tile.sprite.interactive) {
-            tile.resetMouseReaction();
-        }
-    });
-
-    A_.level.resetMouseReaction();
-
-    this.mousewheel = "null";
-};
-
 A_.INPUT.mouseReactivityInjection = {
     initMouseReactivity: function() {
         var that = this;
@@ -213,4 +184,31 @@ A_.INPUT.mouseReactivityInjection = {
         this.rightpressed = false;
         this.rightreleased = false;
     }
+};
+
+/**************************************************************************/
+// ROUTINES
+/**************************************************************************/
+
+A_.INPUT.reset = function(level) {
+    for (var action in this.actions) {
+        this.pressed[action] = false;
+        this.released[action] = false;
+    }
+
+    _.each(level.sprites, function(sprite) {
+        if (sprite.sprite.interactive) {
+            sprite.resetMouseReaction();
+        }
+    });
+
+    _.each(level.tiles, function(tile) {
+        if (tile.sprite.interactive) {
+            tile.resetMouseReaction();
+        }
+    });
+
+    level.resetMouseReaction();
+
+    this.mousewheel = "null";
 };
