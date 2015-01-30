@@ -5,7 +5,7 @@
             <url>eng/sprites/animated.js</url>
             <bookmark id="13">
                 <name/>
-                <line>510</line>
+                <line>525</line>
                 <key/>
             </bookmark>
         </file>
@@ -13,12 +13,12 @@
             <url>eng/game.js</url>
             <bookmark id="15">
                 <name/>
-                <line>114</line>
+                <line>21</line>
                 <key/>
             </bookmark>
             <bookmark id="14">
                 <name/>
-                <line>341</line>
+                <line>63</line>
                 <key/>
             </bookmark>
         </file>
@@ -55,16 +55,6 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/config.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/platformer.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/animated.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/kinematic.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tile.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/colliding.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/game.js</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

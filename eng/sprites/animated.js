@@ -15,9 +15,6 @@ A_.SPRITES.Animated = Class.extend({
             }
         }
 
-//        if (_.isUndefined(this.level)) {
-//            this.level = parent.level || A_.level;
-//        }
         this.level = parent.level;
 
         // If this sprite displays an image or features animations...
@@ -80,8 +77,26 @@ A_.SPRITES.Animated = Class.extend({
             this.layer = parent;
             this.layer.addChild(this.sprite);
         }
+
+        this.setFollowee(this.followee);
+        if (this.player) {
+            A_.player = this;
+//            delete(this.player);
+        }
+        
 //        this.parent = parent;
 //        this.position(x, y);
+    },
+    setFollowee: function (isFollowee) {
+        if (isFollowee) {
+            this.level.camera.followee = this;
+            this.followee = true;
+            return;
+        }
+        else if (this.level.camera.followee === this) {
+            this.level.camera.followee = null;
+        } 
+        this.followee = false;
     },
     // Create a transparent PIXI.Sprite that will store, as a parent,
     // all animations, ie. PIXI.MovieClip-s and all PIXI.Sprite-s.
@@ -192,15 +207,15 @@ A_.SPRITES.Animated = Class.extend({
     },
     isOnScreen: function () {
         var bounds = this.sprite.getBounds();
-        var view = this.level.game.renderer.view;
+        var renderer = this.level.game.renderer;
 
         if (bounds.x + bounds.width < 0)
             return false;
-        if (bounds.x > view.width)
+        if (bounds.x > renderer.width)
             return false;
         if (bounds.y + bounds.height < 0)
             return false;
-        if (bounds.y > view.height)
+        if (bounds.y > renderer.height)
             return false;
 
         return true;
@@ -582,9 +597,7 @@ A_.SPRITES.Animated = Class.extend({
         this.level.spritesToDestroy.push(this);
     },
     clear: function () {
-        if (this === this.level.camera.followee) {
-            this.level.camera.followee = null;
-        }
+        this.setFollowee(false);
         this.sprite.parent.removeChild(this.sprite);
     },
     onDestruction: function () {

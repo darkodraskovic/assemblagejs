@@ -56,6 +56,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     controlled: true,
     followee: true,
+    player: true,
     init: function(parent, x, y, props) {
         this.collisionResponse = "active";
         this._super(parent, x, y, props);

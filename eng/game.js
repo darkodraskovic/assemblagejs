@@ -1,12 +1,7 @@
 A_.Game = Class.extend({
     isRunning: false,
     init: function () {
-        this.createRenderer();
-
-        // Level management
-        this.levels = {};
-        this.mapsData = {};
-        this.level = null;
+        this.createRenderer(A_.CONFIG.screen, A_.CONFIG.renderer);
 
         this.levelManager = new A_.LEVEL.LevelManager(this);
 
@@ -17,14 +12,10 @@ A_.Game = Class.extend({
         // Cf. run.js
         requestAnimFrame(runGame);
     },
-    createRenderer: function () {
-        this.rendererOptions = A_.CONFIG.renderer;
-        this.screen = A_.CONFIG.screen;
-
-        this.stage = new PIXI.Stage(this.screen.color);
-        this.renderer = PIXI.autoDetectRenderer(this.screen.width, this.screen.height, this.rendererOptions);
+    createRenderer: function (screenOptions, rendererOptions) {
+        this.stage = new PIXI.Stage(screenOptions.color);
+        this.renderer = PIXI.autoDetectRenderer(screenOptions.width, screenOptions.height, rendererOptions);
         document.body.appendChild(this.renderer.view);
-//        A_.renderer = this.renderer;
     },
     // GAME LOOP
     stop: function () {
@@ -56,11 +47,11 @@ A_.Game = Class.extend({
         this.time = now;
         this.dt /= 1000;
 
-        this.levelManager.level.update();
+        this.levelManager.activeLevel.update();
 
+        A_.INPUT.reset();
+        
         this.renderer.render(this.stage);
-
-        A_.INPUT.reset(this.levelManager.level);
 
         // State changed during the game loop
         if (!this.isRunning) {

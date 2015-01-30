@@ -15,18 +15,18 @@ var levelManager = A_.game.levelManager;
 //});
 
 // PLATFORMER
-//levelManager.loadAssets(platformer1, function () {
-//    levelManager.createLevel(platformer1);
-//    levelManager.activateLevel(levelManager.levels.platformer1);
-//});
-
-levelManager.loadAssets(skorpio1, function () {
-    levelManager.createLevel(skorpio1);
-    levelManager.loadAssets(platformer1, function () {
-        levelManager.createLevel(platformer1);
-        levelManager.activateLevel(levelManager.levels.platformer1);
-    });
+levelManager.loadAssets(platformer1, function () {
+    levelManager.createLevel(platformer1);
+    levelManager.activateLevel(levelManager.levels.platformer1);
 });
+
+//levelManager.loadAssets(skorpio1, function () {
+//    levelManager.createLevel(skorpio1);
+//    levelManager.loadAssets(platformer1, function () {
+//        levelManager.createLevel(platformer1);
+//        levelManager.activateLevel(levelManager.levels.platformer1);
+//    });
+//});
 
 
 // FARER

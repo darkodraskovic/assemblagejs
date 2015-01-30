@@ -116,7 +116,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.destroyCollisionPolygon(this.collisionPolygon);
     },
     removeCollisionResponse: function () {
-//        var collider = A_.collider;
         var collider = this.level.collider;
         if (_.contains(collider.collisionSprites, this)) {
             collider.collisionSprites.splice(collider.collisionSprites.indexOf(this), 1);

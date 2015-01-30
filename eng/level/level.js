@@ -2,8 +2,10 @@ A_.LEVEL.Level = Class.extend({
     width: 0,
     height: 0,
     scale: 1,
+    scaleSpeed: 2,
     init: function (game) {
         this.game = game;
+
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.addMouseReactivity
         this.sprite = this.container;
@@ -13,22 +15,27 @@ A_.LEVEL.Level = Class.extend({
         this.tileLayers = [];
         this.spriteLayers = [];
         this.imageLayers = [];
+        // All previous layers.
         this.layers = [];
         this.debugLayer = null;
 
         this.sprites = [];
+        // Tiles that are updated.
         this.tiles = [];
         this.sounds = [];
+        // Used for sprite management.
         this.spritesToCreate = [];
         this.tilesToCreate = [];
         this.spritesToDestroy = [];
         this.tilesToDestroy = [];
 
+        // Used to calculate the level position of sprites.
         this.origin = new PIXI.Point(0, 0);
+        // The level size defaults to screen witdth x height.
+        this.width = this.game.renderer.width;
+        this.height = this.game.renderer.height;
 
-        this.width = this.game.screen.width;
-        this.height = this.game.screen.height;
-
+        // Helper object. Its purpose is to avoid getMousePosition() object creation.
         this.tmpMousePositionHolder = {x: 0, y: 0};
 
         this.collider = new A_.COLLISION.Collider();
@@ -37,6 +44,8 @@ A_.LEVEL.Level = Class.extend({
     createEmptyLayer: function (name) {
         var layer = new PIXI.DisplayObjectContainer();
         layer.baked = false;
+        // Used with tile layers. Has no effect on sprite layers where collision is 
+        // defined per sprite class.
         layer.collision = false;
         layer.parallax = 100;
         layer.level = this;
@@ -44,10 +53,8 @@ A_.LEVEL.Level = Class.extend({
             layer.name = name;
         return layer;
     },
-    createImageLayer: function (name, props, layer) {
-        if (!layer) {
-            layer = this.createEmptyLayer(name);
-        }
+    createImageLayer: function (name, props) {
+        var layer = this.createEmptyLayer(name);
 
         if (!props.width) {
             props.width = this.width;
@@ -58,7 +65,8 @@ A_.LEVEL.Level = Class.extend({
         if (!props.level) {
             props.level = this;
         }
-        layer.addChild(new A_.SCENERY.TiledSprite(props).sprite);
+
+        this.createImage(layer, props);
 
         this.addImageLayer(layer);
         return layer;
@@ -115,10 +123,10 @@ A_.LEVEL.Level = Class.extend({
         this.debugLayer.name = "debug";
         this.addLayer(layer);
     },
-    // If layer's object do not update their properties, such as animation or position
-    // pre-bake layer, ie. make a single sprite/texture out of layer's objects.
-    bakeLayer: function (layer, level) {
-        var renderTexture = new PIXI.RenderTexture(level.width, level.height);
+    // If layer's objects do not update their properties, such as animation or position,
+    // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
+    bakeLayer: function (layer) {
+        var renderTexture = new PIXI.RenderTexture(this.width, this.height);
         // Create a sprite that uses the render texture.
         var sprite = new PIXI.Sprite(renderTexture);
         // Render the layer to the render texture.
@@ -139,13 +147,19 @@ A_.LEVEL.Level = Class.extend({
         sprite.baked = true;
         return sprite;
     },
+    // IMAGES
+    createImage: function (layer, props) {
+        var image = new A_.SCENERY.TiledSprite(layer, props);
+        layer.addChild(image.sprite);
+        return image;
+    },
     // ENTITIES management
     createSprite: function (SpriteClass, layer, x, y, props) {
         if (!SpriteClass)
             return;
 
         if (!layer) {
-            layer = this.layers[0];
+            layer = this.layers[this.layers.length - 1];
         }
 
         var sprite = new SpriteClass(layer, x, y, props);
@@ -191,7 +205,7 @@ A_.LEVEL.Level = Class.extend({
     },
     destroyEntities: function (entities) {
         _.each(entities, function (entity) {
-            this.destroyEntity(entity)
+            this.destroyEntity(entity);
         }, this);
         entities.length = 0;
     },
@@ -216,28 +230,32 @@ A_.LEVEL.Level = Class.extend({
 
         this.manageEntities();
 
+        this.sortEntities();
+
         if (this.debugLayer) {
             _.each(this.collider.collisionSprites, function (sprite) {
                 sprite.updateDebug();
             });
         }
-        // TODO: Currently only sorting on y axis. Add a generic sort routine
-        // based on an arbitrary property.
-        _.each(this.spriteLayers, function (layer) {
-            if (layer["sort"]) {
-                this.sortLayer(layer);
+
+        if (A_.INPUT.mousewheel) {
+            if (A_.INPUT.mousewheel === "forward") {
+                this.setScale(this.scale + this.scaleSpeed * A_.game.dt);
+            } else {
+                this.setScale(this.scale - this.scaleSpeed * A_.game.dt);
             }
-        }, this);
+        }
 
         this.camera.update();
 
         this.setPosition(-this.camera.x, -this.camera.y);
 
+        this.resetInput();
     },
     updateEntities: function () {
         // Active tiles' update
-        _.each(this.tiles, function (sprite) {
-            sprite.update();
+        _.each(this.tiles, function (tile) {
+            tile.update();
         });
 
         _.each(this.sprites, function (sprite) {
@@ -256,6 +274,31 @@ A_.LEVEL.Level = Class.extend({
         this.createEntities(this.tilesToCreate);
         this.createEntities(this.spritesToCreate);
     },
+    sortEntities: function () {
+        // TODO: Currently only sorting on y axis. Add a generic sort routine
+        // based on an arbitrary property.
+        _.each(this.spriteLayers, function (layer) {
+            if (layer["sort"]) {
+                this.sortLayer(layer);
+            }
+        }, this);
+    },
+    // MOUSE INPUT
+    resetInput: function () {
+        _.each(this.tiles, function (tile) {
+            if (tile.sprite.interactive) {
+                tile.resetMouseReaction();
+            }
+        });
+
+        _.each(this.sprites, function (sprite) {
+            if (sprite.sprite.interactive) {
+                sprite.resetMouseReaction();
+            }
+        });
+
+        this.resetMouseReaction();
+    },
     // TRANSFORMATIONS && CAMERA
     setPosition: function (x, y) {
         this.container.position.x = x;
@@ -266,12 +309,9 @@ A_.LEVEL.Level = Class.extend({
         this.container.position.x = Math.round(this.container.position.x);
         this.container.position.y = Math.round(this.container.position.y);
     },
-    getPosition: function () {
-        return this.container.position;
-    },
     processParallax: function (x, y) {
-        for (var i = 0; i < this.container.children.length; i++) {
-            var layer = this.container.children[i];
+        for (var i = 0; i < this.layers.length; i++) {
+            var layer = this.layers[i];
             layer.position.x = -x + x * layer.parallax / 100;
             layer.position.y = -y + y * layer.parallax / 100;
         }
@@ -283,7 +323,7 @@ A_.LEVEL.Level = Class.extend({
         this.container.position.y *= this.scale;
     },
     setScale: function (scale) {
-        if (scale > 0.25 && scale < 5) {
+        if (scale > 0.25 && scale < 3) {
             // scale the game world according to scale
             this.container.scale = new PIXI.Point(scale, scale);
 
@@ -294,7 +334,8 @@ A_.LEVEL.Level = Class.extend({
         }
     },
     createCamera: function () {
-        this.camera = new A_.CAMERA.Camera(this.game.renderer.view.width, this.game.renderer.view.height, this.cameraOptions);
+        this.cameraOptions.level = this;
+        this.camera = new A_.CAMERA.Camera(this.game.renderer.width, this.game.renderer.height, this.cameraOptions);
     },
     // Layer Z POSITION
     toTopOfContainer: function (layer) {
@@ -322,12 +363,12 @@ A_.LEVEL.Level = Class.extend({
         var stagePosition = this.container.stage.getMousePosition();
         levelPosition.x = stagePosition.x;
         levelPosition.y = stagePosition.y;
-        
+
         levelPosition.x /= this.scale;
         levelPosition.y /= this.scale;
         levelPosition.x += this.camera.x;
         levelPosition.y += this.camera.y;
-        
+
         return levelPosition;
     },
     // FIND
@@ -345,10 +386,9 @@ A_.LEVEL.Level = Class.extend({
     },
     // Sprite
     findSpriteByName: function (name) {
-        var sprite = _.find(this.sprites, function (sprite) {
+        return _.find(this.sprites, function (sprite) {
             return sprite.name === name;
         });
-        return sprite;
     },
     findSpritesByName: function (name) {
         return _.filter(this.sprites, function (sprite) {
@@ -366,10 +406,9 @@ A_.LEVEL.Level = Class.extend({
         });
     },
     findSpriteByClass: function (spriteClass) {
-        var sprite = _.find(this.sprites, function (sprite) {
+        return _.find(this.sprites, function (sprite) {
             return sprite instanceof spriteClass;
         });
-        return sprite;
     },
     findSpritesByClass: function (spriteClass) {
         return _.filter(this.sprites, function (sprite) {
@@ -377,10 +416,9 @@ A_.LEVEL.Level = Class.extend({
         });
     },
     findSpriteContainingPoint: function (x, y) {
-        var sprite = _.find(this.collider.collisionSprites, function (sprite) {
+        return _.find(this.collider.collisionSprites, function (sprite) {
             return sprite.containsPoint(x, y);
         });
-        return sprite;
     },
     // TODO
     findSpriteByID: function () {
@@ -389,15 +427,3 @@ A_.LEVEL.Level = Class.extend({
 });
 
 A_.LEVEL.Level.inject(A_.INPUT.mouseReactivityInjection);
-
-// TEMPORARY - for debugging purposes only
-window.addEventListener("mousewheel", mouseWheelHandler, false);
-var scaleDelta = 0.25;
-function mouseWheelHandler(e) {
-    var scaleDelta = 0.02;
-    if (e.wheelDelta > 0) {
-        A_.level.setScale(A_.level.scale + scaleDelta);
-    } else {
-        A_.level.setScale(A_.level.scale - scaleDelta);
-    }
-}

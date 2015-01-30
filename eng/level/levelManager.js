@@ -72,31 +72,28 @@ A_.LEVEL.LevelManager = Class.extend({
             window.console.log("Created GENERIC LEVEL :)");
             level.createDummyLayer();
         }
-
-
+        
         return level;
     },
     activateLevel: function (level) {
-        this.level = level;
+        this.activeLevel = level;
         A_.level = level;
 
         this.collider = level.collider;
-        A_.collider = level.collider;
 
-        this.level.setScale(this.level.scale);
+        this.activeLevel.setScale(this.activeLevel.scale);
 
-        this.game.stage.addChild(this.level.container);
+        this.game.stage.addChild(this.activeLevel.container);
         window.console.log("Level STARTS...");
 
         this.game.start();
     },
     deactivateLevel: function () {
         this.collider = null;
-        A_.collider = null;
 
-        this.game.stage.removeChild(this.level.container);
+        this.game.stage.removeChild(this.activeLevel.container);
 
-        this.level = null;
+        this.activeLevel = null;
         A_.level = null;
     },
     destroyLevel: function (level) {

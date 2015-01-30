@@ -95,13 +95,13 @@ A_.CAMERA.Camera = Class.extend({
         {
             this.y = 0;
         }
-        if (this.x + this.width > A_.level.width)
+        if (this.x + this.width > this.level.width)
         {
-            this.x = A_.level.width - this.width;
+            this.x = this.level.width - this.width;
         }
-        if (this.y + this.height > A_.level.height)
+        if (this.y + this.height > this.level.height)
         {
-            this.y = A_.level.height - this.height;
+            this.y = this.level.height - this.height;
         }
     },
     update: function () {
@@ -117,7 +117,5 @@ A_.CAMERA.Camera = Class.extend({
         if (this.worldBounded) {
             this.bind();
         }
-
-//        A_.level.setPosition(-this.x, -this.y);
     }
 });

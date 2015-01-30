@@ -191,7 +191,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     processSlope: function (response) {
         this.slopeN.copy(response.overlapN);
         this.slopeN.perp();
-        var angle = A_.UTILS.angleTo(A_.level.origin, this.slopeN);
+        var angle = A_.UTILS.angleTo(this.level.origin, this.slopeN);
         if (angle !== 0) {
             if (angle > -Math.PI / 2 && angle < Math.PI / 2) {
                 this.setXRelative(response.overlapV.x);

@@ -44,7 +44,8 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 img = img.substring(img.lastIndexOf("/") + 1);
             }
 
-            level.createImageLayer(layer.name, {image: img, width: level.width, height: level.height}, layer);
+            level.createImage(layer, {image: img, width: level.width, height: level.height});
+            level.addImageLayer(layer);
         }
 
         // if current layer is TILE LAYER
@@ -115,12 +116,9 @@ A_.TILES.createTiledMap = function (mapData, level) {
 
                 args["name"] = oData["name"];
                 args["type"] = oData["type"];
-//                args.level = level;
 
                 // POLY || RECT
                 if (oData.polygon || oData.type === "Rectangle") {
-//                    args.collision = {};
-//                    args.collision.response = args.collisionResponse;
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
                         args.collisionPolygon = collisionPolygon;
@@ -128,7 +126,6 @@ A_.TILES.createTiledMap = function (mapData, level) {
                         o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
-//                        args.collision.size = {w: oData["width"], h: oData["height"]};
                         args.collisionW = oData["width"];
                         args.collisionH = oData["height"];
                         var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
@@ -144,21 +141,8 @@ A_.TILES.createTiledMap = function (mapData, level) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData);
                         args.collisionPolygon = collisionPolygon;
                     }
-//                    else {
-//                        collisionPolygon = null;
-//                    }
-
-//                    window.console.log(args.level);
                     var o = level.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(o.getWidth() / 2, -o.getHeight() / 2);
-
-                    if (o.followee) {
-//                        game.cameraOptions.followee = o;
-                        level.camera.followee = o;
-                    }
-                    if (oData["type"] === "Player") {
-                        A_.player = o;
-                    }
                 }
                 o.setRotation(oData["rotation"].toRad());
             }

@@ -5,6 +5,8 @@ var Ball = A_.SPRITES.Topdown.extend({
     collisionResponse: "dynamic",
     name: "ball",
     elasticity: 2,
+    followee: true,
+    player: true,
     init: function (parent, x, y, props) {
         this.controlled = true;
         
@@ -26,8 +28,6 @@ var tileH = 48;
 
 var mapDataFloors = [];
 var mapDataWalls = [];
-
-var player;
 
 // PROCEDURES
 function createRoguelikeMap(level) {
@@ -67,9 +67,8 @@ function createRotLayers(level) {
 
 
     var layer = level.createSpriteLayer();
-    player = level.createSprite(Ball, layer, 256, 256);
-    level.camera.followee = player;
+    level.createSprite(Ball, layer, 256, 256);
     
-    A_.game.activateLevel(level);
+    A_.game.levelManager.activateLevel(level);
 }
 

@@ -3,6 +3,8 @@ var Player = A_.SPRITES.Kinematic.extend({
     animSheet: "player.png",
     collisionResponse: "active",
     moveAtAngle: true,
+    followee: true,
+    player: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.maxSpeed = 512;
@@ -198,7 +200,6 @@ var Explosion = A_.SPRITES.Animated.extend({
 });
 
 // VARS & CONSTS
-var player;
 var numRotors = 40;
 
 // PROCEDURES
@@ -217,7 +218,7 @@ populateLevel = function (level) {
     
     window.console.log("created FARER levels");
 
-    player = level.camera.followee = level.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
+    level.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
     for (var i = 0; i < numRotors; i++) {
         level.createSprite(Rotor, spriteLayer, _.random(0, level.width), _.random(0, level.height));
     }

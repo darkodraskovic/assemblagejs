@@ -190,25 +190,11 @@ A_.INPUT.mouseReactivityInjection = {
 // ROUTINES
 /**************************************************************************/
 
-A_.INPUT.reset = function(level) {
+A_.INPUT.reset = function() {
     for (var action in this.actions) {
         this.pressed[action] = false;
         this.released[action] = false;
     }
 
-    _.each(level.sprites, function(sprite) {
-        if (sprite.sprite.interactive) {
-            sprite.resetMouseReaction();
-        }
-    });
-
-    _.each(level.tiles, function(tile) {
-        if (tile.sprite.interactive) {
-            tile.resetMouseReaction();
-        }
-    });
-
-    level.resetMouseReaction();
-
-    this.mousewheel = "null";
+    this.mousewheel = null;
 };

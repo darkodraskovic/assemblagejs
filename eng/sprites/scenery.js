@@ -1,5 +1,7 @@
 A_.SCENERY.TiledSprite = Class.extend({
-    init: function (props) {
+    init: function (parent, props) {
+        this.level = parent.level;
+        
         for (var prop in props) {
             this[prop] = props[prop];
         }

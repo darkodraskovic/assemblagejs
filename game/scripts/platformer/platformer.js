@@ -25,8 +25,7 @@ A_.TILES.Tile.inject({
     },
     update: function () {
         this._super();
-//        if (this.leftpressed && A_.player.mode === "building") {
-        if (this.leftpressed) {
+        if (this.leftpressed && A_.player.mode === "building") {
             this.toggleTurned();
             this.tilemap.level.createSound({
                 urls: ['e.wav'],
@@ -113,6 +112,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     animSheet: "player.png",
     controlled: true,
     followee: true,
+    player: true,
 //    bounciness: 0.0000000001,
 //    drawDebugGraphics: true,
     onCreation: function () {
