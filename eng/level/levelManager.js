@@ -1,10 +1,11 @@
 A_.LEVEL.LevelManager = Class.extend({
-    init: function (game) {
+    init: function(game) {
         this.game = game;
         this.mapsData = {};
         this.levels = {};
     },
-    loadAssets: function (data, callback) {
+    // Level LOADING
+    loadAssets: function(data, callback) {
         if (!data) {
             data = {
                 name: "empty",
@@ -13,41 +14,37 @@ A_.LEVEL.LevelManager = Class.extend({
                 scripts: [],
                 map: "",
                 graphics: [],
-                sounds: [],
+                sounds: []
             };
         }
-        this.data = data;
-        this.callback = callback;
-
-        this.activateAssetsLoader();
+        this.activateAssetsLoader(callback, data);
     },
-    activateAssetsLoader: function () {
-        this.loader = new A_.LEVEL.Loader(this.data.directoryPrefix);
-        this.loader.loadScripts(this.onScriptsLoaded.bind(this), this.data.scripts);
+    activateAssetsLoader: function(callback, data) {
+        var loader = new A_.LEVEL.Loader(data.directoryPrefix);
+        loader.loadScripts(this.onScriptsLoaded.bind(this, callback, data, loader), data.scripts);
     },
-    onScriptsLoaded: function () {
+    onScriptsLoaded: function(callback, data, loader) {
         window.console.log("Loaded scripts");
-        this.loader.loadMap(this.onMapLoaded.bind(this), this.data.map);
+        loader.loadMap(this.onMapLoaded.bind(this, callback, data, loader), data.map);
     },
-    onMapLoaded: function () {
+    onMapLoaded: function(callback, data, loader) {
         window.console.log("Loaded map");
-        this.mapsData[this.data.name] = this.loader.mapDataParsed;
-        this.loader.loadGraphics(this.onGraphicsLoaded.bind(this), this.data.graphics);
+        this.mapsData[data.name] = loader.mapDataParsed;
+        loader.loadGraphics(this.onGraphicsLoaded.bind(this, callback, data, loader), data.graphics);
     },
-    onGraphicsLoaded: function () {
+    onGraphicsLoaded: function(callback, data, loader) {
         window.console.log("Loaded graphics");
-        this.loader.loadSounds(this.onSoundsLoaded.bind(this), this.data.sounds);
+        loader.loadSounds(this.onSoundsLoaded.bind(this, callback), data.sounds);
     },
-    onSoundsLoaded: function () {
+    onSoundsLoaded: function(callback) {
         window.console.log("Loaded sounds");
 
-        this.loader = null;
-        this.data = null;
-
-        if (this.callback)
-            this.callback();
+        if (callback) {
+            callback();
+        }
     },
-    createLevel: function (data) {
+    // Level CREATION & DESTRUCTION
+    createLevel: function(data) {
         var level = new A_.LEVEL.Level(this.game);
         level.data = data;
 
@@ -65,17 +62,33 @@ A_.LEVEL.LevelManager = Class.extend({
         if (level.data.type === "tiled") {
             window.console.log("Created TILED LEVEL :)");
             A_.TILES.createTiledMap(this.mapsData[level.name], level);
-            level.createEntities(level.spritesToCreate, level);
-            level.createEntities(level.tilesToCreate, level);
+            level.createEntities(level.spritesToCreate);
+            level.createEntities(level.tilesToCreate);
         }
         else {
             window.console.log("Created GENERIC LEVEL :)");
             level.createDummyLayer();
         }
-        
+
         return level;
     },
-    activateLevel: function (level) {
+    destroyLevel: function(level) {
+        delete this.mapsData[level.name];
+
+        this.stage.removeChild(level.container);
+
+        this.destroySounds(level);
+
+        delete this.levels[level.name];
+    },
+    // Level ACTIVATION & DEACTIVATION
+    // Activation
+    activateLevel: function(level) {
+        if (this.activeLevel) {
+            this.deactivateLevel(this.activateLevel.bind(this, level));
+            return;
+        } 
+
         this.activeLevel = level;
         A_.level = level;
 
@@ -86,23 +99,45 @@ A_.LEVEL.LevelManager = Class.extend({
         this.game.stage.addChild(this.activeLevel.container);
         window.console.log("Level STARTS...");
 
+        this.activeLevel.start();
         this.game.start();
     },
-    deactivateLevel: function () {
+    // Deactivation
+    deactivateLevel: function(callback) {
+        if (!this.activeLevel)
+            return;
+
+        this.activeLevel.stop(this.onActiveLevelStopped.bind(this, callback));
+    },
+    onActiveLevelStopped: function(callback) {
+        this.game.stop(this.onGameStopped.bind(this, callback));
+    },
+    onGameStopped: function(callback) {
         this.collider = null;
 
         this.game.stage.removeChild(this.activeLevel.container);
 
         this.activeLevel = null;
         A_.level = null;
+        if (callback) {
+            callback();
+        }
     },
-    destroyLevel: function (level) {
-        delete this.mapsData[level.name];
-
-        this.stage.removeChild(level.container);
-
-        this.destroySounds(level);
-
-        delete this.levels[level.name];
+    // COMPOUND routines
+    launchLevel: function(data) {
+        if (this.activeLevel) {
+            this.deactivateLevel(this.launchLevel.bind(this, data));
+        } else {
+            this.loadAssets(data, function() {
+                var level = this.createLevel(data);
+                this.activateLevel(level);
+            }.bind(this));
+        }
+    },
+    restartLevel: function(level) {
+        this.deactivateLevel(function() {
+            var l = this.createLevel(level.data);
+            this.activateLevel(l);
+        }.bind(this));
     }
 });

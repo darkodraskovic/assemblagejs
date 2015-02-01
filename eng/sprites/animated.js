@@ -67,8 +67,6 @@ A_.SPRITES.Animated = Class.extend({
 
         this.prevX = 0;
         this.prevY = 0;
-//        this.rotation(0);
-//        this.alpha(1);
 
         if (parent instanceof A_.SPRITES.Animated) {
             parent.addSprite(this);
@@ -81,7 +79,6 @@ A_.SPRITES.Animated = Class.extend({
         this.setFollowee(this.followee);
         if (this.player) {
             A_.player = this;
-//            delete(this.player);
         }
         
 //        this.parent = parent;

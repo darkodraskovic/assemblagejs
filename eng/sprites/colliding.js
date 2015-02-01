@@ -10,6 +10,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     },
     onCreation: function () {
         this._super();
+        this.synchCollisionPolygon();
     },
     createCollisionPolygon: function (polygon) {
         if (!this.collisionPolygons) {

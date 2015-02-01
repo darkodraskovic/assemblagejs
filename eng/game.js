@@ -1,6 +1,6 @@
 A_.Game = Class.extend({
     isRunning: false,
-    init: function () {
+    init: function() {
         this.createRenderer(A_.CONFIG.screen, A_.CONFIG.renderer);
 
         this.levelManager = new A_.LEVEL.LevelManager(this);
@@ -12,28 +12,33 @@ A_.Game = Class.extend({
         // Cf. run.js
         requestAnimFrame(runGame);
     },
-    createRenderer: function (screenOptions, rendererOptions) {
+    createRenderer: function(screenOptions, rendererOptions) {
         this.stage = new PIXI.Stage(screenOptions.color);
         this.renderer = PIXI.autoDetectRenderer(screenOptions.width, screenOptions.height, rendererOptions);
         document.body.appendChild(this.renderer.view);
     },
     // GAME LOOP
-    stop: function () {
+    stop: function(callback) {
         if (this.isRunning) {
             this.isRunning = false;
             this.stopped = true;
+            this.onStoppedCallback = callback;
         }
     },
-    onStopped: function () {
-        window.console.log("stopped");
+    onStopped: function() {
+        window.console.log("game stopped");
+        if (this.onStoppedCallback) {
+            this.onStoppedCallback();
+            this.onStoppedCallback = null;
+        }
     },
-    start: function () {
+    start: function() {
         if (!this.isRunning) {
             this.time = new Date().getTime();
             this.isRunning = true;
         }
     },
-    run: function () {
+    run: function() {
         if (!this.isRunning) {
             if (this.stopped) {
                 this.stopped = false;
@@ -46,16 +51,18 @@ A_.Game = Class.extend({
         this.dt = now - this.time;
         this.time = now;
         this.dt /= 1000;
-
+        
         this.levelManager.activeLevel.update();
 
         A_.INPUT.reset();
-        
-        this.renderer.render(this.stage);
 
-        // State changed during the game loop
-        if (!this.isRunning) {
-            this.onStopped();
-        }
+        this.renderer.render(this.stage);
     }
 });
+
+function runGame() {
+    A_.game.run();
+
+    requestAnimFrame(runGame);
+}
+
