@@ -54,9 +54,9 @@ farer1 = {
     directoryPrefix: "farer",
     scripts: ["farer"],
     map: "",
-    graphics: ["bullet.png", "Explosion.png", "laser.png", 
+    graphics: ["bullet.png", "Explosion.png", "laser.png",
         "nebula.png", "player.png", "rotor.png", "starfield.png"],
-    sounds: [["bullet.wav"], ["explosion.mp3"],["laser-beam.mp3"]],
+    sounds: [["bullet.wav"], ["explosion.mp3"], ["laser-beam.mp3"]],
     camera: A_.CONFIG.camera
 };
 
@@ -77,8 +77,12 @@ platformer1 = {
     directoryPrefix: "platformer",
     scripts: ["platformer"],
     map: "level1",
-    graphics: ["ball.png", "sci-fi-platformer-tiles-32x32.png", "moving_platform.png","player.png",
-    "Explosion.png", "undead.png"],
-    sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"], ["jetpack.wav"],["jump.wav"]],
-    camera: A_.CONFIG.camera
+    graphics: ["ball.png", "sci-fi-platformer-tiles-32x32.png", "moving_platform.png", "player.png",
+        "Explosion.png", "undead.png"],
+    sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"], ["jetpack.wav"], ["jump.wav"]],
+    camera: {
+        innerBoundOffset: 0.25,
+        worldBounded: true,
+        followType: "bounded"
+    }
 };

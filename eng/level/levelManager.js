@@ -2,7 +2,10 @@ A_.LEVEL.LevelManager = Class.extend({
     init: function(game) {
         this.game = game;
         this.mapsData = {};
-        this.levels = {};
+        // An array of level names.
+        this.loadedLevels = [];
+        // A map of level objects.
+        this.createdLevels = {};
     },
     // Level LOADING
     loadAssets: function(data, callback) {
@@ -34,22 +37,27 @@ A_.LEVEL.LevelManager = Class.extend({
     },
     onGraphicsLoaded: function(callback, data, loader) {
         window.console.log("Loaded graphics");
-        loader.loadSounds(this.onSoundsLoaded.bind(this, callback), data.sounds);
+        loader.loadSounds(this.onSoundsLoaded.bind(this, callback, data), data.sounds);
     },
-    onSoundsLoaded: function(callback) {
+    onSoundsLoaded: function(callback, data) {
         window.console.log("Loaded sounds");
+        window.console.log("Loaded EVERYTHING :)");
+        
+        this.loadedLevels.push(data.name);
 
         if (callback) {
-            callback();
+            callback();            
         }
     },
     // Level CREATION & DESTRUCTION
     createLevel: function(data) {
         var level = new A_.LEVEL.Level(this.game);
-        level.data = data;
+//        level.data = data;
+        level.data = A_.UTILS.copy(data);
+//        window.console.log(level.data === data);
 
         level.name = level.data.name;
-        this.levels[level.name] = level;
+        this.createdLevels[level.name] = level;
 
         level.directoryPrefix = level.data.directoryPrefix + "/";
 
@@ -73,13 +81,24 @@ A_.LEVEL.LevelManager = Class.extend({
         return level;
     },
     destroyLevel: function(level) {
+        if (this.activeLevel === level) {
+            this.deactivateLevel(this.destroyLevel.bind(this, level));
+            return;
+        }
+        if (!_.contains(this.createdLevels, level)) {
+            window.console.log("not contains");
+            return;
+        }
+        
+
+        level.clear();
+        
         delete this.mapsData[level.name];
-
-        this.stage.removeChild(level.container);
-
-        this.destroySounds(level);
-
-        delete this.levels[level.name];
+        delete this.createdLevels[level.name];
+        this.loadedLevels.splice(this.loadedLevels.indexOf(level.data.name), 1);
+        
+        
+        window.console.log("destroyed level");
     },
     // Level ACTIVATION & DEACTIVATION
     // Activation
@@ -87,12 +106,10 @@ A_.LEVEL.LevelManager = Class.extend({
         if (this.activeLevel) {
             this.deactivateLevel(this.activateLevel.bind(this, level));
             return;
-        } 
+        }
 
         this.activeLevel = level;
         A_.level = level;
-
-        this.collider = level.collider;
 
         this.activeLevel.setScale(this.activeLevel.scale);
 
@@ -113,12 +130,11 @@ A_.LEVEL.LevelManager = Class.extend({
         this.game.stop(this.onGameStopped.bind(this, callback));
     },
     onGameStopped: function(callback) {
-        this.collider = null;
-
         this.game.stage.removeChild(this.activeLevel.container);
 
         this.activeLevel = null;
         A_.level = null;
+        
         if (callback) {
             callback();
         }
@@ -127,17 +143,17 @@ A_.LEVEL.LevelManager = Class.extend({
     launchLevel: function(data) {
         if (this.activeLevel) {
             this.deactivateLevel(this.launchLevel.bind(this, data));
+        } else if (!_.contains(this.loadedLevels, data.name)) {
+            this.loadAssets(data, this.launchLevel.bind(this, data));
         } else {
-            this.loadAssets(data, function() {
-                var level = this.createLevel(data);
-                this.activateLevel(level);
-            }.bind(this));
+            var level = this.createLevel(data);
+            this.activateLevel(level);
         }
     },
     restartLevel: function(level) {
         this.deactivateLevel(function() {
-            var l = this.createLevel(level.data);
-            this.activateLevel(l);
+            var lvl = this.createLevel(level.data);
+            this.activateLevel(lvl);
         }.bind(this));
     }
 });

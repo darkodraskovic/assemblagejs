@@ -145,32 +145,32 @@ window.addEventListener("mousewheel", A_.INPUT.processMouseWheel, false);
 
 A_.INPUT.mouseReactivityInjection = {
     initMouseReactivity: function() {
-        var that = this;
+//        var that = this;
         this.sprite.mousedown = function() {
-            that.leftpressed = true;
+            this.leftpressed = true;
 //            window.console.log("left pressed");
-            that.leftdown = true;
-        };
+            this.leftdown = true;
+        }.bind(this);
         this.sprite.mouseup = function() {
-            that.leftreleased = true;
-            that.leftdown = false;
-        };
+            this.leftreleased = true;
+            this.leftdown = false;
+        }.bind(this);
         this.sprite.mouseupoutside = function() {
-            that.leftreleased = true;
-            that.leftdown = false;
-        };
+            this.leftreleased = true;
+            this.leftdown = false;
+        }.bind(this);
         this.sprite.rightdown = function() {
-            that.rightpressed = true;
-            that.rightdown = true;
-        };
+            this.rightpressed = true;
+            this.rightdown = true;
+        }.bind(this);
         this.sprite.rightup = function() {
-            that.rightreleased = true;
-            that.rightdown = false;
-        };
+            this.rightreleased = true;
+            this.rightdown = false;
+        }.bind(this);
         this.sprite.rightupoutside = function() {
-            that.rightreleased = true;
-            that.rightdown = false;
-        };
+            this.rightreleased = true;
+            this.rightdown = false;
+        }.bind(this);
     },
     setMouseReactivity: function(reactive) {
         this.sprite.interactive = reactive;

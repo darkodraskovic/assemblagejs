@@ -13,9 +13,9 @@ A_.CAMERA.Camera = Class.extend({
             this.worldBounded = false;
         }
 
-        if (!this.followee) {
-            this.followee = null;
-        }
+//        if (!this.followee) {
+//            this.followee = null;
+//        }
 
         if (!this.followType) {
             this.followType = "centered";
@@ -34,8 +34,8 @@ A_.CAMERA.Camera = Class.extend({
         this.innerBounds.top = innerBoundOffset;
         this.innerBounds.bottom = 1 - innerBoundOffset;
     },
-    getInnerBound: function (side) {
-        switch (side) {
+    getInnerBound: function (edge) {
+        switch (edge) {
             case "left":
                 return this.x + (this.width * this.innerBounds.left);
                 break;
@@ -53,38 +53,32 @@ A_.CAMERA.Camera = Class.extend({
         }
     },
     followBounded: function () {
-        var bounds = {};
-        var colPol = this.followee.collisionPolygon;
-        bounds.x = colPol.pos.x;
-        bounds.y = colPol.pos.y;
-        bounds.width = colPol.w;
-        bounds.height = colPol.h;
-
-        if (bounds.x < this.getInnerBound("left"))
+        var followee = this.followee;
+        
+        if (followee.getX() < this.getInnerBound("left"))
         {
-            this.x = bounds.x - this.width * this.innerBounds.left;
+            this.x = followee.getX() - this.width * this.innerBounds.left;
         }
-        if (bounds.y < this.getInnerBound("top"))
+        if (followee.getY() < this.getInnerBound("top"))
         {
-            this.y = bounds.y - this.height * this.innerBounds.top;
+            this.y = followee.getY() - this.height * this.innerBounds.top;
         }
-        if (bounds.x + bounds.width > this.getInnerBound("right"))
+        if (followee.getX() > this.getInnerBound("right"))
         {
-            this.x = bounds.x + bounds.width - this.width * this.innerBounds.right;
+            this.x = followee.getX() - this.width * this.innerBounds.right;
         }
-        if (bounds.y + bounds.height > this.getInnerBound("bottom"))
+        if (followee.getY() > this.getInnerBound("bottom"))
         {
-            this.y = bounds.y + bounds.height - this.height * this.innerBounds.bottom;
+            this.y = followee.getY() - this.height * this.innerBounds.bottom;
         }
     },
     followCentered: function () {
-        var pos = this.followee.getPosition();
-        this.x = pos.x - this.width / 2;
-        this.y = pos.y - this.height / 2;
+        this.x = this.followee.getX() - this.width / 2;
+        this.y = this.followee.getY() - this.height / 2;
     },
     centerOn: function (center) {
-        this.x = center.x - this.width / 2;
-        this.y = center.y - this.height / 2;
+        this.x = center.getX() - this.width / 2;
+        this.y = center.getY() - this.height / 2;
     },
     bind: function () {
         if (this.x < 0)

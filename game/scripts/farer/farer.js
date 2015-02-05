@@ -200,6 +200,7 @@ var Explosion = A_.SPRITES.Animated.extend({
 });
 
 // VARS & CONSTS
+var player;
 var numRotors = 40;
 
 // PROCEDURES
@@ -218,7 +219,7 @@ populateLevel = function (level) {
     
     window.console.log("created FARER levels");
 
-    level.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
+    player = level.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
     for (var i = 0; i < numRotors; i++) {
         level.createSprite(Rotor, spriteLayer, _.random(0, level.width), _.random(0, level.height));
     }

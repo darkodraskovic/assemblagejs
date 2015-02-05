@@ -7,7 +7,7 @@ A_.LEVEL.Level = Class.extend({
         this.game = game;
 
         this.container = new PIXI.DisplayObjectContainer();
-        // this.sprite is referenced by the A_.INPUT.addMouseReactivity
+        // this.sprite is referenced by the A_.INPUT.mouseReactivityInjection
         this.sprite = this.container;
         this.initMouseReactivity();
         this.setMouseReactivity(true);
@@ -140,6 +140,7 @@ A_.LEVEL.Level = Class.extend({
 //        }
 //    }
         sprite.alpha = layer.alpha;
+        sprite.level = layer.level;
         sprite.position = layer.position;
         sprite.parallax = layer.parallax;
         sprite.name = layer.name;
@@ -215,12 +216,12 @@ A_.LEVEL.Level = Class.extend({
         entities.length = 0;
     },
     createSound: function(props) {
-        var level = this;
+        var directoryPrefix = this.directoryPrefix;;
         _.each(props["urls"], function(url, i, list) {
-            list[i] = "sounds/" + level.directoryPrefix + url;
-        }, this);
+            list[i] = "sounds/" + directoryPrefix + url;
+        });
         var sound = new Howl(props);
-        level.sounds.push(sound);
+        this.sounds.push(sound);
         return sound;
     },
     destroySounds: function() {
@@ -229,12 +230,28 @@ A_.LEVEL.Level = Class.extend({
         });
         this.sounds.length = 0;
     },
+    clear: function () {
+        this.destroySounds();
+        
+        _.each(this.layers, function (layer) {
+//            window.console.log(layer.level);
+//            layer.level = null;
+            delete(layer.level);
+//            window.console.log(layer.level);
+            layer.removeChildren();
+//            layer.visible = false;
+            this.container.removeChild(layer);
+        }, this);
+        
+//        A_.game.stage.removeChild(this.container);
+//        A_.game.renderer.spriteBatch.flush();
+    },
     // START/STOP level execution
     stop: function(callback) {
         if (this.isRunning) {
             this.isRunning = false;
-            this.onStoppedCallback = callback;
             this.stopped = true;
+            this.onStoppedCallback = callback;
         }
     },
     onStopped: function() {

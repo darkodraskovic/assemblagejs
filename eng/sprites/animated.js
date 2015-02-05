@@ -77,10 +77,7 @@ A_.SPRITES.Animated = Class.extend({
         }
 
         this.setFollowee(this.followee);
-        if (this.player) {
-            A_.player = this;
-        }
-        
+ 
 //        this.parent = parent;
 //        this.position(x, y);
     },
@@ -131,6 +128,7 @@ A_.SPRITES.Animated = Class.extend({
 
         // Used to optimize x & y setting & getting.
         this.position = this.sprite.position;
+        this.scale = this.sprite.scale;
         this.origin = this.sprite.anchor;
     },
     // ANIMATION
@@ -198,6 +196,10 @@ A_.SPRITES.Animated = Class.extend({
         var bounds = this.sprite.getBounds();
         return (bounds.y + bounds.height) / this.level.scale + this.level.camera.y;
     },
+    getCenterX: function () {
+        
+    },
+    
     overlapsSprite: function (sprite) {
         return (this.getTop() <= sprite.getBottom() && this.getBottom() >= sprite.getTop()
                 && this.getLeft() <= sprite.getRight() && this.getRight() >= sprite.getLeft());
@@ -239,6 +241,7 @@ A_.SPRITES.Animated = Class.extend({
     spritePoint: function (name, x, y) {
         if (_.isNumber(x) && _.isNumber(y)) {
             var sprPt = new A_.SPRITES.SpritePoint(name, x, y);
+            sprPt.parent = this;
             this.spritePoints.push(sprPt);
             return sprPt;
         } else {
@@ -252,39 +255,30 @@ A_.SPRITES.Animated = Class.extend({
     setPosition: function (x, y) {
         this.position.x = x;
         this.position.y = y;
-        _.each(this.spritePoints, function (sp) {
-            sp.setPosition(x, y);
-        });
     },
     getPosition: function () {
         return this.position;
     },
     setX: function (x) {
         this.position.x = x;
-        _.each(this.spritePoints, function (sp) {
-            sp.setX(x);
-        });
     },
     getX: function () {
         return this.position.x;
     },
     setY: function (y) {
         this.position.y = y;
-        _.each(this.spritePoints, function (sp) {
-            sp.setY(y);
-        });
     },
     getY: function () {
         return this.position.y;
     },
     setXRelative: function (x) {
-        this.setX(this.getX() + x);
+        this.setX(this.position.x + x);
     },
     setYRelative: function (y) {
-        this.setY(this.getY() + y);
+        this.setY(this.position.y + y);
     },
     setPositionRelative: function (x, y) {
-        this.setPosition(this.getX() + x, this.getY() + y);
+        this.setPosition(this.position.x + x, this.position.y + y);
     },
     getPositionLevel: function () {
         return this.level.container.toLocal(this.level.origin, this.sprite);
@@ -293,65 +287,59 @@ A_.SPRITES.Animated = Class.extend({
         return this.sprite.toGlobal(this.level.origin);
     },
     setSize: function (w, h) {
-        var prevWidth = this.sprite.width;
-        var prevHeight = this.sprite.height;
         this.sprite.width = w;
         this.sprite.height = h;
         // We scale proportionally sprite points.
         _.each(this.spritePoints, function (sp) {
-            sp.setScale(w / prevWidth, h / prevHeight);
-        });
+            sp.setScale(this.scale.x, this.scale.y);
+        }, this);
 
     },
 //    getSize: function(w, h) {
 //        return {width: Math.abs(this.sprite.width), height: Math.abs(this.sprite.height)};
 //    },
     setWidth: function (w) {
-        var relSpWidth = w / this.sprite.width;
         this.sprite.width = w;
         // We scale proportionally sprite points on the x axis.
         _.each(this.spritePoints, function (sp) {
-            sp.setScaleX(relSpWidth);
+            sp.setScale(this.scale.x, this.scale.y);
         }, this);
     },
     getWidth: function () {
         return Math.abs(this.sprite.width);
     },
     setHeight: function (h) {
-        var relSpHeight = h / this.sprite.height;
         this.sprite.height = h;
         // We scale proportionally sprite points on the y axis.
         _.each(this.spritePoints, function (sp) {
-            sp.setScaleY(relSpHeight);
+            sp.setScale(this.scale.x, this.scale.y);
         }, this);
     },
     getHeight: function () {
         return Math.abs(this.sprite.height);
     },
     setScale: function (x, y) {
-        var relSpScaleX = x / this.sprite.scale.x;
-        var relSpScaleY = y / this.sprite.scale.y;
-        this.sprite.scale.x = x;
-        this.sprite.scale.y = y;
+        this.scale.x = x;
+        this.scale.y = y;
         // We scale proportionally sprite points.
         _.each(this.spritePoints, function (sp) {
-            sp.setScale(relSpScaleX, relSpScaleY);
+            sp.setScale(x, y);
         });
     },
     setScaleX: function (x) {
-        var relSpScaleX = x / this.sprite.scale.x;
-        this.sprite.scale.x = x;
+        this.scale.x = x;
+        var y = this.getScaleY();
         // We scale proportionally sprite points.
         _.each(this.spritePoints, function (sp) {
-            sp.setScaleX(relSpScaleX);
+            sp.setScale(x, y);
         });
     },
     setScaleY: function (y) {
-        var relSpScaleY = y / this.sprite.scale.y;
-        this.sprite.scale.y = y;
+        this.scale.y = y;
+        var x = this.getScaleX();
         // We scale proportionally sprite points.
         _.each(this.spritePoints, function (sp) {
-            sp.setScaleY(relSpScaleY);
+            sp.setScale(x, y);
         });
     },
     getScale: function () {
@@ -362,6 +350,15 @@ A_.SPRITES.Animated = Class.extend({
     },
     getScaleY: function () {
         return this.sprite.scale.y;
+    },
+    setRotation: function (n) {
+        this.sprite.rotation = n;
+        _.each(this.spritePoints, function (sp) {
+            sp.setRotation(n);
+        });
+    },
+    getRotation: function () {
+        return this.sprite.rotation;
     },
     // Flip is a scaling with a negative factor.
     flipX: function () {
@@ -396,16 +393,6 @@ A_.SPRITES.Animated = Class.extend({
                 this.flipY();
         }
     },
-    setRotation: function (n) {
-        var prevRot = this.getRotation();
-        this.sprite.rotation = n;
-        _.each(this.spritePoints, function (sp) {
-            sp.setRotationRelative(n - prevRot);
-        });
-    },
-    getRotation: function () {
-        return this.sprite.rotation;
-    },
     // ORIGIN (ANCHOR)
     setOrigin: function (x, y) {
         var deltaX = -(x - this.sprite.anchor.x) * this.getWidth();
@@ -426,8 +413,7 @@ A_.SPRITES.Animated = Class.extend({
         });
 
         _.each(this.spritePoints, function (sp) {
-            sp.point.x += deltaX;
-            sp.point.y += deltaY;
+            sp.setPoint(sp.point.x + deltaX  / scale.x, sp.point.y + deltaY / scale.y);
         });
 
         return [deltaX, deltaY];

@@ -25,7 +25,8 @@ A_.TILES.Tile.inject({
     },
     update: function () {
         this._super();
-        if (this.leftpressed && A_.player.mode === "building") {
+//        if (this.leftpressed && A_.player.mode === "building") {
+        if (this.leftpressed) {
             this.toggleTurned();
             this.tilemap.level.createSound({
                 urls: ['e.wav'],
@@ -137,11 +138,11 @@ var PlayerPlatformer = AnimePlatformer.extend({
     },
     onWall: function () {
         this._super();
-        window.console.log("wall");
+//        window.console.log("wall");
     },
     onCeiling: function () {
         this._super();
-        window.console.log("ceiling");
+//        window.console.log("ceiling");
     },
     update: function () {
 //        window.console.log("updt platformer");

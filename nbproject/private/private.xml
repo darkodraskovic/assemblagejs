@@ -2,10 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="16">
         <file>
-            <url>eng/sprites/animated.js</url>
-            <bookmark id="13">
+            <url>eng/game.js</url>
+            <bookmark id="15">
                 <name/>
-                <line>526</line>
+                <line>18</line>
+                <key/>
+            </bookmark>
+            <bookmark id="14">
+                <name/>
+                <line>60</line>
                 <key/>
             </bookmark>
         </file>
@@ -33,6 +38,14 @@
             </bookmark>
         </file>
         <file>
+            <url>eng/sprites/animated.js</url>
+            <bookmark id="13">
+                <name/>
+                <line>524</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>eng/Sprite.js</url>
             <bookmark id="2">
                 <name/>
@@ -40,23 +53,21 @@
                 <key/>
             </bookmark>
         </file>
-        <file>
-            <url>eng/game.js</url>
-            <bookmark id="15">
-                <name/>
-                <line>18</line>
-                <key/>
-            </bookmark>
-            <bookmark id="14">
-                <name/>
-                <line>60</line>
-                <key/>
-            </bookmark>
-        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level/levelManager.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tilemap.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/input.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/skorpio/skorpio.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/config.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/platformer/platformer.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level/level.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level/levelManager.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tile.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/colliding.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/game.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tiled.js</file>
         </group>
     </open-files>
 </project-private>

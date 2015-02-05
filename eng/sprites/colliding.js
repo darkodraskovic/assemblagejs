@@ -172,54 +172,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.containedPoint.y = y;
         return SAT.pointInPolygon(this.containedPoint, this.collisionPolygon);
     },
-//    TRANSFORMATIONS
-//    setPosition: function (x, y) {
-//        this._super(x, y);
-//        this.collisionPolygon.pos.x = x;
-//        this.collisionPolygon.pos.y = y;
-//
-////        this.collisionPolygon.pos.x = this.getPositionLevel().x;
-////        this.collisionPolygon.pos.y = this.getPositionLevel().y;
-//
-//    },
-//    setX: function (x) {
-//        this._super(x);
-//        this.collisionPolygon.pos.x = x;
-////        this.collisionPolygon.pos.x = this.getPositionLevel().x;
-//    },
-//    setY: function (y) {
-//        this._super(y);
-//        this.collisionPolygon.pos.y = y;
-////        this.collisionPolygon.pos.y = this.getPositionLevel().y;
-//    },
-//    setRotation: function (n) {
-//        this._super(n);
-//        this.collisionPolygon.setAngle(n);
-//    },
-    setScale: function (x, y) {
-        this._super(x, y);
-        this.collisionPolygon.setScale(x, y);
-    },
-    setScaleX: function (x) {
-        this._super(x);
-        this.collisionPolygon.setScaleX(x);
-    },
-    setScaleY: function (y) {
-        this._super(y);
-        this.collisionPolygon.setScaleY(y);
-    },
-    setSize: function (x, y) {
-        this._super(x, y);
-        this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
-    },
-    setWidth: function (w) {
-        this._super(w);
-        this.collisionPolygon.setScaleX(this.getScaleX());
-    },
-    setHeight: function (h) {
-        this._super(h);
-        this.collisionPolygon.setScaleY(this.getScaleY());
-    },
     setOrigin: function (x, y) {
         var delta = this._super(x, y);
         this.collisionPolygon.offset.x += delta[0];
@@ -234,18 +186,22 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     synchCollisionPolygon: function() {
         var colPol = this.collisionPolygon;
         
+        // Synch position.
+        colPol.pos.x = this.position.x;
+        colPol.pos.y = this.position.y;
+        
+        // Synch scale.
+        if (this.scale.x !== colPol.scale.x) {
+            this.collisionPolygon.setScaleX(this.scale.x);
+        }
+        if (this.scale.y !== colPol.scale.y) {
+            this.collisionPolygon.setScaleY(this.scale.y);
+        }
+
+        // Synch rotation.
         if (this.getRotation() !== colPol.angle)
             colPol.setAngle(this.getRotation());
-
-        colPol.pos.x = this.getX();
-        colPol.pos.y = this.getY();
     },
-//    syncSprite: function() {
-//        if (this.getRotation() !== this.prevRot)
-//            this.setRotation(this.collisionPolygon.angle);
-//        
-//        this.setPosition(this.collisionPolygon.pos.x, this.collisionPolygon.pos.y);
-//    },
     clear: function () {
         this.removeCollision();
         this._super();

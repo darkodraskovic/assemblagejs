@@ -1,50 +1,38 @@
 A_.SPRITES.SpritePoint = Class.extend({
     init: function(name, x, y) {
         this.name = name;
-        this.origPoint = new SAT.Vector(x, y);
-        // .point refers to the position in the sprite's local coordinate system.
         this.point = new SAT.Vector(x, y);
-        // .calcPoint refers to the position in the sprite's parent coordinate system.
         this.calcPoint = new SAT.Vector(x, y);
-    },
-    setPosition: function(x, y) {
-        this.calcPoint.x = x + this.point.x;
-        this.calcPoint.y = y + this.point.y;
+        this.position = {x: 0, y: 0};
+        this.scale = {x: 1, y: 1};
+        this.rotation = 0;
+        this._position = {x:0, y: 0};
     },
     getPosition: function() {
-        return this.calcPoint;
-    },
-    setX: function(x) {
-        this.calcPoint.x = x;
+        this._position.x = this.getX();
+        this._position.y = this.getY();
+        return this._position;
     },
     getX: function() {
-        return this.calcPoint.x;
-    },
-    setY: function(y) {
-        this.calcPoint.y = y;
+        return this.calcPoint.x + this.parent.getX();
     },
     getY: function() {
-        return this.calcPoint.y;
+        return this.calcPoint.y + this.parent.getY();
     },
-    setRotationRelative: function(rotation) {
-        // Calculate the vector from the point to the rotated point.
-//        var rotVec = this.point.clone().rotate(rotation).sub(this.point);
-        var rotVec = this.point.clone().rotate(rotation).sub(this.point);
-        // Add the vector to the position in the parent's coord sys.
-//        this.calcPoint.add(rotVec);
-        this.point.add(rotVec);
+    setRotation: function(rotation) {
+        this.calcPoint.rotate(rotation - this.rotation);
+        this.rotation = rotation;
     },
-//    getRotation: function() {
-//        return this.rotation;
-//    },
-    setScale: function(x, y) {
-        this.point.x *= x;
-        this.point.y *= y;
+    setScale: function(xScale, yScale) {
+        this.scale.x = xScale;
+        this.scale.y = yScale;
+        this.calcPoint.x = this.point.x * xScale;
+        this.calcPoint.y = this.point.y * yScale;
+        this.calcPoint.rotate(this.rotation);
     },
-    setScaleX: function(x) {
-        this.point.x *= x;
-    },
-    setScaleY: function(y) {
-        this.point.y *= y;
+    setPoint: function (x, y) {
+        this.point.x = x;
+        this.point.y = y;
+        this.setScale(this.scale.x, this.scale.y);
     }
 });

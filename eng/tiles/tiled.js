@@ -96,7 +96,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
 
             layer.baked = baked;
             if (layer.baked) {
-                layer = level.bakeLayer(layer, level);
+                layer = level.bakeLayer(layer);
             }
 
             level.addTileLayer(layer);
