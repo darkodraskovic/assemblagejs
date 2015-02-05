@@ -19,17 +19,17 @@ var levelManager = A_.game.levelManager;
 //});
 
 // PLATFORMER
-//levelManager.loadAssets(platformer1, function () {
-//    levelManager.createLevel(platformer1);
-//    levelManager.activateLevel(levelManager.createdLevels.platformer1);
-//});
+levelManager.loadAssets(platformer1, function () {
+    levelManager.createLevel(platformer1);
+    levelManager.activateLevel(levelManager.createdLevels.platformer1);
+});
 
 // FARER
-levelManager.loadAssets(farer1, function () {
-    var level = levelManager.createLevel(farer1);
-    populateLevel(level);
-    levelManager.activateLevel(level);
-});
+//levelManager.loadAssets(farer1, function () {
+//    var level = levelManager.createLevel(farer1);
+//    populateLevel(level);
+//    levelManager.activateLevel(level);
+//});
 
 // ROT
 //levelManager.loadAssets(rot1, function () {

@@ -58,7 +58,8 @@ A_.SPRITES.Animated = Class.extend({
             this.addAnimation("all", _.range(0, this.textures.length), this.defaultAnimationSpeed);
             this.setAnimation("default");
         } else {
-            this.createSprite(1, 1);
+            window.console.log(this.frame);
+            this.createSprite(this.frame.w, this.frame.h);
         }
 
         this.spritePoints = [];
@@ -79,7 +80,7 @@ A_.SPRITES.Animated = Class.extend({
         this.setFollowee(this.followee);
  
 //        this.parent = parent;
-//        this.position(x, y);
+//        this.setPosition(x, y);
     },
     setFollowee: function (isFollowee) {
         if (isFollowee) {
@@ -197,9 +198,8 @@ A_.SPRITES.Animated = Class.extend({
         return (bounds.y + bounds.height) / this.level.scale + this.level.camera.y;
     },
     getCenterX: function () {
-        
+        // TODO...
     },
-    
     overlapsSprite: function (sprite) {
         return (this.getTop() <= sprite.getBottom() && this.getBottom() >= sprite.getTop()
                 && this.getLeft() <= sprite.getRight() && this.getRight() >= sprite.getLeft());
