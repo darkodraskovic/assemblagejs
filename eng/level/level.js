@@ -36,7 +36,7 @@ A_.LEVEL.Level = Class.extend({
         this.height = this.game.renderer.height;
 
         // Helper object. Its purpose is to avoid getMousePosition() object creation.
-        this.tmpMousePositionHolder = {x: 0, y: 0};
+        this._MousePosition = {x: 0, y: 0};
 
         this.collider = new A_.COLLISION.Collider();
 
@@ -264,9 +264,9 @@ A_.LEVEL.Level = Class.extend({
     start: function() {
         this.isRunning = true;
     },
-    restart: function () {
-        this.game.levelManager.restartLevel(this);
-    },
+//    restart: function () {
+//        this.game.levelManager.restartLevel(this);
+//    },
     // Level LOOP/UPDATE
     update: function() {
         if (!this.isRunning) {
@@ -413,7 +413,7 @@ A_.LEVEL.Level = Class.extend({
         return y += this.camera.y;
     },
     getMousePosition: function() {
-        var levelPosition = this.tmpMousePositionHolder;
+        var levelPosition = this._MousePosition;
         var stagePosition = this.container.stage.getMousePosition();
         levelPosition.x = stagePosition.x;
         levelPosition.y = stagePosition.y;

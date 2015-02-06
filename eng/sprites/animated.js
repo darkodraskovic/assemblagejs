@@ -17,11 +17,12 @@ A_.SPRITES.Animated = Class.extend({
 
         this.level = parent.level;
 
+        if (!this.frame) {
+            this.frame = {w: 0, h: 0};
+        }
+        
         // If this sprite displays an image or features animations...
         if (this.animSheet) {
-            if (!this.frame) {
-                this.frame = {w: 0, h: 0};
-            }
             // A texture stores the information that represents an image. 
             // All textures have a base texture. (PIXI doc)
             this.animSheet = "graphics/" + this.level.directoryPrefix + this.animSheet;
@@ -58,7 +59,6 @@ A_.SPRITES.Animated = Class.extend({
             this.addAnimation("all", _.range(0, this.textures.length), this.defaultAnimationSpeed);
             this.setAnimation("default");
         } else {
-            window.console.log(this.frame);
             this.createSprite(this.frame.w, this.frame.h);
         }
 
@@ -78,7 +78,7 @@ A_.SPRITES.Animated = Class.extend({
         }
 
         this.setFollowee(this.followee);
- 
+
 //        this.parent = parent;
 //        this.setPosition(x, y);
     },
@@ -90,7 +90,7 @@ A_.SPRITES.Animated = Class.extend({
         }
         else if (this.level.camera.followee === this) {
             this.level.camera.followee = null;
-        } 
+        }
         this.followee = false;
     },
     // Create a transparent PIXI.Sprite that will store, as a parent,
@@ -240,8 +240,7 @@ A_.SPRITES.Animated = Class.extend({
     // SPRITE POINTS
     spritePoint: function (name, x, y) {
         if (_.isNumber(x) && _.isNumber(y)) {
-            var sprPt = new A_.SPRITES.SpritePoint(name, x, y);
-            sprPt.parent = this;
+            var sprPt = new A_.SPRITES.SpritePoint(this, name, x, y);
             this.spritePoints.push(sprPt);
             return sprPt;
         } else {
@@ -413,7 +412,8 @@ A_.SPRITES.Animated = Class.extend({
         });
 
         _.each(this.spritePoints, function (sp) {
-            sp.setPoint(sp.point.x + deltaX  / scale.x, sp.point.y + deltaY / scale.y);
+            sp.translate(deltaX / scale.x, deltaY / scale.y);
+//            sp.setPoint(sp.point.x + deltaX, sp.point.y + deltaY);
         });
 
         return [deltaX, deltaY];

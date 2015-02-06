@@ -1,10 +1,9 @@
 A_.SPRITES.SpritePoint = Class.extend({
-    init: function(name, x, y) {
+    init: function(parent, name, x, y) {
+        this.parent = parent;
         this.name = name;
         this.point = new SAT.Vector(x, y);
         this.calcPoint = new SAT.Vector(x, y);
-        this.position = {x: 0, y: 0};
-        this.scale = {x: 1, y: 1};
         this.rotation = 0;
         this._position = {x:0, y: 0};
     },
@@ -24,15 +23,14 @@ A_.SPRITES.SpritePoint = Class.extend({
         this.rotation = rotation;
     },
     setScale: function(xScale, yScale) {
-        this.scale.x = xScale;
-        this.scale.y = yScale;
         this.calcPoint.x = this.point.x * xScale;
         this.calcPoint.y = this.point.y * yScale;
         this.calcPoint.rotate(this.rotation);
     },
-    setPoint: function (x, y) {
-        this.point.x = x;
-        this.point.y = y;
-        this.setScale(this.scale.x, this.scale.y);
+    translate: function (x, y) {
+        this.point.x += x;
+        this.point.y += y;
+        // this.setScale() applies a combination of scale & rotation
+        this.setScale(this.parent.getScaleX(), this.parent.getScaleY());
     }
 });

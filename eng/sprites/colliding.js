@@ -204,14 +204,11 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._delta.x = delta[0] + colPol.offset.x;
         this._delta.y = delta[1] + colPol.offset.y;
         colPol.setOffset(this._delta);
-//        this.collisionPolygon.offset.x += delta[0];
-//        this.collisionPolygon.offset.y += delta[1];
         
         if (this.debugGraphics) {
             this.debugGraphics.pivot.x -= delta[0] / colPol.scale.x;
             this.debugGraphics.pivot.y -= delta[1] / colPol.scale.y;
         }
-        //            colPol.recalc();
     },
     synchCollisionPolygon: function() {
         var colPol = this.collisionPolygon;
