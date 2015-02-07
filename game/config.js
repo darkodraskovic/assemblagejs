@@ -5,7 +5,7 @@ A_.COLLISION.Type = {
     FRIEND: 4,
     ENEMY: 8,
     FRIENDLY_FIRE: 16,
-    ENEMY_FIRE: 32,
+    ENEMY_FIRE: 32
 };
 
 A_.CONFIG.debug = true;

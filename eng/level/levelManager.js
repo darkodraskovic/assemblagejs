@@ -2,7 +2,7 @@ A_.LEVEL.LevelManager = Class.extend({
     init: function (game, manifests) {
         this.manifests = manifests;
         this.game = game;
-        this.mapsData = {};
+        this.maps = {};
         // An array of loaded level names.
         this.loadedLevels = [];
         // A map of level objects.
@@ -27,26 +27,26 @@ A_.LEVEL.LevelManager = Class.extend({
                 sounds: []
             };
         }
-        this.activateLevelLoader(callback, manifest);
+        this._activateLevelLoader(callback, manifest);
     },
-    activateLevelLoader: function (callback, manifest) {
+    _activateLevelLoader: function (callback, manifest) {
         var loader = new A_.LEVEL.Loader();
-        loader.loadScripts(this.onScriptsLoaded.bind(this, callback, manifest, loader), manifest.scripts);
+        loader.loadScripts(this._onScriptsLoaded.bind(this, callback, manifest, loader), manifest.scripts);
     },
-    onScriptsLoaded: function (callback, manifest, loader) {
+    _onScriptsLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded scripts");
-        loader.loadMap(this.onMapLoaded.bind(this, callback, manifest, loader), manifest.map);
+        loader.loadMap(this._onMapLoaded.bind(this, callback, manifest, loader), manifest.map);
     },
-    onMapLoaded: function (callback, manifest, loader) {
+    _onMapLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded map");
-        this.mapsData[manifest.name] = loader.mapDataParsed;
-        loader.loadGraphics(this.onGraphicsLoaded.bind(this, callback, manifest, loader), manifest.graphics);
+        this.maps[manifest.name] = loader.mapDataParsed;
+        loader.loadGraphics(this._onGraphicsLoaded.bind(this, callback, manifest, loader), manifest.graphics);
     },
-    onGraphicsLoaded: function (callback, manifest, loader) {
+    _onGraphicsLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded graphics");
-        loader.loadSounds(this.onSoundsLoaded.bind(this, callback, manifest), manifest.sounds);
+        loader.loadSounds(this._onSoundsLoaded.bind(this, callback, manifest), manifest.sounds);
     },
-    onSoundsLoaded: function (callback, manifest) {
+    _onSoundsLoaded: function (callback, manifest) {
         window.console.log("Loaded sounds");
         window.console.log("Loaded EVERYTHING :)");
 
@@ -78,9 +78,7 @@ A_.LEVEL.LevelManager = Class.extend({
             level.createDebugLayer();
 
         if (level.manifest.type === "tiled") {
-            A_.TILES.createTiledMap(this.mapsData[level.name], level);
-            level.createEntities(level.spritesToCreate);
-            level.createEntities(level.tilesToCreate);
+            A_.TILES.createTiledMap(this.maps[level.name], level);
             window.console.log("Created TILED LEVEL :)");
         }
         else {
@@ -103,7 +101,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
         level.clear();
 
-        delete this.mapsData[level.name];
+        delete this.maps[level.name];
         delete this.createdLevels[level.name];
         this.loadedLevels.splice(this.loadedLevels.indexOf(level.manifest.name), 1);
 
@@ -132,17 +130,16 @@ A_.LEVEL.LevelManager = Class.extend({
         this.activeLevel.start();
         this.game.start();
     },
-    // Deactivation
     stopLevel: function (callback) {
         if (!this.activeLevel)
             return;
 
-        this.activeLevel.stop(this.onActiveLevelStopped.bind(this, callback));
+        this.activeLevel.stop(this._onActiveLevelStopped.bind(this, callback));
     },
-    onActiveLevelStopped: function (callback) {
-        this.game.stop(this.onGameStopped.bind(this, callback));
+    _onActiveLevelStopped: function (callback) {
+        this.game.stop(this._onGameStopped.bind(this, callback));
     },
-    onGameStopped: function (callback) {
+    _onGameStopped: function (callback) {
         this.game.stage.removeChild(this.activeLevel.container);
 
         this.activeLevel = null;

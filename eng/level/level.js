@@ -219,6 +219,14 @@ A_.LEVEL.Level = Class.extend({
         _.each(props["urls"], function(url, i, list) {
             list[i] = "game/sounds/" + url;
         });
+        
+        var sound = _.find(this.sounds, function (sound) {
+            return _.isEqual(sound.urls(), props["urls"]);
+        });
+        if (sound) {
+            return sound;
+        } 
+        
         var sound = new Howl(props);
         this.sounds.push(sound);
         return sound;

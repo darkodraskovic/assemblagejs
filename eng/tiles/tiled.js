@@ -153,4 +153,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
             }
         }
     }
+    
+    // Add entities to sprites and tiles array used in level update loop.
+    level.manageEntities();
 };
