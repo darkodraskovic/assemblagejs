@@ -81,23 +81,23 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         
 //        window.console.log("updt skorpio");
         
-        if (A_.level.leftpressed) {
+        if (this.level.leftpressed) {
             this.shootBullet();
         }
-        if (A_.level.rightpressed) {
+        if (this.level.rightpressed) {
             this.shootLaser();
         }
         this._super();
     },
     shootBullet: function() {
         var sprPt = this.rifle.spritePoint(this.facing);
-        var bullet = this.level.createSprite(Bullet, A_.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
+        var bullet = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
         bullet.setRotation(A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition()));
         bullet.setAnimation("all", 16, 0);
     },
     shootLaser: function() {
         var pos = this.getPosition();
-        this.level.createSprite(LaserBeam, A_.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
+        this.level.createSprite(LaserBeam, this.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
     }
 });
 
@@ -236,7 +236,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.setPosition(sprPt.getX(), sprPt.getY());
 
         this.tip = {x: this.getX(), y: this.getY()};
-        this.laserTip = this.level.createSprite(LaserTip, A_.level.findLayerByName("Effects"),
+        this.laserTip = this.level.createSprite(LaserTip, this.level.findLayerByName("Effects"),
                 this.getX() + Math.cos(this.getRotation()) * this.getWidth(),
                 this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collisionW: 4, collisionH: 4});
@@ -261,7 +261,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.tip.x = this.getX() + Math.cos(this.getRotation()) * this.getWidth();
         this.tip.y = this.getY() + Math.sin(this.getRotation()) * this.getWidth();
 
-        if (A_.level.rightreleased) {
+        if (this.level.rightreleased) {
             if (this.laserTip) {
                 if (this.laserTip.fire)
                     this.laserTip.fire.destroy();
@@ -301,13 +301,13 @@ var LaserTip = A_.SPRITES.Colliding.extend({
                 this.timer -= A_.game.dt;
             }
             if (this.timer < 0) {
-                this.level.createSprite(ExplosionSkorpio, A_.level.findLayerByName("Effects"),
+                this.level.createSprite(ExplosionSkorpio, this.level.findLayerByName("Effects"),
                         other.getX(), other.getY());
                 other.destroy();
                 this.timer = null;
             }
             if (!this.fire) {
-                this.fire = this.level.createSprite(LaserFire, A_.level.findLayerByName("Effects"),
+                this.fire = this.level.createSprite(LaserFire, this.level.findLayerByName("Effects"),
                         this.getX(), this.getY());
                 this.fire.laserTip = this;
             }
@@ -384,18 +384,4 @@ var Computer = A_.SPRITES.Colliding.extend({
     }
 })
 
-// GAME LOGIC
-//A_.game.preupdate = function() {
-//};
-//
-//A_.game.postupdate = function() {
-//    if (!A_.level.findSpriteByClass(Agent) && !A_.level.findSpriteByClass(Computer)) {
-//        if (this.level.name === "level1") {
-//            A_.game.loadLevel(level2);
-//        } else {
-//            A_.game.loadLevel(level1);
-//        }
-//    }
-//
-//};
 

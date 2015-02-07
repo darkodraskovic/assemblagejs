@@ -9,6 +9,8 @@ A_.Game = Class.extend({
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
+        
+        this.isRunning = true;
         // Cf. run.js
         requestAnimFrame(runGame);
     },
@@ -44,7 +46,6 @@ A_.Game = Class.extend({
                 this.stopped = false;
                 this.onStopped();
             }
-//            return;
         }
         else {
             var now = new Date().getTime();
@@ -52,7 +53,7 @@ A_.Game = Class.extend({
             this.time = now;
             this.dt /= 1000;
 
-            this.levelManager.activeLevel.update();
+            this.levelManager.manageLevels();
 
             A_.INPUT.reset();
         }

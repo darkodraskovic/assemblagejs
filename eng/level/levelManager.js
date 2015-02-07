@@ -3,23 +3,27 @@ A_.LEVEL.LevelManager = Class.extend({
         this.manifests = manifests;
         this.game = game;
         this.maps = {};
-        // An array of loaded level names.
+        // An array of loaded level manifests.
         this.loadedLevels = [];
-        // A map of level objects.
-        this.createdLevels = {};
+        // An array of created levels.
+        this.createdLevels = [];
+        // An array of active levels.
+        this.activeLevels = [];
 
-        this.errors = {
-            manifest: "Cannot find manifest.",
-            level: "Cannot find level."
-        };
+        this.levelsToDeactivate = [];
+        this.levelsToDestroy = [];
+        this.levelsToActivate = [];
     },
     // Level LOADING
-    loadLevel: function (name, callback) {
-        var manifest = this.findManifest(name);
-        if (!manifest) {
-            window.console.log("Creating dummy manifest.");
+    loadLevel: function (manifest, callback) {
+        if (_.contains(this.loadedLevels, manifest)) {
+            window.console.log("Level is already loaded.");
+            return;
+        }
+        
+        if (!manifest || !_.contains(this.manifests, manifest)) {
+            window.console.log("Cannot find manifest. Creating a dummy one.");
             manifest = {
-                name: "empty",
                 type: "generic",
                 scripts: [],
                 map: "",
@@ -39,7 +43,7 @@ A_.LEVEL.LevelManager = Class.extend({
     },
     _onMapLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded map");
-        this.maps[manifest.name] = loader.mapDataParsed;
+        this.maps[manifest.map] = loader.mapDataParsed;
         loader.loadGraphics(this._onGraphicsLoaded.bind(this, callback, manifest, loader), manifest.graphics);
     },
     _onGraphicsLoaded: function (callback, manifest, loader) {
@@ -50,26 +54,24 @@ A_.LEVEL.LevelManager = Class.extend({
         window.console.log("Loaded sounds");
         window.console.log("Loaded EVERYTHING :)");
 
-        if (!_.contains(this.loadedLevels, manifest.name)) {
-            this.loadedLevels.push(manifest.name);
-        }
+        this.loadedLevels.push(manifest);
 
         if (callback) {
             callback();
         }
     },
     // Level CREATION & DESTRUCTION
-    createLevel: function (name) {
-        var manifest = this.findManifest(name);
-        if (!manifest) {
+    createLevel: function (manifest, name) {
+        if (!_.contains(this.manifests, manifest)) {
+            window.console.log("Cannot find manifest");
             return;
         }
 
         var level = new A_.LEVEL.Level(this.game);
         level.manifest = A_.UTILS.copy(manifest);
 
-        level.name = level.manifest.name;
-        this.createdLevels[level.name] = level;
+        level.name = name;
+        this.createdLevels.push(level);
 
         level.cameraOptions = level.manifest.camera;
         level.createCamera();
@@ -78,7 +80,7 @@ A_.LEVEL.LevelManager = Class.extend({
             level.createDebugLayer();
 
         if (level.manifest.type === "tiled") {
-            A_.TILES.createTiledMap(this.maps[level.name], level);
+            A_.TILES.createTiledMap(this.maps[level.manifest.map], level);
             window.console.log("Created TILED LEVEL :)");
         }
         else {
@@ -89,115 +91,128 @@ A_.LEVEL.LevelManager = Class.extend({
         return level;
     },
     destroyLevel: function (name) {
-        var level = this.findLevel(name);
+        var level = this.findCreatedLevel(name);
         if (!level) {
             return;
         }
 
-        if (this.activeLevel === level) {
-            this.stopLevel(this.destroyLevel.bind(this, name));
-            return;
-        }
-
-        level.clear();
-
-        delete this.maps[level.name];
-        delete this.createdLevels[level.name];
-        this.loadedLevels.splice(this.loadedLevels.indexOf(level.manifest.name), 1);
-
-        window.console.log("Destroyed level.");
+        this.levelsToDestroy.push(level);
     },
-    // USER API
-    resumeLevel: function (name) {
-        var level = this.findLevel(name);
+    destroyLevels: function () {
+        _.each(this.levelsToDestroy, function (level) {
+            level.clear();
+
+            var ind = this.createdLevels.indexOf(level);
+            this.createdLevels.splice(ind, 1);
+
+            window.console.log("Level destroyed.");
+        }, this);
+
+        this.levelsToDestroy.length = 0;
+    },
+    activateLevel: function (name) {
+        var level = this.findCreatedLevel(name);
         if (!level) {
             return;
         }
 
-        if (this.activeLevel) {
-            this.stopLevel(this.resumeLevel.bind(this, name));
+        if (this.findActiveLevel(name)) {
+            window.console.log("Level is already active.");
             return;
         }
 
-        this.activeLevel = level;
-        A_.level = level;
-
-        this.activeLevel.setScale(this.activeLevel.scale);
-
-        this.game.stage.addChild(this.activeLevel.container);
-        window.console.log("Level STARTS...");
-
-        this.activeLevel.start();
-        this.game.start();
+        this.levelsToActivate.push(level);
     },
-    stopLevel: function (callback) {
-        if (!this.activeLevel)
-            return;
+    activateLevels: function () {
+        _.each(this.levelsToActivate, function (level) {
+            level.setScale(level.scale);
 
-        this.activeLevel.stop(this._onActiveLevelStopped.bind(this, callback));
-    },
-    _onActiveLevelStopped: function (callback) {
-        this.game.stop(this._onGameStopped.bind(this, callback));
-    },
-    _onGameStopped: function (callback) {
-        this.game.stage.removeChild(this.activeLevel.container);
+            this.game.stage.addChild(level.container);
+            this.activeLevels.push(level);
 
-        this.activeLevel = null;
-        A_.level = null;
+            level.start();
+            window.console.log("Level STARTS...");
+        }, this);
 
-        if (callback) {
-            callback();
-        }
+        this.levelsToActivate.length = 0;
     },
-    startLevel: function (name) {
-        var manifest = this.findManifest(name);
-        if (!manifest) {
-            return;
-        }
-
-        if (this.activeLevel) {
-            this.stopLevel(this.startLevel.bind(this, name));
-        } else if (!_.contains(this.loadedLevels, manifest.name)) {
-            this.loadLevel(name, this.startLevel.bind(this, name));
-        } else {
-            this.createLevel(name);
-            this.resumeLevel(name);
-        }
-    },
-    restartLevel: function (name) {
-        var level = this.findLevel(name);
+    deactivateLevel: function (name) {
+        var level = this.findCreatedLevel(name);
         if (!level) {
             return;
         }
 
-        this.stopLevel(function () {
-            this.createLevel(name);
-            this.resumeLevel(name);
-        }.bind(this));
+        if (!this.findActiveLevel(name)) {
+            window.console.log("Level is not active.");
+            return;
+        }
+
+        this.levelsToDeactivate.push(level);
+    },
+    deactivateLevels: function () {
+        _.each(this.levelsToDeactivate, function (level) {
+            var ind = this.activeLevels.indexOf(level);
+            if (ind > -1)
+                this.activeLevels.splice(ind, 1);
+
+            this.game.stage.removeChild(level.container);
+        }, this);
+
+        this.levelsToDeactivate.length = 0;
+    },
+    playLevel: function (manifest, name) {
+        if (!_.contains(this.manifests, manifest)) {
+            window.console.log("Cannot find manifest");
+            return;
+        }
+
+        if (!_.contains(this.loadedLevels, manifest)) {
+            this.loadLevel(manifest, this.playLevel.bind(this, manifest, name));
+            return;
+        }
+        else if (this.findActiveLevel(name)) {
+            window.console.log("Level is already active.");
+        }
+        else if (this.findCreatedLevel(name)) {
+            this.activateLevel(name);
+        }
+        else {
+            this.createLevel(manifest, name)
+            this.activateLevel(name);
+        }
+    },
+    manageLevels: function () {
+        _.each(this.activeLevels, function (level) {
+            level.update();
+        });
+
+        this.deactivateLevels();
+        this.destroyLevels();
+        this.activateLevels();
     },
     // HELPER FUNCS
-    findLevel: function (name) {
+    findCreatedLevel: function (name) {
         var level = _.find(this.createdLevels, function (level) {
             return level.name === name;
         });
 
         if (!level) {
-            window.console.log(this.errors.level);
+            window.console.log("Cannot find created level.");
             return;
         } else {
             return level;
         }
     },
-    findManifest: function (name) {
-        var manifest = _.find(this.manifests, function (manifest) {
-            return manifest.name === name;
+    findActiveLevel: function (name) {
+        var level = _.find(this.activeLevels, function (level) {
+            return level.name === name;
         });
 
-        if (!manifest) {
-            window.console.log(this.errors.manifest);
+        if (!level) {
+            window.console.log("Cannot find active level.");
             return;
         } else {
-            return manifest;
+            return level;
         }
     }
 });

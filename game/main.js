@@ -6,11 +6,11 @@ A_.game = new A_.Game();
 //var levelName = "skorpio2";
 //var levelName = "farer1";
 //var levelName = "rot1";
-var levelName = "platformer1";
+//var levelName = "platformer1";
 
 var levelManager = A_.game.levelManager;
 
-levelManager.startLevel(levelName);
+//levelManager.startLevel(levelName);
 
 // SKORPIO / PLATFORMER
 //levelManager.loadLevel(levelName, function () {

@@ -141,7 +141,8 @@ A_.LEVEL.Level = Class.extend({
 //    }
         sprite.alpha = layer.alpha;
         sprite.level = layer.level;
-        sprite.position = layer.position;
+        sprite.position.x = layer.position.x;
+        sprite.position.y = layer.position.y;
         sprite.parallax = layer.parallax;
         sprite.name = layer.name;
         sprite.tilemap = layer.tilemap;
@@ -259,7 +260,7 @@ A_.LEVEL.Level = Class.extend({
         }
     },
     onStopped: function() {
-        window.console.log("level stopped");
+        window.console.log("Level stopped.");
         if (this.onStoppedCallback) {
             this.onStoppedCallback();
             this.onStoppedCallback = null;

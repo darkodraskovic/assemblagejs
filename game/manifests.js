@@ -1,9 +1,8 @@
 var skorpio1 = {
-    name: "skorpio1",
     type: "tiled",
     scripts: ["skorpio"],
     map: "map_skorpio1",
-    graphics: ["AgentComplete.png", "AssaultRifle.png", "PlayerComplete.png", "Computer1.png",
+    graphics: ["AgentComplete.png", "AssaultRifle.png", "player_skorpio.png", "Computer1.png",
         "Explosion.png", "Fire.png", "Interior-Furniture.png",
         "Muzzleflashes-Shots.png"],
     sounds: [["explosion.mp3"], ["grunt.wav"], ["fire.wav"],
@@ -16,11 +15,9 @@ var skorpio1 = {
 };
 
 var skorpio2 = A_.UTILS.copy(skorpio1);
-skorpio2.name = "skorpio2";
 skorpio2.map = "map_skorpio2";
 
 farer1 = {
-    name: "farer1",
     type: "generic",
     scripts: ["farer"],
     map: "",
@@ -35,7 +32,6 @@ farer1 = {
 };
 
 rot1 = {
-    name: "rot1",
     type: "generic",
     scripts: ["rot"],
     map: "",
@@ -49,7 +45,6 @@ rot1 = {
 };
 
 platformer1 = {
-    name: "platformer1",
     type: "tiled",
     scripts: ["platformer"],
     map: "level1",
