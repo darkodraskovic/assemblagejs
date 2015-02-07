@@ -1,50 +1,57 @@
 A_.LEVEL.LevelManager = Class.extend({
-    init: function (game) {
+    init: function (game, manifests) {
+        this.manifests = manifests;
         this.game = game;
         this.mapsData = {};
         // An array of loaded level names.
         this.loadedLevels = [];
         // A map of level objects.
         this.createdLevels = {};
+
+        this.errors = {
+            manifest: "Cannot find manifest.",
+            level: "Cannot find level."
+        };
     },
     // Level LOADING
-    loadLevel: function (data, callback) {
-        if (!data) {
-            data = {
+    loadLevel: function (name, callback) {
+        var manifest = this.findManifest(name);
+        if (!manifest) {
+            window.console.log("Creating dummy manifest.");
+            manifest = {
                 name: "empty",
                 type: "generic",
-                directoryPrefix: "",
                 scripts: [],
                 map: "",
                 graphics: [],
                 sounds: []
             };
         }
-        this.activateLevelLoader(callback, data);
+        this.activateLevelLoader(callback, manifest);
     },
-    activateLevelLoader: function (callback, data) {
-        var loader = new A_.LEVEL.Loader(data.directoryPrefix);
-        loader.loadScripts(this.onScriptsLoaded.bind(this, callback, data, loader), data.scripts);
+    activateLevelLoader: function (callback, manifest) {
+        var loader = new A_.LEVEL.Loader();
+        loader.loadScripts(this.onScriptsLoaded.bind(this, callback, manifest, loader), manifest.scripts);
     },
-    onScriptsLoaded: function (callback, data, loader) {
+    onScriptsLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded scripts");
-        loader.loadMap(this.onMapLoaded.bind(this, callback, data, loader), data.map);
+        loader.loadMap(this.onMapLoaded.bind(this, callback, manifest, loader), manifest.map);
     },
-    onMapLoaded: function (callback, data, loader) {
+    onMapLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded map");
-        this.mapsData[data.name] = loader.mapDataParsed;
-        loader.loadGraphics(this.onGraphicsLoaded.bind(this, callback, data, loader), data.graphics);
+        this.mapsData[manifest.name] = loader.mapDataParsed;
+        loader.loadGraphics(this.onGraphicsLoaded.bind(this, callback, manifest, loader), manifest.graphics);
     },
-    onGraphicsLoaded: function (callback, data, loader) {
+    onGraphicsLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded graphics");
-        loader.loadSounds(this.onSoundsLoaded.bind(this, callback, data), data.sounds);
+        loader.loadSounds(this.onSoundsLoaded.bind(this, callback, manifest), manifest.sounds);
     },
-    onSoundsLoaded: function (callback, data) {
+    onSoundsLoaded: function (callback, manifest) {
         window.console.log("Loaded sounds");
         window.console.log("Loaded EVERYTHING :)");
 
-        if (!_.contains(this.loadedLevels, data.name)) {
-            this.loadedLevels.push(data.name);
+        if (!_.contains(this.loadedLevels, manifest.name)) {
+            this.loadedLevels.push(manifest.name);
         }
 
         if (callback) {
@@ -52,41 +59,45 @@ A_.LEVEL.LevelManager = Class.extend({
         }
     },
     // Level CREATION & DESTRUCTION
-    createLevel: function (data) {
-        var level = new A_.LEVEL.Level(this.game);
-        level.data = A_.UTILS.copy(data);
+    createLevel: function (name) {
+        var manifest = this.findManifest(name);
+        if (!manifest) {
+            return;
+        }
 
-        level.name = level.data.name;
+        var level = new A_.LEVEL.Level(this.game);
+        level.manifest = A_.UTILS.copy(manifest);
+
+        level.name = level.manifest.name;
         this.createdLevels[level.name] = level;
 
-        level.directoryPrefix = level.data.directoryPrefix + "/";
-
-        level.cameraOptions = level.data.camera;
+        level.cameraOptions = level.manifest.camera;
         level.createCamera();
 
         if (this.game.debug)
             level.createDebugLayer();
 
-        if (level.data.type === "tiled") {
-            window.console.log("Created TILED LEVEL :)");
+        if (level.manifest.type === "tiled") {
             A_.TILES.createTiledMap(this.mapsData[level.name], level);
             level.createEntities(level.spritesToCreate);
             level.createEntities(level.tilesToCreate);
+            window.console.log("Created TILED LEVEL :)");
         }
         else {
-            window.console.log("Created GENERIC LEVEL :)");
             level.createDummyLayer();
+            window.console.log("Created GENERIC LEVEL :)");
         }
 
         return level;
     },
-    destroyLevel: function (level) {
-        if (this.activeLevel === level) {
-            this.stopLevel(this.destroyLevel.bind(this, level));
+    destroyLevel: function (name) {
+        var level = this.findLevel(name);
+        if (!level) {
             return;
         }
-        if (!_.contains(this.createdLevels, level)) {
-            window.console.log("not contains");
+
+        if (this.activeLevel === level) {
+            this.stopLevel(this.destroyLevel.bind(this, name));
             return;
         }
 
@@ -94,16 +105,19 @@ A_.LEVEL.LevelManager = Class.extend({
 
         delete this.mapsData[level.name];
         delete this.createdLevels[level.name];
-        this.loadedLevels.splice(this.loadedLevels.indexOf(level.data.name), 1);
+        this.loadedLevels.splice(this.loadedLevels.indexOf(level.manifest.name), 1);
 
-
-        window.console.log("destroyed level");
+        window.console.log("Destroyed level.");
     },
-    // Level ACTIVATION & DEACTIVATION
-    // Activation
-    resumeLevel: function (level) {
+    // USER API
+    resumeLevel: function (name) {
+        var level = this.findLevel(name);
+        if (!level) {
+            return;
+        }
+
         if (this.activeLevel) {
-            this.stopLevel(this.resumeLevel.bind(this, level));
+            this.stopLevel(this.resumeLevel.bind(this, name));
             return;
         }
 
@@ -138,20 +152,55 @@ A_.LEVEL.LevelManager = Class.extend({
             callback();
         }
     },
-    startLevel: function (data) {
+    startLevel: function (name) {
+        var manifest = this.findManifest(name);
+        if (!manifest) {
+            return;
+        }
+
         if (this.activeLevel) {
-            this.stopLevel(this.startLevel.bind(this, data));
-        } else if (!_.contains(this.loadedLevels, data.name)) {
-            this.loadLevel(data, this.startLevel.bind(this, data));
+            this.stopLevel(this.startLevel.bind(this, name));
+        } else if (!_.contains(this.loadedLevels, manifest.name)) {
+            this.loadLevel(name, this.startLevel.bind(this, name));
         } else {
-            var level = this.createLevel(data);
-            this.resumeLevel(level);
+            this.createLevel(name);
+            this.resumeLevel(name);
         }
     },
-    restartLevel: function (level) {
+    restartLevel: function (name) {
+        var level = this.findLevel(name);
+        if (!level) {
+            return;
+        }
+
         this.stopLevel(function () {
-            var lvl = this.createLevel(level.data);
-            this.resumeLevel(lvl);
+            this.createLevel(name);
+            this.resumeLevel(name);
         }.bind(this));
+    },
+    // HELPER FUNCS
+    findLevel: function (name) {
+        var level = _.find(this.createdLevels, function (level) {
+            return level.name === name;
+        });
+
+        if (!level) {
+            window.console.log(this.errors.level);
+            return;
+        } else {
+            return level;
+        }
+    },
+    findManifest: function (name) {
+        var manifest = _.find(this.manifests, function (manifest) {
+            return manifest.name === name;
+        });
+
+        if (!manifest) {
+            window.console.log(this.errors.manifest);
+            return;
+        } else {
+            return manifest;
+        }
     }
 });

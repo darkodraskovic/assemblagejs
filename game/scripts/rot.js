@@ -1,7 +1,7 @@
 // CLASSES
 var Ball = A_.SPRITES.Topdown.extend({
     colTimesCalled: 0,
-    animSheet: "ball.png",
+    animSheet: "player_rot.png",
     collisionResponse: "dynamic",
     name: "ball",
     elasticity: 2,
@@ -67,8 +67,6 @@ function createRotLayers(level) {
 
 
     var layer = level.createSpriteLayer();
-    level.createSprite(Ball, layer, 256, 256);
-    
-    A_.game.levelManager.activateLevel(level);
+    level.createSprite(Ball, layer, 256, 256);   
 }
 

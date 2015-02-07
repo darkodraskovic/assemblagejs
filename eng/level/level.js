@@ -216,9 +216,8 @@ A_.LEVEL.Level = Class.extend({
         entities.length = 0;
     },
     createSound: function(props) {
-        var directoryPrefix = this.directoryPrefix;;
         _.each(props["urls"], function(url, i, list) {
-            list[i] = "sounds/" + directoryPrefix + url;
+            list[i] = "game/sounds/" + url;
         });
         var sound = new Howl(props);
         this.sounds.push(sound);
@@ -234,12 +233,9 @@ A_.LEVEL.Level = Class.extend({
         this.destroySounds();
         
         _.each(this.layers, function (layer) {
-//            window.console.log(layer.level);
-//            layer.level = null;
+            layer.level = null;
             delete(layer.level);
-//            window.console.log(layer.level);
             layer.removeChildren();
-//            layer.visible = false;
             this.container.removeChild(layer);
         }, this);
         
@@ -264,9 +260,6 @@ A_.LEVEL.Level = Class.extend({
     start: function() {
         this.isRunning = true;
     },
-//    restart: function () {
-//        this.game.levelManager.restartLevel(this);
-//    },
     // Level LOOP/UPDATE
     update: function() {
         if (!this.isRunning) {

@@ -1,3 +1,7 @@
+$('body').contextmenu(function () {
+    return false;
+});
+
 var A_ = {};
 A_.UTILS = {};
 A_.SPRITES = {};
@@ -6,14 +10,12 @@ A_.SCENERY = {};
 A_.COLLISION = {};
 A_.MODULES = {};
 A_.LEVEL = {};
+A_.LEVEL.Manifests = {};
 A_.EXTENSIONS = {};
 A_.POLYGON = {};
 A_.CAMERA = {};
 A_.INPUT = {};
 A_.CONFIG = {};
-
-
-
 
 // JS EXTENSIONS
 /** Converts numeric degrees to radians */

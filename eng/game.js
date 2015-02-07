@@ -3,7 +3,7 @@ A_.Game = Class.extend({
     init: function () {
         this.createRenderer(A_.CONFIG.screen, A_.CONFIG.renderer);
 
-        this.levelManager = new A_.LEVEL.LevelManager(this);
+        this.levelManager = new A_.LEVEL.LevelManager(this, A_.LEVEL.Manifests);
 
         this.debug = A_.CONFIG.debug;
 

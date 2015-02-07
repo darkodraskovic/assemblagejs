@@ -110,7 +110,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
 
 // CLASSES
 var PlayerPlatformer = AnimePlatformer.extend({
-    animSheet: "player.png",
+    animSheet: "player_platformer.png",
     controlled: true,
     followee: true,
     player: true,
@@ -169,8 +169,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
         }
 
         this._super();
-//        window.console.log(this.velocity.y);
-//        window.console.log(this.platformerState);
     },
     fireJetpack: function () {
         if (this.platformerState !== "grounded") {
@@ -184,9 +182,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
-//        window.console.log(response.overlapN.y);
-//        window.console.log(response.overlap);
-//        window.console.log(new Date().getTime());
     },
 });
 

@@ -1,10 +1,6 @@
 A_.LEVEL.Loader = Class.extend({
     // SCRIPT loader
-    init: function(dirPref) {
-        if (dirPref)
-            this.directoryPrefix = dirPref + "/";
-        else
-            this.directoryPrefix = "";
+    init: function() {
     },
     loadScripts: function(callback, scriptsToLoad) {
         if (!callback) {
@@ -24,7 +20,7 @@ A_.LEVEL.Loader = Class.extend({
     },
     loadScript: function() {
         var that = this;
-        $.getScript("game/scripts/" + this.directoryPrefix + that.scriptsToLoad[that.scriptCounter] + ".js",
+        $.getScript("game/scripts/" + that.scriptsToLoad[that.scriptCounter] + ".js",
                 that.onScriptLoaded.bind(that));
     },
     onScriptLoaded: function() {
@@ -48,7 +44,7 @@ A_.LEVEL.Loader = Class.extend({
         }
 
         var that = this;
-        $.getJSON("game/levels/" + this.directoryPrefix + mapData + ".json", function(data) {
+        $.getJSON("game/maps/" + mapData + ".json", function(data) {
             that.mapDataParsed = data;
             callback();
         });
@@ -65,9 +61,8 @@ A_.LEVEL.Loader = Class.extend({
             return;
         }
 
-        var that = this;
         graphicsToLoad = _.map(graphicsToLoad, function(asset) {
-            return "graphics/" + that.directoryPrefix + asset;
+            return "game/graphics/" + asset;
         });
         this.assetLoader = new PIXI.AssetLoader(graphicsToLoad);
         this.assetLoader.onComplete = callback;
@@ -86,11 +81,10 @@ A_.LEVEL.Loader = Class.extend({
         }
 
         this.soundCounter = 0;
-        var that = this;
         soundsToLoad = _.each(soundsToLoad, function(sound, i) {
             soundsToLoad[i] = _.map(sound, function(name) {
-                if (name.indexOf("sounds/") < 0)
-                    return "sounds/" + that.directoryPrefix + name;
+                if (name.indexOf("game/sounds/") < 0)
+                    return "game/sounds/" + name;
                 else
                     return name;
             });

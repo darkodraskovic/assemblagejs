@@ -51,7 +51,7 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
 });
 
 var PlayerSkorpio = AnimeSkorpio.extend({
-    animSheet: "PlayerComplete.png",
+    animSheet: "player_skorpio.png",
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     controlled: true,

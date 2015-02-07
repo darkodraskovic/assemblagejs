@@ -4,7 +4,7 @@ A_.TILES.Tilemap = Class.extend({
         this.baked = false;
         this.level = layer.level;
 
-        this.img = "graphics/" + this.layer.level.directoryPrefix + img;
+        this.img = "game/graphics/" + img;
         this.baseTexture = new PIXI.BaseTexture.fromImage(this.img, PIXI.scaleModes.LINEAR);
         this.imgW = this.baseTexture.width;
         this.imgH = this.baseTexture.height;

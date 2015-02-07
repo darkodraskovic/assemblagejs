@@ -1,6 +1,6 @@
 // CLASSES
 var Player = A_.SPRITES.Kinematic.extend({
-    animSheet: "player.png",
+    animSheet: "player_farer.png",
     collisionResponse: "active",
     moveAtAngle: true,
     followee: true,

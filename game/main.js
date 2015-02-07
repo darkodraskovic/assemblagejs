@@ -2,59 +2,36 @@ A_.game = new A_.Game();
 
 // START
 
-//var levelData = skorpio1;
-//var levelData = skorpio2;
-//var levelData = farer1;
-//var levelData = rot1;
-var levelData = platformer1;
+//var levelName = "skorpio1";
+//var levelName = "skorpio2";
+//var levelName = "farer1";
+//var levelName = "rot1";
+var levelName = "platformer1";
 
 var levelManager = A_.game.levelManager;
 
-levelManager.startLevel(levelData);
+levelManager.startLevel(levelName);
 
-// SKORPIO
-//levelManager.loadLevel(skorpio1, function () {
-//    levelManager.createLevel(skorpio1);
-//    levelManager.resumeLevel(levelManager.createdLevels.skorpio1);
-//});
-
-// PLATFORMER
-//levelManager.loadLevel(platformer1, function () {
-//    levelManager.createLevel(platformer1);
-//    levelManager.resumeLevel(levelManager.createdLevels.platformer1);
+// SKORPIO / PLATFORMER
+//levelManager.loadLevel(levelName, function () {
+//    levelManager.createLevel(levelName);
+//    levelManager.resumeLevel(levelName);
 //});
 
 // FARER
-//levelManager.loadLevel(farer1, function () {
-//    var level = levelManager.createLevel(farer1);
+//levelManager.loadLevel("farer1", function () {
+//    var level = levelManager.createLevel("farer1");
 //    populateLevel(level);
-//    levelManager.resumeLevel(level);
+//    levelManager.resumeLevel("farer1");
 //});
 
 // ROT
-//levelManager.loadLevel(rot1, function () {
-//    var level = levelManager.createLevel(rot1);
+//levelManager.loadLevel("rot1", function () {
+//    var level = levelManager.createLevel("rot1");
 //    createRoguelikeMap(level);
-//    
+//    levelManager.resumeLevel("rot1");
 //});
 
-//levelManager.loadLevel(skorpio1, function() {
-//    levelManager.createLevel(skorpio1);
-////    levelManager.resumeLevel(levelManager.createdLevels.skorpio1);
-//    levelManager.loadLevel(platformer1, function() {
-//        levelManager.createLevel(platformer1);
-////        levelManager.resumeLevel(levelManager.createdLevels.platformer1);
-//    });
-//});
-//levelManager.loadLevel(platformer1, function () {
-//    levelManager.createLevel(platformer1);
-//    levelManager.loadLevel(skorpio1, function () {
-//        levelManager.createLevel(skorpio1);
-//        levelManager.loadLevel(skorpio2, function () {
-//            levelManager.createLevel(skorpio2);
-//        });
-////        levelManager.resumeLevel(levelManager.createdLevels.platformer1);
-//    });
-//});
+
 
 
