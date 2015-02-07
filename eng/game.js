@@ -1,5 +1,4 @@
 A_.Game = Class.extend({
-    isRunning: false,
     init: function () {
         this.createRenderer(A_.CONFIG.screen, A_.CONFIG.renderer);
 
@@ -10,7 +9,7 @@ A_.Game = Class.extend({
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
         
-        this.isRunning = true;
+        this.running = true;
         // Cf. run.js
         requestAnimFrame(runGame);
     },
@@ -20,31 +19,31 @@ A_.Game = Class.extend({
         document.body.appendChild(this.renderer.view);
     },
     // GAME LOOP
-    stop: function (callback) {
-        if (this.isRunning) {
-            this.isRunning = false;
-            this.stopped = true;
-            this.onStoppedCallback = callback;
-        }
-    },
-    onStopped: function () {
-        window.console.log("game stopped");
-        if (this.onStoppedCallback) {
-            this.onStoppedCallback();
-            this.onStoppedCallback = null;
-        }
-    },
-    start: function () {
-        if (!this.isRunning) {
+    play: function () {
+        if (!this.running) {
             this.time = new Date().getTime();
-            this.isRunning = true;
+            this.running = true;
+        }
+    },
+    pause: function (callback) {
+        if (this.running) {
+            this.running = false;
+            this.stopped = true;
+            this.onPausedCallback = callback;
+        }
+    },
+    onPaused: function () {
+        window.console.log("game stopped");
+        if (this.onPausedCallback) {
+            this.onPausedCallback();
+            this.onPausedCallback = null;
         }
     },
     run: function () {
-        if (!this.isRunning) {
+        if (!this.running) {
             if (this.stopped) {
                 this.stopped = false;
-                this.onStopped();
+                this.onPaused();
             }
         }
         else {

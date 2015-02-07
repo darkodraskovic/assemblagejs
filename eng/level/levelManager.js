@@ -130,7 +130,7 @@ A_.LEVEL.LevelManager = Class.extend({
             this.game.stage.addChild(level.container);
             this.activeLevels.push(level);
 
-            level.start();
+            level.play();
             window.console.log("Level STARTS...");
         }, this);
 
@@ -160,14 +160,14 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.levelsToDeactivate.length = 0;
     },
-    playLevel: function (manifest, name) {
+    startLevel: function (manifest, name) {
         if (!_.contains(this.manifests, manifest)) {
             window.console.log("Cannot find manifest");
             return;
         }
 
         if (!_.contains(this.loadedLevels, manifest)) {
-            this.loadLevel(manifest, this.playLevel.bind(this, manifest, name));
+            this.loadLevel(manifest, this.startLevel.bind(this, manifest, name));
             return;
         }
         else if (this.findActiveLevel(name)) {
@@ -181,9 +181,18 @@ A_.LEVEL.LevelManager = Class.extend({
             this.activateLevel(name);
         }
     },
+    stopLevel: function (name) {
+        var level = this.findActiveLevel(name);
+        if (!level) {
+            return;
+        }
+        
+        this.deactivateLevel(name);
+        this.destroyLevel(name);
+    },
     manageLevels: function () {
         _.each(this.activeLevels, function (level) {
-            level.update();
+            level.run();
         });
 
         this.deactivateLevels();
