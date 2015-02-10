@@ -167,8 +167,6 @@ A_.LEVEL.Level = Class.extend({
         }
 
         var sprite = new SpriteClass(layer, x, y, props);
-        sprite.setPosition(x, y);
-        sprite.onCreation();
 
         this.spritesToCreate.push(sprite);
         return sprite;

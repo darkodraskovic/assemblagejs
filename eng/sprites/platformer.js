@@ -22,9 +22,6 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
             A_.INPUT.addMapping("jump", A_.KEY.SPACE);
         }
     },
-    onCreation: function () {
-        this._super();
-    },
     preupdate: function () {
         this.processPlatformerState();
         

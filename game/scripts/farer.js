@@ -14,9 +14,6 @@ var Player = A_.SPRITES.Kinematic.extend({
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("down", A_.KEY.S);
         A_.INPUT.addMapping("up", A_.KEY.W);
-    },
-    onCreation: function () {
-        this._super();
         this.laser1 = this.level.createSprite(Laser, this, 18, -12);
         this.laser2 = this.level.createSprite(Laser, this, 18, 12);
         this.spritePoint("bullet1", 18, -12);
@@ -143,9 +140,6 @@ var Bullet = A_.SPRITES.Kinematic.extend({
             urls: ['bullet.wav'],
             volume: 0.75
         }).play();
-    },
-    onCreation: function () {
-        this._super();
         this.setOrigin(0, 0.5);
         this.setAlpha(0.75);
         this.moveAtAngle = true;

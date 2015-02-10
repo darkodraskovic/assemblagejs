@@ -66,9 +66,6 @@ var PlayerSkorpio = AnimeSkorpio.extend({
                 this.getX(), this.getY(),
                 {holder: this, animSpeed: this.animSpeed});
     },
-    onCreation: function () {
-        this._super();
-    },
     update: function () {
         var rot = (A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition())).toDeg();
         if (rot >= -45 && rot < 45) {
@@ -337,9 +334,6 @@ var LaserFire = A_.SPRITES.Sprite.extend({
 //        var blur = new PIXI.BlurFilter();
 //        blur.blurX = blur.blurY = 1;
 //        this.sprite.filters = [blur];
-    },
-    onCreation: function () {
-        this._super();
         this.setZ("top");
     },
     update: function () {

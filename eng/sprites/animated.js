@@ -17,16 +17,7 @@ A_.SPRITES.Sprite = Class.extend({
 
         this.level = parent.level;
 
-        if (!_.isNumber(this.frameWidth)) {
-            this.frameWidth = 0;
-        }
-        if (!_.isNumber(this.frameHeight)) {
-            this.frameHeight = 0;
-        }
-        
-//        if (!this.spriteSheet) {
-//            
-//        }
+        this.textures = [];
         // If this sprite displays an image or features animations...
         if (this.spriteSheet) {
             // A texture stores the information that represents an image. 
@@ -47,29 +38,27 @@ A_.SPRITES.Sprite = Class.extend({
 
             // An array of textures that we'll use to make up different sprite animations, ie. MovieClips.
             // PIXI's MovieClip is an object used to display an animation depicted by a list of textures.
-            this.textures = [];
             for (var i = 0; i < rows; i++) {
                 for (var j = 0; j < colls; j++)
                     this.textures[this.textures.length] = new PIXI.Texture(this.baseTexture,
                             new PIXI.Rectangle(j * this.frameWidth, i * this.frameHeight,
                                     this.frameWidth, this.frameHeight));
             }
-
-            var sprite = this.createPIXISprite(this.frameWidth, this.frameHeight);
-            this.initializePIXISprite(sprite);
-            
-            this.defaultAnimationSpeed = 0.05;
-            // Every animated sprite has two animations (MovieClips):
-            // A default one, which displays the first frame (Texture) and
-            // An animation (MovieClip) which plays all frames (Texture-s).
-            this.addAnimation("default", [0], 1);
-            this.addAnimation("all", _.range(0, this.textures.length), this.defaultAnimationSpeed);
-            this.setAnimation("default");
-        } else {
-//            this.createSprite(this.frameWidth, this.frameHeight);
-            var sprite = this.createPIXISprite(1, 1);
-            this.initializePIXISprite(sprite);
         }
+        else {
+            this.textures.push(new PIXI.RenderTexture(this.frameWidth, this.frameHeight));
+        }
+
+        var sprite = this.createPIXISprite(this.frameWidth, this.frameHeight);
+        this.initializePIXISprite(sprite);
+
+        this.defaultAnimationSpeed = 0;
+        // Every animated sprite has two animations (MovieClips):
+        // A default one, which displays the first frame (Texture) and
+        // An animation (MovieClip) which plays all frames (Texture-s).
+        this.addAnimation("default", [0], 1);
+        this.addAnimation("all", _.range(0, this.textures.length), this.defaultAnimationSpeed);
+        this.setAnimation("default");
 
         this.spritePoints = [];
 
@@ -89,7 +78,7 @@ A_.SPRITES.Sprite = Class.extend({
         this.setFollowee(this.followee);
 
 //        this.parent = parent;
-//        this.setPosition(x, y);
+        this.setPosition(x, y);
     },
     setFollowee: function (isFollowee) {
         if (isFollowee) {
@@ -580,9 +569,6 @@ A_.SPRITES.Sprite = Class.extend({
                 }
             }
         }
-    },
-    onCreation: function () {
-//        this.setPosition(x, y);
     },
     destroy: function () {
         _.each(this.sprites, function (sprite) {

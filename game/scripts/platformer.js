@@ -115,12 +115,12 @@ var PlayerPlatformer = AnimePlatformer.extend({
     controlled: true,
     followee: true,
     player: true,
-//    bounciness: 0.0000000001,
 //    drawDebugGraphics: true,
-    onCreation: function () {
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
+        
         A_.INPUT.addMapping("jetpack", A_.KEY.SPACE);
         A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
-        this._super();
         this.thrus = this.level.findLayerByName("Thrus");
     },
     onJumped: function () {
@@ -193,9 +193,6 @@ var Undead = AnimePlatformer.extend({
         this.controlled = false;
         this.maxVelocity = new SAT.Vector(150, 600);
         this.jumpProbability = 25;
-    },
-    onCreation: function () {
-        this._super();
 //        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.getX(), this.getY(), {undead: this});
     },
     update: function () {
@@ -235,8 +232,6 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-    },
-    onCreation: function () {
         this._super();
         this.addon("PinTo", {name: "probe", parent: this.undead,
             offsetX: 0, offsetY: this.undead.getHeight() / 2 + 4});
@@ -279,8 +274,6 @@ var Platform = A_.SPRITES.Colliding.extend({
         this.sine.period = 2;
         this.sine.amplitude = this.frameWidth;
         this.sine.reset();
-    },
-    onCreation: function () {
         this.origX = this.getX();
         this.origY = this.getY();
     },

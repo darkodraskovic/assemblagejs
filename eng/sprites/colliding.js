@@ -7,9 +7,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         this.containedPoint = new SAT.Vector(0, 0);
         this.response = new SAT.Response();
         this._delta = new SAT.Vector();
-    },
-    onCreation: function () {
-        this._super();
         this.synchCollisionPolygon();
     },
     createCollisionPolygon: function (polygon) {
