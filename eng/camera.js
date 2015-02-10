@@ -13,10 +13,6 @@ A_.CAMERA.Camera = Class.extend({
             this.worldBounded = false;
         }
 
-//        if (!this.followee) {
-//            this.followee = null;
-//        }
-
         if (!this.followType) {
             this.followType = "centered";
         }

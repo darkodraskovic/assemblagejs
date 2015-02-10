@@ -144,7 +144,6 @@ A_.TILES.createTiledMap = function (mapData, level) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData);
                         args.collisionPolygon = collisionPolygon;
                     }
-                    window.console.log(oData["type"]);
                     var o = level.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(o.getWidth() / 2, -o.getHeight() / 2);
                 }

@@ -52,7 +52,7 @@ A_.Game = Class.extend({
             this.time = now;
             this.dt /= 1000;
 
-            this.levelManager.manageLevels();
+            this.levelManager.updateLevels();
 
             A_.INPUT.reset();
         }

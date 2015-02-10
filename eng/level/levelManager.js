@@ -10,8 +10,10 @@ A_.LEVEL.LevelManager = Class.extend({
         // An array of active levels.
         this.activeLevels = [];
 
+        this.manageLevels = false;
         this.levelsToDeactivate = [];
         this.levelsToDestroy = [];
+        this.levelsToCreate = [];
         this.levelsToActivate = [];
     },
     // Level LOADING
@@ -20,7 +22,7 @@ A_.LEVEL.LevelManager = Class.extend({
             window.console.log("Level is already loaded.");
             return;
         }
-        
+
         if (!manifest || !_.contains(this.manifests, manifest)) {
             window.console.log("Cannot find manifest. Creating a dummy one.");
             manifest = {
@@ -61,19 +63,36 @@ A_.LEVEL.LevelManager = Class.extend({
         }
     },
     // Level CREATION & DESTRUCTION
-    createLevel: function (manifest, name) {
+    createLevel: function (manifest, name, activate) {
+        this.levelsToCreate.push({manifest: manifest, name: name, activate: activate});
+    },
+    createLevels: function () {
+        _.each(this.levelsToCreate, function (levelToCreate) {
+            var manifest = levelToCreate.manifest;
+            var name = levelToCreate.name;
+
+            var level = this.generateLevel(manifest, name);
+
+            if (level && levelToCreate.activate) {
+                this.activateLevel(name);
+            }
+        }, this);
+
+        this.levelsToCreate.length = 0;
+    },
+    generateLevel: function (manifest, name) {
         if (!_.contains(this.manifests, manifest)) {
             window.console.log("Cannot find manifest");
             return;
         }
 
         var level = new A_.LEVEL.Level(this.game);
-        level.manifest = A_.UTILS.copy(manifest);
+        level.manifest = manifest;
 
         level.name = name;
         this.createdLevels.push(level);
 
-        level.cameraOptions = level.manifest.camera;
+        level.cameraOptions = A_.UTILS.copy(level.manifest.camera);
         level.createCamera();
 
         if (this.game.debug)
@@ -175,29 +194,46 @@ A_.LEVEL.LevelManager = Class.extend({
         }
         else if (this.findCreatedLevel(name)) {
             this.activateLevel(name);
+            this.manageLevels = true;
         }
         else {
-            this.createLevel(manifest, name)
-            this.activateLevel(name);
+            this.createLevel(manifest, name, true);
+            this.manageLevels = true;
         }
+
+    },
+    restartLevel: function (name) {
+        var level = this.findActiveLevel(name);
+
+        this.deactivateLevel(name);
+        this.destroyLevel(name);
+        this.createLevel(level.manifest, level.name, true);
+
+        this.manageLevels = true;
     },
     stopLevel: function (name) {
         var level = this.findActiveLevel(name);
         if (!level) {
             return;
         }
-        
+
         this.deactivateLevel(name);
         this.destroyLevel(name);
+        this.manageLevels = true;
     },
-    manageLevels: function () {
+    updateLevels: function () {
         _.each(this.activeLevels, function (level) {
             level.run();
         });
 
-        this.deactivateLevels();
-        this.destroyLevels();
-        this.activateLevels();
+        if (this.manageLevels) {
+            window.console.log("managed levels");
+            this.deactivateLevels();
+            this.destroyLevels();
+            this.createLevels();
+            this.activateLevels();
+            this.manageLevels = false;
+        }
     },
     // HELPER FUNCS
     findCreatedLevel: function (name) {
