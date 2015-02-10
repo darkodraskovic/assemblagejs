@@ -1,4 +1,4 @@
-A_.SPRITES.Animated = Class.extend({
+A_.SPRITES.Sprite = Class.extend({
     destroyThis: false,
     bounded: true,
     wrap: false,
@@ -17,27 +17,33 @@ A_.SPRITES.Animated = Class.extend({
 
         this.level = parent.level;
 
-        if (!this.frame) {
-            this.frame = {w: 0, h: 0};
+        if (!_.isNumber(this.frameWidth)) {
+            this.frameWidth = 0;
+        }
+        if (!_.isNumber(this.frameHeight)) {
+            this.frameHeight = 0;
         }
         
+//        if (!this.spriteSheet) {
+//            
+//        }
         // If this sprite displays an image or features animations...
-        if (this.animSheet) {
+        if (this.spriteSheet) {
             // A texture stores the information that represents an image. 
             // All textures have a base texture. (PIXI doc)
-            this.animSheet = "game/graphics/" + this.animSheet;
-            this.baseTexture = new PIXI.BaseTexture.fromImage(this.animSheet, PIXI.scaleModes.LINEAR);
+            this.spriteSheet = "game/graphics/" + this.spriteSheet;
+            this.baseTexture = new PIXI.BaseTexture.fromImage(this.spriteSheet, PIXI.scaleModes.LINEAR);
             // If the frame size is not specified in the class definition, 
             // or the frame w/h is set to 0, use the dims of the image itself.
-            if (!this.frame.w) {
-                this.frame.w = this.baseTexture.width;
+            if (!this.frameWidth) {
+                this.frameWidth = this.baseTexture.width;
             }
-            if (!this.frame.h) {
-                this.frame.h = this.baseTexture.height;
+            if (!this.frameHeight) {
+                this.frameHeight = this.baseTexture.height;
             }
 
-            var colls = Math.round(this.baseTexture.width / this.frame.w);
-            var rows = Math.round(this.baseTexture.height / this.frame.h);
+            var colls = Math.round(this.baseTexture.width / this.frameWidth);
+            var rows = Math.round(this.baseTexture.height / this.frameHeight);
 
             // An array of textures that we'll use to make up different sprite animations, ie. MovieClips.
             // PIXI's MovieClip is an object used to display an animation depicted by a list of textures.
@@ -45,12 +51,13 @@ A_.SPRITES.Animated = Class.extend({
             for (var i = 0; i < rows; i++) {
                 for (var j = 0; j < colls; j++)
                     this.textures[this.textures.length] = new PIXI.Texture(this.baseTexture,
-                            new PIXI.Rectangle(j * this.frame.w, i * this.frame.h,
-                                    this.frame.w, this.frame.h));
+                            new PIXI.Rectangle(j * this.frameWidth, i * this.frameHeight,
+                                    this.frameWidth, this.frameHeight));
             }
 
-            this.createSprite(this.frame.w, this.frame.h);
-
+            var sprite = this.createPIXISprite(this.frameWidth, this.frameHeight);
+            this.initializePIXISprite(sprite);
+            
             this.defaultAnimationSpeed = 0.05;
             // Every animated sprite has two animations (MovieClips):
             // A default one, which displays the first frame (Texture) and
@@ -59,7 +66,9 @@ A_.SPRITES.Animated = Class.extend({
             this.addAnimation("all", _.range(0, this.textures.length), this.defaultAnimationSpeed);
             this.setAnimation("default");
         } else {
-            this.createSprite(this.frame.w, this.frame.h);
+//            this.createSprite(this.frameWidth, this.frameHeight);
+            var sprite = this.createPIXISprite(1, 1);
+            this.initializePIXISprite(sprite);
         }
 
         this.spritePoints = [];
@@ -69,7 +78,7 @@ A_.SPRITES.Animated = Class.extend({
         this.prevX = 0;
         this.prevY = 0;
 
-        if (parent instanceof A_.SPRITES.Animated) {
+        if (parent instanceof A_.SPRITES.Sprite) {
             parent.addSprite(this);
         }
         else {
@@ -95,7 +104,7 @@ A_.SPRITES.Animated = Class.extend({
     },
     // Create a transparent PIXI.Sprite that will store, as a parent,
     // all animations, ie. PIXI.MovieClip-s and all PIXI.Sprite-s.
-    createSprite: function (w, h) {
+    createPIXISprite: function (w, h) {
         // We'll use the graphics PIXI obj to render an invisible texture,
         // which we'll pass to PIXI.Sprite's constructor.
         var graphic = new PIXI.Graphics();
@@ -111,26 +120,30 @@ A_.SPRITES.Animated = Class.extend({
         // generateTexture() is a function that returns a texture of the 
         // graphics object that can then be used to create sprites (PIXI doc)
         var sprite = new PIXI.Sprite(graphic.generateTexture(false));
-        sprite.anchor = new PIXI.Point(0.5, 0.5);
+        sprite.anchor.x = 0.5;
+        sprite.anchor.y = 0.5;
 
+        return sprite;
+    },
+    initializePIXISprite: function (sprite) {
+        this.sprite = sprite;
+//        var sprite = new PIXI.DisplayObjectContainer();
         // animations DOC stores MovieClip objects.
         var animations = new PIXI.DisplayObjectContainer();
-        sprite.addChild(animations);
+        this.sprite.addChild(animations);
         // A hashmap of all animations, ie. MovieClips for easy reference.
         this.animations = {};
 
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
         var sprites = new PIXI.DisplayObjectContainer();
-        sprite.addChild(sprites);
+        this.sprite.addChild(sprites);
         // An array of all sprite children (instances of A_.SPRITES.Sprite) of this object 
         this.sprites = [];
 
-        this.sprite = sprite;
-
-        // Used to optimize x & y setting & getting.
+        // Used to optimize getters & setters.
         this.position = this.sprite.position;
         this.scale = this.sprite.scale;
-        this.origin = this.sprite.anchor;
+        this.origin = sprite.anchor;
     },
     // ANIMATION
     // frames is an array of nums refering to the index of texture in this.textures
@@ -394,12 +407,12 @@ A_.SPRITES.Animated = Class.extend({
     },
     // ORIGIN (ANCHOR)
     setOrigin: function (x, y) {
-        var deltaX = -(x - this.sprite.anchor.x) * this.getWidth();
-        var deltaY = -(y - this.sprite.anchor.y) * this.getHeight();
+        var deltaX = -(x - this.origin.x) * this.getWidth();
+        var deltaY = -(y - this.origin.y) * this.getHeight();
         var scale = this.getScale();
 
-        this.sprite.anchor.x = x;
-        this.sprite.anchor.y = y;
+        this.origin.x = x;
+        this.origin.y = y;
         _.each(this.animations, function (animation) {
             animation.anchor.x = x;
             animation.anchor.y = y;
@@ -413,13 +426,13 @@ A_.SPRITES.Animated = Class.extend({
 
         _.each(this.spritePoints, function (sp) {
             sp.translate(deltaX / scale.x, deltaY / scale.y);
-//            sp.setPoint(sp.point.x + deltaX, sp.point.y + deltaY);
         });
 
         return [deltaX, deltaY];
     },
     getOrigin: function () {
-        return this.sprite.anchor;
+//        return this.sprite.anchor;
+        return this.origin;
     },
     // TRANSPARENCY
     setAlpha: function (n) {
@@ -588,4 +601,4 @@ A_.SPRITES.Animated = Class.extend({
     }
 });
 
-A_.SPRITES.Animated.inject(A_.INPUT.mouseReactivityInjection);
+A_.SPRITES.Sprite.inject(A_.INPUT.mouseReactivityInjection);

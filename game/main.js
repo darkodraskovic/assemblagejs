@@ -10,26 +10,21 @@ A_.game = new A_.Game();
 
 var levelManager = A_.game.levelManager;
 
-//levelManager.startLevel(levelName);
-
-// SKORPIO / PLATFORMER
-//levelManager.loadLevel(levelName, function () {
-//    levelManager.createLevel(levelName);
-//    levelManager.resumeLevel(levelName);
-//});
+levelManager.startLevel(platformer1, "lvl1");
+//levelManager.startLevel(skorpio1, "lvl1");
 
 // FARER
-//levelManager.loadLevel("farer1", function () {
-//    var level = levelManager.createLevel("farer1");
+//levelManager.loadLevel(farer1, function () {
+//    var level = levelManager.createLevel(farer1, "farer1");
 //    populateLevel(level);
-//    levelManager.resumeLevel("farer1");
+//    levelManager.activateLevel("farer1");
 //});
 
 // ROT
-//levelManager.loadLevel("rot1", function () {
-//    var level = levelManager.createLevel("rot1");
+//levelManager.loadLevel(rot1, function () {
+//    var level = levelManager.createLevel(rot1, "rot1");
 //    createRoguelikeMap(level);
-//    levelManager.resumeLevel("rot1");
+//    levelManager.activateLevel("rot1");
 //});
 
 

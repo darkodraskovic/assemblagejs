@@ -121,13 +121,15 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 if (oData.polygon || oData.type === "Rectangle") {
                     if (oData.polygon) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
-                        args.frame = {w: collisionPolygon.w, h: collisionPolygon.h}
+                        args.frameWidth = collisionPolygon.w;
+                        args.frameHeight = collisionPolygon.h;
                         args.collisionPolygon = collisionPolygon;
                         var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                         o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
 
                     } else {
-                        args.frame = {w: oData["width"], h: oData["height"]}
+                        args.frameWidth = oData["width"];
+                        args.frameHeight = oData["height"];
                         args.collisionW = oData["width"];
                         args.collisionH = oData["height"];
                         var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);

@@ -45,7 +45,8 @@ A_.TILES.Tile.inject({
 });
 
 var AnimePlatformer = A_.SPRITES.Platformer.extend({
-    frame: {w: 32, h: 64},
+    frameWidth: 32,
+    frameHeight: 64,
     bounded: false,
     wrap: true,
     collisionResponse: "passive",
@@ -83,7 +84,7 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
 
 var Ball = A_.SPRITES.Kinematic.extend({
     bounded: false,
-    animSheet: "ball.png",
+    spriteSheet: "ball.png",
     collisionResponse: "passive",
     drawDebugGraphics: false,
     elasticity: 1,
@@ -110,7 +111,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
 
 // CLASSES
 var PlayerPlatformer = AnimePlatformer.extend({
-    animSheet: "player_platformer.png",
+    spriteSheet: "player_platformer.png",
     controlled: true,
     followee: true,
     player: true,
@@ -186,7 +187,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
 });
 
 var Undead = AnimePlatformer.extend({
-    animSheet: "undead.png",
+    spriteSheet: "undead.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.controlled = false;
@@ -266,8 +267,9 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
 });
 
 var Platform = A_.SPRITES.Colliding.extend({
-    animSheet: "moving_platform.png",
-    frame: {w: 128, h: 32},
+    spriteSheet: "moving_platform.png",
+    frameWidth: 128,
+    frameHeight: 32,
     collisionResponse: "static",
     type: "horizontal",
 //    drawDebugGraphics: false,    
@@ -275,7 +277,7 @@ var Platform = A_.SPRITES.Colliding.extend({
         this._super(parent, x, y, props);
         this.sine = this.addon("Sine");
         this.sine.period = 2;
-        this.sine.amplitude = this.frame.w;
+        this.sine.amplitude = this.frameWidth;
         this.sine.reset();
     },
     onCreation: function () {
@@ -290,9 +292,10 @@ var Platform = A_.SPRITES.Colliding.extend({
     }
 });
 
-var ExplosionPlatformer = A_.SPRITES.Animated.extend({
-    animSheet: "Explosion.png",
-    frame: {w: 128, h: 128},
+var ExplosionPlatformer = A_.SPRITES.Sprite.extend({
+    spriteSheet: "Explosion.png",
+    frameWidth: 128,
+    frameHeight: 128,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 

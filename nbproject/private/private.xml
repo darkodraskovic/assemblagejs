@@ -5,7 +5,7 @@
             <url>eng/sprites/animated.js</url>
             <bookmark id="13">
                 <name/>
-                <line>509</line>
+                <line>514</line>
                 <key/>
             </bookmark>
         </file>
@@ -56,16 +56,14 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/camera.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/animated.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level/level.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level/levelManager.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/scenery.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/spritePoint.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/colliding.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/farer/farer.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tiled.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/assemblagejs/eng/sprites/animated.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/assemblagejs/eng/camera.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/assemblagejs/eng/level/levelManager.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/assemblagejs/eng/tiles/tiled.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/assemblagejs/game/main.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/assemblagejs/eng/sprites/colliding.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/assemblagejs/eng/level/level.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/assemblagejs/eng/sprites/spritePoint.js</file>
         </group>
     </open-files>
 </project-private>

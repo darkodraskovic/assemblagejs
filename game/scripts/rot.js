@@ -1,7 +1,7 @@
 // CLASSES
 var Ball = A_.SPRITES.Topdown.extend({
     colTimesCalled: 0,
-    animSheet: "player_rot.png",
+    spriteSheet: "player_rot.png",
     collisionResponse: "dynamic",
     name: "ball",
     elasticity: 2,

@@ -1,4 +1,4 @@
-A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
+A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
     collides: true,
     drawDebugGraphics: true,
     init: function (parent, x, y, props) {

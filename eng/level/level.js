@@ -190,7 +190,7 @@ A_.LEVEL.Level = Class.extend({
         // TODO: This routine should insert entities in collider arrays,
         // in order to activate collision for entity in the next tick,
         // and not on entities creation.
-        var levelEntities = entities[0] instanceof A_.SPRITES.Animated ?
+        var levelEntities = entities[0] instanceof A_.SPRITES.Sprite ?
                 this.sprites : this.tiles;
         _.each(entities, function (entity) {
             levelEntities.push(entity);
@@ -198,7 +198,7 @@ A_.LEVEL.Level = Class.extend({
         entities.length = 0;
     },
     destroyEntity: function (entity) {
-        if (entity instanceof A_.SPRITES.Animated) {
+        if (entity instanceof A_.SPRITES.Sprite) {
             if (!_.contains(this.sprites, entity))
                 return;
             entity.clear();

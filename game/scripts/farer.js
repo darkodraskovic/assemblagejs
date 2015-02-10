@@ -1,6 +1,6 @@
 // CLASSES
 var Player = A_.SPRITES.Kinematic.extend({
-    animSheet: "player_farer.png",
+    spriteSheet: "player_farer.png",
     collisionResponse: "active",
     moveAtAngle: true,
     followee: true,
@@ -69,8 +69,8 @@ var Player = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var Laser = A_.SPRITES.Animated.extend({
-    animSheet: "laser.png",
+var Laser = A_.SPRITES.Sprite.extend({
+    spriteSheet: "laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setAlpha(0.4);
@@ -129,7 +129,7 @@ var Laser = A_.SPRITES.Animated.extend({
 });
 
 var Bullet = A_.SPRITES.Kinematic.extend({
-    animSheet: "bullet.png",
+    spriteSheet: "bullet.png",
     collisionResponse: "sensor",
     moveAtAngle: true,
 //    drawDebugGraphics: false,
@@ -166,8 +166,9 @@ var Bullet = A_.SPRITES.Kinematic.extend({
 });
 
 var Rotor = A_.SPRITES.Kinematic.extend({
-    animSheet: "rotor.png",
-    frame: {w: 45, h: 45},
+    spriteSheet: "rotor.png",
+    frameWidth: 45,
+    frameHeight: 45,
     collisionResponse: "static",
     angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
@@ -178,9 +179,10 @@ var Rotor = A_.SPRITES.Kinematic.extend({
         this._super();
     }
 });
-var Explosion = A_.SPRITES.Animated.extend({
-    animSheet: "Explosion.png",
-    frame: {w: 128, h: 128},
+var Explosion = A_.SPRITES.Sprite.extend({
+    spriteSheet: "Explosion.png",
+    frameWidth: 128,
+    frameHeight: 128,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 

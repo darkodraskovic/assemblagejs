@@ -1,7 +1,8 @@
 // CLASSES
 var AnimeSkorpio = A_.SPRITES.Topdown.extend({
-    frame: {w: 64, h: 64},
-    collisionResponse: "passive", 
+    frameWidth: 64,
+    frameHeight: 64,
+    collisionResponse: "passive",
     collisionOffsetY: 6,
     collisionW: 26,
     collisionH: 48,
@@ -10,9 +11,9 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
     facing: "right",
     bounciness: 0,
     collides: true,
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        
+
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
         this.addAnimation("idle_left", [9], 1);
@@ -27,11 +28,11 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
         this.animations["death"].loop = false;
 
         var that = this;
-        this.animations["death"].onComplete = function() {
+        this.animations["death"].onComplete = function () {
             that.destroy();
         };
     },
-    update: function() {
+    update: function () {
         this._super();
         if (this.alive) {
             this.setAnimation(this.motionState + "_" + this.facing);
@@ -51,24 +52,24 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
 });
 
 var PlayerSkorpio = AnimeSkorpio.extend({
-    animSheet: "player_skorpio.png",
+    spriteSheet: "player_skorpio.png",
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     controlled: true,
     followee: true,
     player: true,
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this.collisionResponse = "active";
         this._super(parent, x, y, props);
         this.maxVelocity = new SAT.Vector(256, 256);
         this.rifle = this.level.createSprite(Rifle, this.layer,
                 this.getX(), this.getY(),
-                {holder: this, animSpeed: this.animSpeed});                
+                {holder: this, animSpeed: this.animSpeed});
     },
-    onCreation: function() {
+    onCreation: function () {
         this._super();
     },
-    update: function() {
+    update: function () {
         var rot = (A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition())).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
@@ -78,9 +79,9 @@ var PlayerSkorpio = AnimeSkorpio.extend({
             this.facing = "left";
         } else
             this.facing = "up";
-        
+
 //        window.console.log("updt skorpio");
-        
+
         if (this.level.leftpressed) {
             this.shootBullet();
         }
@@ -89,30 +90,30 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         }
         this._super();
     },
-    shootBullet: function() {
+    shootBullet: function () {
         var sprPt = this.rifle.spritePoint(this.facing);
         var bullet = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
         bullet.setRotation(A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition()));
         bullet.setAnimation("all", 16, 0);
     },
-    shootLaser: function() {
+    shootLaser: function () {
         var pos = this.getPosition();
         this.level.createSprite(LaserBeam, this.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
     }
 });
 
 var Agent = AnimeSkorpio.extend({
-    animSheet: "AgentComplete.png",
+    spriteSheet: "AgentComplete.png",
     timer: 0,
     collisionType: A_.COLLISION.Type.ENEMY,
     collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.maxVelocity = new SAT.Vector(96, 96);
         this.motionState = "moving";
         this.timer = 2;
     },
-    update: function() {
+    update: function () {
         if (this.alive) {
             if (this.cardinalContains("N")) {
                 this.facing = "up";
@@ -136,10 +137,11 @@ var Agent = AnimeSkorpio.extend({
     }
 });
 
-var Rifle = A_.SPRITES.Animated.extend({
-    animSheet: "AssaultRifle.png",
-    frame: {w: 64, h: 64},
-    init: function(parent, x, y, props) {
+var Rifle = A_.SPRITES.Sprite.extend({
+    spriteSheet: "AssaultRifle.png",
+    frameWidth: 64,
+    frameHeight: 64,
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
@@ -155,10 +157,10 @@ var Rifle = A_.SPRITES.Animated.extend({
         this.spritePoint("down", -10, 28);
         this.spritePoint("left", -24, 6);
         this.spritePoint("right", 24, 6);
-        
+
         this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
-    update: function() {
+    update: function () {
         this._super();
 //        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
 //        switch (this.holder.facing) {
@@ -179,13 +181,14 @@ var Rifle = A_.SPRITES.Animated.extend({
 });
 // WEAPONS & AMMO
 var Bullet = A_.SPRITES.Kinematic.extend({
-    animSheet: "Muzzleflashes-Shots.png",
-    frame: {w: 32, h: 32},
+    spriteSheet: "Muzzleflashes-Shots.png",
+    frameWidth: 32,
+    frameHeight: 32,
     collisionResponse: "sensor",
     collisionW: 12,
     collisionH: 10,
-    collidesWith: A_.COLLISION.Type.ENEMY,    
-    init: function(parent, x, y, props) {
+    collidesWith: A_.COLLISION.Type.ENEMY,
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 0;
         this.friction.y = 0;
@@ -199,14 +202,14 @@ var Bullet = A_.SPRITES.Kinematic.extend({
             volume: 0.5
         }).play();
     },
-    update: function() {
+    update: function () {
         this._super();
         if (this.outOfBounds) {
             this.destroy();
         }
-        
+
     },
-    collideWithDynamic: function(other, response) {
+    collideWithDynamic: function (other, response) {
         if (other instanceof Agent) {
             other.alive = false;
             other.motionState = "idle";
@@ -215,17 +218,17 @@ var Bullet = A_.SPRITES.Kinematic.extend({
             this.destroy();
         }
     },
-    collideWithStatic: function(other, response) {
+    collideWithStatic: function (other, response) {
         this.destroy();
     }
 });
 
-var LaserBeam = A_.SPRITES.Animated.extend({
-    animSheet: "Muzzleflashes-Shots.png",
-//    collides: false,
-    frame: {w: 32, h: 32},
+var LaserBeam = A_.SPRITES.Sprite.extend({
+    spriteSheet: "Muzzleflashes-Shots.png",
+    frameWidth: 32,
+    frameHeight: 32,
     bounded: false,
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setAlpha(0.75);
         this.setAnimation("all", 18, 0);
@@ -251,7 +254,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         var sineProps = {period: 1, periodRand: 50, amplitude: 8, amplitudeRand: 4};
         this.sine = this.addon("Sine", sineProps);
     },
-    update: function() {
+    update: function () {
         this._super();
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
@@ -277,10 +280,10 @@ var LaserBeam = A_.SPRITES.Animated.extend({
 
 var LaserTip = A_.SPRITES.Colliding.extend({
     bounded: false,
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
     },
-    update: function() {
+    update: function () {
         this._super();
         this.setPosition(this.laser.tip.x, this.laser.tip.y);
         if (!this.collided) {
@@ -291,7 +294,7 @@ var LaserTip = A_.SPRITES.Colliding.extend({
             this.timer = null;
         }
     },
-    collideWithStatic: function(other, response) {
+    collideWithStatic: function (other, response) {
         this._super(other, response);
         if (other.collisionResponse === "static") {
             if (!this.timer) {
@@ -316,10 +319,11 @@ var LaserTip = A_.SPRITES.Colliding.extend({
 });
 
 
-var LaserFire = A_.SPRITES.Animated.extend({
-    animSheet: "Fire.png",
-    frame: {w: 64, h: 64},
-    init: function(parent, x, y, props) {
+var LaserFire = A_.SPRITES.Sprite.extend({
+    spriteSheet: "Fire.png",
+    frameWidth: 64,
+    frameHeight: 64,
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
@@ -334,33 +338,34 @@ var LaserFire = A_.SPRITES.Animated.extend({
 //        blur.blurX = blur.blurY = 1;
 //        this.sprite.filters = [blur];
     },
-    onCreation: function() {
+    onCreation: function () {
         this._super();
         this.setZ("top");
     },
-    update: function() {
+    update: function () {
         this._super();
         this.setPosition(this.laserTip.getX(), this.laserTip.getY());
         var scale = this.getScale();
         this.setScale(scale.x + A_.game.dt, scale.y + A_.game.dt);
     },
-    onDestruction: function() {
+    onDestruction: function () {
         this.sound.stop();
     }
 });
 
 
-var ExplosionSkorpio = A_.SPRITES.Animated.extend({
-    animSheet: "Explosion.png",
-    frame: {w: 128, h: 128},
-    init: function(parent, x, y, props) {
+var ExplosionSkorpio = A_.SPRITES.Sprite.extend({
+    spriteSheet: "Explosion.png",
+    frameWidth: 128,
+    frameHeight: 128,
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
         this.addAnimation("explode", _.range(0, 17), 0.2);
         this.setAnimation("explode");
         this.animations["explode"].loop = false;
         var that = this;
-        this.animations["explode"].onComplete = function() {
+        this.animations["explode"].onComplete = function () {
             that.destroy();
         };
         this.level.createSound({
@@ -372,14 +377,14 @@ var ExplosionSkorpio = A_.SPRITES.Animated.extend({
 
 // ITEMS
 var Computer = A_.SPRITES.Colliding.extend({
-    animSheet: "Computer1.png",
+    spriteSheet: "Computer1.png",
     collisionResponse: "static",
 //    collisionType: A_.COLLISION.Type.ITEM,
 //    collidesWith: A_.COLLISION.Type.NONE,
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
     },
-    update: function(props) {
+    update: function (props) {
         this._super(props);
     }
 })
