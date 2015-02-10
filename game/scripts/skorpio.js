@@ -107,7 +107,7 @@ var Agent = AnimeSkorpio.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.maxVelocity = new SAT.Vector(96, 96);
-        this.motionState = "moving";
+//        this.motionState = "moving";
         this.timer = 2;
     },
     update: function () {

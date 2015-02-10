@@ -71,7 +71,7 @@ A_.LEVEL.LevelManager = Class.extend({
             var manifest = levelToCreate.manifest;
             var name = levelToCreate.name;
 
-            var level = this.generateLevel(manifest, name);
+            var level = this._createLevel(manifest, name);
 
             if (level && levelToCreate.activate) {
                 this.activateLevel(name);
@@ -80,7 +80,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.levelsToCreate.length = 0;
     },
-    generateLevel: function (manifest, name) {
+    _createLevel: function (manifest, name) {
         if (!_.contains(this.manifests, manifest)) {
             window.console.log("Cannot find manifest");
             return;
