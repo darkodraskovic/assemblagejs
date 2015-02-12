@@ -97,6 +97,14 @@ A_.TILES.createTiledMap = function (mapData, level) {
             layer.baked = baked;
             if (layer.baked) {
                 layer = level.bakeLayer(layer);
+                var tiles = tilemap.tiles;
+                for (var l = 0, rows = tiles.length; l < rows; l++) {
+                    for (var m = 0, cols = tiles[0].length; m < cols; m++) {
+                        if (tiles[l][m]) {
+                            tiles[l][m].sprite = null;
+                        }
+                    }
+                }
             }
 
             level.addTileLayer(layer);
@@ -155,7 +163,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
             }
         }
     }
-    
+
     // Add entities to sprites and tiles array used in level update loop.
     level.manageEntities();
 };

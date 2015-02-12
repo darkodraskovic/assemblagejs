@@ -128,6 +128,7 @@ A_.LEVEL.LevelManager = Class.extend({
         }, this);
 
         this.levelsToDestroy.length = 0;
+//        A_.game.renderer.spriteBatch.flush();
     },
     activateLevel: function (name) {
         var level = this.findCreatedLevel(name);

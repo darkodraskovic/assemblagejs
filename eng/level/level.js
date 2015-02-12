@@ -246,8 +246,6 @@ A_.LEVEL.Level = Class.extend({
             this.container.removeChild(layer);
         }, this);
 
-//        A_.game.stage.removeChild(this.container);
-//        A_.game.renderer.spriteBatch.flush();
     },
     // START/STOP level execution
     play: function () {
