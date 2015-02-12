@@ -4,6 +4,7 @@ A_.SPRITES.Topdown = A_.SPRITES.Kinematic.extend({
     cardinalDir: "E",
     cardinalDirs: ["N", "NW", "NE", "S", "SW", "SE"],
     controlled: false,
+    elasticity: 0,
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
         this.force = new SAT.Vector(64, 64);

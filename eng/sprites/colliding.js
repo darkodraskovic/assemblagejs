@@ -6,6 +6,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         this.initCollision(this.collisionPolygon);
         this.containedPoint = new SAT.Vector(0, 0);
         this.response = new SAT.Response();
+        
         this._delta = new SAT.Vector();
         this.synchCollisionPolygon();
     },
@@ -144,6 +145,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
     },
     collideWithStatic: function (other, response) {
         this.collided = true;
+        this.staticResponse = response;
 
         if (this.collisionResponse !== "sensor") {
             this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
@@ -229,6 +231,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
     clear: function () {
         this.removeCollision();
         this._super();
+    },
+    preupdate: function () {
+        this._super();
+        this.staticResponse = null;
     },
     postupdate: function () {
         this._super();

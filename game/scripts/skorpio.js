@@ -2,14 +2,13 @@
 var AnimeSkorpio = A_.SPRITES.Topdown.extend({
     frameWidth: 64,
     frameHeight: 64,
-    collisionResponse: "passive",
+    collisionResponse: "active",
     collisionOffsetY: 6,
     collisionW: 26,
     collisionH: 48,
     animSpeed: 0.15,
     alive: true,
     facing: "right",
-    bounciness: 0,
     collides: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -86,6 +85,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
             this.shootLaser();
         }
         this._super();
+        
     },
     shootBullet: function () {
         var sprPt = this.rifle.spritePoint(this.facing);
@@ -106,7 +106,8 @@ var Agent = AnimeSkorpio.extend({
     collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.maxVelocity = new SAT.Vector(96, 96);
+        this.maxVelocity = new SAT.Vector(256, 256);
+        this.maxVelocity = new SAT.Vector(256, 256);
 //        this.motionState = "moving";
         this.timer = 2;
     },
@@ -125,7 +126,7 @@ var Agent = AnimeSkorpio.extend({
                 this.facing = "right";
             }
             this.timer += A_.game.dt;
-            if (this.timer > 2) {
+            if (this.timer > 6) {
                 this.timer = 0;
                 this.cardinalDir = _.sample(this.cardinalDirs);
             }
