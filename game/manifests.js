@@ -76,4 +76,4 @@ A_.LEVEL.Manifests["skorpio2"] = skorpio2;
 A_.LEVEL.Manifests["platformer1"] = platformer1;
 A_.LEVEL.Manifests["farer1"] = farer1;
 A_.LEVEL.Manifests["rot1"] = rot1;
-A_.LEVEL.Manifests["rot1"] = brownian;
+A_.LEVEL.Manifests["brownian"] = brownian;

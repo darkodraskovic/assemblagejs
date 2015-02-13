@@ -6,9 +6,9 @@ A_.game = new A_.Game();
 var levelManager = A_.game.levelManager;
 
 //levelManager.startLevel(platformer1, "lvl1");
-//levelManager.startLevel(skorpio1, "lvl1");
+levelManager.startLevel(skorpio1, "lvl1");
 //levelManager.startLevel(skorpio2, "lvl1");
-levelManager.startLevel(brownian, "lvl1");
+//levelManager.startLevel(brownian, "lvl1");
 
 // FARER
 //levelManager.loadLevel(farer1, function () {

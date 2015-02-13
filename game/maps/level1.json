@@ -420,18 +420,6 @@
          "width":48,
          "x":0,
          "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "height":32,
-         "name":"CollisionMasks",
-         "objects":[],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "width":48,
-         "x":0,
-         "y":0
         }],
  "orientation":"orthogonal",
  "properties":

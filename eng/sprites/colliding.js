@@ -63,10 +63,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 
         this.collisionPolygons.push(collisionPolygon);
 
-        delete this.collisionWidth;
-        delete this.collisionHeight;
-        delete this.collisionOffsetX;
-        delete this.collisionOffsetY;
+        
 
         return collisionPolygon;
     },
