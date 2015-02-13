@@ -148,14 +148,15 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                 }
                 else {
-                    args["_width"] = oData["width"];
-                    args["_height"] = oData["height"];
                     var colPolyData = _.find(collider.collisionMasks, function (mask) {
                         return mask.type === args.collisionMask;
                     });
                     if (colPolyData) {
                         var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(colPolyData);
                         args.collisionPolygon = collisionPolygon;
+                    } else {
+                        args["_width"] = oData["width"];
+                        args["_height"] = oData["height"];
                     }
                     var o = level.createSprite(eval(oData["type"]), layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(o.getWidth() / 2, -o.getHeight() / 2);

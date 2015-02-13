@@ -17,11 +17,13 @@ A_.SPRITES.Sprite = Class.extend({
 
         this.level = parent.level;
 
-        if (this._width && !this.frameWidth) {
-            this.frameWidth = this._width;
-        }
-        if (this._height && !this.frameHeight) {
-            this.frameHeight = this._height;
+        if (!this.spriteSheet) {
+            if (this._width && !this.frameWidth) {
+                this.frameWidth = this._width;
+            }
+            if (this._height && !this.frameHeight) {
+                this.frameHeight = this._height;
+            }
         }
         this.textures = [];
         // If this sprite displays an image or features animations...
