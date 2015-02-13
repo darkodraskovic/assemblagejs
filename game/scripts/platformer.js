@@ -51,8 +51,8 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
     wrap: true,
     collisionResponse: "passive",
     collisionOffsetY: 8,
-    collisionW: 18,
-    collisionH: 46,
+    collisionWidth: 18,
+    collisionHeight: 46,
     drawDebugGraphics: false,
     mode: "throwing",
     init: function (parent, x, y, props) {
@@ -93,6 +93,8 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.friction.x = 0;
         this.friction.y = 0;
         this.setMaxVelocity(400, 400);
+//        this.gravity.y = 7;
+//        this.elasticity = 1;
     },
     update: function () {
         this._super();
@@ -103,7 +105,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     collideWithStatic: function (other, response) {
         this._super(other, response);
     },
-    collideWithDynamic: function (other, response) {
+    collideWithKinematic: function (other, response) {
         this._super(other, response);
     }
 });
@@ -227,8 +229,8 @@ var Undead = AnimePlatformer.extend({
 var UndeadProbe = A_.SPRITES.Colliding.extend({
     bounded: false,
     collisionResponse: "sensor",
-    collisionW: 2,
-    collisionH: 2,
+    collisionWidth: 2,
+    collisionHeight: 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 

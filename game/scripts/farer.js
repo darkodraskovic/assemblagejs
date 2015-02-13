@@ -20,6 +20,14 @@ var Player = A_.SPRITES.Kinematic.extend({
         this.spritePoint("bullet2", 18, 12);
     },
     update: function () {
+        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
+        this.setRotation(rot);
+        var speedSign = 0;
+        if (this.getRotation() < 0)
+            speedSign = -1;
+        else
+            speedSign = 1;
+        
         if (A_.INPUT.down["up"]) {
             this.movementAngle = this.getRotation();
             this.acceleration.x = this.acceleration.y = 64;
@@ -47,13 +55,6 @@ var Player = A_.SPRITES.Kinematic.extend({
             this.shootBullet();
         }
         
-        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
-        this.setRotation(rot);
-        var speedSign = 0;
-        if (this.getRotation() < 0)
-            speedSign = -1;
-        else
-            speedSign = 1;
     },
     shootBullet: function () {
         var pos1 = this.spritePoint("bullet1").getPosition();

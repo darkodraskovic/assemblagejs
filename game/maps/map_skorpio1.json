@@ -467,24 +467,8 @@
         {
          "draworder":"topdown",
          "height":48,
-         "name":"TilemapCollisionPolygons",
+         "name":"CollisionPolygons",
          "objects":[
-                {
-                 "height":96,
-                 "name":"",
-                 "properties":
-                    {
-                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
-                     "collisionResponse":"\"static\"",
-                     "collisonType":"0"
-                    },
-                 "rotation":0,
-                 "type":"Rectangle",
-                 "visible":true,
-                 "width":96,
-                 "x":480,
-                 "y":480
-                }, 
                 {
                  "height":0,
                  "name":"Diamond",
@@ -525,50 +509,6 @@
                  "width":0,
                  "x":64,
                  "y":320
-                }, 
-                {
-                 "height":96,
-                 "name":"",
-                 "properties":
-                    {
-                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
-                     "collisionResponse":"\"static\"",
-                     "collisonType":"0"
-                    },
-                 "rotation":0,
-                 "type":"Rectangle",
-                 "visible":true,
-                 "width":96,
-                 "x":672,
-                 "y":576
-                }, 
-                {
-                 "height":96,
-                 "name":"",
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"Rectangle",
-                 "visible":true,
-                 "width":96,
-                 "x":768,
-                 "y":288
-                }, 
-                {
-                 "height":96,
-                 "name":"",
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"Rectangle",
-                 "visible":true,
-                 "width":96,
-                 "x":480,
-                 "y":672
                 }, 
                 {
                  "height":0,
@@ -637,6 +577,130 @@
                  "width":0,
                  "x":1056,
                  "y":384
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":96
+                        }, 
+                        {
+                         "x":96,
+                         "y":96
+                        }, 
+                        {
+                         "x":96,
+                         "y":0
+                        }],
+                 "properties":
+                    {
+                     "collisionResponse":"\"static\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":768,
+                 "y":288
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":96
+                        }, 
+                        {
+                         "x":96,
+                         "y":96
+                        }, 
+                        {
+                         "x":96,
+                         "y":0
+                        }],
+                 "properties":
+                    {
+                     "collisionResponse":"\"static\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":480,
+                 "y":672
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":96
+                        }, 
+                        {
+                         "x":96,
+                         "y":96
+                        }, 
+                        {
+                         "x":96,
+                         "y":0
+                        }],
+                 "properties":
+                    {
+                     "collisionResponse":"\"static\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":672,
+                 "y":576
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":96
+                        }, 
+                        {
+                         "x":96,
+                         "y":96
+                        }, 
+                        {
+                         "x":96,
+                         "y":0
+                        }],
+                 "properties":
+                    {
+                     "collisionResponse":"\"static\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":480,
+                 "y":480
                 }],
          "opacity":1,
          "type":"objectgroup",

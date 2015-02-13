@@ -2,7 +2,7 @@ A_.COLLISION.Collider = Class.extend({
     init: function () {
         this.collisionSprites = [];
         this.collisionStatics = [];
-        this.collisionDynamics = [];
+        this.collisionKinematics = [];
         this.collisionMasks = [];
         this.response = new SAT.Response();
     },
@@ -11,13 +11,13 @@ A_.COLLISION.Collider = Class.extend({
             sprite.collided = false;
         });
 
-        var lenDyn = this.collisionDynamics.length;
+        var lenKin = this.collisionKinematics.length;
         var lenStat = this.collisionStatics.length;
 
 
         // STATICS
-        for (i = 0; i < lenDyn; i++) {
-            var o1 = this.collisionDynamics[i];
+        for (i = 0; i < lenKin; i++) {
+            var o1 = this.collisionKinematics[i];
             for (j = 0; j < lenStat; j++) {
                 var o2 = this.collisionStatics[j];
                 if (o1.collides && o2.collides) {
@@ -28,17 +28,17 @@ A_.COLLISION.Collider = Class.extend({
                     var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, this.response);
                     if (collided) {
                         o1.collideWithStatic(o2, this.response);
-                        o2.collideWithDynamic(o1, this.response);
+                        o2.collideWithKinematic(o1, this.response);
 //                    }
                     }
                 }
             }
         }
         // DYNAMICS
-        for (i = 0; i < lenDyn - 1; i++) {
-            var o1 = this.collisionDynamics[i];
-            for (j = i + 1; j < lenDyn; j++) {
-                var o2 = this.collisionDynamics[j];
+        for (i = 0; i < lenKin - 1; i++) {
+            var o1 = this.collisionKinematics[i];
+            for (j = i + 1; j < lenKin; j++) {
+                var o2 = this.collisionKinematics[j];
                 if (o1.collides && o2.collides) {
                     // Bitmasks. Currently inactive. DO NOTE DELETE!
 //                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
@@ -47,8 +47,8 @@ A_.COLLISION.Collider = Class.extend({
 
                     var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, this.response);
                     if (collided) {
-                        o1.collideWithDynamic(o2, this.response);
-                        o2.collideWithDynamic(o1, this.response);
+                        o1.collideWithKinematic(o2, this.response);
+                        o2.collideWithKinematic(o1, this.response);
 //                    }
                     }
                 }
@@ -59,11 +59,9 @@ A_.COLLISION.Collider = Class.extend({
 
 A_.COLLISION.aabbInjection = {
     aabbWidth: function () {
-//        return Math.abs(this.collisionPolygon.w);
         return this.collisionPolygon.getWidth();
     },
     aabbHeight: function () {
-//        return Math.abs(this.collisionPolygon.h);
         return this.collisionPolygon.getHeight();
     },
     aabbBottom: function () {

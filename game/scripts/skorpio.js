@@ -4,8 +4,8 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
     frameHeight: 64,
     collisionResponse: "active",
     collisionOffsetY: 6,
-    collisionW: 26,
-    collisionH: 48,
+    collisionWidth: 26,
+    collisionHeight: 48,
     animSpeed: 0.15,
     alive: true,
     facing: "right",
@@ -61,6 +61,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.collisionResponse = "active";
         this._super(parent, x, y, props);
         this.maxVelocity = new SAT.Vector(256, 256);
+        this.force = new SAT.Vector(128, 128);
         this.rifle = this.level.createSprite(Rifle, this.layer,
                 this.getX(), this.getY(),
                 {holder: this, animSpeed: this.animSpeed});
@@ -106,10 +107,10 @@ var Agent = AnimeSkorpio.extend({
     collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.maxVelocity = new SAT.Vector(256, 256);
-        this.maxVelocity = new SAT.Vector(256, 256);
-//        this.motionState = "moving";
-        this.timer = 2;
+        this.maxVelocity = new SAT.Vector(64, 64);
+        this.motionState = "moving";
+        this.timer = 4;
+        this.mass = 2;
     },
     update: function () {
         if (this.alive) {
@@ -183,8 +184,8 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     frameWidth: 32,
     frameHeight: 32,
     collisionResponse: "sensor",
-    collisionW: 12,
-    collisionH: 10,
+    collisionWidth: 12,
+    collisionHeight: 10,
     collidesWith: A_.COLLISION.Type.ENEMY,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -207,7 +208,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         }
 
     },
-    collideWithDynamic: function (other, response) {
+    collideWithKinematic: function (other, response) {
         if (other instanceof Agent) {
             other.alive = false;
             other.motionState = "idle";
@@ -240,7 +241,7 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
         this.laserTip = this.level.createSprite(LaserTip, this.level.findLayerByName("Effects"),
                 this.getX() + Math.cos(this.getRotation()) * this.getWidth(),
                 this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
-                {collisionW: 4, collisionH: 4});
+                {collisionWidth: 4, collisionHeight: 4});
         this.laserTip.laser = this;
         this.sound = this.level.createSound({
             urls: ['laser-beam.mp3'],

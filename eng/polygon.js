@@ -51,35 +51,35 @@ SAT.Polygon.prototype.setScaleY = function (y) {
 SAT.Polygon.prototype.getLeft = function () {
 //    return this.pos.x - Math.abs(this.offset.x);
     return this.pos.x + this.calcMinX;
-}
+};
 SAT.Polygon.prototype.getRight = function () {
 //    return this.pos.x + (Math.abs(this.w) - Math.abs(this.offset.x));
     return this.pos.x + this.calcMaxX;
-}
+};
 SAT.Polygon.prototype.getTop = function () {
 //    return this.pos.y - Math.abs(this.offset.y);
     return this.pos.y + this.calcMinY;
-}
+};
 SAT.Polygon.prototype.getBottom = function () {
 //    return this.pos.y + (Math.abs(this.h) - Math.abs(this.offset.y));
     return this.pos.y + this.calcMaxY;
-}
+};
 SAT.Polygon.prototype.getCenterX = function () {
 //    return this.getLeft() + (Math.abs(this.w) / 2);
     return this.pos.x + (this.calcMaxX - this.calcMinX) / 2;
-}
+};
 SAT.Polygon.prototype.getCenterY = function () {
 //    return this.getTop() + (Math.abs(this.h) / 2);
     return this.pos.y + (this.calcMaxY - this.calcMinY) / 2;
-}
+};
 
 SAT.Polygon.prototype.getWidth = function () {
     return this.calcW;
-}
+};
 
 SAT.Polygon.prototype.getHeight = function () {
     return this.calcH;
-}
+};
 
 
 SAT.Polygon.prototype.calcSize = function () {
@@ -97,7 +97,7 @@ SAT.Polygon.prototype.calcSize = function () {
     this.maxY = _.max(ys);
     this.w = this.maxX - this.minX;
     this.h = this.maxY - this.minY;
-}
+};
 
 SAT.Polygon.prototype.calcBounds = function () {
     var xs = [];
@@ -114,14 +114,14 @@ SAT.Polygon.prototype.calcBounds = function () {
     this.calcMaxY = _.max(ys);
     this.calcW = this.calcMaxX - this.calcMinX;
     this.calcH = this.calcMaxY - this.calcMinY;
-}
+};
 
 // ENGINE polygon UTILS
 A_.POLYGON.Utils = {};
 
 A_.POLYGON.Utils.createSATPolygonFromTiled = function (oData) {
     var vectors = _.map(oData.polygon, function (vertex) {
-        return new SAT.Vector(vertex.x, vertex.y)
+        return new SAT.Vector(vertex.x, vertex.y);
     });
 
     var SATPolygon = new SAT.Polygon(new SAT.Vector(oData.x, oData.y), vectors);

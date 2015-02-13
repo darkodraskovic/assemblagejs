@@ -204,6 +204,70 @@
          "name":"CollisionPolygons",
          "objects":[
                 {
+                 "height":96,
+                 "name":"",
+                 "properties":
+                    {
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
+                    },
+                 "rotation":0,
+                 "type":"Rectangle",
+                 "visible":true,
+                 "width":96,
+                 "x":480,
+                 "y":480
+                }, 
+                {
+                 "height":96,
+                 "name":"",
+                 "properties":
+                    {
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
+                    },
+                 "rotation":0,
+                 "type":"Rectangle",
+                 "visible":true,
+                 "width":96,
+                 "x":672,
+                 "y":576
+                }, 
+                {
+                 "height":96,
+                 "name":"",
+                 "properties":
+                    {
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
+                    },
+                 "rotation":0,
+                 "type":"Rectangle",
+                 "visible":true,
+                 "width":96,
+                 "x":672,
+                 "y":288
+                }, 
+                {
+                 "height":96,
+                 "name":"",
+                 "properties":
+                    {
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
+                    },
+                 "rotation":0,
+                 "type":"Rectangle",
+                 "visible":true,
+                 "width":96,
+                 "x":480,
+                 "y":672
+                }, 
+                {
                  "height":0,
                  "name":"Diamond",
                  "polygon":[
@@ -245,157 +309,18 @@
                  "y":608
                 }, 
                 {
-                 "height":0,
+                 "height":96,
                  "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":0,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":0
-                        }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
+                     "collisionResponse":"\"static\"",
+                     "collisionType":"0"
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"Rectangle",
                  "visible":true,
-                 "width":0,
-                 "x":672,
-                 "y":288
-                }, 
-                {
-                 "height":0,
-                 "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":0,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":0
-                        }],
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":672,
-                 "y":576
-                }, 
-                {
-                 "height":0,
-                 "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":0,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":0
-                        }],
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":480,
-                 "y":672
-                }, 
-                {
-                 "height":0,
-                 "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":0,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":0
-                        }],
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":480,
-                 "y":480
-                }, 
-                {
-                 "height":0,
-                 "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":0,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":96
-                        }, 
-                        {
-                         "x":96,
-                         "y":0
-                        }],
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
+                 "width":96,
                  "x":96,
                  "y":288
                 }],

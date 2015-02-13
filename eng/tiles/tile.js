@@ -55,7 +55,7 @@ A_.TILES.Tile = Class.extend({
     getHeight: function () {
         return this.sprite.height;
     },
-    collideWithDynamic: function (other, response) {
+    collideWithKinematic: function (other, response) {
 
     },
     collideWithStatic: function (other, response) {

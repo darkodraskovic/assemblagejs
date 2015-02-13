@@ -105,7 +105,7 @@ A_.TILES.Tilemap = Class.extend({
         if (this.collisionResponse) {
             tile.initCollision();
             if (this.collisionResponse === "sensor") {
-                this.layer.level.collider.collisionDynamics.push(tile);
+                this.layer.level.collider.collisionKinematics.push(tile);
             }
             else {
                 this.layer.level.collider.collisionStatics.push(tile);
@@ -153,9 +153,9 @@ A_.TILES.Tilemap = Class.extend({
                 if (ind > -1)
                     level.collider.collisionStatics.splice(ind, 1);
 
-                ind = level.collider.collisionDynamics.indexOf(tile);
+                ind = level.collider.collisionKinematics.indexOf(tile);
                 if (ind > -1)
-                    level.collider.collisionDynamics.splice(ind, 1);
+                    level.collider.collisionKinematics.splice(ind, 1);
             }
             // Active tiles
             if (this.layer.active) {

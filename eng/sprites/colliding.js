@@ -14,17 +14,17 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         if (!this.collisionPolygons) {
             this.collisionPolygons = [];
         }
-        if (!_.isNumber(this.collisionW))
-            this.collisionW = this.getWidth();
-        if (!_.isNumber(this.collisionH))
-            this.collisionH = this.getHeight();
+        if (!_.isNumber(this.collisionWidth))
+            this.collisionWidth = this.getWidth();
+        if (!_.isNumber(this.collisionHeight))
+            this.collisionHeight = this.getHeight();
         if (!_.isNumber(this.collisionOffsetX))
             this.collisionOffsetX = 0;
         if (!_.isNumber(this.collisionOffsetY))
             this.collisionOffsetY = 0;
 
-        var w = this.collisionW;
-        var h = this.collisionH;
+        var w = this.collisionWidth;
+        var h = this.collisionHeight;
 
         var offsetX = this.collisionOffsetX;
         var offsetY = this.collisionOffsetY;
@@ -63,8 +63,8 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 
         this.collisionPolygons.push(collisionPolygon);
 
-        delete this.collisionW;
-        delete this.collisionH;
+        delete this.collisionWidth;
+        delete this.collisionHeight;
         delete this.collisionOffsetX;
         delete this.collisionOffsetY;
 
@@ -87,12 +87,12 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 
         if (!this.collisionResponse) {
             this.collisionResponse = "sensor";
-            collider.collisionDynamics.push(this);
+            collider.collisionKinematics.push(this);
         } else {
             if (this.collisionResponse === "static")
                 collider.collisionStatics.push(this);
             else
-                collider.collisionDynamics.push(this);
+                collider.collisionKinematics.push(this);
         }
         collider.collisionSprites.push(this);
     },
@@ -119,8 +119,8 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         if (_.contains(collider.collisionSprites, this)) {
             collider.collisionSprites.splice(collider.collisionSprites.indexOf(this), 1);
         }
-        if (_.contains(collider.collisionDynamics, this)) {
-            collider.collisionDynamics.splice(collider.collisionDynamics.indexOf(this), 1);
+        if (_.contains(collider.collisionKinematics, this)) {
+            collider.collisionKinematics.splice(collider.collisionKinematics.indexOf(this), 1);
         }
         if (_.contains(collider.collisionStatics, this)) {
             collider.collisionStatics.splice(collider.collisionStatics.indexOf(this), 1);
@@ -152,7 +152,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
             this.synchCollisionPolygon();
         }
     },
-    collideWithDynamic: function (other, response) {
+    collideWithKinematic: function (other, response) {
         this.collided = true;
     },
     collidesWithEntity: function (other) {

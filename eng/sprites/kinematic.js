@@ -17,8 +17,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.slopeN = new SAT.Vector(0, 0);
         this.finalElasticity = new SAT.Vector(0, 0);
         this.applyElasticity = false;
-        
+       
         this.helperVector = new SAT.Vector(0, 0);
+        this.mass = 1;
     },
     setMaxVelocity: function (x, y) {
         this.maxVelocity.x = x;
@@ -114,7 +115,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.isMoving = false;
         }
     },
-    collideWithDynamic: function (other, response) {
+    collideWithKinematic: function (other, response) {
         this._super(other, response);
 
         if (!response.overlap)
@@ -138,35 +139,37 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     // PENETRATION resolution
                     var coefficientX = Math.abs(this.velocity.x) / (Math.abs(this.velocity.x) + Math.abs(other.velocity.x));
                     var coefficientY = Math.abs(this.velocity.y) / (Math.abs(this.velocity.y) + Math.abs(other.velocity.y));
-                    if (_.isFinite(coefficientX)) {
-                        this.setXRelative(-response.overlapV.x * coefficientX);
-                        other.setXRelative(response.overlapV.x * (1 - coefficientX));
+                    // If the sum of absolute velocities is zero, separate sprites equidistantly.
+                    if (!_.isFinite(coefficientX)) {
+                        coefficientX = 0.5;
                     }
-                    if (_.isFinite(coefficientY)) {
-                        this.setYRelative(-response.overlapV.y * coefficientY);
-                        other.setYRelative(response.overlapV.y * (1 - coefficientY));
+                    if (!_.isFinite(coefficientY)) {
+                        coefficientY = 0.5;
                     }
-                    this.synchCollisionPolygon();
-                    other.synchCollisionPolygon();
+                    this.setXRelative(-response.overlapV.x * coefficientX);
+                    other.setXRelative(response.overlapV.x * (1 - coefficientX));
+                    this.setYRelative(-response.overlapV.y * coefficientY);
+                    other.setYRelative(response.overlapV.y * (1 - coefficientY));
 
                     // IMPULSE resolution
-                    // Calculate relative velocity
+                    // Calculate the velocity difference.
                     var relativeVelocity = this.helperVector;
                     relativeVelocity.copy(other.velocity);
                     relativeVelocity.sub(this.velocity);
-                    // Calculate relative velocity in terms of the normal direction
-                    var normalVelocity = relativeVelocity.dot(response.overlapN);
-                    // Resolve only if velocities are separating
-                    if (normalVelocity <= 0) {
-                        // Calculate impulse scalar
+                    // Resolve only if velocities are separating.
+                    if (relativeVelocity.dot(response.overlapN) <= 0) {
                         var e = Math.min(this.elasticity, other.elasticity);
-                        var j = -(1 + e) * normalVelocity;
-                        // Calculate impulse vector
-                        var impulse = this.helperVector;
-                        impulse.copy(response.overlapN);
-                        impulse.scale(j, j);
-                        // Apply impulse
+                        // Calculate the impulse.
+                        var impulse = relativeVelocity.project(response.overlapN).scale(-(1 + e));
+                        // We suppose M1 = M2 = 1.
+                        // Apply the impulse.
+                        var x = impulse.x;
+                        var y = impulse.y;
+                        impulse.scale(other.mass / (this.mass + other.mass));
                         this.velocity.sub(impulse);
+                        impulse.x = x;
+                        impulse.y = y;
+                        impulse.scale(this.mass / (this.mass + other.mass));
                         other.velocity.add(impulse);
                     }
 
