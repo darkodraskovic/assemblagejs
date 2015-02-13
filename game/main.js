@@ -2,17 +2,13 @@ A_.game = new A_.Game();
 
 // START
 
-//var levelName = "skorpio1";
-//var levelName = "skorpio2";
-//var levelName = "farer1";
-//var levelName = "rot1";
-//var levelName = "platformer1";
 
 var levelManager = A_.game.levelManager;
 
 //levelManager.startLevel(platformer1, "lvl1");
-levelManager.startLevel(skorpio1, "lvl1");
+//levelManager.startLevel(skorpio1, "lvl1");
 //levelManager.startLevel(skorpio2, "lvl1");
+levelManager.startLevel(brownian, "lvl1");
 
 // FARER
 //levelManager.loadLevel(farer1, function () {

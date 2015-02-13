@@ -130,7 +130,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     spriteSheet: "bullet.png",
     collisionResponse: "sensor",
     moveAtAngle: true,
-//    drawDebugGraphics: false,
+    drawCollisionPolygon: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 0;

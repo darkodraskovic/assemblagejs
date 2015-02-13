@@ -158,10 +158,10 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     relativeVelocity.sub(this.velocity);
                     // Resolve only if velocities are separating.
                     if (relativeVelocity.dot(response.overlapN) <= 0) {
+                        // Use the lower elasticity for intuitive results.
                         var e = Math.min(this.elasticity, other.elasticity);
                         // Calculate the impulse.
                         var impulse = relativeVelocity.project(response.overlapN).scale(-(1 + e));
-                        // We suppose M1 = M2 = 1.
                         // Apply the impulse.
                         var x = impulse.x;
                         var y = impulse.y;

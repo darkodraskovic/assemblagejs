@@ -126,27 +126,30 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 args["type"] = oData["type"];
 
                 // POLY || RECT
-                if (oData.polygon || oData.type === "Rectangle") {
-                    if (oData.polygon) {
-                        // Collision polygon.
-                        var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
-                        args.frameWidth = collisionPolygon.w;
-                        args.frameHeight = collisionPolygon.h;
-                        args.collisionPolygon = collisionPolygon;
-                        var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
-                        o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
-
+                if (oData["polygon"]) {
+                    // Collision polygon.
+                    var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
+                    args["_width"] = collisionPolygon.w;
+                    args["_height"] = collisionPolygon.h;
+                    args.collisionPolygon = collisionPolygon;
+                    var type;
+                    if (oData["type"] !== "" && oData["type"] !== "Polygon") {
+                        type = eval(oData["type"]);
                     } else {
-                        // Collision rectangle.
-                        args.frameWidth = oData["width"];
-                        args.frameHeight = oData["height"];
-                        args.collisionWidth = oData["width"];
-                        args.collisionHeight = oData["height"];
-                        var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
-                        o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
+                        type = A_.SPRITES.Colliding;
                     }
+                    var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
+                    o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
+                } else if (oData.type === "Rectangle" || oData.type === "") {
+                    // Collision rectangle.
+                    args["_width"] = oData["width"];
+                    args["_height"] = oData["height"];
+                    var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
+                    o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
                 }
                 else {
+                    args["_width"] = oData["width"];
+                    args["_height"] = oData["height"];
                     var colPolyData = _.find(collider.collisionMasks, function (mask) {
                         return mask.type === args.collisionMask;
                     });

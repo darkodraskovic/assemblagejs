@@ -53,7 +53,7 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
     collisionOffsetY: 8,
     collisionWidth: 18,
     collisionHeight: 46,
-    drawDebugGraphics: false,
+    drawCollisionPolygon: false,
     mode: "throwing",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -86,7 +86,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     bounded: false,
     spriteSheet: "ball.png",
     collisionResponse: "passive",
-    drawDebugGraphics: false,
+    drawCollisionPolygon: false,
     elasticity: 1,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -117,7 +117,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
     controlled: true,
     followee: true,
     player: true,
-//    drawDebugGraphics: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         
@@ -269,7 +268,7 @@ var Platform = A_.SPRITES.Colliding.extend({
     frameHeight: 32,
     collisionResponse: "static",
     type: "horizontal",
-//    drawDebugGraphics: false,    
+//    drawCollisionPolygon: false,    
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.sine = this.addon("Sine");
@@ -304,7 +303,7 @@ var ExplosionPlatformer = A_.SPRITES.Sprite.extend({
         this.setScale(0.4, 0.4);
         this.level.createSound({
             urls: ['dull.wav'],
-            volume: 1
+            volume: 0.5
         }).play();
     }
 });

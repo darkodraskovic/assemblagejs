@@ -1,6 +1,6 @@
 A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
     collides: true,
-    drawDebugGraphics: true,
+    drawCollisionPolygon: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.initCollision(this.collisionPolygon);
@@ -102,11 +102,11 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         this.setCollisionResponse();
     },
     setCollisionDebug: function () {
-        if (this.drawDebugGraphics && A_.game.debug) {
+        if (this.drawCollisionPolygon && A_.game.debug) {
             this.collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(this.collisionPolygon, false);
             this.debugGraphics = new PIXI.Graphics();
             this.level.debugLayer.addChild(this.debugGraphics);
-            A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon);
+            A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
         }
     },
     removeCollision: function () {

@@ -58,8 +58,22 @@ platformer1 = {
     }
 };
 
+brownian = {
+    type: "tiled",
+    scripts: ["brownian"],
+    map: "brownian",
+    graphics: [],
+    sounds: [],
+    camera: {
+        innerBoundOffset: 0.25,
+        worldBounded: true,
+        followType: "centered"
+    }
+};
+
 A_.LEVEL.Manifests["skorpio1"] = skorpio1;
 A_.LEVEL.Manifests["skorpio2"] = skorpio2;
 A_.LEVEL.Manifests["platformer1"] = platformer1;
 A_.LEVEL.Manifests["farer1"] = farer1;
 A_.LEVEL.Manifests["rot1"] = rot1;
+A_.LEVEL.Manifests["rot1"] = brownian;
