@@ -328,7 +328,7 @@
                  "y":448
                 }, 
                 {
-                 "height":32,
+                 "height":72,
                  "name":"",
                  "properties":
                     {
@@ -337,7 +337,7 @@
                  "rotation":0,
                  "type":"Particle",
                  "visible":true,
-                 "width":32,
+                 "width":64,
                  "x":152,
                  "y":368
                 }, 
@@ -356,7 +356,7 @@
                  "y":712
                 }, 
                 {
-                 "height":48,
+                 "height":96,
                  "name":"",
                  "properties":
                     {
@@ -365,7 +365,7 @@
                  "rotation":0,
                  "type":"Particle",
                  "visible":true,
-                 "width":24,
+                 "width":72,
                  "x":680,
                  "y":176
                 }, 
@@ -486,6 +486,45 @@
                  "width":0,
                  "x":72,
                  "y":728
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":-48,
+                         "y":56
+                        }, 
+                        {
+                         "x":-56,
+                         "y":184
+                        }, 
+                        {
+                         "x":48,
+                         "y":152
+                        }, 
+                        {
+                         "x":88,
+                         "y":64
+                        }, 
+                        {
+                         "x":88,
+                         "y":-24
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Particle",
+                 "visible":true,
+                 "width":0,
+                 "x":536,
+                 "y":128
                 }],
          "opacity":1,
          "type":"objectgroup",

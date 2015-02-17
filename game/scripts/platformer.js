@@ -49,28 +49,68 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
     frameHeight: 64,
     bounded: false,
     wrap: true,
+    autoFlip: true,
     collisionResponse: "passive",
     collisionOffsetY: 8,
     collisionWidth: 18,
     collisionHeight: 46,
     drawCollisionPolygon: false,
     mode: "throwing",
+    facing: "right",
+    groundCheck: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
+        this.force = new SAT.Vector(100, 100);
         this.jumpForce = 530;
-        this.controlled = true;
+        this.setGravity(0, 20);
         this.addAnimation("idle", [0], 0);
         this.addAnimation("moving", _.range(1, 7), 0.15);
         this.addAnimation("launching", [17], 0);
         this.addAnimation("falling", [18], 0);
     },
     update: function () {
+        if (this.applyForce) {
+            if (this.facing === "right") {
+                this.acceleration.x = this.force.x;
+            }
+            else if (this.facing === "left") {
+                this.acceleration.x = -this.force.x;
+            }
+        }
+        else {
+            this.acceleration.x = 0;
+        }
+
         this._super();
 
-        if (this.platformerState === "grounded") {
-            this.setAnimation(this.movingState);
+        // PLATFORM
+        if (this.movingPlatform) {
+            this.setY(this.getY() + this.platformDY + 2);
+            this.movingPlatform = null;
+        }
+
+
+        if (this.grounded) {
+            if (Math.abs(this.velocity.x)) {
+                this.setAnimation("moving");
+            } else {
+                this.setAnimation("idle");
+            }
         } else {
-            this.setAnimation(this.platformerState);
+            if (this.velocity.y < 0) {
+                this.setAnimation("launching");
+            } else {
+                this.setAnimation("falling");
+            }
+        }
+
+        // FLIP
+        if (this.autoFlip) {
+            if (this.facing === "right") {
+                this.setFlippedX(false);
+            } else {
+                this.setFlippedX(true);
+            }
         }
     },
     toggleMode: function () {
@@ -79,7 +119,36 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
         } else {
             this.mode = "throwing";
         }
-    }
+    },
+    // UTILS
+    flipFacing: function () {
+        if (this.facing === "right") {
+            this.facing = "left";
+        }
+        else {
+            this.facing = "right";
+        }
+    },
+    collideWithStatic: function (other, response) {
+        this._super(other, response);
+
+        // Moving platform
+        if (response.overlap && response.overlapN.y > 0 && !(other instanceof A_.TILES.Tile)) {
+            if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
+                this.processMovingPlatform(other);
+            }
+        }
+    },
+    processMovingPlatform: function (other) {
+        if (this.getY() < other.getY()) {
+            this.movingPlatform = other;
+            this.platformDX = other.getX() - other.prevX;
+            this.platformDY = other.getY() - other.prevY;
+
+            this.setXRelative(this.platformDX);
+            this.synchCollisionPolygon();
+        }
+    },
 });
 
 var Ball = A_.SPRITES.Kinematic.extend({
@@ -92,6 +161,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this._super(parent, x, y, props);
         this.friction.x = 0;
         this.friction.y = 0;
+        this.gravity.y = 0;
         this.setMaxVelocity(400, 400);
 //        this.gravity.y = 7;
 //        this.elasticity = 1;
@@ -101,9 +171,11 @@ var Ball = A_.SPRITES.Kinematic.extend({
         if (this.outOfBounds) {
             this.destroy();
         }
+//        window.console.log(this.velocity.y);
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
+
     },
     collideWithKinematic: function (other, response) {
         this._super(other, response);
@@ -117,12 +189,21 @@ var PlayerPlatformer = AnimePlatformer.extend({
     controlled: true,
     followee: true,
     player: true,
+//    elasticity: 0.1,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        
+
+        A_.INPUT.addMapping("left", A_.KEY.A);
+        A_.INPUT.addMapping("right", A_.KEY.D);
+        A_.INPUT.addMapping("jump", A_.KEY.SPACE);
+
         A_.INPUT.addMapping("jetpack", A_.KEY.SPACE);
         A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
         this.thrus = this.level.findLayerByName("Thrus");
+        this.groundedSound = this.level.createSound({
+            urls: ['grounded.wav'],
+            volume: 1
+        });
     },
     onJumped: function () {
         this._super();
@@ -133,10 +214,10 @@ var PlayerPlatformer = AnimePlatformer.extend({
     },
     onGrounded: function () {
         this._super();
-        this.level.createSound({
-            urls: ['grounded.wav'],
-            volume: 1
-        }).play();
+//        this.level.createSound({
+//            urls: ['grounded.wav'],
+//            volume: 1
+//        }).play();
     },
     onWall: function () {
         this._super();
@@ -146,8 +227,41 @@ var PlayerPlatformer = AnimePlatformer.extend({
         this._super();
 //        window.console.log("ceiling");
     },
+    processControls: function () {
+        if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
+            this.applyForce = true;
+            if (A_.INPUT.down["right"] && A_.INPUT.down["left"]) {
+                this.applyForce = false;
+            }
+            else if (A_.INPUT.down["right"]) {
+                this.facing = "right";
+            }
+            else if (A_.INPUT.down["left"]) {
+                this.facing = "left";
+            }
+        }
+        else {
+            this.applyForce = false;
+        }
+
+        if (A_.INPUT.down["jump"]) {
+            this.tryJump = true;
+        }
+    },
     update: function () {
 //        window.console.log("updt platformer");
+//        window.console.log(this.applySlope);
+        this.processControls();
+
+        if (this.tryJump) {
+            if (this.grounded) {
+                this.velocity.y = -this.jumpForce;
+                this.jumps = true;
+                this.onJumped();
+            }
+            this.tryJump = false;
+        }
+
         if (A_.INPUT.pressed["toggleMode"]) {
             this.toggleMode();
         }
@@ -170,10 +284,21 @@ var PlayerPlatformer = AnimePlatformer.extend({
             this.fireJetpack();
         }
 
+        if (this.grounded && this.velocity.y > this.gravity.y) {
+//            this.groundedSound.play();
+        }
+//        if (!this.grounded) {
+            window.console.log(this.velocity.y);
+//        }
+
+//        window.console.log(this.onSlope);
+//        window.console.log(this.grounded);
         this._super();
+//        window.console.log(this.velocity.x + ", " + this.velocity.y);
+//        window.console.log("====================");
     },
     fireJetpack: function () {
-        if (this.platformerState !== "grounded") {
+        if (!this.grounded) {
             this.velocity.y = -this.jumpForce * 0.75;
             this.jetpackSound = this.level.createSound({
                 urls: ['jetpack.wav'],
@@ -184,6 +309,9 @@ var PlayerPlatformer = AnimePlatformer.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
+//        if (response.overlap) {
+//            window.console.log(this.gravity.dot(response.overlapN));
+//        }
     },
 });
 
@@ -212,12 +340,12 @@ var Undead = AnimePlatformer.extend({
 //        if (_.random(1, 100) < this.jumpProbability) {
 //            this.tryJump = true;
 //        }
-//        else if (this.platformerState === "grounded") {
+//        else if (this.grounded) {
 //            this.velocity.x = -this.velocity.x;
 //            this.setX(this.prevX);
 //            this.flipFacing();
 //        }
-        if (this.platformerState === "grounded") {
+        if (this.grounded) {
             this.velocity.x = -this.velocity.x;
             this.setX(this.prevX);
             this.flipFacing();
@@ -240,7 +368,7 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
     update: function () {
         this._super();
         var undead = this.undead;
-        if (!this.collided && undead.platformerState === "grounded") {
+        if (!this.collided && undead.grounded) {
             if (_.random(1, 100) < undead.jumpProbability) {
                 undead.tryJump = true;
             } else if (_.random(1, 100) > 75) {
