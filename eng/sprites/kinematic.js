@@ -7,13 +7,14 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     elasticityTreshold: 50,
     groundCheck: false,
     grounded: false,
+    slopeStanding: 0,
+    mass: 1,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
         this.gravityN = this.gravity.clone().normalize();
         this.friction = new SAT.Vector(32, 32);
-//        this.friction = new SAT.Vector(0, 0);
         this.calcFriction = new SAT.Vector(32, 32);
         this.acceleration = new SAT.Vector(0, 0);
         this.calcAcceleration = new SAT.Vector(0, 0);
@@ -21,12 +22,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.maxSpeed = this.maxVelocity.len();
 
         this.slopeNormal = new SAT.Vector(0, 0);
-        this.slopeStanding = 20;
         this.finalElasticity = new SAT.Vector(0, 0);
         this.applyElasticity = false;
         this._vector = new SAT.Vector(0, 0);
-
-        this.mass = 1;
 
         this.collisionEntities = [];
         this.collisionNormals = [];
@@ -40,45 +38,34 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.gravity.x = x;
         this.gravity.y = y;
         this.gravityN.copy(this.gravity).normalize();
-        this.elasticityTreshold = this.gravity.len2();
-        this.impactTreshold = this.gravity.len();
+//        this.elasticityTreshold = this.gravity.len2();
+//        this.impactTreshold = this.gravity.len();
         if (Math.abs(this.gravityN.x) > Math.abs(this.gravityN.y)) {
-            this.gravityHorizontal = "y";
-            this.gravityVertical = "x";
+            this.gHorizontal = "y";
+            this.gVertical = "x";
         }
         else {
-            this.gravityHorizontal = "x";
-            this.gravityVertical = "y";
+            this.gHorizontal = "x";
+            this.gVertical = "y";
         }
         this.slopeOffset = Math.cos((90 - this.slopeStanding).toRad());
-    },
-    processGround: function () {
-        this.grounded = false;
-        _.each(this.collisionEntities, function (entity) {
-            if (entity.collides) {
-                if (this.collidesWithEntityAtOffset(entity, this.gravityN.x, this.gravityN.y)) {
-                    if (this.response.overlap) {
-                        this.grounded = true;
-                    }
-                }
-            }
-        }, this);
     },
     preupdate: function () {
         this._super();
 
+        // GROUND check
         if (this.groundCheck) {
             this.grounded = false;
             this.ceiling = false;
             _.each(this.collisionEntities, function (entity) {
-                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gravityHorizontal], this.gravityN[this.gravityVertical])) {
+                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], this.gravityN[this.gVertical])) {
                     if (this.response.overlap) {
                         this.grounded = entity;
                     }
                 }
             }, this);
             _.each(this.collisionEntities, function (entity) {
-                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gravityHorizontal], -this.gravityN[this.gravityVertical])) {
+                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], -this.gravityN[this.gVertical])) {
                     if (this.response.overlap) {
                         this.ceiling = entity;
                     }
@@ -86,20 +73,22 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }, this);
         }
 
+        // Apply ELASTICITY
+        // BUG: elasticity slows down objects on fall
         if (this.applyElasticity) {
             this.velocity.sub(this.finalElasticity);
             this.velocity.scale(this.elasticity, this.elasticity);
             this.applyElasticity = false;
         }
-        else {
+        // Apply IMPACT & SLOPE
+        else if (this.velocity.len() > this.impactTreshold) {
             for (var i = 0; i < this.collisionEntities.length; i++) {
                 for (var j = 0; j < this.collisionNormals.length; j += 2) {
                     this._vector.x = this.collisionNormals[j];
                     this._vector.y = this.collisionNormals[j + 1];
                     if (this.groundCheck) {
-                        if (this.grounded && (this._vector[this.gravityHorizontal] > -this.slopeOffset &&
-                                this._vector[this.gravityHorizontal] < this.slopeOffset) ||
-                                !this.grounded && (this._vector[this.gravityVertical] === Math.abs(this.gravityN.y) - 1 || this.ceiling))
+                        if (this.grounded && (this._vector[this.gHorizontal] > -this.slopeOffset && this._vector[this.gHorizontal] < this.slopeOffset) ||
+                                !this.grounded && this.ceiling)
                             this.processImpact(this._vector);
                     }
                     else {
@@ -107,10 +96,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     }
                 }
             }
-
         }
-
-
     },
     update: function () {
         // LINEAR velocity
@@ -245,7 +231,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         if (response.overlap) {
             this.slopeNormal.copy(response.overlapN);
-//            if (this.elasticity && (this.velocity.len() > this.elasticityTreshold)) {
             if (this.elasticity) {
                 this.processElasticity(response);
             }
@@ -255,7 +240,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // b * (V - 2 *  N * (V dot N))
         var dot = this.velocity.dot(response.overlapN);
         if (dot > this.elasticityTreshold) {
-            dot = this.velocity.dot(response.overlapN);
             this.finalElasticity.copy(response.overlapN);
             this.finalElasticity.scale(dot, dot);
             this.finalElasticity.scale(2, 2);

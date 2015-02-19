@@ -58,11 +58,12 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
     mode: "throwing",
     facing: "right",
     groundCheck: true,
+    slopeStanding: 50,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.force = new SAT.Vector(100, 100);
         this.jumpForce = 530;
-        this.setGravity(0, 20);
+        this.setGravity(0, -20);
         this.addAnimation("idle", [0], 0);
         this.addAnimation("moving", _.range(1, 7), 0.15);
         this.addAnimation("launching", [17], 0);
@@ -159,45 +160,13 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
     }
 });
 
-var Ball = A_.SPRITES.Kinematic.extend({
-    bounded: false,
-    spriteSheet: "ball.png",
-    collisionResponse: "passive",
-    drawCollisionPolygon: false,
-    elasticity: 0.4,
-//    groundCheck: true,
-    init: function (parent, x, y, props) {
-        this._super(parent, x, y, props);
-        this.friction.x = 0;
-        this.friction.y = 0;
-        this.setGravity(0, 7);
-        this.setMaxVelocity(400, 400);
-//        this.elasticity = 1;
-    },
-    update: function () {
-        this._super();
-        if (this.outOfBounds) {
-            this.destroy();
-        }
-//        window.console.log(this.velocity.y);
-    },
-    collideWithStatic: function (other, response) {
-        this._super(other, response);
-
-    },
-    collideWithKinematic: function (other, response) {
-        this._super(other, response);
-    }
-});
-
-
 // CLASSES
 var PlayerPlatformer = AnimePlatformer.extend({
     spriteSheet: "player_platformer.png",
     controlled: true,
     followee: true,
     player: true,
-//    elasticity: 0.1,
+//    elasticity: 0.5,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -212,6 +181,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
             urls: ['grounded.wav'],
             volume: 1
         });
+        this.elasticityTreshold = this.gravity.len() * 2;
     },
     onJumped: function () {
         this._super();
@@ -397,6 +367,44 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
 
     }
 });
+
+var Ball = A_.SPRITES.Kinematic.extend({
+    bounded: false,
+    spriteSheet: "ball.png",
+    collisionResponse: "passive",
+    drawCollisionPolygon: false,
+    elasticity: 0.5,
+//    groundCheck: true,
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
+        this.friction.x = 1;
+        this.friction.y = 0;
+        this.setGravity(0, 10);
+        this.setMaxVelocity(600, 600);
+//        this.elasticity = 1;
+        this.lifeTime = 4;
+        this.lifeTimer = 0;
+    },
+    update: function () {
+        this._super();
+        if (this.outOfBounds) {
+            this.destroy();
+        }
+        this.lifeTimer += A_.game.dt;
+        if (this.lifeTimer > this.lifeTime) {
+            this.destroy();
+        }
+//        window.console.log(this.velocity.x);
+    },
+    collideWithStatic: function (other, response) {
+        this._super(other, response);
+
+    },
+    collideWithKinematic: function (other, response) {
+        this._super(other, response);
+    }
+});
+
 
 var Platform = A_.SPRITES.Colliding.extend({
     spriteSheet: "moving_platform.png",
