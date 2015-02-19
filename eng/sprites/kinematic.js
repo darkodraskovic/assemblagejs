@@ -13,20 +13,23 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.gravity = new SAT.Vector(0, 0);
         this.gravityN = this.gravity.clone().normalize();
         this.friction = new SAT.Vector(32, 32);
+//        this.friction = new SAT.Vector(0, 0);
         this.calcFriction = new SAT.Vector(32, 32);
         this.acceleration = new SAT.Vector(0, 0);
         this.calcAcceleration = new SAT.Vector(0, 0);
         this.maxVelocity = new SAT.Vector(256, 256);
         this.maxSpeed = this.maxVelocity.len();
 
-        this.slopeNormal = new SAT.Vector(0, 1);
+        this.slopeNormal = new SAT.Vector(0, 0);
+        this.slopeStanding = 20;
         this.finalElasticity = new SAT.Vector(0, 0);
         this.applyElasticity = false;
-
         this._vector = new SAT.Vector(0, 0);
+
         this.mass = 1;
 
         this.collisionEntities = [];
+        this.collisionNormals = [];
     },
     setMaxVelocity: function (x, y) {
         this.maxVelocity.x = x;
@@ -37,6 +40,17 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.gravity.x = x;
         this.gravity.y = y;
         this.gravityN.copy(this.gravity).normalize();
+        this.elasticityTreshold = this.gravity.len2();
+        this.impactTreshold = this.gravity.len();
+        if (Math.abs(this.gravityN.x) > Math.abs(this.gravityN.y)) {
+            this.gravityHorizontal = "y";
+            this.gravityVertical = "x";
+        }
+        else {
+            this.gravityHorizontal = "x";
+            this.gravityVertical = "y";
+        }
+        this.slopeOffset = Math.cos((90 - this.slopeStanding).toRad());
     },
     processGround: function () {
         this.grounded = false;
@@ -52,22 +66,51 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     preupdate: function () {
         this._super();
+
+        if (this.groundCheck) {
+            this.grounded = false;
+            this.ceiling = false;
+            _.each(this.collisionEntities, function (entity) {
+                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gravityHorizontal], this.gravityN[this.gravityVertical])) {
+                    if (this.response.overlap) {
+                        this.grounded = entity;
+                    }
+                }
+            }, this);
+            _.each(this.collisionEntities, function (entity) {
+                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gravityHorizontal], -this.gravityN[this.gravityVertical])) {
+                    if (this.response.overlap) {
+                        this.ceiling = entity;
+                    }
+                }
+            }, this);
+        }
+
         if (this.applyElasticity) {
             this.velocity.sub(this.finalElasticity);
             this.velocity.scale(this.elasticity, this.elasticity);
             this.applyElasticity = false;
         }
-
-        this.grounded = false;
-        if (this.groundCheck) {
-            _.each(this.collisionEntities, function (entity) {
-                if (this.collidesWithEntityAtOffset(entity, this.gravityN.x, this.gravityN.y)) {
-                    if (this.response.overlap) {
-                        this.grounded = true;
+        else {
+            for (var i = 0; i < this.collisionEntities.length; i++) {
+                for (var j = 0; j < this.collisionNormals.length; j += 2) {
+                    this._vector.x = this.collisionNormals[j];
+                    this._vector.y = this.collisionNormals[j + 1];
+                    if (this.groundCheck) {
+                        if (this.grounded && (this._vector[this.gravityHorizontal] > -this.slopeOffset &&
+                                this._vector[this.gravityHorizontal] < this.slopeOffset) ||
+                                !this.grounded && (this._vector[this.gravityVertical] === Math.abs(this.gravityN.y) - 1 || this.ceiling))
+                            this.processImpact(this._vector);
+                    }
+                    else {
+                        this.processImpact(this._vector);
                     }
                 }
-            }, this);
+            }
+
         }
+
+
     },
     update: function () {
         // LINEAR velocity
@@ -189,41 +232,40 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this._super();
 
         this.collisionEntities.length = 0;
+        this.collisionNormals.length = 0;
+        this.slopeNormal.x = 0;
+        this.slopeNormal.y = 0;
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
 
         this.collisionEntities.push(other);
+        this.collisionNormals.push(response.overlapN.x);
+        this.collisionNormals.push(response.overlapN.y);
 
         if (response.overlap) {
             this.slopeNormal.copy(response.overlapN);
-
-            if (this.elasticity && this.velocity.len() > this.elasticityTreshold) {
+//            if (this.elasticity && (this.velocity.len() > this.elasticityTreshold)) {
+            if (this.elasticity) {
                 this.processElasticity(response);
-            }
-            else {
-                this.processImpact();
             }
         }
     },
     processElasticity: function (response) {
         // b * (V - 2 *  N * (V dot N))
-        this.finalElasticity.copy(response.overlapN);
         var dot = this.velocity.dot(response.overlapN);
-        this.finalElasticity.scale(dot, dot);
-        this.finalElasticity.scale(2, 2);
-        this.applyElasticity = true;
+        if (dot > this.elasticityTreshold) {
+            dot = this.velocity.dot(response.overlapN);
+            this.finalElasticity.copy(response.overlapN);
+            this.finalElasticity.scale(dot, dot);
+            this.finalElasticity.scale(2, 2);
+            this.applyElasticity = true;
+        }
     },
-    processImpact: function () {
-        this._vector.copy(this.slopeNormal);
-        this._vector.perp();
-        if (this.velocity.dot(this.slopeNormal) > 0) {
-            if (this.velocity.len() > this.impactTreshold) {
-                this.velocity.project(this._vector);
-            }
-            else {
-                this.velocity.x = this.velocity.y = 0;
-            }
+    processImpact: function (collisionNormal) {
+        if (this.velocity.dot(collisionNormal) > 0) {
+            collisionNormal.perp();
+            this.velocity.project(collisionNormal);
         }
     },
     processImpulse: function (other, response) {

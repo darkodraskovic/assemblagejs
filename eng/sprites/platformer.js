@@ -3,7 +3,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
     slopeTreshold: (50).toRad(),
     init: function (layer, x, y, props) {
         this._super(layer, x, y, props);
-        this.friction = new SAT.Vector(48, 0);
+        this.friction = new SAT.Vector(32, 0);
         this.maxVelocity = new SAT.Vector(300, 600);
     },
     preupdate: function () {
@@ -39,7 +39,7 @@ A_.SPRITES.Platformer = A_.SPRITES.Kinematic.extend({
         this._super(response);
         
         // SLOPE
-//      this._vector.copy(this.slopeVector).perp();    
+//      this._vector.copy(this.slopeNormal).perp();    
 //        var angle = Math.atan2(this._vector.y, this._vector.x);
 //        if (angle) {
 //            if (angle > -Math.PI / 2 && angle < Math.PI / 2) {

@@ -149,6 +149,14 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
             this.synchCollisionPolygon();
         }
     },
+    setGravity: function (x, y) {
+        this._super(x, y);
+        if (this.gravityN.y > 0) {
+            this.setFlippedY(false);
+        } else {
+            this.setFlippedY(true);
+        }
+    }
 });
 
 var Ball = A_.SPRITES.Kinematic.extend({
@@ -156,14 +164,14 @@ var Ball = A_.SPRITES.Kinematic.extend({
     spriteSheet: "ball.png",
     collisionResponse: "passive",
     drawCollisionPolygon: false,
-    elasticity: 1,
+    elasticity: 0.4,
+//    groundCheck: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 0;
         this.friction.y = 0;
-        this.gravity.y = 0;
+        this.setGravity(0, 7);
         this.setMaxVelocity(400, 400);
-//        this.gravity.y = 7;
 //        this.elasticity = 1;
     },
     update: function () {
@@ -255,7 +263,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
 
         if (this.tryJump) {
             if (this.grounded) {
-                this.velocity.y = -this.jumpForce;
+                this.velocity.y = this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce;
                 this.jumps = true;
                 this.onJumped();
             }
@@ -288,18 +296,18 @@ var PlayerPlatformer = AnimePlatformer.extend({
 //            this.groundedSound.play();
         }
 //        if (!this.grounded) {
-            window.console.log(this.velocity.y);
+//            window.console.log("x: " + this.velocity.x);
 //        }
 
 //        window.console.log(this.onSlope);
 //        window.console.log(this.grounded);
         this._super();
-//        window.console.log(this.velocity.x + ", " + this.velocity.y);
+//        window.console.log("x : " + this.velocity.x + ", " + "y: " + this.velocity.y);
 //        window.console.log("====================");
     },
     fireJetpack: function () {
         if (!this.grounded) {
-            this.velocity.y = -this.jumpForce * 0.75;
+            this.velocity.y = (this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce) * 0.75;
             this.jetpackSound = this.level.createSound({
                 urls: ['jetpack.wav'],
                 volume: 1,

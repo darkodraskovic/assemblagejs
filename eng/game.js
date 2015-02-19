@@ -8,7 +8,9 @@ A_.Game = Class.extend({
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
-        
+        this.maxTick = 50;
+
+
         this.running = true;
         // Cf. run.js
         requestAnimFrame(runGame);
@@ -48,7 +50,10 @@ A_.Game = Class.extend({
         }
         else {
             var now = new Date().getTime();
-            this.dt = now - this.time;
+            var dt = now - this.time;
+            this.dt = dt;
+            if (dt > this.maxTick)
+                dt = this.maxTick;
             this.time = now;
             this.dt /= 1000;
 
