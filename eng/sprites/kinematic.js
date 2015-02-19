@@ -4,7 +4,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     angularSpeed: 0,
     movementAngle: 0,
     impactTreshold: 20,
-    elasticityTreshold: 50,
+    elasticityTreshold: 400,
     groundCheck: false,
     grounded: false,
     slopeStanding: 0,
@@ -38,8 +38,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.gravity.x = x;
         this.gravity.y = y;
         this.gravityN.copy(this.gravity).normalize();
-//        this.elasticityTreshold = this.gravity.len2();
-//        this.impactTreshold = this.gravity.len();
+        this.elasticityTreshold = this.gravity.len2();
+        this.impactTreshold = this.gravity.len();
         if (Math.abs(this.gravityN.x) > Math.abs(this.gravityN.y)) {
             this.gHorizontal = "y";
             this.gVertical = "x";
