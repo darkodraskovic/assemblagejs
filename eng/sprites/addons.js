@@ -144,4 +144,3 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
 
     }
 });
-

@@ -19,6 +19,7 @@ A_.LEVEL.Level = Class.extend({
         this.layers = [];
         this.debugLayer = null;
 
+        // All the sprites.
         this.sprites = [];
         // Tiles that are updated.
         this.tiles = [];
@@ -318,13 +319,9 @@ A_.LEVEL.Level = Class.extend({
 
         _.each(this.sprites, function (sprite) {
             if (sprite.updates) {
-                sprite.preupdate();
                 sprite.update();
-                sprite.postupdate();
             }
         });
-
-        this.collider.processCollisions();
     },
     manageEntities: function () {
         this.destroyEntities(this.tilesToDestroy);

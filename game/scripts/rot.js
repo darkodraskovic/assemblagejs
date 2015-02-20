@@ -4,21 +4,13 @@ var Ball = A_.SPRITES.Topdown.extend({
     spriteSheet: "player_rot.png",
     collisionResponse: "dynamic",
     name: "ball",
-    elasticity: 2,
+    elasticity: 100,
+    elasticityTreshold: 0,
     followee: true,
     player: true,
     init: function (parent, x, y, props) {
         this.controlled = true;
-        
         this._super(parent, x, y, props);
-    },
-    update: function () {
-        this.colTimesCalled = 0;
-        this._super();
-    },
-    collideWithStatic: function (other, response) {
-        this.colTimesCalled++;
-        this._super(other, response);
     }
 });
 

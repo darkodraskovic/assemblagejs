@@ -6,7 +6,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         this.initCollision(this.collisionPolygon);
         this.containedPoint = new SAT.Vector(0, 0);
         this.response = new SAT.Response();
-        
+
         this._delta = new SAT.Vector();
         this.synchCollisionPolygon();
     },
@@ -63,7 +63,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 
         this.collisionPolygons.push(collisionPolygon);
 
-        
+
 
         return collisionPolygon;
     },
@@ -142,7 +142,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
     },
     collideWithStatic: function (other, response) {
         this.collided = true;
-        this.staticResponse = response;
 
         if (this.collisionResponse !== "sensor") {
             this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
@@ -200,19 +199,19 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         this._delta.x = delta[0] + colPol.offset.x;
         this._delta.y = delta[1] + colPol.offset.y;
         colPol.setOffset(this._delta);
-        
+
         if (this.debugGraphics) {
             this.debugGraphics.pivot.x -= delta[0] / colPol.scale.x;
             this.debugGraphics.pivot.y -= delta[1] / colPol.scale.y;
         }
     },
-    synchCollisionPolygon: function() {
+    synchCollisionPolygon: function () {
         var colPol = this.collisionPolygon;
-        
+
         // Synch position.
         colPol.pos.x = this.position.x;
         colPol.pos.y = this.position.y;
-        
+
         // Synch scale.
 //        if (this.scale.x !== colPol.scale.x) {
 //            this.collisionPolygon.setScaleX(this.scale.x);
@@ -229,13 +228,49 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         this.removeCollision();
         this._super();
     },
-    preupdate: function () {
-        this._super();
-        this.staticResponse = null;
+    processStaticCollisions: function () {
+        if (!this.collides)
+            return;
+        
+        var entities = this.level.collider.collisionStatics;
+        for (var i = 0, len = entities.length; i < len; i++) {
+            var other = entities[i];
+            if (other.collides && other !== this) {
+                // Bitmasks. Currently inactive. DO NOTE DELETE!
+//                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
+//                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
+                this.response.clear();
+                var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
+                if (collided) {
+                    this.collideWithStatic(other, this.response);
+//                    }
+                }
+            }
+        }
     },
-    postupdate: function () {
-        this._super();
+    processKinematicCollisions: function () {
+        if (!this.collides)
+            return;
+        
+        var entities = this.level.collider.collisionKinematics;
+        for (var i = 0, len = entities.length; i < len; i++) {
+            var other = entities[i];
+            if (other.collides && other !== this) {
+                // Bitmasks. Currently inactive. DO NOTE DELETE!
+//                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
+//                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
+                this.response.clear();
+                var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
+                if (collided) {
+                    this.collideWithKinematic(other, this.response);
+//                    }
+                }
+            }
+        }
+    },
+    update: function () {
         this.synchCollisionPolygon();
+        this._super();
     }
 });
 

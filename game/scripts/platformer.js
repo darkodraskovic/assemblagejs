@@ -24,7 +24,6 @@ A_.TILES.Tile.inject({
         }
     },
     update: function () {
-        this._super();
 //        if (this.leftpressed && A_.player.mode === "building") {
         if (this.leftpressed) {
             this.toggleTurned();
@@ -41,6 +40,8 @@ A_.TILES.Tile.inject({
                 this.destroy();
             }
         }
+
+        this._super();
     }
 });
 
@@ -58,12 +59,12 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
     mode: "throwing",
     facing: "right",
     groundCheck: true,
-    slopeStanding: 50,
+    slopeStanding: 30,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.force = new SAT.Vector(100, 100);
         this.jumpForce = 530;
-        this.setGravity(0, -20);
+        this.setGravity(0, 20);
         this.addAnimation("idle", [0], 0);
         this.addAnimation("moving", _.range(1, 7), 0.15);
         this.addAnimation("launching", [17], 0);
@@ -82,7 +83,6 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
             this.acceleration.x = 0;
         }
 
-        this._super();
 
         // PLATFORM
         if (this.movingPlatform) {
@@ -92,7 +92,7 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
 
 
         if (this.grounded) {
-            if (Math.abs(this.velocity.x)) {
+            if (this.applyForce) {
                 this.setAnimation("moving");
             } else {
                 this.setAnimation("idle");
@@ -113,6 +113,8 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
                 this.setFlippedX(true);
             }
         }
+
+        this._super();
     },
     toggleMode: function () {
         if (this.mode === "throwing") {
@@ -142,12 +144,14 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
     },
     processMovingPlatform: function (other) {
         if (this.getY() < other.getY()) {
-            this.movingPlatform = other;
-            this.platformDX = other.getX() - other.prevX;
-            this.platformDY = other.getY() - other.prevY;
+            if (other instanceof Platform) {
+                this.movingPlatform = other;
+                this.platformDX = other.getX() - other.prevX;
+                this.platformDY = other.getY() - other.prevY;
 
-            this.setXRelative(this.platformDX);
-            this.synchCollisionPolygon();
+                this.setXRelative(this.platformDX);
+                this.synchCollisionPolygon();
+            }
         }
     },
     setGravity: function (x, y) {
@@ -225,10 +229,15 @@ var PlayerPlatformer = AnimePlatformer.extend({
         if (A_.INPUT.down["jump"]) {
             this.tryJump = true;
         }
+
+        if (A_.INPUT.pressed["jetpack"]) {
+            this.fireJetpack();
+        }
     },
     update: function () {
 //        window.console.log("updt platformer");
 //        window.console.log(this.applySlope);
+//        window.console.log(this.velocity.x);
         this.processControls();
 
         if (this.tryJump) {
@@ -255,12 +264,10 @@ var PlayerPlatformer = AnimePlatformer.extend({
         if (this.level.leftpressed && this.mode === "throwing") {
             var ball = this.level.createSprite(Ball, this.layer, this.getX(), this.getY());
             var angle = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
-            ball.velocity.x = ball.maxSpeed * Math.cos(angle);
-            ball.velocity.y = ball.maxSpeed * Math.sin(angle);
+            ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
+            ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
         }
-        if (A_.INPUT.pressed["jetpack"]) {
-            this.fireJetpack();
-        }
+
 
         if (this.grounded && this.velocity.y > this.gravity.y) {
 //            this.groundedSound.play();
@@ -269,8 +276,10 @@ var PlayerPlatformer = AnimePlatformer.extend({
 //            window.console.log("x: " + this.velocity.x);
 //        }
 
-//        window.console.log(this.onSlope);
-//        window.console.log(this.grounded);
+//    if (this.grounded) {
+//            window.console.log(true);
+//    } else window.console.log(false);
+        //        window.console.log(this.ceiling);
         this._super();
 //        window.console.log("x : " + this.velocity.x + ", " + "y: " + this.velocity.y);
 //        window.console.log("====================");
@@ -284,25 +293,25 @@ var PlayerPlatformer = AnimePlatformer.extend({
             });
             this.jetpackSound.play();
         }
-    },
-    collideWithStatic: function (other, response) {
-        this._super(other, response);
-//        if (response.overlap) {
-//            window.console.log(this.gravity.dot(response.overlapN));
-//        }
-    },
+    }
 });
 
 var Undead = AnimePlatformer.extend({
     spriteSheet: "undead.png",
+    prevX: 0,
+    prevY: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.controlled = false;
-        this.maxVelocity = new SAT.Vector(150, 600);
+        this.maxVelocity.x = 150;
+        this.maxVelocity.y = 600;
         this.jumpProbability = 25;
 //        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.getX(), this.getY(), {undead: this});
     },
     update: function () {
+        this.prevX = this.getX();
+        this.prevY = this.getY();
+
         if (!this.isOnScreen()) {
             this.collides = false;
             return;
@@ -312,6 +321,7 @@ var Undead = AnimePlatformer.extend({
 
         this.applyForce = true;
         this._super();
+
     },
     onWall: function () {
         this._super();
@@ -379,14 +389,13 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this._super(parent, x, y, props);
         this.friction.x = 1;
         this.friction.y = 0;
-        this.setGravity(0, 10);
-        this.setMaxVelocity(600, 600);
-//        this.elasticity = 1;
+        this.setGravity(0, 8);
+        this.maxVelocity.x = 600;
+        this.maxVelocity.y = 600;
         this.lifeTime = 4;
         this.lifeTimer = 0;
     },
     update: function () {
-        this._super();
         if (this.outOfBounds) {
             this.destroy();
         }
@@ -394,7 +403,8 @@ var Ball = A_.SPRITES.Kinematic.extend({
         if (this.lifeTimer > this.lifeTime) {
             this.destroy();
         }
-//        window.console.log(this.velocity.x);
+
+        this._super();
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
@@ -412,6 +422,8 @@ var Platform = A_.SPRITES.Colliding.extend({
     frameHeight: 32,
     collisionResponse: "static",
     type: "horizontal",
+    prevX: 0,
+    prevY: 0,
 //    drawCollisionPolygon: false,    
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -423,10 +435,14 @@ var Platform = A_.SPRITES.Colliding.extend({
         this.origY = this.getY();
     },
     update: function () {
-        this._super();
+        this.prevX = this.getX();
+        this.prevY = this.getY();
+
 
         this.setX(this.origX + this.sine.value);
         this.setY(this.origY - this.sine.value);
+
+        this._super();
     }
 });
 

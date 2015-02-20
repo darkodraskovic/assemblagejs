@@ -32,7 +32,6 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
         };
     },
     update: function () {
-        this._super();
         if (this.alive) {
             this.setAnimation(this.motionState + "_" + this.facing);
         }
@@ -47,6 +46,8 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
             }
             this.setAnimation("death");
         }
+
+        this._super();
     }
 });
 
@@ -87,7 +88,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
             this.shootLaser();
         }
         this._super();
-        
+
     },
     shootBullet: function () {
         var sprPt = this.rifle.spritePoint(this.facing);
@@ -164,7 +165,6 @@ var Rifle = A_.SPRITES.Sprite.extend({
         this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
     update: function () {
-        this._super();
 //        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
 //        switch (this.holder.facing) {
 //            case "left": rot -= Math.PI; break;
@@ -180,6 +180,8 @@ var Rifle = A_.SPRITES.Sprite.extend({
 
             this.moveToSprite(this.holder, "front");
         }
+
+        this._super();
     }
 });
 // WEAPONS & AMMO
@@ -211,15 +213,14 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         }).play();
     },
     update: function () {
-        this._super();
         if (this.outOfBounds) {
             this.destroy();
         }
         this.lifeTimer += A_.game.dt;
-        if (this.lifeTimer > this.lifeTime) this.destroy();
-        
-        window.console.log(this.velocity.x);
+        if (this.lifeTimer > this.lifeTime)
+            this.destroy();
 
+        this._super();
     },
     collideWithKinematic: function (other, response) {
         if (other instanceof Agent) {
@@ -267,7 +268,6 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
         this.sine = this.addon("Sine", sineProps);
     },
     update: function () {
-        this._super();
         var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
 
@@ -287,6 +287,7 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
         }
 
         this.setHeight(this.origH + this.sine.value);
+        this._super();
     }
 });
 
@@ -296,7 +297,6 @@ var LaserTip = A_.SPRITES.Colliding.extend({
         this._super(parent, x, y, props);
     },
     update: function () {
-        this._super();
         this.setPosition(this.laser.tip.x, this.laser.tip.y);
         if (!this.collided) {
             if (this.fire) {
@@ -305,6 +305,8 @@ var LaserTip = A_.SPRITES.Colliding.extend({
             }
             this.timer = null;
         }
+        
+        this._super();
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
@@ -352,10 +354,10 @@ var LaserFire = A_.SPRITES.Sprite.extend({
         this.setZ("top");
     },
     update: function () {
-        this._super();
         this.setPosition(this.laserTip.getX(), this.laserTip.getY());
         var scale = this.getScale();
         this.setScale(scale.x + A_.game.dt, scale.y + A_.game.dt);
+        this._super();
     },
     onDestruction: function () {
         this.sound.stop();
@@ -392,9 +394,6 @@ var Computer = A_.SPRITES.Colliding.extend({
 //    collidesWith: A_.COLLISION.Type.NONE,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-    },
-    update: function (props) {
-        this._super(props);
     }
 })
 

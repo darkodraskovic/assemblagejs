@@ -64,9 +64,6 @@ A_.SPRITES.Sprite = Class.extend({
 
         this.addons = [];
 
-        this.prevX = 0;
-        this.prevY = 0;
-
         if (parent instanceof A_.SPRITES.Sprite) {
             parent.addSprite(this);
         }
@@ -530,20 +527,7 @@ A_.SPRITES.Sprite = Class.extend({
         }
     },
     // CREATION/DESTRUCTION & UPDATE
-    preupdate: function () {
-        this.prevRot = this.getRotation();
-        this.prevX = this.getX();
-        this.prevY = this.getY();
-
-        _.each(this.addons, function (addon) {
-            if (addon.active)
-                addon.update();
-        });
-    },
     update: function () {
-
-    },
-    postupdate: function () {
         if (!this.container) {
             if (this.bounded) {
                 this.setPosition(Math.max(0, Math.min(this.getX(), this.level.width)),
@@ -569,6 +553,11 @@ A_.SPRITES.Sprite = Class.extend({
                 }
             }
         }
+
+        _.each(this.addons, function (addon) {
+            if (addon.active)
+                addon.update();
+        });
     },
     destroy: function () {
         _.each(this.sprites, function (sprite) {

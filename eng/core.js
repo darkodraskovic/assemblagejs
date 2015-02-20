@@ -100,6 +100,7 @@ $('body').contextmenu(function () {
 var A_ = {};
 A_.UTILS = {};
 A_.SPRITES = {};
+A_.SPRITES.Injections = {};
 A_.TILES = {};
 A_.SCENERY = {};
 A_.COLLISION = {};
@@ -139,6 +140,30 @@ if (typeof (Number.prototype.lerp) === "undefined") {
     };
 }
 
+Number.prototype.floor = function () {
+    return Math.floor(this);
+};
+
+Number.prototype.ceil = function () {
+    return Math.ceil(this);
+};
+
+Number.prototype.toInt = function () {
+    return (this | 0);
+};
+
+Number.prototype.round = function (precision) {
+    precision = Math.pow(10, precision || 0);
+    return Math.round(this * precision) / precision;
+};
+
+Number.prototype.sin = function () {
+    return Math.sin(this);
+};
+
+Number.prototype.cos = function () {
+    return Math.cos(this);
+};
 
 A_.UTILS.copy = function (object) {
     if (

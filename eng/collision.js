@@ -4,56 +4,6 @@ A_.COLLISION.Collider = Class.extend({
         this.collisionStatics = [];
         this.collisionKinematics = [];
         this.collisionMasks = [];
-        this.response = new SAT.Response();
-    },
-    processCollisions: function () {
-        _.each(this.collisionSprites, function (sprite) {
-            sprite.collided = false;
-        });
-
-        var lenKin = this.collisionKinematics.length;
-        var lenStat = this.collisionStatics.length;
-
-
-        // STATICS
-        for (i = 0; i < lenKin; i++) {
-            var o1 = this.collisionKinematics[i];
-            for (j = 0; j < lenStat; j++) {
-                var o2 = this.collisionStatics[j];
-                if (o1.collides && o2.collides) {
-                    // Bitmasks. Currently inactive. DO NOTE DELETE!
-//                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
-//                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
-                    this.response.clear();
-                    var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, this.response);
-                    if (collided) {
-                        o1.collideWithStatic(o2, this.response);
-                        o2.collideWithKinematic(o1, this.response);
-//                    }
-                    }
-                }
-            }
-        }
-        // DYNAMICS
-        for (i = 0; i < lenKin - 1; i++) {
-            var o1 = this.collisionKinematics[i];
-            for (j = i + 1; j < lenKin; j++) {
-                var o2 = this.collisionKinematics[j];
-                if (o1.collides && o2.collides) {
-                    // Bitmasks. Currently inactive. DO NOTE DELETE!
-//                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
-//                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
-                    this.response.clear();
-
-                    var collided = SAT.testPolygonPolygon(o1.collisionPolygon, o2.collisionPolygon, this.response);
-                    if (collided) {
-                        o1.collideWithKinematic(o2, this.response);
-                        o2.collideWithKinematic(o1, this.response);
-//                    }
-                    }
-                }
-            }
-        }
     }
 });
 

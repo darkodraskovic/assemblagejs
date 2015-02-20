@@ -8,8 +8,7 @@ A_.Game = Class.extend({
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
-        this.maxTick = 50;
-
+        this.maxTick = 20;
 
         this.running = true;
         // Cf. run.js
@@ -55,7 +54,8 @@ A_.Game = Class.extend({
             if (dt > this.maxTick)
                 dt = this.maxTick;
             this.time = now;
-            this.dt /= 1000;
+            this.dt = dt / 1000;
+//            window.console.log(this.dt);
 
             this.levelManager.updateLevels();
 

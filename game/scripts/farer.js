@@ -2,14 +2,14 @@
 var Player = A_.SPRITES.Kinematic.extend({
     spriteSheet: "player_farer.png",
     collisionResponse: "active",
-    moveAtAngle: true,
     followee: true,
-    player: true,
+    movementAngle: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.maxSpeed = 512;
-        this.friction.x = 24;
-        this.friction.y = 24;
+        this.maxVelocity.x = this.maxVelocity.y = 356;
+        this.friction.x = this.friction.y = 24;
+        this.origFriction = this.friction.clone();
+        this.setGravity(0, 0);
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("down", A_.KEY.S);
@@ -22,12 +22,13 @@ var Player = A_.SPRITES.Kinematic.extend({
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
         this.setRotation(rot);
+        
         var speedSign = 0;
         if (this.getRotation() < 0)
             speedSign = -1;
         else
             speedSign = 1;
-        
+
         if (A_.INPUT.down["up"]) {
             this.movementAngle = this.getRotation();
             this.acceleration.x = this.acceleration.y = 64;
@@ -45,25 +46,38 @@ var Player = A_.SPRITES.Kinematic.extend({
             this.acceleration.x = this.acceleration.y = 64;
         }
         else {
-            this.acceleration.x = this.acceleration.y = 0;            
-        }
-
-
-        this._super();
+            this.acceleration.x = this.acceleration.y = 0;
+        } 
         
+        var sin = Math.sin(this.movementAngle);
+        var cos = Math.cos(this.movementAngle);
+
+        this.friction.x = Math.abs(this.origFriction.x * cos);
+        this.friction.y = Math.abs(this.origFriction.y * sin);
+
+        this.acceleration.x *= cos;
+        this.acceleration.y *= sin;
+
         if (this.level.leftpressed) {
             this.shootBullet();
         }
         
+        this._super();
+
     },
     shootBullet: function () {
+        var rot = this.getRotation();
         var pos1 = this.spritePoint("bullet1").getPosition();
         var bullet1 = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), pos1.x, pos1.y);
-        bullet1.setRotation(this.getRotation());
+        bullet1.setRotation(rot);
+        bullet1.velocity.x = Math.cos(rot) * bullet1.maxVelocity.x;
+        bullet1.velocity.y = Math.sin(rot) * bullet1.maxVelocity.y;
 
         var pos2 = this.spritePoint("bullet2").getPosition();
         var bullet2 = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), pos2.x, pos2.y);
-        bullet2.setRotation(this.getRotation());
+        bullet2.setRotation(rot);
+        bullet2.velocity.x = Math.cos(rot) * bullet2.maxVelocity.x;
+        bullet2.velocity.y = Math.sin(rot) * bullet2.maxVelocity.y;
     }
 });
 
@@ -97,13 +111,13 @@ var Laser = A_.SPRITES.Sprite.extend({
             this.setWidth(A_.UTILS.distanceTo(this.getPositionLevel(), this.level.getMousePosition()));
         }
 
-        this._super();
-
         this.setHeight(this.origH + this.sine.value);
         if (this.on)
             this.setWidth(this.getWidth() + this.sine.value);
         else
             this.setWidth(this.origW + this.sine.value);
+
+        this._super();
     },
     toggleFire: function (state) {
         if (state === "on") {
@@ -129,13 +143,11 @@ var Laser = A_.SPRITES.Sprite.extend({
 var Bullet = A_.SPRITES.Kinematic.extend({
     spriteSheet: "bullet.png",
     collisionResponse: "sensor",
-    moveAtAngle: true,
     drawCollisionPolygon: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 0;
-        this.acceleration.x = this.acceleration.y = 600;
-        this.maxSpeed = 1200;
+        this.maxVelocity.x = this.maxVelocity.y = 800;
         this.bounded = false;
         this.level.createSound({
             urls: ['bullet.wav'],
@@ -143,14 +155,12 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         }).play();
         this.setOrigin(0, 0.5);
         this.setAlpha(0.75);
-        this.moveAtAngle = true;
-        this.moveForward = true;
     },
     update: function () {
-        this._super();
         if (this.outOfBounds) {
             this.destroy();
         }
+        this._super();
     },
     collideWithStatic: function (other, response) {
         this.level.createSprite(Explosion, this.level.findLayerByName("Effects"),
@@ -169,9 +179,6 @@ var Rotor = A_.SPRITES.Kinematic.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.016);
-    },
-    update: function () {
-        this._super();
     }
 });
 var Explosion = A_.SPRITES.Sprite.extend({
@@ -188,7 +195,7 @@ var Explosion = A_.SPRITES.Sprite.extend({
         this.animations["explode"].onComplete = function () {
             that.destroy();
         };
-        
+
         this.level.createSound({
             urls: ['explosion.mp3'],
             volume: 0.2
@@ -213,7 +220,7 @@ populateLevel = function (level) {
 
     var spriteLayer = level.createSpriteLayer("Sprites");
     level.createSpriteLayer("Effects");
-    
+
     window.console.log("created FARER levels");
 
     player = level.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
