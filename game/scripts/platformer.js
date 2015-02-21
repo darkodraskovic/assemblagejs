@@ -233,6 +233,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
         }
     },
     update: function () {
+        window.console.log(this.grounded !== null);
         this.processControls();
 
         if (this.tryJump) {

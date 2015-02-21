@@ -66,7 +66,7 @@ var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
                 var sound = this.level.createSound({
                     urls: ['grunt.wav'],
                     volume: 0.5
-                })
+                });
                 sound.play();
                 this.groaned = true;
             }

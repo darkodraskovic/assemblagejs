@@ -92,22 +92,23 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         var entities = this.level.tiles;
         for (var i = 0, len = entities.length; i < len; i++) {
             this.response.clear();
-            if (!entities[i].collides)
+            var other = entities[i]; 
+            if (!other.collides)
                 continue;
-            var collided = SAT.testPolygonPolygon(this.collisionPolygon, entities[i].collisionPolygon, this.response);
+            var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
             if (collided) {
-                this.collideWithStatic(entities[i], this.response);
+                this.collideWithStatic(other, this.response);
             }
         }
     },
     processSpriteCollisions: function () {
-        if (!this.collides)
+        if (!this.collides || this.collisionResponse === "static")
             return;
 
         var entities = this.level.sprites;
         for (var i = 0, len = entities.length; i < len; i++) {
             var other = entities[i];
-            if (other.collides && other !== this && this.collisionResponse !== "static") {
+            if (other.collides && other !== this) {
                 // Bitmasks. Currently inactive. DO NOTE DELETE!
 //                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
 //                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
@@ -121,8 +122,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
     },
     collideWithStatic: function (other, response) {
-        if (!response.overlap)
-            return;
+//        if (!response.overlap)
+//            return;
         this.collided = true;
 
         if (this.collisionResponse === "sensor")
@@ -143,6 +144,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     collideWithKinematic: function (other, response) {
         if (!response.overlap)
             return;
+        
         this.collided = true;
 
         if (this.collisionResponse === "sensor")
