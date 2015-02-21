@@ -43,7 +43,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
     mode: "throwing",
     facing: "right",
     groundCheck: true,
-    slopeStanding: 50,
+    slopeStanding: 30,
     elasticity: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);

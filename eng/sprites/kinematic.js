@@ -212,10 +212,27 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     }
                 }
             }
+            if ((this.grounded &&
+                    (this.slopeNormal[this.gHorizontal] > -this.slopeOffset && this.slopeNormal[this.gHorizontal] < this.slopeOffset)) || !this.grounded) {
+                if (this.velocity.dot(this.slopeNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
+                    this.processStaticImpulse();
+                }
+            }
         }
 
         if (this.velocity.dot(this.slopeNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
-            this.processStaticImpulse();
+            if (this.groundCheck) {
+                if (this.grounded) {
+                    if (this.slopeNormal[this.gHorizontal] > -this.slopeOffset && this.slopeNormal[this.gHorizontal] < this.slopeOffset) {
+                        this.processStaticImpulse();
+                    }
+                }
+                else {
+                    this.processStaticImpulse();
+                }
+            }
+            else
+                this.processStaticImpulse();
         }
     }
 });
