@@ -4,10 +4,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     angularSpeed: 0,
     impulseTreshold: 10,
     groundCheck: false,
-    grounded: false,
-    slopeStanding: 0,
+    standing: false,
     mass: 1,
-    applyElasticity: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
@@ -18,11 +16,12 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.maxVelocity = new SAT.Vector(1000, 1000);
 
         this.slopeNormal = new SAT.Vector(0, 0);
-        this.finalElasticity = new SAT.Vector(0, 0);
 
         this.collisionEntities = [];
+        this._lastCollisionNormal = new SAT.Vector(0, 0);
+        this.ground = null;
     },
-    setGravity: function (x, y) {
+    setGravity: function (x, y, slopeTolerance) {
         this.gravity.x = x;
         this.gravity.y = y;
         this.gravityN.copy(this.gravity).normalize();
@@ -35,7 +34,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.gHorizontal = "x";
             this.gVertical = "y";
         }
-        this.slopeOffset = Math.cos((90 - this.slopeStanding).toRad());
+        if (_.isNumber(slopeTolerance)) {
+            this.slopeOffset = Math.cos((90 - slopeTolerance).toRad());
+        }
+        else 
+            this.slopeOffset = 0;
     },
     update: function () {
         // LINEAR velocity
@@ -71,6 +74,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.synchCollisionPolygon();
 
         // Reset collision vars
+        this._lastCollisionNormal.x = 0;
+        this._lastCollisionNormal.y = 0;
         this.slopeNormal.x = 0;
         this.slopeNormal.y = 0;
         this.collided = false;
@@ -130,7 +135,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
         this.synchCollisionPolygon();
 
-        this.slopeNormal.copy(response.overlapN);
+        this._lastCollisionNormal.copy(response.overlapN);
     },
     collideWithKinematic: function (other, response) {
         if (!response.overlap)
@@ -175,7 +180,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     processStaticImpulse: function () {
         this._vector.copy(this.velocity).reverse();
-        var impulse = this._vector.project(this.slopeNormal).scale(-(1 + this.elasticity));
+        var impulse = this._vector.project(this._lastCollisionNormal).scale(-(1 + this.elasticity));
         this.velocity.sub(impulse);
     },
     processKineticImpulse: function (other, response) {
@@ -203,36 +208,24 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     processCollisionResults: function () {
         // GROUND check
         if (this.groundCheck) {
-            this.grounded = null;
+            this.ground = null;
+            this.standing = false;
             for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
                 var entity = this.collisionEntities[i];
                 if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], this.gravityN[this.gVertical])) {
                     if (this.response.overlap) {
-                        this.grounded = entity;
+                        this.ground = entity;
+                        this.slopeNormal = this.response.overlapN;
+                        if (this.slopeNormal[this.gHorizontal] > -this.slopeOffset && this.slopeNormal[this.gHorizontal] < this.slopeOffset) {
+                            this.standing = true;
+                        }
                     }
-                }
-            }
-            if ((this.grounded &&
-                    (this.slopeNormal[this.gHorizontal] > -this.slopeOffset && this.slopeNormal[this.gHorizontal] < this.slopeOffset)) || !this.grounded) {
-                if (this.velocity.dot(this.slopeNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
-                    this.processStaticImpulse();
                 }
             }
         }
 
-        if (this.velocity.dot(this.slopeNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
-            if (this.groundCheck) {
-                if (this.grounded) {
-                    if (this.slopeNormal[this.gHorizontal] > -this.slopeOffset && this.slopeNormal[this.gHorizontal] < this.slopeOffset) {
-                        this.processStaticImpulse();
-                    }
-                }
-                else {
-                    this.processStaticImpulse();
-                }
-            }
-            else
-                this.processStaticImpulse();
+        if (this.velocity.dot(this._lastCollisionNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
+            this.processStaticImpulse();
         }
     }
 });
