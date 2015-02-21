@@ -29,7 +29,7 @@ A_.TILES.Tile.inject({
     }
 });
 
-var AnimePlatformer = A_.SPRITES.Platformer.extend({
+var AnimePlatformer = A_.SPRITES.Kinematic.extend({
     frameWidth: 32,
     frameHeight: 64,
     bounded: false,
@@ -43,11 +43,16 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
     mode: "throwing",
     facing: "right",
     groundCheck: true,
-    slopeStanding: 30,
+    slopeStanding: 50,
+    elasticity: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.force = new SAT.Vector(100, 100);
         this.jumpForce = 530;
+        this.friction.x = 32;
+        this.friction.y = 0;
+        this.maxVelocity.x = 300;
+        this.maxVelocity.y = 600;
         this.setGravity(0, 20);
         this.addAnimation("idle", [0], 0);
         this.addAnimation("moving", _.range(1, 7), 0.15);
@@ -139,12 +144,12 @@ var AnimePlatformer = A_.SPRITES.Platformer.extend({
         }
     },
     setGravity: function (x, y) {
-        this._super(x, y);
-        if (this.gravityN.y > 0) {
+        if (y > 0) {
             this.setFlippedY(false);
         } else {
             this.setFlippedY(true);
         }
+        this._super(x, y);
     }
 });
 
@@ -256,6 +261,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
             ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
         }
         this._super();
+//        window.console.log(this.velocity);
     },
     processThrus: function () {
         var tilemap = this.thrus;

@@ -12,7 +12,7 @@ A_.TILES.Tile = Class.extend({
 
         if (layer.collisionResponse) {
             this.initCollision();
-            level.collider.collisionStatics.push(this);
+            level.tiles.push(this);
         }
     },
     createSprite: function () {
@@ -27,8 +27,6 @@ A_.TILES.Tile = Class.extend({
         this.sprite.position.y = this.tilemap.getLevelY(this.mapPosition.y);
     },
     initCollision: function () {
-        this.collides = true;
-
         var collisionPolygon;
         var box = new SAT.Box(new SAT.Vector(0, 0), this.tilemap.tileW, this.tilemap.tileH);
         collisionPolygon = box.toPolygon();
@@ -42,16 +40,16 @@ A_.TILES.Tile = Class.extend({
 //            this.collisionPolygon.pos.x = A_.level.container.toLocal(A_.level.origin, this.sprite).x;
 //            this.collisionPolygon.pos.y = A_.level.container.toLocal(A_.level.origin, this.sprite).y;
 
+        this.collides = true;
+
     },
     removeFromLevel: function () {
         var level = this.tilemap.level;
         if (this.tilemap.collisionResponse) {
-            var ind = level.collider.collisionStatics.indexOf(this);
+            var ind = level.tiles.indexOf(this);
             if (ind > -1)
-                level.collider.collisionStatics.splice(ind, 1);
+                level.tiles.splice(ind, 1);
         }
         this.sprite.parent.removeChild(this.sprite);
     }
 });
-
-A_.TILES.Tile.inject(A_.COLLISION.aabbInjection);

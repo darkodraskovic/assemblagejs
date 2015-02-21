@@ -19,6 +19,8 @@ A_.LEVEL.Level = Class.extend({
         this.layers = [];
         this.debugLayer = null;
 
+        // Colliding tiles
+        this.tiles = [];
         // All the sprites & their sounds.
         this.sprites = [];
         this.sounds = [];
@@ -34,8 +36,6 @@ A_.LEVEL.Level = Class.extend({
 
         // Helper object. Its purpose is to avoid getMousePosition() object creation.
         this._MousePosition = {x: 0, y: 0};
-
-        this.collider = new A_.COLLISION.Collider();
 
         this.running = false;
     },
@@ -245,12 +245,6 @@ A_.LEVEL.Level = Class.extend({
         this.manageSprites();
         
         // Rendering
-        if (this.debugLayer) {
-            _.each(this.collider.collisionSprites, function (sprite) {
-                sprite.updateDebug();
-            });
-        }
-
         if (A_.INPUT.mousewheel) {
             if (A_.INPUT.mousewheel === "forward") {
                 this.setScale(this.scale + this.scaleSpeed * A_.game.dt);

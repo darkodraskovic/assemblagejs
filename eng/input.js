@@ -145,10 +145,8 @@ window.addEventListener("mousewheel", A_.INPUT.processMouseWheel, false);
 
 A_.INPUT.mouseReactivityInjection = {
     initMouseReactivity: function() {
-//        var that = this;
         this.sprite.mousedown = function() {
             this.leftpressed = true;
-//            window.console.log("left pressed");
             this.leftdown = true;
         }.bind(this);
         this.sprite.mouseup = function() {

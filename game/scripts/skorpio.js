@@ -280,6 +280,7 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
 
 var LaserTip = A_.SPRITES.Kinematic.extend({
     bounded: false,
+    collisionResponse: "sensor",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
     },
@@ -298,6 +299,7 @@ var LaserTip = A_.SPRITES.Kinematic.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
+        
         if (other.collisionResponse === "static") {
             if (!this.timer) {
                 this.timer = 1;
