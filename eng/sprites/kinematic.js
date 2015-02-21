@@ -3,7 +3,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     elasticity: 0,
     angularSpeed: 0,
     impulseTreshold: 10,
-    elasticityTreshold: 100,
     groundCheck: false,
     grounded: false,
     slopeStanding: 0,
@@ -22,13 +21,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.finalElasticity = new SAT.Vector(0, 0);
 
         this.collisionEntities = [];
-        this.collisionNormals = [];
     },
     setGravity: function (x, y) {
         this.gravity.x = x;
         this.gravity.y = y;
         this.gravityN.copy(this.gravity).normalize();
-        this.elasticityTreshold = this.gravity.len2();
         this.impulseTreshold = this.gravity.len();
         if (Math.abs(this.gravityN.x) > Math.abs(this.gravityN.y)) {
             this.gHorizontal = "y";
@@ -74,11 +71,10 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.synchCollisionPolygon();
 
         // Reset collision vars
-        this.collisionEntities.length = 0;
-        this.collisionNormals.length = 0;
         this.slopeNormal.x = 0;
         this.slopeNormal.y = 0;
         this.collided = false;
+        this.collisionEntities.length = 0;
 
         // Process COLLISION
         this.processTileCollisions();
@@ -127,8 +123,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             return;
 
         this.collisionEntities.push(other);
-        this.collisionNormals.push(response.overlapN.x);
-        this.collisionNormals.push(response.overlapN.y);
 
         if (!response.overlap)
             return;
@@ -137,9 +131,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.synchCollisionPolygon();
 
         this.slopeNormal.copy(response.overlapN);
-        if (this.elasticity) {
-            this.processElasticity(response);
-        }
     },
     collideWithKinematic: function (other, response) {
         if (!response.overlap)
@@ -182,21 +173,10 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
         }
     },
-    processElasticity: function (response) {
-        // b * (V - 2 *  N * (V dot N))
-        var dot = this.velocity.dot(response.overlapN);
-        if (dot > this.elasticityTreshold && this.velocity.dot(response.overlapN) >= 0) {
-            this.finalElasticity.copy(response.overlapN);
-            this.finalElasticity.scale(dot, dot);
-            this.finalElasticity.scale(2, 2);
-            this.applyElasticity = true;
-        }
-    },
-    processStaticImpulse: function (collisionNormal) {
-        if (this.velocity.dot(collisionNormal) > 0) {
-            collisionNormal.perp();
-            this.velocity.project(collisionNormal);
-        }
+    processStaticImpulse: function () {
+        this._vector.copy(this.velocity).reverse();
+        var impulse = this._vector.project(this.slopeNormal).scale(-(1 + this.elasticity));
+        this.velocity.sub(impulse);
     },
     processKineticImpulse: function (other, response) {
         // Calculate the velocity difference.
@@ -224,20 +204,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // GROUND check
         if (this.groundCheck) {
             this.grounded = null;
-            this.ceiling = null;
-//            _.each(this.collisionEntities, function (entity) {
-//                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], this.gravityN[this.gVertical])) {
-//                    if (this.response.overlap) {
-//                        this.grounded = entity;
-//                    }
-//                }
-//                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], -this.gravityN[this.gVertical])) {
-//                    if (this.response.overlap) {
-//                        this.ceiling = entity;
-//                    }
-//                }
-//            }, this);
-
             for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
                 var entity = this.collisionEntities[i];
                 if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], this.gravityN[this.gVertical])) {
@@ -245,39 +211,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                         this.grounded = entity;
                     }
                 }
-                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], -this.gravityN[this.gVertical])) {
-                    if (this.response.overlap) {
-                        this.ceiling = entity;
-                    }
-                }
             }
         }
-        // Apply static ELASTICITY
-        // BUG: elasticity slows down objects on fall
-        if (this.applyElasticity) {
-            this.velocity.sub(this.finalElasticity);
-            this.velocity.scale(this.elasticity, this.elasticity);
-            this.applyElasticity = false;
-        }
-        // Apply static IMPULSE
-        else if (this.velocity.len() > this.impulseTreshold) {
-            for (var i = 0; i < this.collisionEntities.length; i++) {
-                for (var j = 0; j < this.collisionNormals.length; j += 2) {
-                    this._vector.x = this.collisionNormals[j];
-                    this._vector.y = this.collisionNormals[j + 1];
-                    if (this.groundCheck) {
-                        if ((this.grounded && (this._vector[this.gHorizontal] > -this.slopeOffset && this._vector[this.gHorizontal] < this.slopeOffset)) ||
-                                this.ceiling) {
-                            this.processStaticImpulse(this._vector);
-                        } else if (this.collided) {
-                            this.velocity[this.gHorizontal] = -this.velocity[this.gHorizontal] * this.elasticity;
-                        }
-                    }
-                    else {
-                        this.processStaticImpulse(this._vector);
-                    }
-                }
-            }
+
+        if (this.velocity.dot(this.slopeNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
+            this.processStaticImpulse();
         }
     }
 });
