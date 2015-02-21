@@ -132,6 +132,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     args["frameHeight"] = oData["height"];
                     var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
+                    
                 }
                 else {
                     var type = eval(oData["type"]);
@@ -143,6 +144,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     o.setPositionRelative(o.getWidth() / 2, -o.getHeight() / 2);
                 }
                 o.setRotation(oData["rotation"].toRad());
+                o.synchCollisionPolygon();
             }
 
             if (layer.baked) {
@@ -150,7 +152,4 @@ A_.TILES.createTiledMap = function (mapData, level) {
             }
         }
     }
-
-    // Add entities to sprites and tiles array used in level update loop.
-    level.manageEntities();
 };

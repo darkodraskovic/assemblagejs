@@ -5,8 +5,15 @@ A_.TILES.Tile = Class.extend({
         this.mapPosition.x = x;
         this.mapPosition.y = y;
         this.tilemap = tilemap;
-        this.containedPoint = new SAT.Vector(0, 0);
         this.createSprite();
+
+        var layer = this.tilemap.layer;
+        var level = this.tilemap.level;
+
+        if (layer.collisionResponse) {
+            this.initCollision();
+            level.collider.collisionStatics.push(this);
+        }
     },
     createSprite: function () {
         var frameInd = this.gid - 1;
@@ -15,6 +22,9 @@ A_.TILES.Tile = Class.extend({
                 Math.floor(frameInd / tm.imgCols) * tm.tileH, tm.tileW, tm.tileH);
         var tileTexture = new PIXI.Texture(tm.baseTexture, frame);
         this.sprite = new PIXI.Sprite(tileTexture);
+        this.tilemap.layer.addChild(this.sprite);
+        this.sprite.position.x = this.tilemap.getLevelX(this.mapPosition.x);
+        this.sprite.position.y = this.tilemap.getLevelY(this.mapPosition.y);
     },
     initCollision: function () {
         this.collides = true;
@@ -26,53 +36,22 @@ A_.TILES.Tile = Class.extend({
         collisionPolygon.h = box.h;
         collisionPolygon.calcBounds();
         this.collisionPolygon = collisionPolygon;
-    },
-    moveToLayer: function (layer) {
-        layer.addChild(this.sprite);
-    },
-    setPosition: function (x, y) {
-        this.sprite.position.x = x;
-        this.sprite.position.y = y;
-        if (this.collisionPolygon) {
-            this.collisionPolygon.pos.x = this.getX();
-            this.collisionPolygon.pos.y = this.getY();
+        
+        this.collisionPolygon.pos.x = this.sprite.x;
+        this.collisionPolygon.pos.y = this.sprite.y;
 //            this.collisionPolygon.pos.x = A_.level.container.toLocal(A_.level.origin, this.sprite).x;
 //            this.collisionPolygon.pos.y = A_.level.container.toLocal(A_.level.origin, this.sprite).y;
-        }
-    },
-    getX: function () {
-        return this.sprite.position.x;
-    },
-    getY: function () {
-        return this.sprite.position.y;
-    },
-    getPosition: function () {
-        return this.sprite.position;
-    },
-    getWidth: function () {
-        return this.sprite.width;
-    },
-    getHeight: function () {
-        return this.sprite.height;
-    },
-    collideWithKinematic: function (other, response) {
 
-    },
-    collideWithStatic: function (other, response) {
-
-    },
-    containsPoint: function (x, y) {
-        this.containedPoint.x = x;
-        this.containedPoint.y = y;
-        return SAT.pointInPolygon(this.containedPoint, this.collisionPolygon);
     },
     destroy: function () {
-        this.tilemap.level.tilesToDestroy.push(this);
-    },
-    update: function () {
-
+        var level = this.tilemap.level;
+        if (this.tilemap.collisionResponse) {
+            var ind = level.collider.collisionStatics.indexOf(this);
+            if (ind > -1)
+                level.collider.collisionStatics.splice(ind, 1);
+        }
+        this.tilemap.layer.removeChild(this.sprite);
     }
 });
 
 A_.TILES.Tile.inject(A_.COLLISION.aabbInjection);
-A_.TILES.Tile.inject(A_.INPUT.mouseReactivityInjection);

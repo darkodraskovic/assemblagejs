@@ -12,6 +12,7 @@ var AnimeSkorpio = A_.SPRITES.Topdown.extend({
     collides: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
+        this.friction.x = this.friction.y = 32;
 
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
@@ -95,8 +96,8 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         var bullet = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
         var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
         bullet.setRotation(rot);
-        bullet.velocity.x = Math.cos(rot) * bullet.maxSpeed;
-        bullet.velocity.y = Math.sin(rot) * bullet.maxSpeed;
+        bullet.velocity.x = Math.cos(rot) * bullet.maxVelocity.x;
+        bullet.velocity.y = Math.sin(rot) * bullet.maxVelocity.y;
         bullet.setAnimation("all", 16, 0);
     },
     shootLaser: function () {
@@ -165,14 +166,6 @@ var Rifle = A_.SPRITES.Sprite.extend({
         this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
     update: function () {
-//        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
-//        switch (this.holder.facing) {
-//            case "left": rot -= Math.PI; break;
-//            case "up": rot += Math.PI / 2; break;
-//            case "down": rot -= Math.PI / 2; break;
-//        };
-//        this.setRotation(rot);
-
         this.setAnimation(this.holder.motionState + "_" + this.holder.facing);
         if (this.holder.facing === "up") {
             this.moveToSprite(this.holder, "back");
@@ -189,23 +182,17 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     spriteSheet: "Muzzleflashes-Shots.png",
     frameWidth: 32,
     frameHeight: 32,
-    elasticity: 0,
-//    collisionResponse: "sensor",
-    collisionResponse: "passive",
+    collisionResponse: "sensor",
     collisionWidth: 12,
     collisionHeight: 10,
     lifeTime: 4,
     lifeTimer: 0,
-//    elasticity: 0.4, 
     collidesWith: A_.COLLISION.Type.ENEMY,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 0;
         this.friction.y = 0;
-        this.maxSpeed = 600;
-//        this.acceleration.x = this.acceleration.y = 400;
-//        this.moveAtAngle = true;
-//        this.moveForward = true;
+        this.maxVelocity.x = this.maxVelocity.y = 600;
         this.bounded = false;
         this.level.createSound({
             urls: ['gunshot.mp3'],
@@ -231,9 +218,9 @@ var Bullet = A_.SPRITES.Kinematic.extend({
             this.destroy();
         }
     },
-//    collideWithStatic: function (other, response) {
-//        this.destroy();
-//    }
+    collideWithStatic: function (other, response) {
+        this.destroy();
+    }
 });
 
 var LaserBeam = A_.SPRITES.Sprite.extend({
@@ -291,7 +278,7 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
     }
 });
 
-var LaserTip = A_.SPRITES.Colliding.extend({
+var LaserTip = A_.SPRITES.Kinematic.extend({
     bounded: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -306,6 +293,7 @@ var LaserTip = A_.SPRITES.Colliding.extend({
             this.timer = null;
         }
         
+        this.synchCollisionPolygon();
         this._super();
     },
     collideWithStatic: function (other, response) {

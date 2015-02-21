@@ -440,6 +440,20 @@
                  "width":0,
                  "x":1072,
                  "y":344
+                }, 
+                {
+                 "height":72,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"PlayerSkorpio",
+                 "visible":true,
+                 "width":48,
+                 "x":448,
+                 "y":240
                 }],
          "opacity":1,
          "properties":
@@ -717,20 +731,6 @@
                  "width":0,
                  "x":480,
                  "y":480
-                }, 
-                {
-                 "height":72,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"PlayerSkorpio",
-                 "visible":true,
-                 "width":48,
-                 "x":448,
-                 "y":240
                 }],
          "opacity":1,
          "type":"objectgroup",

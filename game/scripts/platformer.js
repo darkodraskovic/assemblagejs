@@ -4,6 +4,10 @@ A_.TILES.Tile.inject({
         if (this.tilemap.layer.name === "Thrus") {
             this.turned = "on";
         }
+        this.explosionSound = this.tilemap.level.createSound({
+            urls: ['e.wav'],
+            volume: 1
+        });
     },
     turnOn: function () {
         this.sprite.alpha = 1;
@@ -22,26 +26,6 @@ A_.TILES.Tile.inject({
         else {
             this.turnOn();
         }
-    },
-    update: function () {
-//        if (this.leftpressed && A_.player.mode === "building") {
-        if (this.leftpressed) {
-            this.toggleTurned();
-            this.tilemap.level.createSound({
-                urls: ['e.wav'],
-                volume: 1
-            }).play();
-        }
-        if (this.tilemap.level.rightdown) {
-            var mpl = this.tilemap.level.getMousePosition();
-            if (this.containsPoint(mpl.x, mpl.y)) {
-                this.tilemap.level.createSprite(ExplosionPlatformer, this.tilemap.level.findLayerByName("Thrus"),
-                        this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
-                this.destroy();
-            }
-        }
-
-        this._super();
     }
 });
 
@@ -180,12 +164,15 @@ var PlayerPlatformer = AnimePlatformer.extend({
 
         A_.INPUT.addMapping("jetpack", A_.KEY.SPACE);
         A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
-        this.thrus = this.level.findLayerByName("Thrus");
+        this.thrus = this.level.findLayerByName("Thrus").tilemap;
         this.groundedSound = this.level.createSound({
             urls: ['grounded.wav'],
             volume: 1
         });
-        this.elasticityTreshold = this.gravity.len() * 2;
+        this.jetpackSound = this.level.createSound({
+            urls: ['jetpack.wav'],
+            volume: 1,
+        });
     },
     onJumped: function () {
         this._super();
@@ -234,10 +221,13 @@ var PlayerPlatformer = AnimePlatformer.extend({
             this.fireJetpack();
         }
     },
+    fireJetpack: function () {
+        if (!this.grounded) {
+            this.velocity.y = (this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce) * 0.75;
+            this.jetpackSound.play();
+        }
+    },
     update: function () {
-//        window.console.log("updt platformer");
-//        window.console.log(this.applySlope);
-//        window.console.log(this.velocity.x);
         this.processControls();
 
         if (this.tryJump) {
@@ -252,47 +242,54 @@ var PlayerPlatformer = AnimePlatformer.extend({
         if (A_.INPUT.pressed["toggleMode"]) {
             this.toggleMode();
         }
-        if (this.level.leftdown && this.mode === "building") {
-            var mpl = this.level.getMousePosition();
-            var tilemap = this.thrus.tilemap;
-            var x = Math.floor(mpl.x / tilemap.tileW);
-            var y = Math.floor(mpl.y / tilemap.tileH);
-            if (!tilemap.getTile(x, y)) {
-                this.level.createTile(this.thrus, 737, x, y);
-            }
+
+        if (this.grounded && this.velocity.y > this.gravity.y) {
+//            this.groundedSound.play();
         }
+
+        this.processThrus();
+
         if (this.level.leftpressed && this.mode === "throwing") {
             var ball = this.level.createSprite(Ball, this.layer, this.getX(), this.getY());
             var angle = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
             ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
             ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
         }
-
-
-        if (this.grounded && this.velocity.y > this.gravity.y) {
-//            this.groundedSound.play();
-        }
-//        if (!this.grounded) {
-//            window.console.log("x: " + this.velocity.x);
-//        }
-
-//    if (this.grounded) {
-//            window.console.log(true);
-//    } else window.console.log(false);
-        //        window.console.log(this.ceiling);
         this._super();
-//        window.console.log("x : " + this.velocity.x + ", " + "y: " + this.velocity.y);
-//        window.console.log("====================");
     },
-    fireJetpack: function () {
-        if (!this.grounded) {
-            this.velocity.y = (this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce) * 0.75;
-            this.jetpackSound = this.level.createSound({
-                urls: ['jetpack.wav'],
-                volume: 1,
-            });
-            this.jetpackSound.play();
+    processThrus: function () {
+        var tilemap = this.thrus;
+        var level = tilemap.level;
+        if (level.rightdown) {
+            var mpl = level.getMousePosition();
+            var tile = this.getThrusTile(mpl.x, mpl.y)
+            if (tile) {
+                tilemap.level.createSprite(ExplosionPlatformer, level.findLayerByName("Thrus"),
+                        tilemap.getLevelX(tile.mapPosition.x) + tilemap.tileW / 2, tilemap.getLevelY(tile.mapPosition.y) + tilemap.tileH / 2);
+                tilemap.removeTile(tile.mapPosition.x, tile.mapPosition.y);
+            }
         }
+        
+        if (this.level.leftpressed && this.mode === "building") {
+            var mpl = this.level.getMousePosition();
+            var tile = this.getThrusTile(mpl.x, mpl.y);
+            if (tile) {
+                tile.toggleTurned();
+                tile.explosionSound.play();
+            }
+        }
+        if (this.level.leftdown && this.mode === "building") {
+            var mpl = this.level.getMousePosition();
+            if (!this.getThrusTile(mpl.x, mpl.y)) {
+                this.thrus.setTile(737, this.thrus.getMapX(mpl.x), this.thrus.getMapX(mpl.y));
+            }
+        }
+    },
+    getThrusTile: function (x, y) {
+        var tilemap = this.thrus;
+        x = tilemap.getMapX(x);
+        y = tilemap.getMapY(y);
+        return tilemap.getTile(x, y);
     }
 });
 
@@ -442,6 +439,7 @@ var Platform = A_.SPRITES.Colliding.extend({
         this.setX(this.origX + this.sine.value);
         this.setY(this.origY - this.sine.value);
 
+        this.synchCollisionPolygon();
         this._super();
     }
 });

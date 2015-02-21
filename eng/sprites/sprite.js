@@ -558,6 +558,10 @@ A_.SPRITES.Sprite = Class.extend({
             if (addon.active)
                 addon.update();
         });
+        
+        if (this.sprite.interactive) {
+            this.resetMouseReaction();
+        }
     },
     destroy: function () {
         _.each(this.sprites, function (sprite) {
@@ -567,7 +571,7 @@ A_.SPRITES.Sprite = Class.extend({
         this.onDestruction();
         this.level.spritesToDestroy.push(this);
     },
-    clear: function () {
+    removeFromLevel: function () {
         this.setFollowee(false);
         this.sprite.parent.removeChild(this.sprite);
     },

@@ -15,7 +15,6 @@ A_.TILES.Tilemap = Class.extend({
         this.tileH = tileH;
 
         this.tiles = [];
-
     },
     populateTilelayer: function (layerData) {
         if (this.layer.collisionResponse) {
@@ -42,39 +41,7 @@ A_.TILES.Tilemap = Class.extend({
             }
         }
 
-//        this.applyLayerAttributesToTiles();
         this.layer.tilemap = this;
-    },
-    applyLayerAttributesToTiles: function () {
-        if (this.collisionResponse) {
-            var w = this.tileW;
-            var h = this.tileH;
-            _.each(this.tiles, function (tileCol) {
-                _.each(tileCol, function (tile) {
-                    if (tile)
-                        tile.setupCollision(w, h);
-                });
-            });
-        }
-        if (this.layer.mouseReactive) {
-            _.each(this.tiles, function (tileCol) {
-                _.each(tileCol, function (tile) {
-                    if (tile)
-                        tile.initMouseReactivity();
-                    tile.setmouseReactivity(true);
-                });
-            });
-        }
-        if (this.layer.active) {
-            var level = this.layer.level;
-            _.each(this.tiles, function (tileCol) {
-                _.each(tileCol, function (tile) {
-                    if (tile)
-                        level.tiles.push(tile);
-                });
-            });
-        }
-
     },
     getTile: function (x, y) {
         if (x < 0 || x >= this.mapW)
@@ -97,81 +64,36 @@ A_.TILES.Tilemap = Class.extend({
         if (this.tiles[x][y]) {
             if (this.tiles[x][y] === gid)
                 return;
-            this.unsetTile(x, y);
+            this.removeTile(x, y);
         }
 
         var tile = new A_.TILES.Tile(gid, x, y, this);
-
-        if (this.collisionResponse) {
-            tile.initCollision();
-            if (this.collisionResponse === "sensor") {
-                this.layer.level.collider.collisionKinematics.push(tile);
-            }
-            else {
-                this.layer.level.collider.collisionStatics.push(tile);
-            }
-        }
-
-        this.setTileInMap(tile, x, y);
-        var worldCoords = this.mapToWorld(x, y);
-        this.setTileInWorld(tile, worldCoords[0], worldCoords[1]);
-
-        if (this.layer.mouseReactive) {
-            tile.initMouseReactivity();
-            tile.setMouseReactivity(true);
-        }
-        if (this.layer.active)
-            this.layer.level.tilesToCreate.push(tile);
-
+        this.tiles[x][y] = tile;
         return tile;
     },
-    setTileInMap: function (tile, x, y) {
-        this.tiles[x][y] = tile;
-    },
-    setTileInWorld: function (tile, x, y) {
-        tile.moveToLayer(this.layer);
-        tile.setPosition(x, y);
-    },
-    unsetTile: function (x, y) {
+    removeTile: function (x, y) {
         if (this.layer.baked)
             return;
 
         if (this.tiles[x] && this.tiles[x][y]) {
             var tile = this.tiles[x][y];
-            var sprite = this.tiles[x][y].sprite;
 
-            // REMOVE FROM
-            // Pixi
-            this.layer.removeChild(sprite);
-
-            var level = this.layer.level;
-            // Collisions
-            if (this.collisionResponse) {
-                var ind;
-
-                ind = level.collider.collisionStatics.indexOf(tile);
-                if (ind > -1)
-                    level.collider.collisionStatics.splice(ind, 1);
-
-                ind = level.collider.collisionKinematics.indexOf(tile);
-                if (ind > -1)
-                    level.collider.collisionKinematics.splice(ind, 1);
-            }
-            // Active tiles
-            if (this.layer.active) {
-                ind = level.tiles.indexOf(tile);
-                level.tiles.splice(ind, 1);
-            }
-            // Tilemap
             this.tiles[x][y] = null;
+
+            tile.destroy();
         }
     },
     // UTILS
-    worldToMap: function (x, y) {
-        return [Math.round(x / this.tileW), Math.round(y / this.tileH)];
+    getLevelX: function (x) {
+        return (x * this.tileW);
     },
-    mapToWorld: function (x, y) {
-        return [x * this.tileW, y * this.tileH];
+    getLevelY: function (y) {
+        return (y * this.tileH);
+    },
+    getMapX: function (x) {
+        return (x / this.tileW).floor();
+    },
+    getMapY: function (y) {
+        return (y / this.tileH).floor();
     }
 });
-

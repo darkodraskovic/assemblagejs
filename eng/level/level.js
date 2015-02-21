@@ -19,16 +19,12 @@ A_.LEVEL.Level = Class.extend({
         this.layers = [];
         this.debugLayer = null;
 
-        // All the sprites.
+        // All the sprites & their sounds.
         this.sprites = [];
-        // Tiles that are updated.
-        this.tiles = [];
         this.sounds = [];
         // Used for sprite management.
         this.spritesToCreate = [];
-        this.tilesToCreate = [];
         this.spritesToDestroy = [];
-        this.tilesToDestroy = [];
 
         // Used to calculate the level position of sprites.
         this.origin = new PIXI.Point(0, 0);
@@ -171,50 +167,7 @@ A_.LEVEL.Level = Class.extend({
 
         this.spritesToCreate.push(sprite);
         return sprite;
-    },
-    createTile: function (tileLayer, gid, x, y) {
-        if (_.isString(tileLayer)) {
-            tileLayer = this.level.findLayerByName(tileLayer);
-        }
-        if (!tileLayer) {
-            return;
-        }
-        var tile = tileLayer.tilemap.setTile(gid, x, y);
-        return tile;
-    },
-    createEntities: function (entities) {
-        if (!entities.length)
-            return;
-
-        // TODO: This routine should insert entities in collider arrays,
-        // in order to activate collision for entity in the next tick,
-        // and not on entities creation.
-        var levelEntities = entities[0] instanceof A_.SPRITES.Sprite ?
-                this.sprites : this.tiles;
-        _.each(entities, function (entity) {
-            levelEntities.push(entity);
-        });
-        entities.length = 0;
-    },
-    destroyEntity: function (entity) {
-        if (entity instanceof A_.SPRITES.Sprite) {
-            if (!_.contains(this.sprites, entity))
-                return;
-            entity.clear();
-            this.sprites.splice(this.sprites.indexOf(entity), 1);
-        }
-        else if (entity instanceof A_.TILES.Tile) {
-            if (!_.contains(this.tiles, entity))
-                return;
-            entity.tilemap.unsetTile(entity.mapPosition.x, entity.mapPosition.y);
-        }
-    },
-    destroyEntities: function (entities) {
-        _.each(entities, function (entity) {
-            this.destroyEntity(entity);
-        }, this);
-        entities.length = 0;
-    },
+    },    
     createSound: function (props) {
         _.each(props["urls"], function (url, i, list) {
             list[i] = "game/sounds/" + url;
@@ -282,11 +235,25 @@ A_.LEVEL.Level = Class.extend({
             return;
         }
 
-        // Entities
-        this.updateEntities();
+        // Update SPRITES
+        _.each(this.sprites, function (sprite) {
+            if (sprite.updates) {
+                sprite.update();
+            }
+        });
 
-        this.manageEntities();
+        // Manage SPRITES
+        _.each(this.spritesToDestroy, function (sprite) {
+            sprite.removeFromLevel();
+            this.sprites.splice(this.sprites.indexOf(sprite), 1);
+        }, this);
+        this.spritesToDestroy.length = 0;
 
+        _.each(this.spritesToCreate, function (sprite) {
+            this.sprites.push(sprite);
+        }, this);
+        this.spritesToCreate.length = 0;
+        
         // Rendering
         if (this.debugLayer) {
             _.each(this.collider.collisionSprites, function (sprite) {
@@ -308,26 +275,8 @@ A_.LEVEL.Level = Class.extend({
 
         this.setPosition(-this.camera.x, -this.camera.y);
 
-        // Input
-        this.resetInput();
-    },
-    updateEntities: function () {
-        // Active tiles' update
-        _.each(this.tiles, function (tile) {
-            tile.update();
-        });
-
-        _.each(this.sprites, function (sprite) {
-            if (sprite.updates) {
-                sprite.update();
-            }
-        });
-    },
-    manageEntities: function () {
-        this.destroyEntities(this.tilesToDestroy);
-        this.destroyEntities(this.spritesToDestroy);
-        this.createEntities(this.tilesToCreate);
-        this.createEntities(this.spritesToCreate);
+        // MOUSE INPUT    
+        this.resetMouseReaction();
     },
     sortEntities: function () {
         // TODO: Currently only sorting on y axis. Add a generic sort routine
@@ -337,22 +286,6 @@ A_.LEVEL.Level = Class.extend({
                 this.sortLayer(layer);
             }
         }, this);
-    },
-    // MOUSE INPUT
-    resetInput: function () {
-        _.each(this.tiles, function (tile) {
-            if (tile.sprite.interactive) {
-                tile.resetMouseReaction();
-            }
-        });
-
-        _.each(this.sprites, function (sprite) {
-            if (sprite.sprite.interactive) {
-                sprite.resetMouseReaction();
-            }
-        });
-
-        this.resetMouseReaction();
     },
     // TRANSFORMATIONS && CAMERA
     setPosition: function (x, y) {

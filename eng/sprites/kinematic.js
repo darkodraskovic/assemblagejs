@@ -1,9 +1,9 @@
 A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     isMoving: false,
-    elasticity: 0.5,
+    elasticity: 0,
     angularSpeed: 0,
-    impulseTreshold: 20,
-    elasticityTreshold: 400,
+    impulseTreshold: 10,
+    elasticityTreshold: 100,
     groundCheck: false,
     grounded: false,
     slopeStanding: 0,
@@ -14,9 +14,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
         this.gravityN = this.gravity.clone().normalize();
-        this.friction = new SAT.Vector(32, 32);
+        this.friction = new SAT.Vector(0, 0);
         this.acceleration = new SAT.Vector(0, 0);
-        this.maxVelocity = new SAT.Vector(256, 256);
+        this.maxVelocity = new SAT.Vector(1000, 1000);
 
         this.slopeNormal = new SAT.Vector(0, 0);
         this.finalElasticity = new SAT.Vector(0, 0);
@@ -72,21 +72,49 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         // SYNCH position
         this.setPositionRelative(this.velocity.x * A_.game.dt, this.velocity.y * A_.game.dt);
+        this.synchCollisionPolygon();
 
-
-        this._super();
-
+        // Reset collision vars
         this.collisionEntities.length = 0;
         this.collisionNormals.length = 0;
         this.slopeNormal.x = 0;
         this.slopeNormal.y = 0;
+        this.collided = false;
+        
+        // Process COLLISION
         this.processStaticCollisions();
         this.processKinematicCollisions();
         this.processCollisionResults();
+        
+        this._super();
+    },
+    collideWithStatic: function (other, response) {
+        if (!response.overlap)
+            return;
+        
+        this.collided = true;
+
+        if (this.collisionResponse !== "sensor") {
+            this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+            this.synchCollisionPolygon();
+        }
+        
+        this.collisionEntities.push(other);
+        this.collisionNormals.push(response.overlapN.x);
+        this.collisionNormals.push(response.overlapN.y);
+
+        if (response.overlap) {
+            this.slopeNormal.copy(response.overlapN);
+            if (this.elasticity) {
+                this.processElasticity(response);
+            }
+        }
     },
     collideWithKinematic: function (other, response) {
         if (!response.overlap)
             return;
+        
+        this.collided = true;
 
         var otherResponse = other.collisionResponse;
         if (otherResponse === "active" || otherResponse === "passive") {
@@ -119,21 +147,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 this.processKineticImpulse(other, response);
             }
         }
-        this._super(other, response);
-    },
-    collideWithStatic: function (other, response) {
-
-        this.collisionEntities.push(other);
-        this.collisionNormals.push(response.overlapN.x);
-        this.collisionNormals.push(response.overlapN.y);
-
-        if (response.overlap) {
-            this.slopeNormal.copy(response.overlapN);
-            if (this.elasticity) {
-                this.processElasticity(response);
-            }
-        }
-        this._super(other, response);
     },
     processElasticity: function (response) {
         // b * (V - 2 *  N * (V dot N))
@@ -192,16 +205,15 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }, this);
         }
 
-        // Apply ELASTICITY
+        // Apply static ELASTICITY
         // BUG: elasticity slows down objects on fall
         if (this.applyElasticity) {
             this.velocity.sub(this.finalElasticity);
             this.velocity.scale(this.elasticity, this.elasticity);
             this.applyElasticity = false;
         }
-        // Apply IMPACT & SLOPE
+        // Apply static IMPULSE
         else if (this.velocity.len() > this.impulseTreshold) {
-//        else {
             for (var i = 0; i < this.collisionEntities.length; i++) {
                 for (var j = 0; j < this.collisionNormals.length; j += 2) {
                     this._vector.x = this.collisionNormals[j];
@@ -210,13 +222,53 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                         if ((this.grounded && (this._vector[this.gHorizontal] > -this.slopeOffset && this._vector[this.gHorizontal] < this.slopeOffset)) ||
                                 this.ceiling) {
                             this.processStaticImpulse(this._vector);
-                        } else if (this.collides) {
+                        } else if (this.collided) {
                             this.velocity[this.gHorizontal] = -this.velocity[this.gHorizontal] * this.elasticity;
                         }
                     }
                     else {
                         this.processStaticImpulse(this._vector);
                     }
+                }
+            }
+        }
+    },
+    processStaticCollisions: function () {
+        if (!this.collides)
+            return;
+
+        var entities = this.level.collider.collisionStatics;
+        for (var i = 0, len = entities.length; i < len; i++) {
+            var other = entities[i];
+            if (other.collides && other !== this) {
+                // Bitmasks. Currently inactive. DO NOTE DELETE!
+//                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
+//                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
+                this.response.clear();
+                var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
+                if (collided) {
+                    this.collideWithStatic(other, this.response);
+//                    }
+                }
+            }
+        }
+    },
+    processKinematicCollisions: function () {
+        if (!this.collides)
+            return;
+
+        var entities = this.level.collider.collisionKinematics;
+        for (var i = 0, len = entities.length; i < len; i++) {
+            var other = entities[i];
+            if (other.collides && other !== this) {
+                // Bitmasks. Currently inactive. DO NOTE DELETE!
+//                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
+//                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
+                this.response.clear();
+                var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
+                if (collided) {
+                    this.collideWithKinematic(other, this.response);
+//                    }
                 }
             }
         }
