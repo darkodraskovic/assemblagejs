@@ -23,37 +23,22 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         if (!_.isNumber(this.collisionOffsetY))
             this.collisionOffsetY = 0;
 
-        var w = this.collisionWidth;
-        var h = this.collisionHeight;
-
-        var offsetX = this.collisionOffsetX;
-        var offsetY = this.collisionOffsetY;
-
         var collisionPolygon;
 
         if (!polygon) {
-            offsetX -= w * this.getOrigin().x;
-            offsetY -= h * this.getOrigin().y;
-            var box = new SAT.Box(new SAT.Vector(0, 0), w, h);
+            this.collisionOffsetX -= this.collisionWidth * this.getOrigin().x;
+            this.collisionOffsetY -= this.collisionHeight * this.getOrigin().y;
+            var box = new SAT.Box(new SAT.Vector(0, 0), this.collisionWidth, this.collisionHeight);
             collisionPolygon = box.toPolygon();
             // Get the with & height of the polygon's bounding box.
             collisionPolygon.calcSize();
         } else {
             collisionPolygon = polygon;
-            offsetX += collisionPolygon.offset.x;
-            offsetY += collisionPolygon.offset.y;
+            this.collisionOffsetX += collisionPolygon.offset.x;
+            this.collisionOffsetY += collisionPolygon.offset.y;
         }
         
-        var offset = new SAT.Vector(offsetX, offsetY);
-        collisionPolygon.setOffset(offset);
-
-        collisionPolygon.origPoints = _.map(collisionPolygon.points, function (point) {
-            return point.clone();
-        });
-        collisionPolygon.origOffset = collisionPolygon.offset.clone();
-        collisionPolygon.origW = collisionPolygon.w;
-        collisionPolygon.origH = collisionPolygon.h;
-
+        collisionPolygon.setOffset(new SAT.Vector(this.collisionOffsetX, this.collisionOffsetY));
         collisionPolygon.scale = new SAT.Vector(1, 1);
         collisionPolygon.calcBounds();
 
