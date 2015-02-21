@@ -43,14 +43,14 @@ A_.TILES.Tile = Class.extend({
 //            this.collisionPolygon.pos.y = A_.level.container.toLocal(A_.level.origin, this.sprite).y;
 
     },
-    destroy: function () {
+    removeFromLevel: function () {
         var level = this.tilemap.level;
         if (this.tilemap.collisionResponse) {
             var ind = level.collider.collisionStatics.indexOf(this);
             if (ind > -1)
                 level.collider.collisionStatics.splice(ind, 1);
         }
-        this.tilemap.layer.removeChild(this.sprite);
+        this.sprite.parent.removeChild(this.sprite);
     }
 });
 

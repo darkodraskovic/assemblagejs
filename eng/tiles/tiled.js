@@ -152,4 +152,5 @@ A_.TILES.createTiledMap = function (mapData, level) {
             }
         }
     }
+    level.manageSprites();
 };

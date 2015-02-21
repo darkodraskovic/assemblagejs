@@ -80,25 +80,23 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.slopeNormal.x = 0;
         this.slopeNormal.y = 0;
         this.collided = false;
-        
+
         // Process COLLISION
         this.processStaticCollisions();
         this.processKinematicCollisions();
         this.processCollisionResults();
-        
+
         this._super();
     },
     collideWithStatic: function (other, response) {
-        if (!response.overlap)
+        if (!response.overlap || this.collisionResponse === "sensor")
             return;
-        
+
         this.collided = true;
 
-        if (this.collisionResponse !== "sensor") {
-            this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-            this.synchCollisionPolygon();
-        }
-        
+        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+        this.synchCollisionPolygon();
+
         this.collisionEntities.push(other);
         this.collisionNormals.push(response.overlapN.x);
         this.collisionNormals.push(response.overlapN.y);
@@ -113,7 +111,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     collideWithKinematic: function (other, response) {
         if (!response.overlap)
             return;
-        
+
         this.collided = true;
 
         var otherResponse = other.collisionResponse;

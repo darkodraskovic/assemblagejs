@@ -242,17 +242,7 @@ A_.LEVEL.Level = Class.extend({
             }
         });
 
-        // Manage SPRITES
-        _.each(this.spritesToDestroy, function (sprite) {
-            sprite.removeFromLevel();
-            this.sprites.splice(this.sprites.indexOf(sprite), 1);
-        }, this);
-        this.spritesToDestroy.length = 0;
-
-        _.each(this.spritesToCreate, function (sprite) {
-            this.sprites.push(sprite);
-        }, this);
-        this.spritesToCreate.length = 0;
+        this.manageSprites();
         
         // Rendering
         if (this.debugLayer) {
@@ -277,6 +267,18 @@ A_.LEVEL.Level = Class.extend({
 
         // MOUSE INPUT    
         this.resetMouseReaction();
+    },
+    manageSprites: function () {
+        _.each(this.spritesToDestroy, function (sprite) {
+            sprite.removeFromLevel();
+            this.sprites.splice(this.sprites.indexOf(sprite), 1);
+        }, this);
+        this.spritesToDestroy.length = 0;
+
+        _.each(this.spritesToCreate, function (sprite) {
+            this.sprites.push(sprite);
+        }, this);
+        this.spritesToCreate.length = 0;
     },
     sortEntities: function () {
         // TODO: Currently only sorting on y axis. Add a generic sort routine

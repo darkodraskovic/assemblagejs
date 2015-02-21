@@ -4,12 +4,9 @@ A_.TILES.Tilemap = Class.extend({
         this.baked = false;
         this.level = layer.level;
 
-        this.img = "game/graphics/" + img;
-        this.baseTexture = new PIXI.BaseTexture.fromImage(this.img, PIXI.scaleModes.LINEAR);
-        this.imgW = this.baseTexture.width;
-        this.imgH = this.baseTexture.height;
-        this.imgCols = this.imgW / tileW;
-        this.imgRows = this.imgH / tileH;
+        this.baseTexture = new PIXI.BaseTexture.fromImage("game/graphics/" + img, PIXI.scaleModes.LINEAR);
+        this.imgCols = this.baseTexture.width / tileW;
+        this.imgRows = this.baseTexture.height / tileH;
 
         this.tileW = tileW;
         this.tileH = tileH;
@@ -80,7 +77,7 @@ A_.TILES.Tilemap = Class.extend({
 
             this.tiles[x][y] = null;
 
-            tile.destroy();
+            tile.removeFromLevel();
         }
     },
     // UTILS

@@ -564,12 +564,16 @@ A_.SPRITES.Sprite = Class.extend({
         }
     },
     destroy: function () {
+        var spritesToDestroy = this.level.spritesToDestroy;
+        if (_.contains(spritesToDestroy, this))
+            return;
+            
         _.each(this.sprites, function (sprite) {
             sprite.destroy();
         });
 
         this.onDestruction();
-        this.level.spritesToDestroy.push(this);
+        spritesToDestroy.push(this);
     },
     removeFromLevel: function () {
         this.setFollowee(false);
