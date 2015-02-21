@@ -49,44 +49,37 @@ SAT.Polygon.prototype.setScaleY = function (y) {
 };
 
 SAT.Polygon.prototype.getLeft = function () {
-//    return this.pos.x - Math.abs(this.offset.x);
-    return this.pos.x + this.calcMinX;
+    return this.pos.x + this.minX;
 };
 SAT.Polygon.prototype.getRight = function () {
-//    return this.pos.x + (Math.abs(this.w) - Math.abs(this.offset.x));
-    return this.pos.x + this.calcMaxX;
+    return this.pos.x + this.maxX;
 };
 SAT.Polygon.prototype.getTop = function () {
-//    return this.pos.y - Math.abs(this.offset.y);
-    return this.pos.y + this.calcMinY;
+    return this.pos.y + this.minY;
 };
 SAT.Polygon.prototype.getBottom = function () {
-//    return this.pos.y + (Math.abs(this.h) - Math.abs(this.offset.y));
-    return this.pos.y + this.calcMaxY;
+    return this.pos.y + this.maxY;
 };
 SAT.Polygon.prototype.getCenterX = function () {
-//    return this.getLeft() + (Math.abs(this.w) / 2);
-    return this.pos.x + (this.calcMaxX - this.calcMinX) / 2;
+    return this.pos.x + (this.maxX - this.minX) / 2;
 };
 SAT.Polygon.prototype.getCenterY = function () {
-//    return this.getTop() + (Math.abs(this.h) / 2);
-    return this.pos.y + (this.calcMaxY - this.calcMinY) / 2;
+    return this.pos.y + (this.maxY - this.minY) / 2;
 };
 
 SAT.Polygon.prototype.getWidth = function () {
-    return this.calcW;
+    return this.w;
 };
 
 SAT.Polygon.prototype.getHeight = function () {
-    return this.calcH;
+    return this.h;
 };
 
-
-SAT.Polygon.prototype.calcSize = function () {
+SAT.Polygon.prototype.calcBounds = function () {
     var xs = [];
     var ys = [];
 
-    _.each(this.points, function (point) {
+    _.each(this.calcPoints, function (point) {
         xs[xs.length] = point.x;
         ys[ys.length] = point.y;
     });
@@ -99,33 +92,16 @@ SAT.Polygon.prototype.calcSize = function () {
     this.h = this.maxY - this.minY;
 };
 
-SAT.Polygon.prototype.calcBounds = function () {
-    var xs = [];
-    var ys = [];
-
-    _.each(this.calcPoints, function (point) {
-        xs[xs.length] = point.x;
-        ys[ys.length] = point.y;
-    });
-
-    this.calcMinX = _.min(xs);
-    this.calcMinY = _.min(ys);
-    this.calcMaxX = _.max(xs);
-    this.calcMaxY = _.max(ys);
-    this.calcW = this.calcMaxX - this.calcMinX;
-    this.calcH = this.calcMaxY - this.calcMinY;
-};
-
 // ENGINE polygon UTILS
 A_.POLYGON.Utils = {};
 
-A_.POLYGON.Utils.createSATPolygonFromTiled = function (oData) {
+A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData) {
     var vectors = _.map(oData.polygon, function (vertex) {
         return new SAT.Vector(vertex.x, vertex.y);
     });
 
     var SATPolygon = new SAT.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
-    SATPolygon.calcSize();
+    SATPolygon.calcBounds();
 
     var offsetX = (SATPolygon.minX + SATPolygon.w / 2);
     var offsetY = (SATPolygon.minY + SATPolygon.h / 2);

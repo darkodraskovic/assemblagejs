@@ -3,17 +3,15 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
     drawCollisionPolygon: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.initCollision(this.collisionPolygon);
-        this.containedPoint = new SAT.Vector(0, 0);
-        this.response = new SAT.Response();
 
-        this._delta = new SAT.Vector();
+        this.response = new SAT.Response();
+        this._vector = new SAT.Vector();
+        
+        this.collisionPolygon = this.createCollisionPolygon(this.collisionPolygon);
+        this.setCollisionDebug();
         this.synchCollisionPolygon();
     },
     createCollisionPolygon: function (polygon) {
-        if (!this.collisionPolygons) {
-            this.collisionPolygons = [];
-        }
         if (!_.isNumber(this.collisionWidth))
             this.collisionWidth = this.getWidth();
         if (!_.isNumber(this.collisionHeight))
@@ -30,8 +28,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
             this.collisionOffsetY -= this.collisionHeight * this.getOrigin().y;
             var box = new SAT.Box(new SAT.Vector(0, 0), this.collisionWidth, this.collisionHeight);
             collisionPolygon = box.toPolygon();
-            // Get the with & height of the polygon's bounding box.
-            collisionPolygon.calcSize();
         } else {
             collisionPolygon = polygon;
             this.collisionOffsetX += collisionPolygon.offset.x;
@@ -45,25 +41,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 //        if (this.interactive())
 //            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
-        this.collisionPolygons.push(collisionPolygon);
-
         return collisionPolygon;
-    },
-    destroyCollisionPolygon: function (collisionPolygon) {
-        if (_.contains(this.collisionPolygons, collisionPolygon)) {
-            this.collisionPolygons.splice(this.collisionPolygons.indexOf(collisionPolygon), 1);
-        }
-        if (this.collisionPolygon === collisionPolygon)
-            this.collisionPolygon = null;
-    },
-    initCollision: function (polygon) {
-        this.collisionPolygon = this.createCollisionPolygon(polygon);
-        this.setCollisionDebug();
-    },
-    resetCollisionResponse: function (collisionResponse) {
-        this.removeCollisionResponse();
-        this.collisionResponse = collisionResponse;
-        this.setCollisionResponse();
     },
     setCollisionDebug: function () {
         if (this.drawCollisionPolygon && A_.game.debug) {
@@ -71,16 +49,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
             this.debugGraphics = new PIXI.Graphics();
             this.level.debugLayer.addChild(this.debugGraphics);
             A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
-        }
-    },
-    removeCollision: function () {
-        this.removeCollisionDebug();
-        this.destroyCollisionPolygon(this.collisionPolygon);
-    },
-    removeCollisionDebug: function () {
-        if (this.debugGraphics) {
-            this.level.debugLayer.removeChild(this.debugGraphics);
-            this.debugGraphics = null;
         }
     },
     updateDebug: function () {
@@ -104,9 +72,9 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         return collides;
     },
     containsPoint: function (x, y) {
-        this.containedPoint.x = x;
-        this.containedPoint.y = y;
-        return SAT.pointInPolygon(this.containedPoint, this.collisionPolygon);
+        this._vector.x = x;
+        this._vector.y = y;
+        return SAT.pointInPolygon(this._vector, this.collisionPolygon);
     },
 //    TRANSFORMATIONS
     setScale: function (x, y) {
@@ -137,9 +105,9 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         var delta = this._super(x, y);
         var colPol = this.collisionPolygon;
 
-        this._delta.x = delta[0] + colPol.offset.x;
-        this._delta.y = delta[1] + colPol.offset.y;
-        colPol.setOffset(this._delta);
+        this._vector.x = delta[0] + colPol.offset.x;
+        this._vector.y = delta[1] + colPol.offset.y;
+        colPol.setOffset(this._vector);
 
         if (this.debugGraphics) {
             this.debugGraphics.pivot.x -= delta[0] / colPol.scale.x;
@@ -170,7 +138,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         }
     },
     removeFromLevel: function () {
-        this.removeCollision();
+        if (this.debugGraphics) {
+            this.level.debugLayer.removeChild(this.debugGraphics);
+            this.debugGraphics = null;
+        }
         this._super();
     },
     // UTILS

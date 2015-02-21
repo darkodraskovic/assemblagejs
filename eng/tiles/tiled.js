@@ -112,7 +112,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
 
                 // POLY || RECT
                 if (oData["polygon"]) {
-                    var collisionPolygon = A_.POLYGON.Utils.createSATPolygonFromTiled(oData);
+                    var collisionPolygon = A_.POLYGON.Utils.TiledPolygonToSATPolygon(oData);
                     args.collisionPolygon = collisionPolygon;
                     var type;
                     if (oData["type"] !== "" && oData["type"] !== "Polygon") {

@@ -20,7 +20,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         this.slopeNormal = new SAT.Vector(0, 0);
         this.finalElasticity = new SAT.Vector(0, 0);
-        this._vector = new SAT.Vector(0, 0);
 
         this.collisionEntities = [];
         this.collisionNormals = [];
