@@ -55,7 +55,6 @@ A_.Game = Class.extend({
                 dt = this.maxTick;
             this.time = now;
             this.dt = dt / 1000;
-//            window.console.log(this.dt);
 
             this.levelManager.updateLevels();
 

@@ -223,9 +223,12 @@ A_.LEVEL.LevelManager = Class.extend({
         this.manageLevels = true;
     },
     updateLevels: function () {
-        _.each(this.activeLevels, function (level) {
-            level.run();
-        });
+//        _.each(this.activeLevels, function (level) {
+//            level.run();
+//        });
+        for (var i = 0, len = this.activeLevels.length; i < len; i++) {
+            this.activeLevels[i].run();
+        }
 
         if (this.manageLevels) {
             window.console.log("managed levels");

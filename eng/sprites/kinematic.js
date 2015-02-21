@@ -92,7 +92,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         var entities = this.level.tiles;
         for (var i = 0, len = entities.length; i < len; i++) {
             this.response.clear();
-            var other = entities[i]; 
+            var other = entities[i];
             if (!other.collides)
                 continue;
             var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
@@ -122,19 +122,20 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
     },
     collideWithStatic: function (other, response) {
-//        if (!response.overlap)
-//            return;
         this.collided = true;
 
         if (this.collisionResponse === "sensor")
             return;
 
-        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-        this.synchCollisionPolygon();
-
         this.collisionEntities.push(other);
         this.collisionNormals.push(response.overlapN.x);
         this.collisionNormals.push(response.overlapN.y);
+
+        if (!response.overlap)
+            return;
+
+        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+        this.synchCollisionPolygon();
 
         this.slopeNormal.copy(response.overlapN);
         if (this.elasticity) {
@@ -144,7 +145,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     collideWithKinematic: function (other, response) {
         if (!response.overlap)
             return;
-        
+
         this.collided = true;
 
         if (this.collisionResponse === "sensor")
@@ -225,7 +226,21 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         if (this.groundCheck) {
             this.grounded = null;
             this.ceiling = null;
-            _.each(this.collisionEntities, function (entity) {
+//            _.each(this.collisionEntities, function (entity) {
+//                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], this.gravityN[this.gVertical])) {
+//                    if (this.response.overlap) {
+//                        this.grounded = entity;
+//                    }
+//                }
+//                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], -this.gravityN[this.gVertical])) {
+//                    if (this.response.overlap) {
+//                        this.ceiling = entity;
+//                    }
+//                }
+//            }, this);
+
+            for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
+                var entity = this.collisionEntities[i];
                 if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], this.gravityN[this.gVertical])) {
                     if (this.response.overlap) {
                         this.grounded = entity;
@@ -236,9 +251,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                         this.ceiling = entity;
                     }
                 }
-            }, this);
+            }
         }
-
         // Apply static ELASTICITY
         // BUG: elasticity slows down objects on fall
         if (this.applyElasticity) {

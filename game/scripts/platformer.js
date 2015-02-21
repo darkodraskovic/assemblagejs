@@ -178,28 +178,10 @@ var PlayerPlatformer = AnimePlatformer.extend({
             urls: ['jetpack.wav'],
             volume: 1,
         });
-    },
-    onJumped: function () {
-        this._super();
-        this.level.createSound({
+        this.jumpSound = this.level.createSound({
             urls: ['jump.wav'],
             volume: 1
-        }).play();
-    },
-    onGrounded: function () {
-        this._super();
-//        this.level.createSound({
-//            urls: ['grounded.wav'],
-//            volume: 1
-//        }).play();
-    },
-    onWall: function () {
-        this._super();
-//        window.console.log("wall");
-    },
-    onCeiling: function () {
-        this._super();
-//        window.console.log("ceiling");
+        });
     },
     processControls: function () {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
@@ -233,14 +215,14 @@ var PlayerPlatformer = AnimePlatformer.extend({
         }
     },
     update: function () {
-        window.console.log(this.grounded !== null);
+//        window.console.log(this.grounded !== null);
         this.processControls();
 
         if (this.tryJump) {
             if (this.grounded) {
                 this.velocity.y = this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce;
                 this.jumps = true;
-                this.onJumped();
+                this.jumpSound.play();
             }
             this.tryJump = false;
         }

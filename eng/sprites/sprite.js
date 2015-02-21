@@ -554,11 +554,16 @@ A_.SPRITES.Sprite = Class.extend({
             }
         }
 
-        _.each(this.addons, function (addon) {
-            if (addon.active)
-                addon.update();
-        });
-        
+//        _.each(this.addons, function (addon) {
+//            if (addon.active)
+//                addon.update();
+//        });
+        for (var i = 0, len = this.addons.length; i < len; i++) {
+            if (this.addons[i]) {
+                this.addons[i].update();
+            }
+        }
+
         if (this.sprite.interactive) {
             this.resetMouseReaction();
         }
@@ -567,7 +572,7 @@ A_.SPRITES.Sprite = Class.extend({
         var spritesToDestroy = this.level.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
-            
+
         _.each(this.sprites, function (sprite) {
             sprite.destroy();
         });

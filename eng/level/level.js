@@ -167,11 +167,16 @@ A_.LEVEL.Level = Class.extend({
 
         this.spritesToCreate.push(sprite);
         return sprite;
-    },    
+    },
     createSound: function (props) {
-        _.each(props["urls"], function (url, i, list) {
-            list[i] = "game/sounds/" + url;
-        });
+//        _.each(props["urls"], function (url, i, list) {
+//            list[i] = "game/sounds/" + url;
+//        });
+
+        var urls = props["urls"];
+        for (var i = 0, len = urls.length; i < len; i++) {
+            urls[i] = "game/sounds/" + urls[i];
+        }
 
         var sound = _.find(this.sounds, function (sound) {
             return _.isEqual(sound.urls(), props["urls"]);
@@ -204,19 +209,25 @@ A_.LEVEL.Level = Class.extend({
     // START/STOP level execution
     play: function () {
         this.running = true;
-        _.each(this.sprites, function (sprite) {
-            if (sprite.currentAnimation) {
-                sprite.currentAnimation.play();
-            }
-        });
+//        _.each(this.sprites, function (sprite) {
+//            if (sprite.currentAnimation) {
+//                sprite.currentAnimation.play();
+//            }
+//        });
+        for (var i = 0, len = this.sprites.length; i < len; i++) {
+            this.sprites[i].currentAnimation.play();
+        }
     },
     pause: function () {
         this.running = false;
-        _.each(this.sprites, function (sprite) {
-            if (sprite.currentAnimation) {
-                sprite.currentAnimation.stop();
-            }
-        });
+//        _.each(this.sprites, function (sprite) {
+//            if (sprite.currentAnimation) {
+//                sprite.currentAnimation.stop();
+//            }
+//        });
+        for (var i = 0, len = this.sprites.length; i < len; i++) {
+            this.sprites[i].currentAnimation.stop();
+        }
     },
     onPaused: function () {
         window.console.log("game stopped");
@@ -236,14 +247,17 @@ A_.LEVEL.Level = Class.extend({
         }
 
         // Update SPRITES
-        _.each(this.sprites, function (sprite) {
-            if (sprite.updates) {
-                sprite.update();
-            }
-        });
+//        _.each(this.sprites, function (sprite) {
+//            if (sprite.updates) {
+//                sprite.update();
+//            }
+//        });
+        for (var i = 0, len = this.sprites.length; i < len; i++) {
+            this.sprites[i].update();
+        }
 
         this.manageSprites();
-        
+
         // Rendering
         if (A_.INPUT.mousewheel) {
             if (A_.INPUT.mousewheel === "forward") {
@@ -263,15 +277,23 @@ A_.LEVEL.Level = Class.extend({
         this.resetMouseReaction();
     },
     manageSprites: function () {
-        _.each(this.spritesToDestroy, function (sprite) {
+//        _.each(this.spritesToDestroy, function (sprite) {
+//            sprite.removeFromLevel();
+//            this.sprites.splice(this.sprites.indexOf(sprite), 1);
+//        }, this);
+        for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
+            var sprite = this.spritesToDestroy[i];
             sprite.removeFromLevel();
             this.sprites.splice(this.sprites.indexOf(sprite), 1);
-        }, this);
+        }
         this.spritesToDestroy.length = 0;
 
-        _.each(this.spritesToCreate, function (sprite) {
-            this.sprites.push(sprite);
-        }, this);
+//        _.each(this.spritesToCreate, function (sprite) {
+//            this.sprites.push(sprite);
+//        }, this);
+        for (var i = 0, len = this.spritesToCreate.length; i < len; i++) {
+            this.sprites.push(this.spritesToCreate[i]);
+        }
         this.spritesToCreate.length = 0;
     },
     sortEntities: function () {
