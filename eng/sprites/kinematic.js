@@ -37,7 +37,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         if (_.isNumber(slopeTolerance)) {
             this.slopeOffset = Math.cos((90 - slopeTolerance).toRad());
         }
-        else 
+        else
             this.slopeOffset = 0;
     },
     update: function () {
@@ -146,6 +146,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         if (this.collisionResponse === "sensor")
             return;
 
+        this.collisionEntities.push(other);
+
         var otherResponse = other.collisionResponse;
         if (otherResponse === "active" || otherResponse === "passive") {
             var thisResponse = this.collisionResponse;
@@ -191,18 +193,27 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // Resolve only if velocities are separating.
         if (relativeVelocity.dot(response.overlapN) <= 0 && relativeVelocity.len() > this.impulseTreshold) {
             // Use the lower elasticity for intuitive results.
-            var e = Math.min(this.elasticity, other.elasticity);
+//            var e = Math.min(this.elasticity, other.elasticity);
             // Calculate the impulse.
-            var impulse = relativeVelocity.project(response.overlapN).scale(-(1 + e));
+            relativeVelocity.project(response.overlapN);
+            var impulse2 = other._vector.copy(relativeVelocity).scale(-(1 + other.elasticity));
+            var impulse1 = relativeVelocity.scale(-(1 + this.elasticity));
+            
+//            var impulse1 = relativeVelocity.clone().scale(-(1 + this.elasticity));
+//            var impulse2 = relativeVelocity.clone().scale(-(1 + other.elasticity));
             // Apply the impulse.
-            var x = impulse.x;
-            var y = impulse.y;
-            impulse.scale(other.mass / (this.mass + other.mass));
-            this.velocity.sub(impulse);
-            impulse.x = x;
-            impulse.y = y;
-            impulse.scale(this.mass / (this.mass + other.mass));
-            other.velocity.add(impulse);
+//            var x = impulse.x;
+//            var y = impulse.y;
+//            impulse.scale(other.mass / (this.mass + other.mass));
+//            this.velocity.sub(impulse);
+            impulse1.scale(other.mass / (this.mass + other.mass));
+            this.velocity.sub(impulse1);
+//            impulse.x = x;
+//            impulse.y = y;
+//            impulse.scale(this.mass / (this.mass + other.mass));
+//            other.velocity.add(impulse);
+            impulse2.scale(this.mass / (this.mass + other.mass));
+            other.velocity.add(impulse2);
         }
     },
     processCollisionResults: function () {

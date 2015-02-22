@@ -155,6 +155,8 @@ A_.SPRITES.Sprite = Class.extend({
         this.sprite.children[0].addChild(animation);
         // Set the animations' key/value pair for easy reference.
         this.animations[name] = animation;
+
+        return animation;
     },
     setAnimation: function (name, frame, speed) {
         // Play from the start by default.
@@ -237,16 +239,15 @@ A_.SPRITES.Sprite = Class.extend({
         return sprite;
     },
     // SPRITE POINTS
-    spritePoint: function (name, x, y) {
-        if (_.isNumber(x) && _.isNumber(y)) {
-            var sprPt = new A_.SPRITES.SpritePoint(this, name, x, y);
-            this.spritePoints.push(sprPt);
-            return sprPt;
-        } else {
-            return _.find(this.spritePoints, function (sprPt) {
-                return sprPt.name === name;
-            });
-        }
+    setSpritePoint: function (name, x, y) {
+        var sprPt = new A_.SPRITES.SpritePoint(this, name, x, y);
+        this.spritePoints.push(sprPt);
+        return sprPt;
+    },
+    getSpritePoint: function (name) {
+        return _.find(this.spritePoints, function (sprPt) {
+            return sprPt.name === name;
+        });
     },
     // TRANSFORMATIONS
     // PIXI dependent setters/getters, used to keep in sync PIXI and A_.

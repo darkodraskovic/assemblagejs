@@ -1,4 +1,5 @@
 var skorpio1 = {
+    directory: "",
     type: "tiled",
     scripts: ["skorpio"],
     map: "map_skorpio1",
@@ -18,6 +19,7 @@ var skorpio2 = A_.UTILS.copy(skorpio1);
 skorpio2.map = "map_skorpio2";
 
 farer1 = {
+    directory: "",
     type: "generic",
     scripts: ["farer"],
     map: "",
@@ -32,6 +34,7 @@ farer1 = {
 };
 
 rot1 = {
+    directory: "",
     type: "generic",
     scripts: ["rot"],
     map: "",
@@ -45,6 +48,7 @@ rot1 = {
 };
 
 platformer1 = {
+    directory: "",
     type: "tiled",
     scripts: ["platformer"],
     map: "level1",
@@ -59,6 +63,7 @@ platformer1 = {
 };
 
 brownian = {
+    directory: "",
     type: "tiled",
     scripts: ["brownian"],
     map: "brownian",
@@ -71,9 +76,27 @@ brownian = {
     }
 };
 
+var diskette = {
+    directory: "diskette/",
+    type: "tiled",
+    scripts: ["diskette/diskette", "diskette/anime", "diskette/ball", "diskette/diskette",
+        "diskette/player", "diskette/scenery"],
+    map: "diskette/diskette1",
+    graphics: ["diskette/ball.png", "diskette/blocks.png", "diskette/computer.png", "diskette/crosshair.png",
+        "diskette/diskette.png", "diskette/dynamics.png", "diskette/medical.png", "diskette/moon.png",
+        "diskette/player.png", "diskette/pyramid.png", "diskette/sky.png", "diskette/sun.png"],
+    sounds: [["diskette/bounce.ogg"], ["diskette/throw.ogg"]],
+    camera: {
+        innerBoundOffset: 0.25,
+        worldBounded: true,
+        followType: "bounded"
+    }
+};
+
 A_.LEVEL.Manifests["skorpio1"] = skorpio1;
 A_.LEVEL.Manifests["skorpio2"] = skorpio2;
 A_.LEVEL.Manifests["platformer1"] = platformer1;
 A_.LEVEL.Manifests["farer1"] = farer1;
 A_.LEVEL.Manifests["rot1"] = rot1;
 A_.LEVEL.Manifests["brownian"] = brownian;
+A_.LEVEL.Manifests["diskette"] = diskette;

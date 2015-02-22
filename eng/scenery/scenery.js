@@ -18,6 +18,8 @@ A_.SCENERY.TiledSprite = Class.extend({
             this.height = 512;
         }
         this.sprite = new PIXI.TilingSprite(texture, this.width, this.height);
+        this.parent = parent;
+        this.parent.addChild(this.sprite);
     },
     position: function (x, y) {
         this.position.x = x;

@@ -1,8 +1,8 @@
 A_.TILES.createTiledMap = function (mapData, level) {
     var level = level;
 
-    level.width = mapData["width"] * mapData["tilewidth"];
-    level.height = mapData["height"] * mapData["tileheight"];
+    level.setWidth(mapData["width"] * mapData["tilewidth"]);
+    level.setHeight(mapData["height"] * mapData["tileheight"]);
 
     var layersData = mapData["layers"];
 
@@ -27,6 +27,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
             var img = layerData["image"];
             if (img.indexOf("/") > -1) {
                 img = img.substring(img.lastIndexOf("/") + 1);
+                img = level.manifest.directory + img;
             }
 
             level.createImage(layer, {image: img, width: level.width, height: level.height});
@@ -126,13 +127,13 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     }
                     var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
-                } 
+                }
                 else if (oData.type === "Rectangle" || oData.type === "") {
                     args["frameWidth"] = oData["width"];
                     args["frameHeight"] = oData["height"];
                     var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
-                    
+
                 }
                 else {
                     var type = eval(oData["type"]);
@@ -144,7 +145,8 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     o.setPositionRelative(o.getWidth() / 2, -o.getHeight() / 2);
                 }
                 o.setRotation(oData["rotation"].toRad());
-                o.synchCollisionPolygon();
+                if (o instanceof A_.SPRITES.Colliding)
+                    o.synchCollisionPolygon();
             }
 
             if (layer.baked) {

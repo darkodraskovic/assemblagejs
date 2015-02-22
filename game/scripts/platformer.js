@@ -158,7 +158,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
     controlled: true,
     followee: true,
     player: true,
-    elasticity: 0.5,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -370,15 +369,16 @@ var Ball = A_.SPRITES.Kinematic.extend({
     collisionResponse: "passive",
     drawCollisionPolygon: false,
     elasticity: 0.5,
+//    elasticity: 1,
 //    groundCheck: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 1;
         this.friction.y = 0;
         this.setGravity(0, 8);
-        this.maxVelocity.x = 400;
-        this.maxVelocity.y = 400;
-        this.lifeTime = 4;
+        this.maxVelocity.x = 500;
+        this.maxVelocity.y = 500;
+        this.lifeTime = 50;
         this.lifeTimer = 0;
     },
     update: function () {

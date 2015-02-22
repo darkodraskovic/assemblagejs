@@ -19,6 +19,6 @@ A_.CONFIG.screen = {
     width: 1024,
     height: 768,
 //    color: 0x757575
-    color: A_.POLYGON.Colors.gray
+    color: A_.POLYGON.Colors.darkslateblue
 };
 

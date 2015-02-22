@@ -26,6 +26,7 @@ A_.LEVEL.LevelManager = Class.extend({
         if (!manifest || !_.contains(this.manifests, manifest)) {
             window.console.log("Cannot find manifest. Creating a dummy one.");
             manifest = {
+                directory: "",
                 type: "generic",
                 scripts: [],
                 map: "",
