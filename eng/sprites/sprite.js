@@ -560,7 +560,7 @@ A_.SPRITES.Sprite = Class.extend({
 //                addon.update();
 //        });
         for (var i = 0, len = this.addons.length; i < len; i++) {
-            if (this.addons[i]) {
+            if (this.addons[i].active) {
                 this.addons[i].update();
             }
         }

@@ -4,7 +4,8 @@ A_.TILES.Tilemap = Class.extend({
         this.baked = false;
         this.level = layer.level;
 
-        this.baseTexture = new PIXI.BaseTexture.fromImage("game/graphics/" + this.level.manifest.directory + img, PIXI.scaleModes.LINEAR);
+//        this.baseTexture = new PIXI.BaseTexture.fromImage("game/graphics/" + this.level.manifest.directory + img, PIXI.scaleModes.LINEAR);
+        this.baseTexture = new PIXI.BaseTexture.fromImage(img, PIXI.scaleModes.LINEAR);
         this.imgCols = this.baseTexture.width / tileW;
         this.imgRows = this.baseTexture.height / tileH;
 
@@ -47,12 +48,15 @@ A_.TILES.Tilemap = Class.extend({
             return;
         return this.tiles[x][y];
     },
+    getTileAt: function (x, y) {
+        return this.getTile(this.getMapX(x), this.getMapX(y));
+    },
     setTile: function (gid, x, y) {
         if (this.layer.baked)
             return;
         if (!_.isNumber(gid) || !_.isNumber(x) || !_.isNumber(y))
             return;
-        if (gid <= 0 || gid >= this.imgCols * this.imgRows)
+        if (gid <= 0 || gid > this.imgCols * this.imgRows)
             return;
         if (x < 0 || x >= this.mapW)
             return;

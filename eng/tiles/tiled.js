@@ -77,7 +77,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, img, tileW, tileH);
+            var tilemap = new A_.TILES.Tilemap(layer, "game/graphics/" + level.manifest.directory + img, tileW, tileH);
             tilemap.populateTilelayer(tileData2D);
 
             layer.baked = baked;

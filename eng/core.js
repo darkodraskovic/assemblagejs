@@ -114,6 +114,10 @@ A_.INPUT = {};
 A_.CONFIG = {};
 
 // JS EXTENSIONS
+Number.prototype.map = function(istart, istop, ostart, ostop) {
+	return ostart + (ostop - ostart) * ((this - istart) / (istop - istart));
+};
+
 /** Converts numeric degrees to radians */
 if (typeof (Number.prototype.toRad) === "undefined") {
     Number.prototype.toRad = function () {
@@ -163,6 +167,10 @@ Number.prototype.sin = function () {
 
 Number.prototype.cos = function () {
     return Math.cos(this);
+};
+
+Number.prototype.abs = function () {
+    return Math.abs(this);
 };
 
 A_.UTILS.copy = function (object) {

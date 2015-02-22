@@ -14,7 +14,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.force = new SAT.Vector(100, 100);
-        this.friction.x = 32;
+        this.friction.x = 56;
         this.friction.y = 0;
         this.maxVelocity.x = 300;
         this.maxVelocity.y = 800;

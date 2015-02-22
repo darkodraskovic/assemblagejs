@@ -34,6 +34,21 @@ A_.LEVEL.LevelManager = Class.extend({
                 sounds: []
             };
         }
+        if (manifest.directory && !manifest.addedDirectory) {            
+            for (var i = 0; i < manifest.scripts.length; i++) {
+                manifest.scripts[i] = manifest.directory + manifest.scripts[i];
+            }
+            manifest.map = manifest.directory + manifest.map;
+            for (var i = 0; i < manifest.graphics.length; i++) {
+                manifest.graphics[i] = manifest.directory + manifest.graphics[i];
+            }
+            for (var i = 0; i < manifest.sounds.length; i++) {
+                for (var j = 0; j < manifest.sounds[i].length; j++) {
+                manifest.sounds[i][j] = manifest.directory + manifest.sounds[i][j];
+                }
+            }
+            manifest.addedDirectory = true;
+        }
         this._activateLevelLoader(callback, manifest);
     },
     _activateLevelLoader: function (callback, manifest) {
@@ -64,7 +79,7 @@ A_.LEVEL.LevelManager = Class.extend({
         }
     },
     // Level CREATION & DESTRUCTION
-    createLevel: function (manifest, name, activate) {
+    _createLevel: function (manifest, name, activate) {
         this.levelsToCreate.push({manifest: manifest, name: name, activate: activate});
     },
     createLevels: function () {
@@ -72,7 +87,7 @@ A_.LEVEL.LevelManager = Class.extend({
             var manifest = levelToCreate.manifest;
             var name = levelToCreate.name;
 
-            var level = this._createLevel(manifest, name);
+            var level = this.createLevel(manifest, name);
 
             if (level && levelToCreate.activate) {
                 this.activateLevel(name);
@@ -81,7 +96,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.levelsToCreate.length = 0;
     },
-    _createLevel: function (manifest, name) {
+    createLevel: function (manifest, name) {
         if (!_.contains(this.manifests, manifest)) {
             window.console.log("Cannot find manifest");
             return;
@@ -199,10 +214,9 @@ A_.LEVEL.LevelManager = Class.extend({
             this.manageLevels = true;
         }
         else {
-            this.createLevel(manifest, name, true);
+            this._createLevel(manifest, name, true);
             this.manageLevels = true;
         }
-
     },
     restartLevel: function (name) {
         var level = this.findActiveLevel(name);

@@ -60,7 +60,7 @@ A_.SPRITES.ADDONS.PinTo = Class.extend({
         if (typeof this.offsetY === "undefined") {
             this.offsetY = 0;
         }
-        this.spritePoint = this.parent.spritePoint(this.name, this.offsetX, this.offsetY);
+        this.spritePoint = this.parent.setSpritePoint(this.name, this.offsetX, this.offsetY);
     },
     off: function () {
 
@@ -103,7 +103,7 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
         this.speed = (2 * Math.PI) / this.period;
 
         this.value = 0;
-
+        this.on();
     },
     on: function () {
         this.reset();

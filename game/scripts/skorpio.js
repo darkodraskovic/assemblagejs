@@ -149,7 +149,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
 
     },
     shootBullet: function () {
-        var sprPt = this.rifle.spritePoint(this.facing);
+        var sprPt = this.rifle.getSpritePoint(this.facing);
         var bullet = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
         var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
         bullet.setRotation(rot);
@@ -215,10 +215,10 @@ var Rifle = A_.SPRITES.Sprite.extend({
         this.addAnimation("moving_left", _.range(10, 18), this.animSpeed);
         this.addAnimation("moving_right", _.range(28, 36), this.animSpeed);
 
-        this.spritePoint("up", 14, -18);
-        this.spritePoint("down", -10, 28);
-        this.spritePoint("left", -24, 6);
-        this.spritePoint("right", 24, 6);
+        this.setSpritePoint("up", 14, -18);
+        this.setSpritePoint("down", -10, 28);
+        this.setSpritePoint("left", -24, 6);
+        this.setSpritePoint("right", 24, 6);
 
         this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
@@ -292,7 +292,7 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
         this.setOrigin(0, 0.5);
 
         this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), this.level.getMousePosition()));
-        var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
+        var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
 
         this.tip = {x: this.getX(), y: this.getY()};
@@ -312,7 +312,7 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
         this.sine = this.addon("Sine", sineProps);
     },
     update: function () {
-        var sprPt = this.spawner.rifle.spritePoint(this.spawner.facing);
+        var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
 
         this.setRotation(A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition()));
