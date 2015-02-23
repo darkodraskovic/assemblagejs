@@ -32,8 +32,8 @@
                  "type":"ScenerySun",
                  "visible":true,
                  "width":96,
-                 "x":224,
-                 "y":256
+                 "x":192,
+                 "y":320
                 }],
          "opacity":1,
          "properties":
@@ -155,8 +155,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":320,
-                 "y":672
+                 "x":1088,
+                 "y":928
                 }, 
                 {
                  "height":32,
@@ -169,8 +169,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":968,
-                 "y":504
+                 "x":928,
+                 "y":496
                 }, 
                 {
                  "height":32,
@@ -211,8 +211,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":968,
-                 "y":456
+                 "x":928,
+                 "y":448
                 }, 
                 {
                  "height":32,
@@ -239,8 +239,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":968,
-                 "y":408
+                 "x":928,
+                 "y":400
                 }, 
                 {
                  "height":32,
@@ -253,8 +253,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":968,
-                 "y":360
+                 "x":928,
+                 "y":352
                 }, 
                 {
                  "height":32,
@@ -281,8 +281,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":968,
-                 "y":264
+                 "x":928,
+                 "y":256
                 }, 
                 {
                  "height":32,
@@ -295,8 +295,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":512,
-                 "y":704
+                 "x":1408,
+                 "y":896
                 }, 
                 {
                  "height":32,
@@ -309,8 +309,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":448,
-                 "y":704
+                 "x":1440,
+                 "y":960
                 }, 
                 {
                  "height":32,
@@ -337,8 +337,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":968,
-                 "y":168
+                 "x":928,
+                 "y":160
                 }, 
                 {
                  "height":32,
@@ -351,8 +351,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":968,
-                 "y":208
+                 "x":928,
+                 "y":200
                 }, 
                 {
                  "height":32,
@@ -365,8 +365,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":968,
-                 "y":312
+                 "x":928,
+                 "y":304
                 }, 
                 {
                  "height":32,
@@ -409,6 +409,104 @@
                  "width":32,
                  "x":384,
                  "y":704
+                }, 
+                {
+                 "height":32,
+                 "name":"Diskette",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Diskette",
+                 "visible":true,
+                 "width":32,
+                 "x":928,
+                 "y":96
+                }, 
+                {
+                 "height":32,
+                 "name":"Diskette",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Diskette",
+                 "visible":true,
+                 "width":32,
+                 "x":928,
+                 "y":64
+                }, 
+                {
+                 "height":32,
+                 "name":"Diskette",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Diskette",
+                 "visible":true,
+                 "width":32,
+                 "x":896,
+                 "y":432
+                }, 
+                {
+                 "height":32,
+                 "name":"Diskette",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Diskette",
+                 "visible":true,
+                 "width":32,
+                 "x":896,
+                 "y":288
+                }, 
+                {
+                 "height":32,
+                 "name":"Diskette",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Diskette",
+                 "visible":true,
+                 "width":32,
+                 "x":896,
+                 "y":480
+                }, 
+                {
+                 "height":32,
+                 "name":"Diskette",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Diskette",
+                 "visible":true,
+                 "width":32,
+                 "x":896,
+                 "y":336
+                }, 
+                {
+                 "height":32,
+                 "name":"Diskette",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Diskette",
+                 "visible":true,
+                 "width":32,
+                 "x":896,
+                 "y":384
                 }],
          "opacity":1,
          "type":"objectgroup",

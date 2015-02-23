@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="17">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="18">
+        <file>
+            <url>eng/sprites/animated.js</url>
+            <bookmark id="13">
+                <name/>
+                <line>511</line>
+                <key/>
+            </bookmark>
+        </file>
         <file>
             <url>eng/game.js</url>
             <bookmark id="15">
@@ -10,7 +18,7 @@
             </bookmark>
             <bookmark id="14">
                 <name/>
-                <line>65</line>
+                <line>64</line>
                 <key/>
             </bookmark>
         </file>
@@ -18,7 +26,7 @@
             <url>game/scripts/platformer.js</url>
             <bookmark id="17">
                 <name/>
-                <line>281</line>
+                <line>244</line>
                 <key/>
             </bookmark>
         </file>
@@ -46,10 +54,10 @@
             </bookmark>
         </file>
         <file>
-            <url>eng/sprites/animated.js</url>
-            <bookmark id="13">
+            <url>eng/sprites/kinematic.js</url>
+            <bookmark id="18">
                 <name/>
-                <line>511</line>
+                <line>187</line>
                 <key/>
             </bookmark>
         </file>
@@ -64,12 +72,19 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/diskette/player.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/diskette/scenery.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/manifests.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/diskette/anime.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/diskette/diskette.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/level/levelManager.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tile.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tiled.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tilemap.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/diskette/ball.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/skorpio.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/kinematic.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/collision.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/platformer.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/game.js</file>
         </group>
     </open-files>
 </project-private>

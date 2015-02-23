@@ -32,7 +32,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     collideWithKinematic: function (other, response) {
         var elasticity = this.elasticity;
         if (other instanceof Diskette) {
-            this.elasticity = 2;
+            this.elasticity = 2;            
         }
         this._super(other, response);
         this.elasticity = elasticity;

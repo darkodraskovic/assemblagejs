@@ -1,6 +1,7 @@
 var Player = Anime.extend({
     spriteSheet: "diskette/player.png",
     followee: true,
+//    elasticity: 0.5,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -34,7 +35,7 @@ var Player = Anime.extend({
             this.applyForce = false;
         }
 
-        if (A_.INPUT.pressed["jump"]) {
+        if (A_.INPUT.down["jump"]) {
             if (this.standing) {
                 this.velocity.y = this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce;
             }

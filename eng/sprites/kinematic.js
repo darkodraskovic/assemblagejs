@@ -82,8 +82,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.collisionEntities.length = 0;
 
         // Process COLLISION
-        this.processTileCollisions();
         this.processSpriteCollisions();
+        this.processTileCollisions();
         this.processCollisionResults();
 
         this._super();
@@ -191,7 +191,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         relativeVelocity.copy(other.velocity);
         relativeVelocity.sub(this.velocity);
         // Resolve only if velocities are separating.
-        if (relativeVelocity.dot(response.overlapN) <= 0 && relativeVelocity.len() > this.impulseTreshold) {
+//        if (relativeVelocity.dot(response.overlapN) <= 0 && relativeVelocity.len() > this.impulseTreshold) {
+        if (relativeVelocity.dot(response.overlapN) <= 0) {
             relativeVelocity.project(response.overlapN);
             var impulse2 = other._vector.copy(relativeVelocity).scale(-(1 + other.elasticity));
             var impulse1 = relativeVelocity.scale(-(1 + this.elasticity));

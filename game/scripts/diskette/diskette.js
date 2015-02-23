@@ -5,7 +5,6 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     frameWidth: 32,
     frameHeight: 32,
     elasticity: 0.5,
-    groundCheck: true,
     springForce: 600,
     springScan: 0.1,
     init: function (parent, x, y, props) {
@@ -23,10 +22,6 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         });
     },
     update: function () {
-        if (this.standing) {
-            this.velocity.sub(this.gravity);
-        }
-
         var spring = this.detectDynamics();
         if (spring)
             this.processDynamics(spring);
