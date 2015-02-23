@@ -20,8 +20,7 @@ A_.LEVEL.Level = Class.extend({
         this.layers = [];
         this.debugLayer = null;
 
-        // Colliding tiles
-        this.tiles = [];
+        // Colliding tilemaps
         this.tileMaps = [];
         // All the sprites & their sounds.
         this.sprites = [];

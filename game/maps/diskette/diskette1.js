@@ -162,8 +162,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":1088,
-                 "y":928
+                 "x":1056,
+                 "y":768
                 }, 
                 {
                  "height":32,
@@ -514,6 +514,20 @@
                  "width":32,
                  "x":896,
                  "y":384
+                }, 
+                {
+                 "height":32,
+                 "name":"Diskette",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Diskette",
+                 "visible":true,
+                 "width":32,
+                 "x":1152,
+                 "y":960
                 }],
          "opacity":1,
          "type":"objectgroup",

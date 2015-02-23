@@ -250,17 +250,17 @@ var PlayerPlatformer = AnimePlatformer.extend({
         var level = tilemap.level;
         if (level.rightdown) {
             var mpl = level.getMousePosition();
-            var tile = this.getThrusTile(mpl.x, mpl.y)
+            var tile = this.thrus.getTileAt(mpl.x, mpl.y);
             if (tile) {
                 tilemap.level.createSprite(ExplosionPlatformer, level.findLayerByName("Thrus"),
-                        tilemap.getLevelX(tile.mapPosition.x) + tilemap.tileW / 2, tilemap.getLevelY(tile.mapPosition.y) + tilemap.tileH / 2);
-                tilemap.removeTile(tile.mapPosition.x, tile.mapPosition.y);
+                        tilemap.getLevelX(tilemap.getMapX(mpl.x)) + tilemap.tileW / 2, tilemap.getLevelY(tilemap.getMapY(mpl.y)) + tilemap.tileH / 2);
+                tilemap.removeTile(tilemap.getMapX(mpl.x), tilemap.getMapY(mpl.y));
             }
         }
-        
+
         if (this.level.leftpressed && this.mode === "building") {
             var mpl = this.level.getMousePosition();
-            var tile = this.getThrusTile(mpl.x, mpl.y);
+            var tile = this.thrus.getTileAt(mpl.x, mpl.y);
             if (tile) {
                 tile.toggleTurned();
                 tile.explosionSound.play();
@@ -268,16 +268,10 @@ var PlayerPlatformer = AnimePlatformer.extend({
         }
         if (this.level.leftdown && this.mode === "building") {
             var mpl = this.level.getMousePosition();
-            if (!this.getThrusTile(mpl.x, mpl.y)) {
+            if (!this.thrus.getTileAt(mpl.x, mpl.y)) {
                 this.thrus.setTile(737, this.thrus.getMapX(mpl.x), this.thrus.getMapX(mpl.y));
             }
         }
-    },
-    getThrusTile: function (x, y) {
-        var tilemap = this.thrus;
-        x = tilemap.getMapX(x);
-        y = tilemap.getMapY(y);
-        return tilemap.getTile(x, y);
     }
 });
 

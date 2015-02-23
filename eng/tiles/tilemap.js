@@ -15,10 +15,7 @@ A_.TILES.Tilemap = Class.extend({
     },
     populateTilelayer: function (layerData) {
         if (this.layer.collisionResponse) {
-//            this.collisioResponse = this.layer.collisionResponse;
-//            if (this.collisionResponse !== "sensor" && this.collisionResponse !== "static") {
-                this.collisionResponse = "static";
-//            }
+            this.collisionResponse = "static";
             this.level.tileMaps.push(this);
         }
 

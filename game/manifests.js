@@ -84,7 +84,8 @@ var diskette = {
     map: "diskette1",
     graphics: ["ball.png", "blocks.png", "computer.png", "crosshair.png",
         "diskette.png", "dynamics.png", "medical.png", "moon.png",
-        "player.png", "pyramid.png", "sky.png", "star.png", "sun.png"],
+        "player.png", "pyramid.png", "pyramidDisplacementMap.png", "sky.png", 
+        "star.png", "sun.png"],
     sounds: [["bounce.ogg"], ["throw.ogg"]],
     camera: {
         innerBoundOffset: 0.25,
