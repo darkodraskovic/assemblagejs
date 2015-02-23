@@ -92,11 +92,6 @@
     };
 })();
 
-
-$('body').contextmenu(function () {
-    return false;
-});
-
 var A_ = {};
 A_.UTILS = {};
 A_.SPRITES = {};

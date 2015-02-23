@@ -89,17 +89,37 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this._super();
     },
     processTileCollisions: function () {
-        var entities = this.level.tiles;
-        for (var i = 0, len = entities.length; i < len; i++) {
-            this.response.clear();
-            var other = entities[i];
-            if (!other.collides)
-                continue;
-            var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
-            if (collided) {
-                this.collideWithStatic(other, this.response);
+        for (var i = 0; i < this.level.tileMaps.length; i++) {
+            var tileMap = this.level.tileMaps[i];
+            var yStart = tileMap.getMapY(this.aabbTop());
+            var yEnd = tileMap.getMapY(this.aabbBottom());
+            var xStart = tileMap.getMapX(this.aabbLeft());
+            var xEnd = tileMap.getMapX(this.aabbRight());
+            for (var row = yStart; row <= yEnd; row++) {
+                for (var col = xStart; col <= xEnd; col++) {
+                    var tile = tileMap.getTile(col, row);
+                    if (tile && tile.collides) {
+                        this.response.clear();
+                        var collided = SAT.testPolygonPolygon(this.collisionPolygon, tile.collisionPolygon, this.response);
+                        if (collided) {
+                            this.collideWithStatic(tile, this.response);
+                        }
+                    }
+                }
             }
         }
+
+//        var entities = this.level.tiles;
+//        for (var i = 0, len = entities.length; i < len; i++) {
+//            this.response.clear();
+//            var other = entities[i];
+//            if (!other.collides)
+//                continue;
+//            var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
+//            if (collided) {
+//                this.collideWithStatic(other, this.response);
+//            }
+//        }
     },
     processSpriteCollisions: function () {
         if (!this.collides || this.collisionResponse === "static")
@@ -146,7 +166,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         if (this.collisionResponse === "sensor")
             return;
 
-        this.collisionEntities.push(other);
 
         var otherResponse = other.collisionResponse;
         if (otherResponse === "active" || otherResponse === "passive") {
@@ -158,6 +177,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
             // ACTIVE & PASSIVE response
             else if (thisResponse === "active" || (thisResponse === "passive" && otherResponse === "active")) {
+                this.collisionEntities.push(other);
                 // PENETRATION resolution
                 var coefficientX = Math.abs(this.velocity.x) / (Math.abs(this.velocity.x) + Math.abs(other.velocity.x));
                 var coefficientY = Math.abs(this.velocity.y) / (Math.abs(this.velocity.y) + Math.abs(other.velocity.y));

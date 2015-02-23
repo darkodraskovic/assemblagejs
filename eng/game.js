@@ -18,6 +18,10 @@ A_.Game = Class.extend({
         this.stage = new PIXI.Stage(screenOptions.color);
         this.renderer = PIXI.autoDetectRenderer(screenOptions.width, screenOptions.height, rendererOptions);
         document.body.appendChild(this.renderer.view);
+        // Prevent the right click context menu.
+        this.renderer.view.oncontextmenu = function (e) {
+            e.preventDefault();
+        };
     },
     // GAME LOOP
     play: function () {

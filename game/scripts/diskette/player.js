@@ -14,6 +14,8 @@ var Player = Anime.extend({
             volume: 1
         });
 
+        this.initMouseReactivity();
+        this.setMouseReactivity(true); 
         this.setSpritePoint("ball", 0, -this.getHeight() / 3);
         
         this.dynamicsMap = this.level.findLayerByName("Dynamics").tilemap;
@@ -46,6 +48,9 @@ var Player = Anime.extend({
 
         if (this.level.leftpressed) {
             this.throwBall();
+        }
+        if (this.rightpressed) {
+            window.console.log("giggle");
         }
 
         this._super();

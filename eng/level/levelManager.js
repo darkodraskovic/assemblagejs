@@ -34,7 +34,8 @@ A_.LEVEL.LevelManager = Class.extend({
                 sounds: []
             };
         }
-        if (manifest.directory && !manifest.addedDirectory) {            
+        manifest.mapName = manifest.map;
+        if (manifest.directory && !manifest.addedDirectory) {
             for (var i = 0; i < manifest.scripts.length; i++) {
                 manifest.scripts[i] = manifest.directory + manifest.scripts[i];
             }
@@ -44,7 +45,7 @@ A_.LEVEL.LevelManager = Class.extend({
             }
             for (var i = 0; i < manifest.sounds.length; i++) {
                 for (var j = 0; j < manifest.sounds[i].length; j++) {
-                manifest.sounds[i][j] = manifest.directory + manifest.sounds[i][j];
+                    manifest.sounds[i][j] = manifest.directory + manifest.sounds[i][j];
                 }
             }
             manifest.addedDirectory = true;
@@ -57,11 +58,16 @@ A_.LEVEL.LevelManager = Class.extend({
     },
     _onScriptsLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded scripts");
-        loader.loadMap(this._onMapLoaded.bind(this, callback, manifest, loader), manifest.map);
+        if (manifest.type === "tiled") {
+            loader.loadMap(this._onMapLoaded.bind(this, callback, manifest, loader), manifest.map);
+        }
+        else {
+            loader.loadGraphics(this._onGraphicsLoaded.bind(this, callback, manifest, loader), manifest.graphics);
+        }
     },
     _onMapLoaded: function (callback, manifest, loader) {
         window.console.log("Loaded map");
-        this.maps[manifest.map] = loader.mapDataParsed;
+        this.maps[manifest.map] = TileMaps[manifest.mapName];
         loader.loadGraphics(this._onGraphicsLoaded.bind(this, callback, manifest, loader), manifest.graphics);
     },
     _onGraphicsLoaded: function (callback, manifest, loader) {

@@ -22,6 +22,7 @@ A_.LEVEL.Level = Class.extend({
 
         // Colliding tiles
         this.tiles = [];
+        this.tileMaps = [];
         // All the sprites & their sounds.
         this.sprites = [];
         this.sounds = [];

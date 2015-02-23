@@ -1,5 +1,5 @@
 // CLASSES
-var Ball = A_.SPRITES.Topdown.extend({
+var Ball = A_.SPRITES.Kinematic.extend({
     colTimesCalled: 0,
     spriteSheet: "player_rot.png",
     collisionResponse: "dynamic",

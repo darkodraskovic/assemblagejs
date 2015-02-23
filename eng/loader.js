@@ -1,10 +1,8 @@
 A_.LEVEL.Loader = Class.extend({
     // SCRIPT loader
-    init: function() {
-    },
-    loadScripts: function(callback, scriptsToLoad) {
+    loadScripts: function (callback, scriptsToLoad) {
         if (!callback) {
-            callback = function() {
+            callback = function () {
                 window.console.log("Scripts loaded!");
             };
         }
@@ -16,25 +14,35 @@ A_.LEVEL.Loader = Class.extend({
         this.scriptCounter = 0;
         this.scriptsToLoad = scriptsToLoad;
         this.onScriptsLoaded = callback;
-        this.loadScript();
+        this.loadScript("game/scripts/" + this.scriptsToLoad[this.scriptCounter] + ".js", this.onScriptLoaded.bind(this));
     },
-    loadScript: function() {
-        var that = this;
-        $.getScript("game/scripts/" + that.scriptsToLoad[that.scriptCounter] + ".js",
-                that.onScriptLoaded.bind(that));
+    loadScript: function (url, callback) {
+        // Adding the script tag to the head
+        var head = document.getElementsByTagName('head')[0];
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+
+        // Then bind the event to the callback function.
+        // There are several events for cross browser compatibility.
+        script.onreadystatechange = callback;
+        script.onload = callback;
+
+        // Fire the loading
+        head.appendChild(script);
     },
-    onScriptLoaded: function() {
+    onScriptLoaded: function () {
         this.scriptCounter++;
         if (this.scriptCounter < this.scriptsToLoad.length) {
-            this.loadScript();
+            this.loadScript("game/scripts/" + this.scriptsToLoad[this.scriptCounter] + ".js", this.onScriptLoaded.bind(this));
         } else {
             this.onScriptsLoaded();
         }
     },
     // MAP loader
-    loadMap: function(callback, mapData) {
+    loadMap: function (callback, mapData) {
         if (!callback) {
-            callback = function() {
+            callback = function () {
                 window.console.log("Maps loaded!");
             };
         }
@@ -43,16 +51,12 @@ A_.LEVEL.Loader = Class.extend({
             return;
         }
 
-        var that = this;
-        $.getJSON("game/maps/" + mapData + ".json", function(data) {
-            that.mapDataParsed = data;
-            callback();
-        });
+        this.loadScript("game/maps/" + mapData + ".js", callback);
     },
-    // ASSET loader
-    loadGraphics: function(callback, graphicsToLoad) {
+    // GRAPHICS loader
+    loadGraphics: function (callback, graphicsToLoad) {
         if (!callback) {
-            callback = function() {
+            callback = function () {
                 window.console.log("Graphics loaded!");
             };
         }
@@ -61,7 +65,7 @@ A_.LEVEL.Loader = Class.extend({
             return;
         }
 
-        graphicsToLoad = _.map(graphicsToLoad, function(asset) {
+        graphicsToLoad = _.map(graphicsToLoad, function (asset) {
             return "game/graphics/" + asset;
         });
         this.assetLoader = new PIXI.AssetLoader(graphicsToLoad);
@@ -69,9 +73,9 @@ A_.LEVEL.Loader = Class.extend({
         this.assetLoader.load();
     },
     // SOUND loader
-    loadSounds: function(callback, soundsToLoad) {
+    loadSounds: function (callback, soundsToLoad) {
         if (!callback) {
-            callback = function() {
+            callback = function () {
                 window.console.log("Sounds loaded!");
             };
         }
@@ -81,8 +85,8 @@ A_.LEVEL.Loader = Class.extend({
         }
 
         this.soundCounter = 0;
-        soundsToLoad = _.each(soundsToLoad, function(sound, i) {
-            soundsToLoad[i] = _.map(sound, function(name) {
+        soundsToLoad = _.each(soundsToLoad, function (sound, i) {
+            soundsToLoad[i] = _.map(sound, function (name) {
                 if (name.indexOf("game/sounds/") < 0)
                     return "game/sounds/" + name;
                 else
@@ -93,14 +97,14 @@ A_.LEVEL.Loader = Class.extend({
         this.onSoundsLoaded = callback;
         this.loadSound();
     },
-    loadSound: function() {
+    loadSound: function () {
         var that = this;
         new Howl({
             urls: that.soundsToLoad[that.soundCounter],
             onload: that.onSoundLoaded.bind(that)
         });
     },
-    onSoundLoaded: function() {
+    onSoundLoaded: function () {
         this.soundCounter++;
         if (this.soundCounter < this.soundsToLoad.length) {
             this.loadSound();
@@ -108,4 +112,4 @@ A_.LEVEL.Loader = Class.extend({
             this.onSoundsLoaded();
         }
     }
-}); 
+});

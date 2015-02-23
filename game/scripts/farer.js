@@ -16,8 +16,8 @@ var Player = A_.SPRITES.Kinematic.extend({
         A_.INPUT.addMapping("up", A_.KEY.W);
         this.laser1 = this.level.createSprite(Laser, this, 18, -12);
         this.laser2 = this.level.createSprite(Laser, this, 18, 12);
-        this.spritePoint("bullet1", 18, -12);
-        this.spritePoint("bullet2", 18, 12);
+        this.setSpritePoint("bullet1", 18, -12);
+        this.setSpritePoint("bullet2", 18, 12);
     },
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
@@ -67,13 +67,13 @@ var Player = A_.SPRITES.Kinematic.extend({
     },
     shootBullet: function () {
         var rot = this.getRotation();
-        var pos1 = this.spritePoint("bullet1").getPosition();
+        var pos1 = this.getSpritePoint("bullet1").getPosition();
         var bullet1 = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), pos1.x, pos1.y);
         bullet1.setRotation(rot);
         bullet1.velocity.x = Math.cos(rot) * bullet1.maxVelocity.x;
         bullet1.velocity.y = Math.sin(rot) * bullet1.maxVelocity.y;
 
-        var pos2 = this.spritePoint("bullet2").getPosition();
+        var pos2 = this.getSpritePoint("bullet2").getPosition();
         var bullet2 = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), pos2.x, pos2.y);
         bullet2.setRotation(rot);
         bullet2.velocity.x = Math.cos(rot) * bullet2.maxVelocity.x;
@@ -209,8 +209,8 @@ var numRotors = 40;
 
 // PROCEDURES
 populateLevel = function (level) {
-    level.width = 2048;
-    level.height = 2048;
+    level.setWidth(2048);
+    level.setHeight(2048);
 
     var layer = level.createImageLayer("Starfield", {image: "starfield.png"});
     layer.parallax = 10;

@@ -77,15 +77,15 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, "game/graphics/" + level.manifest.directory + img, tileW, tileH);
+            var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH);
             tilemap.populateTilelayer(tileData2D);
 
             layer.baked = baked;
             if (layer.baked) {
                 layer = level.bakeLayer(layer);
                 var tiles = tilemap.tiles;
-                for (var l = 0, rows = tiles.length; l < rows; l++) {
-                    for (var m = 0, cols = tiles[0].length; m < cols; m++) {
+                for (var l = 0, cols = tiles.length; l < cols; l++) {
+                    for (var m = 0, rows = tiles[0].length; m < rows; m++) {
                         if (tiles[l][m]) {
                             tiles[l][m].sprite = null;
                         }
