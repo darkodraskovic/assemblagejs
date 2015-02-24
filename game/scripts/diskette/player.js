@@ -52,7 +52,7 @@ var Player = Anime.extend({
         if (this.rightpressed) {
             window.console.log("giggle");
         }
-
+        
         this._super();
     },
     throwBall: function () {

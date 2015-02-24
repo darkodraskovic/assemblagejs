@@ -3,7 +3,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     elasticity: 0,
     angularSpeed: 0,
     impulseTreshold: 10,
-    groundCheck: false,
+    bounceTreshold: 40,
+    arcade: false,
     standing: false,
     mass: 1,
     init: function (parent, x, y, props) {
@@ -20,6 +21,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.collisionEntities = [];
         this._lastCollisionNormal = new SAT.Vector(0, 0);
         this.ground = null;
+        this.wall = null;
     },
     setGravity: function (x, y, slopeTolerance) {
         this.gravity.x = x;
@@ -27,12 +29,12 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.gravityN.copy(this.gravity).normalize();
         this.impulseTreshold = this.gravity.len();
         if (Math.abs(this.gravityN.x) > Math.abs(this.gravityN.y)) {
-            this.gHorizontal = "y";
-            this.gVertical = "x";
+            this.gH = "y";
+            this.gV = "x";
         }
         else {
-            this.gHorizontal = "x";
-            this.gVertical = "y";
+            this.gH = "x";
+            this.gV = "y";
         }
         if (_.isNumber(slopeTolerance)) {
             this.slopeOffset = Math.cos((90 - slopeTolerance).toRad());
@@ -84,7 +86,10 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // Process COLLISION
         this.processSpriteCollisions();
         this.processTileCollisions();
-        this.processCollisionResults();
+        if (this.arcade) {
+            this.processArcade();
+        }
+        this.processStaticImpulse(this._lastCollisionNormal);
 
         this._super();
     },
@@ -108,18 +113,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 }
             }
         }
-
-//        var entities = this.level.tiles;
-//        for (var i = 0, len = entities.length; i < len; i++) {
-//            this.response.clear();
-//            var other = entities[i];
-//            if (!other.collides)
-//                continue;
-//            var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
-//            if (collided) {
-//                this.collideWithStatic(other, this.response);
-//            }
-//        }
     },
     processSpriteCollisions: function () {
         if (!this.collides || this.collisionResponse === "static")
@@ -188,9 +181,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 if (!_.isFinite(coefficientY)) {
                     coefficientY = 0.5;
                 }
-//                if (this.standing) {
-//                    coefficientX = coefficientY = 1;
-//                }
                 this.setXRelative(-response.overlapV.x * coefficientX);
                 other.setXRelative(response.overlapV.x * (1 - coefficientX));
                 this.setYRelative(-response.overlapV.y * coefficientY);
@@ -203,19 +193,13 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
         }
     },
-    processStaticImpulse: function (collisionNormal) {
-        this._vector.copy(this.velocity).reverse();
-        var impulse = this._vector.project(collisionNormal).scale(-(1 + this.elasticity));
-        this.velocity.sub(impulse);
-    },
     processKineticImpulse: function (other, response) {
         // Calculate the velocity difference.
         var relativeVelocity = this._vector;
         relativeVelocity.copy(other.velocity);
         relativeVelocity.sub(this.velocity);
         // Resolve only if velocities are separating.
-//        if (relativeVelocity.dot(response.overlapN) <= 0 && relativeVelocity.len() > this.impulseTreshold) {
-        if (relativeVelocity.dot(response.overlapN) <= 0) {
+        if (relativeVelocity.dot(response.overlapN) <= 0 && relativeVelocity.len() > this.impulseTreshold) {
             relativeVelocity.project(response.overlapN);
             var impulse2 = other._vector.copy(relativeVelocity).scale(-(1 + other.elasticity));
             var impulse1 = relativeVelocity.scale(-(1 + this.elasticity));
@@ -225,39 +209,49 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             other.velocity.add(impulse2);
         }
     },
-    processCollisionResults: function () {
-        // GROUND check
-        if (this.groundCheck) {
-            this.ground = null;
-            this.wall = null;
-            this.standing = false;
-            for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
-                var entity = this.collisionEntities[i];
-                if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], this.gravityN[this.gVertical])) {
-                    if (this.response.overlap) {
-                        this.velocity[this.gVertical] = -this.velocity[this.gVertical] * this.elasticity;
-                        this.ground = entity;
-                        this.slopeNormal = this.response.overlapN;
-                        if (this.slopeNormal[this.gHorizontal] > -this.slopeOffset && this.slopeNormal[this.gHorizontal] < this.slopeOffset) {
-                            this.standing = true;
+    processArcade: function () {
+        this.ground = null;
+        this.wall = null;
+        this.standing = false;
+        for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
+            var entity = this.collisionEntities[i];
+            if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
+                if (this.response.overlap) {
+                    if (this.response.overlapN[this.gV] === this.gravityN[this.gV]) {
+                        // Arcade physics: kinematic is on a perfectly horizontal plane.
+                        if (this.velocity[this.gV].abs() > this.bounceTreshold) {
+                            this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
+                        } else {
+                            this.velocity[this.gV] = 0;
                         }
                     }
+                    this.ground = entity;
+                    this.slopeNormal = this.response.overlapN;
+                    if (this.slopeNormal[this.gH] > -this.slopeOffset && this.slopeNormal[this.gH] < this.slopeOffset) {
+                        this.standing = true;
+                    }
                 }
-                // Special case: entity hits the wall
-                if (this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gVertical], this.gravityN[this.gHorizontal]) ||
-                        this.collidesWithEntityAtOffset(entity, this.gravityN[this.gVertical], this.gravityN[this.gHorizontal])) {
-//                    if (this.response.overlap && entity.collisonResponse === "static") {
-                    if (this.response.overlap && entity.collisonResponse === "static") {
-                        this.wall = entity;
-                        this.velocity[this.gHorizontal] = -this.velocity[this.gHorizontal] * this.elasticity;
+            }
+            // Arcade physics: kinematic hits the wall.
+            if (this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gV], this.gravityN[this.gH]) ||
+                    this.collidesWithEntityAtOffset(entity, this.gravityN[this.gV], this.gravityN[this.gH])) {
+                if (this.response.overlap && this.response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs()
+                        && entity.collisonResponse === "static" && this.velocity[this.gH]) {
+                    this.wall = entity;
+                    if (this.velocity[this.gH].abs() > this.bounceTreshold) {
+                        this.velocity[this.gH] = -this.velocity[this.gH] * this.elasticity;
+                    } else {
+                        this.velocity[this.gH] = 0;
                     }
                 }
             }
         }
-
-//        else 
-        if (this.velocity.dot(this._lastCollisionNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
-            this.processStaticImpulse(this._lastCollisionNormal);
+    },
+    processStaticImpulse: function (collisionNormal) {
+        if (this.velocity.dot(collisionNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
+            this._vector.copy(this.velocity).reverse();
+            var impulse = this._vector.project(collisionNormal).scale(-(1 + this.elasticity));
+            this.velocity.sub(impulse);
         }
     }
 });

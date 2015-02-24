@@ -8,7 +8,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
     collisionHeight: 68,
     drawCollisionPolygon: false,
     facing: "right",
-    groundCheck: true,
+    arcade: true,
     elasticity: 0,
     jumpForce: 800,
     init: function (parent, x, y, props) {

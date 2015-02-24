@@ -57,7 +57,7 @@
             <url>eng/sprites/kinematic.js</url>
             <bookmark id="18">
                 <name/>
-                <line>187</line>
+                <line>188</line>
                 <key/>
             </bookmark>
         </file>
@@ -72,12 +72,11 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tilemap.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/manifests.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/main.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/loader.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/sprites/kinematic.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/diskette/diskette.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/game/scripts/platformer.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/scenery/scenery.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblagejs/eng/tiles/tiled.js</file>
         </group>
     </open-files>

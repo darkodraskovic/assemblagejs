@@ -31,7 +31,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
             }
 
             var image = level.createImage(layer, {image: img, width: level.width, height: level.height, 
-                velocityX: layer["velocityX"], velocityY: layer["velocityY"]});
+                velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
             level.addImageLayer(layer);
             if (layer.active) {
                 level.images.push(image);

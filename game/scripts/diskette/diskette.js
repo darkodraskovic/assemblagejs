@@ -1,13 +1,11 @@
 var Diskette = A_.SPRITES.Kinematic.extend({
-    spriteSheet: "diskette/diskette.png",
+    spriteSheet: "diskette/owl.png",
     collisionResponse: "active",
     drawCollisionPolygon: false,
-    frameWidth: 32,
-    frameHeight: 32,
     elasticity: 0.5,
     springForce: 600,
     springScan: 0.1,
-    groundCheck: true,
+    arcade: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 10;
@@ -30,6 +28,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
 //        if (this.standing) {
 //            this.velocity.sub(this.gravity);
 //        }
+        
         this._super();
     },
     detectDynamics: function () {
@@ -60,12 +59,12 @@ var Diskette = A_.SPRITES.Kinematic.extend({
             this.velocity.x = this.springForce;
         }
         else if (spring === Dynamics.UL_SPRING) {
-            this.velocity.y -= this.springForce;
-            this.velocity.x -= this.springForce;
+            this.velocity.y = -this.springForce;
+            this.velocity.x = -this.springForce;
         }
         else if (spring === Dynamics.UR_SPRING) {
-            this.velocity.y -= this.springForce;
-            this.velocity.x += this.springForce;
+            this.velocity.y = -this.springForce;
+            this.velocity.x = +this.springForce;
         }
         this.springSound.play();
     },
@@ -74,18 +73,12 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     },
     collideWithKinematic: function (other, response) {
         var elasticity = this.elasticity;
-
-        if (other instanceof Diskette && response.overlap) {
-            if (Math.abs(response.overlapN.x) === 1) {
+        if ((other instanceof Diskette) && 
+                response.overlap) {
+            if (Math.abs(response.overlapN.x) === 1 && this.velocity.x.abs() > this.bounceTreshold) {
                 this.elasticity = 2;
             }
         }
-        if (other instanceof Ball && response.overlap) {
-            if (Math.abs(response.overlap)) {
-                this.elasticity = 1;
-            }
-        }
-
         this._super(other, response);
         this.elasticity = elasticity;
     }
