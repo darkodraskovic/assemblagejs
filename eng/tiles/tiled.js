@@ -30,8 +30,12 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 img = level.manifest.directory + img;
             }
 
-            level.createImage(layer, {image: img, width: level.width, height: level.height});
+            var image = level.createImage(layer, {image: img, width: level.width, height: level.height, 
+                velocityX: layer["velocityX"], velocityY: layer["velocityY"]});
             level.addImageLayer(layer);
+            if (layer.active) {
+                level.images.push(image);
+            }
         }
 
         // if current layer is TILE LAYER

@@ -188,6 +188,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 if (!_.isFinite(coefficientY)) {
                     coefficientY = 0.5;
                 }
+//                if (this.standing) {
+//                    coefficientX = coefficientY = 1;
+//                }
                 this.setXRelative(-response.overlapV.x * coefficientX);
                 other.setXRelative(response.overlapV.x * (1 - coefficientX));
                 this.setYRelative(-response.overlapV.y * coefficientY);
@@ -226,11 +229,13 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // GROUND check
         if (this.groundCheck) {
             this.ground = null;
+            this.wall = null;
             this.standing = false;
             for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
                 var entity = this.collisionEntities[i];
                 if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gHorizontal], this.gravityN[this.gVertical])) {
                     if (this.response.overlap) {
+                        this.velocity[this.gVertical] = -this.velocity[this.gVertical] * this.elasticity;
                         this.ground = entity;
                         this.slopeNormal = this.response.overlapN;
                         if (this.slopeNormal[this.gHorizontal] > -this.slopeOffset && this.slopeNormal[this.gHorizontal] < this.slopeOffset) {
@@ -241,7 +246,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 // Special case: entity hits the wall
                 if (this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gVertical], this.gravityN[this.gHorizontal]) ||
                         this.collidesWithEntityAtOffset(entity, this.gravityN[this.gVertical], this.gravityN[this.gHorizontal])) {
+//                    if (this.response.overlap && entity.collisonResponse === "static") {
                     if (this.response.overlap && entity.collisonResponse === "static") {
+                        this.wall = entity;
                         this.velocity[this.gHorizontal] = -this.velocity[this.gHorizontal] * this.elasticity;
                     }
                 }

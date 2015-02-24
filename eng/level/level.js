@@ -21,6 +21,7 @@ A_.LEVEL.Level = Class.extend({
         this.layers = [];
         this.debugLayer = null;
 
+        this.images = [];
         // Colliding tilemaps
         this.tileMaps = [];
         // All the sprites & their sounds.
@@ -248,6 +249,10 @@ A_.LEVEL.Level = Class.extend({
             return;
         }
 
+        for (var i = 0, len = this.images.length; i < len; i++) {
+            this.images[i].update();
+        }
+        
         // Update SPRITES
 //        _.each(this.sprites, function (sprite) {
 //            if (sprite.updates) {

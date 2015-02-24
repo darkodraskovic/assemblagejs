@@ -22,11 +22,14 @@ var Diskette = A_.SPRITES.Kinematic.extend({
             volume: 1
         });
     },
-    update: function () {        
+    update: function () {
         var spring = this.detectDynamics();
         if (spring)
             this.processDynamics(spring);
-        
+
+//        if (this.standing) {
+//            this.velocity.sub(this.gravity);
+//        }
         this._super();
     },
     detectDynamics: function () {
@@ -72,8 +75,15 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     collideWithKinematic: function (other, response) {
         var elasticity = this.elasticity;
 
-        if (response.overlap && Math.abs(response.overlapN.x) === 1 && other instanceof Diskette) {
-            this.elasticity = 2;
+        if (other instanceof Diskette && response.overlap) {
+            if (Math.abs(response.overlapN.x) === 1) {
+                this.elasticity = 2;
+            }
+        }
+        if (other instanceof Ball && response.overlap) {
+            if (Math.abs(response.overlap)) {
+                this.elasticity = 1;
+            }
         }
 
         this._super(other, response);
