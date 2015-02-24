@@ -211,21 +211,25 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     processArcade: function () {
         this.ground = null;
+        // Process the impulse only one time per tick.
+        this._grounded = false;
         this.wall = null;
         this.standing = false;
         for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
             var entity = this.collisionEntities[i];
             if (this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
                 if (this.response.overlap) {
-                    if (this.response.overlapN[this.gV] === this.gravityN[this.gV]) {
-                        // Arcade physics: kinematic is on a perfectly horizontal plane.
+                    // Arcade physics: kinematic is on a perfectly horizontal plane.
+                    if (this.response.overlapN[this.gV] === this.gravityN[this.gV] && !this._grounded) {
                         if (this.velocity[this.gV].abs() > this.bounceTreshold) {
                             this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
                         } else {
                             this.velocity[this.gV] = 0;
                         }
                     }
+                    // See if the entity is standing.
                     this.ground = entity;
+                    this._grounded = true;
                     this.slopeNormal = this.response.overlapN;
                     if (this.slopeNormal[this.gH] > -this.slopeOffset && this.slopeNormal[this.gH] < this.slopeOffset) {
                         this.standing = true;
