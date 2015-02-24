@@ -3,8 +3,9 @@ A_.LEVEL.Level = Class.extend({
     height: 0,
     scale: 1,
     scaleSpeed: 2,
-    init: function (game) {
+    init: function (game, levelManager) {
         this.game = game;
+        this.levelManager = levelManager;
 
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.mouseReactivityInjection
@@ -313,8 +314,8 @@ A_.LEVEL.Level = Class.extend({
         this.processParallax(x, y);
         this.processScale();
 
-        this.container.position.x = Math.round(this.container.position.x);
-        this.container.position.y = Math.round(this.container.position.y);
+//        this.container.position.x = Math.round(this.container.position.x);
+//        this.container.position.y = Math.round(this.container.position.y);
     },
     processParallax: function (x, y) {
         for (var i = 0; i < this.layers.length; i++) {

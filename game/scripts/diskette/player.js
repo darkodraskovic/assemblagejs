@@ -20,7 +20,7 @@ var Player = Anime.extend({
         
         this.dynamicsMap = this.level.findLayerByName("Dynamics").tilemap;
     },
-    processControls: function () {
+    processControls: function () {       
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
             this.applyForce = true;
             if (A_.INPUT.down["right"] && A_.INPUT.down["left"]) {

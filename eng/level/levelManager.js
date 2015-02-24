@@ -108,7 +108,7 @@ A_.LEVEL.LevelManager = Class.extend({
             return;
         }
 
-        var level = new A_.LEVEL.Level(this.game);
+        var level = new A_.LEVEL.Level(this.game, this);
         level.manifest = manifest;
 
         level.name = name;
@@ -229,7 +229,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.deactivateLevel(name);
         this.destroyLevel(name);
-        this.createLevel(level.manifest, level.name, true);
+        this._createLevel(level.manifest, level.name, true);
 
         this.manageLevels = true;
     },

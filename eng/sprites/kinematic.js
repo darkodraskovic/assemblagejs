@@ -200,9 +200,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
         }
     },
-    processStaticImpulse: function () {
+    processStaticImpulse: function (collisionNormal) {
         this._vector.copy(this.velocity).reverse();
-        var impulse = this._vector.project(this._lastCollisionNormal).scale(-(1 + this.elasticity));
+        var impulse = this._vector.project(collisionNormal).scale(-(1 + this.elasticity));
         this.velocity.sub(impulse);
     },
     processKineticImpulse: function (other, response) {
@@ -238,11 +238,19 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                         }
                     }
                 }
+                // Special case: entity hits the wall
+                if (this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gVertical], this.gravityN[this.gHorizontal]) ||
+                        this.collidesWithEntityAtOffset(entity, this.gravityN[this.gVertical], this.gravityN[this.gHorizontal])) {
+                    if (this.response.overlap && entity.collisonResponse === "static") {
+                        this.velocity[this.gHorizontal] = -this.velocity[this.gHorizontal] * this.elasticity;
+                    }
+                }
             }
         }
 
+//        else 
         if (this.velocity.dot(this._lastCollisionNormal) > 0 && this.velocity.len() > this.impulseTreshold) {
-            this.processStaticImpulse();
+            this.processStaticImpulse(this._lastCollisionNormal);
         }
     }
 });
