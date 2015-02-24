@@ -511,8 +511,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1248,
-                 "y":480
+                 "x":1120,
+                 "y":352
                 }, 
                 {
                  "height":0,
@@ -548,6 +548,114 @@
                  "width":0,
                  "x":832,
                  "y":96
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":32
+                        }, 
+                        {
+                         "x":32,
+                         "y":32
+                        }],
+                 "properties":
+                    {
+                     "collisionResponse":"\"static\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1120,
+                 "y":448
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":32
+                        }, 
+                        {
+                         "x":32,
+                         "y":32
+                        }],
+                 "properties":
+                    {
+                     "collisionResponse":"\"static\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1088,
+                 "y":416
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":32
+                        }, 
+                        {
+                         "x":32,
+                         "y":32
+                        }],
+                 "properties":
+                    {
+                     "collisionResponse":"\"static\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1056,
+                 "y":384
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":32
+                        }, 
+                        {
+                         "x":32,
+                         "y":32
+                        }],
+                 "properties":
+                    {
+                     "collisionResponse":"\"static\""
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1024,
+                 "y":352
                 }],
          "opacity":1,
          "properties":

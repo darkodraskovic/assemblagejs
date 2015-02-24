@@ -5,7 +5,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     elasticity: 0.5,
     springForce: 600,
     springScan: 0.1,
-    arcade: true,
+    platformer: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 10;
