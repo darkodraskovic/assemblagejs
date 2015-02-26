@@ -165,8 +165,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":824,
-                 "y":408
+                 "x":696,
+                 "y":24
                 }, 
                 {
                  "height":32,
@@ -179,7 +179,7 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":928,
+                 "x":696,
                  "y":504
                 }, 
                 {
@@ -222,7 +222,7 @@
                  "visible":true,
                  "width":32,
                  "x":696,
-                 "y":512
+                 "y":456
                 }, 
                 {
                  "height":32,
@@ -250,7 +250,7 @@
                  "visible":true,
                  "width":32,
                  "x":696,
-                 "y":464
+                 "y":408
                 }, 
                 {
                  "height":32,
@@ -264,7 +264,7 @@
                  "visible":true,
                  "width":32,
                  "x":696,
-                 "y":416
+                 "y":360
                 }, 
                 {
                  "height":32,
@@ -292,7 +292,7 @@
                  "visible":true,
                  "width":32,
                  "x":696,
-                 "y":320
+                 "y":264
                 }, 
                 {
                  "height":32,
@@ -348,7 +348,7 @@
                  "visible":true,
                  "width":32,
                  "x":696,
-                 "y":232
+                 "y":168
                 }, 
                 {
                  "height":32,
@@ -362,7 +362,7 @@
                  "visible":true,
                  "width":32,
                  "x":696,
-                 "y":280
+                 "y":208
                 }, 
                 {
                  "height":32,
@@ -376,7 +376,7 @@
                  "visible":true,
                  "width":32,
                  "x":696,
-                 "y":368
+                 "y":312
                 }, 
                 {
                  "height":32,
@@ -417,8 +417,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":824,
-                 "y":496
+                 "x":376,
+                 "y":704
                 }, 
                 {
                  "height":32,
@@ -432,7 +432,7 @@
                  "visible":true,
                  "width":32,
                  "x":696,
-                 "y":192
+                 "y":104
                 }, 
                 {
                  "height":32,
@@ -445,8 +445,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":960,
-                 "y":376
+                 "x":928,
+                 "y":360
                 }, 
                 {
                  "height":32,
@@ -473,8 +473,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":928,
-                 "y":456
+                 "x":896,
+                 "y":360
                 }, 
                 {
                  "height":32,
@@ -501,8 +501,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":896,
-                 "y":376
+                 "x":928,
+                 "y":448
                 }, 
                 {
                  "height":32,
@@ -516,7 +516,7 @@
                  "visible":true,
                  "width":32,
                  "x":928,
-                 "y":424
+                 "y":504
                 }, 
                 {
                  "height":32,
@@ -543,8 +543,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":768,
-                 "y":496
+                 "x":1144,
+                 "y":464
                 }, 
                 {
                  "height":32,
@@ -614,7 +614,7 @@
                  "visible":true,
                  "width":32,
                  "x":896,
-                 "y":416
+                 "y":408
                 }, 
                 {
                  "height":32,
@@ -628,7 +628,7 @@
                  "visible":true,
                  "width":32,
                  "x":928,
-                 "y":384
+                 "y":408
                 }, 
                 {
                  "height":32,

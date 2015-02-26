@@ -21,14 +21,17 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         });
     },
     update: function () {
-        var spring = this.detectDynamics();
-        if (spring)
-            this.processDynamics(spring);
+//        var spring = this.detectDynamics();
+//        if (spring)
+//            this.processDynamics(spring);
 
 //        if (this.standing) {
 //            this.velocity.sub(this.gravity);
 //        }
         
+//        if (this.name === "Springer") {
+//            window.console.log(this.velocity.y);
+//        }
         this._super();
     },
     detectDynamics: function () {
