@@ -254,11 +254,6 @@ A_.LEVEL.Level = Class.extend({
         }
         
         // Update SPRITES
-//        _.each(this.sprites, function (sprite) {
-//            if (sprite.updates) {
-//                sprite.update();
-//            }
-//        });
         for (var i = 0, len = this.sprites.length; i < len; i++) {
             this.sprites[i].update();
         }

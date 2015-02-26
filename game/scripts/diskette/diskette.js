@@ -6,6 +6,9 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     springForce: 600,
     springScan: 0.1,
     platformer: true,
+    bounceTreshold: 200,
+    frameWidth: 32,
+    frameHeight: 32,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 10;
@@ -14,20 +17,19 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         this.maxVelocity.x = 600;
         this.maxVelocity.y = 800;
         this.dynamicsMap = this.level.findLayerByName("Dynamics").tilemap;
-
+        this.addAnimation("inserting", _.range(0, 10), 0.1);
         this.springSound = this.level.createSound({
             urls: ['diskette/bounce.ogg'],
             volume: 1
         });
     },
     update: function () {
-//        var spring = this.detectDynamics();
-//        if (spring)
-//            this.processDynamics(spring);
+        var spring = this.detectDynamics();
+        if (spring)
+            this.processDynamics(spring);
 
 //        if (this.name === "Springer") {
-////            window.console.log(this.velocity.y);
-//            window.console.log(this.collisionResponse);
+//            window.console.log(this.velocity.y);
 //        }
         this._super();
     },
