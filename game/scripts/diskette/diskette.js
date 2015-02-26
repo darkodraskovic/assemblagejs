@@ -4,7 +4,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     drawCollisionPolygon: false,
     elasticity: 0.5,
     springForce: 600,
-    springScan: 0.1,
+    springScan: 1,
     platformer: true,
     bounceTreshold: 200,
     frameWidth: 32,
@@ -28,9 +28,10 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         if (spring)
             this.processDynamics(spring);
 
-//        if (this.name === "Springer") {
+        if (this.name === "Springer") {
 //            window.console.log(this.velocity.y);
-//        }
+//            window.console.log(spring);
+        }
         this._super();
     },
     detectDynamics: function () {

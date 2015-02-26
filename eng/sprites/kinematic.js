@@ -89,8 +89,20 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
         // Process COLLISION
         this.processTileCollisions();
-        this.processSpriteCollisions();
+        if (this.platformer) {
+            for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
+                this.processStatic(this.collisionEntities[i]);
+            }
+            this.collisionEntities.length = 0;
+        }
         this.processImpulse(this._lastStaticCollisionNormal, this._vector.copy(this.velocity).reverse());
+        this.processSpriteCollisions();
+        if (this.platformer) {
+            for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
+                this.processStatic(this.collisionEntities[i]);
+            }
+            this.collisionEntities.length = 0;
+        }
 
         this._super();
     },
@@ -109,17 +121,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                         this.response.clear();
                         var collided = SAT.testPolygonPolygon(this.collisionPolygon, tile.collisionPolygon, this.response);
                         if (collided) {
-                            this.collideWithTile(tile, this.response);
+                            this.collideWithStatic(tile, this.response);
                         }
                     }
                 }
             }
-        }
-        if (this.platformer) {
-            for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
-                this.processPlatform(this.collisionEntities[i]);
-            }
-            this.collisionEntities.length = 0;
         }
     },
     processSpriteCollisions: function () {
@@ -142,11 +148,15 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
         }
     },
-    collideWithTile: function (other, response) {
+    collideWithStatic: function (other, response) {
+        if (this.collisionResponse === "sensor") {
+            this.collided = true;
+            return;
+        }
+
         if (this.platformer) {
             this.collisionEntities.push(other);
         }
-
         if (!response.overlap)
             return;
 
@@ -155,23 +165,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
         this.synchCollisionPolygon();
 
-        this._lastStaticCollisionNormal.copy(response.overlapN);
-    },
-    collideWithStatic: function (other, response) {
-        if (this.collisionResponse === "sensor")
-            return;
-
-        if (!response.overlap)
-            return;
-
-        this.collided = true;
-
-        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
-        this.synchCollisionPolygon();
-
-        if (this.platformer) {
-            this.processPlatform(other);
-        }
         this._lastStaticCollisionNormal.copy(response.overlapN);
     },
     collideWithKinematic: function (other, response) {
@@ -219,10 +212,10 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 this.processImpulse(response.overlapN, velocityDiff, other);
                 other.processImpulse(other._collisionNormal, other._vector, this);
                 if (this.platformer) {
-                    this.processPlatform(other);
+                    this.processDynamic(response.overlapN);
                 }
                 if (other.platformer) {
-                    other.processPlatform(this);
+                    other.processDynamic(other._collisionNormal);
                 }
             }
         }
@@ -247,22 +240,21 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.velocity.sub(impulse);
         }
     },
-    processPlatform: function (entity) {
-        var impulsed = false;
+    processStatic: function (entity) {
         if (!this.ground && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
             if (this.response.overlap) {
                 // Platformer hits the ground, ie. perfectly horizontal plane.
-                if (this.response.overlapN[this.gV] === this.gravityN[this.gV]) {
+                if (this.response.overlapN[this.gV] === this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] >= 0) {
                     if (this.velocity[this.gV].abs() > this.bounceTreshold) {
                         this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
                     } else {
                         this.velocity[this.gV] = 0;
                     }
                 }
-                impulsed = true;
                 // See if the entity is standing.
                 this.ground = entity;
-                this.slopeNormal = this.response.overlapN;
+                this.slopeNormal.x = this.response.overlapN.x;
+                this.slopeNormal.y = this.response.overlapN.y;
                 if (this.slopeNormal[this.gH] > -this.slopeOffset && this.slopeNormal[this.gH] < this.slopeOffset) {
                     this.standing = true;
                 }
@@ -279,7 +271,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     }
                     this.ceiling = entity;
                 }
-                impulsed = true;
             }
         }
         // Platformer hits the wall, ie. perfectly vertical surface.
@@ -294,8 +285,21 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     this.velocity[this.gH] = 0;
                 }
             }
-            impulsed = true;
         }
-        return impulsed;
+    },
+    processDynamic: function (overlapN) {
+        // See if the entity is standing.
+        if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
+            this.slopeNormal.x = overlapN.x;
+            this.slopeNormal.y = overlapN.y;
+            this.standing = true;
+        }
+        if (overlapN[this.gV] === this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] >= 0) {
+            if (this.velocity[this.gV].abs() > this.bounceTreshold) {
+                this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
+            } else {
+                this.velocity[this.gV] = 0;
+            }
+        }
     }
 });
