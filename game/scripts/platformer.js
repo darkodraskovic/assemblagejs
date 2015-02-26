@@ -363,6 +363,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     collisionResponse: "passive",
     drawCollisionPolygon: false,
     elasticity: 0.5,
+    bounceTreshold: 40,
 //    elasticity: 1,
 //    groundCheck: true,
     init: function (parent, x, y, props) {

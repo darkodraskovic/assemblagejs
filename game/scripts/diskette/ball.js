@@ -6,7 +6,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     elasticity: 0.5,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.friction.x = 3;
+        this.friction.x = 2;
         this.friction.y = 0;
         this.setGravity(0, 10);
         this.maxVelocity.x = 800;
