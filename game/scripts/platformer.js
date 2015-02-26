@@ -42,7 +42,6 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
     drawCollisionPolygon: false,
     mode: "throwing",
     facing: "right",
-    platformer: true,
     elasticity: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);

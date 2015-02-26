@@ -5,7 +5,6 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     elasticity: 0.5,
     springForce: 600,
     springScan: 1,
-    platformer: true,
     bounceTreshold: 200,
     frameWidth: 32,
     frameHeight: 32,

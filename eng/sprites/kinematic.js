@@ -3,7 +3,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     elasticity: 0,
     angularSpeed: 0,
     bounceTreshold: 100,
-    platformer: false,
     standing: false,
     mass: 1,
     init: function (parent, x, y, props) {
@@ -78,31 +77,25 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this._lastStaticCollisionNormal.x = 0;
         this._lastStaticCollisionNormal.y = 0;
 
-        if (this.platformer) {
-            this.collided = false;
-            this.ground = null;
-            this.ceiling = null;
-            this.wall = null;
-            this.standing = false;
-            this.slopeNormal.x = 0;
-            this.slopeNormal.y = 0;
-        }
+        this.collided = false;
+        this.ground = null;
+        this.ceiling = null;
+        this.wall = null;
+        this.standing = false;
+        this.slopeNormal.x = 0;
+        this.slopeNormal.y = 0;
         // Process COLLISION
         this.processTileCollisions();
-        if (this.platformer) {
-            for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
-                this.processStatic(this.collisionEntities[i]);
-            }
-            this.collisionEntities.length = 0;
+        for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
+            this.processStatic(this.collisionEntities[i]);
         }
-        this.processImpulse(this._lastStaticCollisionNormal, this._vector.copy(this.velocity).reverse());
+        this.collisionEntities.length = 0;
         this.processSpriteCollisions();
-        if (this.platformer) {
-            for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
-                this.processStatic(this.collisionEntities[i]);
-            }
-            this.collisionEntities.length = 0;
+        for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
+            this.processStatic(this.collisionEntities[i]);
         }
+        this.collisionEntities.length = 0;
+        this.processImpulse(this._lastStaticCollisionNormal, this._vector.copy(this.velocity).reverse());
 
         this._super();
     },
@@ -154,9 +147,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             return;
         }
 
-        if (this.platformer) {
-            this.collisionEntities.push(other);
-        }
+        this.collisionEntities.push(other);
+
         if (!response.overlap)
             return;
 
@@ -211,12 +203,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 other._vector.copy(velocityDiff).reverse();
                 this.processImpulse(response.overlapN, velocityDiff, other);
                 other.processImpulse(other._collisionNormal, other._vector, this);
-                if (this.platformer) {
-                    this.processDynamic(response.overlapN);
-                }
-                if (other.platformer) {
-                    other.processDynamic(other._collisionNormal);
-                }
+                this.processDynamic(response.overlapN);
+                other.processDynamic(other._collisionNormal);
             }
         }
     },
@@ -289,16 +277,18 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     },
     processDynamic: function (overlapN) {
         // See if the entity is standing.
-        if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
-            this.slopeNormal.x = overlapN.x;
-            this.slopeNormal.y = overlapN.y;
-            this.standing = true;
-        }
-        if (overlapN[this.gV] === this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] >= 0) {
-            if (this.velocity[this.gV].abs() > this.bounceTreshold) {
-                this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
-            } else {
-                this.velocity[this.gV] = 0;
+        if (overlapN.dot(this.gravityN) >= 0) {
+            if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
+                this.slopeNormal.x = overlapN.x;
+                this.slopeNormal.y = overlapN.y;
+            }
+            if (overlapN[this.gV] === this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] >= 0) {
+                if (this.velocity[this.gV].abs() > this.bounceTreshold) {
+                    this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
+                } else {
+                    this.velocity[this.gV] = 0;
+                }
+                this.standing = true;
             }
         }
     }
