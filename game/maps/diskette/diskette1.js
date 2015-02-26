@@ -411,7 +411,7 @@
                  "name":"Springer",
                  "properties":
                     {
-
+                     "collisionResponse":"\"static\""
                     },
                  "rotation":0,
                  "type":"Diskette",

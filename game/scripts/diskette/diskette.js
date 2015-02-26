@@ -25,12 +25,9 @@ var Diskette = A_.SPRITES.Kinematic.extend({
 //        if (spring)
 //            this.processDynamics(spring);
 
-//        if (this.standing) {
-//            this.velocity.sub(this.gravity);
-//        }
-        
 //        if (this.name === "Springer") {
-//            window.console.log(this.velocity.y);
+////            window.console.log(this.velocity.y);
+//            window.console.log(this.collisionResponse);
 //        }
         this._super();
     },
@@ -76,7 +73,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     },
     collideWithKinematic: function (other, response) {
         var elasticity = this.elasticity;
-        if ((other instanceof Diskette) && 
+        if ((other instanceof Diskette) &&
                 response.overlap) {
             if (Math.abs(response.overlapN.x) === 1 && this.velocity.x.abs() > this.bounceTreshold) {
                 this.elasticity = 2;

@@ -2,7 +2,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
     isMoving: false,
     elasticity: 0,
     angularSpeed: 0,
-    impulseTreshold: 10,
     bounceTreshold: 100,
     platformer: false,
     standing: false,
@@ -28,7 +27,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.gravity.x = x;
         this.gravity.y = y;
         this.gravityN.copy(this.gravity).normalize();
-        this.impulseTreshold = this.gravity.len();
         if (Math.abs(this.gravityN.x) > Math.abs(this.gravityN.y)) {
             this.gH = "y";
             this.gV = "x";
@@ -111,16 +109,18 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                         this.response.clear();
                         var collided = SAT.testPolygonPolygon(this.collisionPolygon, tile.collisionPolygon, this.response);
                         if (collided) {
-                            this.collideWithStatic(tile, this.response);
+                            this.collideWithTile(tile, this.response);
                         }
                     }
                 }
             }
         }
-        for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
-            this.processPlatform(this.collisionEntities[i]);
+        if (this.platformer) {
+            for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
+                this.processPlatform(this.collisionEntities[i]);
+            }
+            this.collisionEntities.length = 0;
         }
-        this.collisionEntities.length = 0;
     },
     processSpriteCollisions: function () {
         if (!this.collides || this.collisionResponse === "static")
@@ -142,25 +142,39 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
         }
     },
-    collideWithStatic: function (other, response) {
-        if (this.collisionResponse === "sensor")
-            return;
+    collideWithTile: function (other, response) {
         if (this.platformer) {
             this.collisionEntities.push(other);
         }
-        this.collided = true;
 
         if (!response.overlap)
             return;
+
+        this.collided = true;
 
         this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
         this.synchCollisionPolygon();
 
         this._lastStaticCollisionNormal.copy(response.overlapN);
     },
+    collideWithStatic: function (other, response) {
+        if (this.collisionResponse === "sensor")
+            return;
+
+        if (!response.overlap)
+            return;
+
+        this.collided = true;
+
+        this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+        this.synchCollisionPolygon();
+
+        if (this.platformer) {
+            this.processPlatform(other);
+        }
+        this._lastStaticCollisionNormal.copy(response.overlapN);
+    },
     collideWithKinematic: function (other, response) {
-
-
         if (!response.overlap)
             return;
 
@@ -203,10 +217,10 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 other._collisionNormal.copy(response.overlapN).reverse();
                 other._vector.copy(velocityDiff).reverse();
                 this.processImpulse(response.overlapN, velocityDiff, other);
+                other.processImpulse(other._collisionNormal, other._vector, this);
                 if (this.platformer) {
                     this.processPlatform(other);
                 }
-                other.processImpulse(other._collisionNormal, other._vector, this);
                 if (other.platformer) {
                     other.processPlatform(this);
                 }
@@ -219,7 +233,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // Calculate the velocity difference.
         // V = Vb - Va
         // Resolve only if velocities are separating.
-//        if (velocityDiff.dot(collisionNormal) < 0 && velocityDiff.len() > this.impulseTreshold) {
         if (velocityDiff.dot(collisionNormal) < 0) {
             // V' = (V dot N) * N
             velocityDiff.project(collisionNormal);
@@ -228,7 +241,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             if (velocityDiff.len() > this.bounceTreshold) {
                 e = this.elasticity;
             }
-//            var impulse = velocityDiff.scale(-(1 + this.elasticity));
             var impulse = velocityDiff.scale(-(1 + e));
             if (other)
                 impulse.scale(other.mass / (this.mass + other.mass));
