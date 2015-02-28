@@ -85,7 +85,7 @@ var Laser = A_.SPRITES.Sprite.extend({
     spriteSheet: "laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.setAlpha(0.4);
+        this.sprite.alpha = 0.4;
         this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
         this.sound = this.level.createSound({
@@ -122,7 +122,7 @@ var Laser = A_.SPRITES.Sprite.extend({
     toggleFire: function (state) {
         if (state === "on") {
             this.on = true;
-            this.setAlpha(0.75);
+            this.sprite.alpha = 0.75;
             this.setWidth(A_.UTILS.distanceTo(this.getPositionLevel(), this.level.getMousePosition()));
 
             this.sound.play(function (id) {
@@ -132,7 +132,7 @@ var Laser = A_.SPRITES.Sprite.extend({
         }
         if (state === "off") {
             this.on = false;
-            this.setAlpha(0.4);
+            this.sprite.alpha = 0.4;
             this.setWidth(this.origW);
 
             this.sound.fade(0.75, 0, 450, null, this.soundId);
@@ -154,7 +154,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
             volume: 0.75
         }).play();
         this.setOrigin(0, 0.5);
-        this.setAlpha(0.75);
+        this.sprite.alpha = 0.75;
     },
     update: function () {
         if (this.outOfBounds) {

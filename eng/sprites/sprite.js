@@ -285,18 +285,6 @@ A_.SPRITES.Sprite = Class.extend({
     getPositionScreen: function () {
         return this.sprite.toGlobal(this.level.origin);
     },
-    setSize: function (w, h) {
-        this.sprite.width = w;
-        this.sprite.height = h;
-        // We scale proportionally sprite points.
-        _.each(this.spritePoints, function (sp) {
-            sp.setScale(this.scale.x, this.scale.y);
-        }, this);
-
-    },
-//    getSize: function(w, h) {
-//        return {width: Math.abs(this.sprite.width), height: Math.abs(this.sprite.height)};
-//    },
     setWidth: function (w) {
         this.sprite.width = w;
         // We scale proportionally sprite points on the x axis.
@@ -418,15 +406,7 @@ A_.SPRITES.Sprite = Class.extend({
         return [deltaX, deltaY];
     },
     getOrigin: function () {
-//        return this.sprite.anchor;
         return this.origin;
-    },
-    // TRANSPARENCY
-    setAlpha: function (n) {
-        this.sprite.alpha = n;
-    },
-    getAlpha: function () {
-        return this.sprite.alpha;
     },
     // Z ORDER & LAYERS
     getParent: function () {
@@ -555,10 +535,6 @@ A_.SPRITES.Sprite = Class.extend({
             }
         }
 
-//        _.each(this.addons, function (addon) {
-//            if (addon.active)
-//                addon.update();
-//        });
         for (var i = 0, len = this.addons.length; i < len; i++) {
             if (this.addons[i].active) {
                 this.addons[i].update();

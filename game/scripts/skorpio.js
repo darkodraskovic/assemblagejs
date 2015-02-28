@@ -287,7 +287,7 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
     bounded: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.setAlpha(0.75);
+        this.sprite.alpha = 0.75;
         this.setAnimation("all", 18, 0);
         this.setOrigin(0, 0.5);
 
@@ -355,6 +355,7 @@ var LaserTip = A_.SPRITES.Kinematic.extend({
         this._super();
     },
     collideWithStatic: function (other, response) {
+        window.console.log("collide");
         this._super(other, response);
 
         if (other.collisionResponse === "static") {

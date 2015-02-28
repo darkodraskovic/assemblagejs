@@ -47,7 +47,7 @@
          "properties":
             {
              "baked":"true",
-             "collisionResponse":"\"static\"",
+             "collision":"true",
              "image":"\"Interior-Furniture.png\""
             },
          "type":"tilelayer",
@@ -492,8 +492,8 @@
                  "type":"PlayerSkorpio",
                  "visible":true,
                  "width":0,
-                 "x":536,
-                 "y":344
+                 "x":776,
+                 "y":456
                 }],
          "opacity":1,
          "properties":

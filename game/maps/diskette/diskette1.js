@@ -179,8 +179,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1240,
-                 "y":736
+                 "x":1256,
+                 "y":720
                 }, 
                 {
                  "height":32,
@@ -459,8 +459,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1304,
-                 "y":736
+                 "x":1320,
+                 "y":720
                 }, 
                 {
                  "height":32,
@@ -473,8 +473,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1400,
-                 "y":736
+                 "x":456,
+                 "y":376
                 }, 
                 {
                  "height":32,
@@ -487,8 +487,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1464,
-                 "y":736
+                 "x":1432,
+                 "y":712
                 }, 
                 {
                  "height":32,
@@ -585,8 +585,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1208,
-                 "y":736
+                 "x":336,
+                 "y":376
                 }, 
                 {
                  "height":32,
@@ -599,8 +599,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1368,
-                 "y":736
+                 "x":432,
+                 "y":560
                 }, 
                 {
                  "height":32,
@@ -655,8 +655,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1272,
-                 "y":736
+                 "x":1288,
+                 "y":720
                 }, 
                 {
                  "height":32,
@@ -683,8 +683,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1336,
-                 "y":736
+                 "x":248,
+                 "y":952
                 }, 
                 {
                  "height":32,
@@ -711,8 +711,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1432,
-                 "y":736
+                 "x":1400,
+                 "y":712
                 }, 
                 {
                  "height":32,

@@ -44,7 +44,7 @@ levelManager.loadLevel(diskette, function () {
     for (var i = 0; i < 50; i++) {
         var star = level.createSprite(SceneryStar, level.findLayerByName("Sky"),
                 Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
-        star.setAlpha(Math.random());
+        star.sprite.alpha = Math.random();
     }
     level.findSpriteByClass(ScenerySun).setZ("top");
     player = level.findSpriteByClass(Player);

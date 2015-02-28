@@ -9,7 +9,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
-        this.gravityN = this.gravity.clone().normalize();
+        this.gravityN = new SAT.Vector(0, 0);
+        this.setGravity(0, 0, 45);
         this.friction = new SAT.Vector(0, 0);
         this.acceleration = new SAT.Vector(0, 0);
         this.maxVelocity = new SAT.Vector(1000, 1000);
@@ -89,7 +90,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.processSpriteCollisions();
         this.processStatics();
 
-        this._vector.copy(this.velocity).reverse()
+        this._vector.copy(this.velocity).reverse();
         if (this._vector.dot(this._lastStaticCollisionNormal) < 0) {
             this.processImpulse(this._lastStaticCollisionNormal, this._vector.copy(this.velocity).reverse());
         }
@@ -139,12 +140,12 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
     },
     collideWithStatic: function (other, response) {
-        this.collisionStatics.push(other);
-
         if (this.collisionResponse === "sensor") {
             this.collided = true;
             return;
         }
+
+        this.collisionStatics.push(other);
 
         if (!response.overlap)
             return;
@@ -239,16 +240,14 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         for (var i = 0, len = this.collisionStatics.length; i < len; i++) {
             var entity = this.collisionStatics[i];
             var response = this.response;
-            if (!this.standing && this.velocity[this.gV] / this.gravityN[this.gV] >= 0 && 
+            if (!this.standing && this.velocity[this.gV] / this.gravityN[this.gV] >= 0 &&
                     this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
                 if (response.overlap) {
-                    // Platformer hits the ground, ie. perfectly horizontal plane.
                     this.processStanding(response.overlapN);
                 }
             }
             else if (!this.ceiling && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], -this.gravityN[this.gV])) {
                 if (response.overlap) {
-                    // Platformer hits the ceiling, ie. perfectly horizontal plane.
                     if (response.overlapN[this.gV] === -this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] < 0) {
                         if (this.velocity[this.gV].abs() > this.bounceTreshold) {
                             this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
@@ -259,21 +258,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     }
                 }
             }
-            // Platformer hits the wall, ie. perfectly vertical plane.
-            if (!this.wall && this.velocity[this.gH] / this.gravityN[this.gH] > 0 && 
-                    this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gV], this.gravityN[this.gH])) {
-                if (response.overlap) {
-                    if (response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs() && this.velocity[this.gH]) {
-                        this.wall = entity;
-                        if (this.velocity[this.gH].abs() > this.bounceTreshold) {
-                            this.velocity[this.gH] = -this.velocity[this.gH] * this.elasticity;
-                        } else {
-                            this.velocity[this.gH] = 0;
-                        }
-                    }
-                }
-            }
-            else if (!this.wall && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gV], this.gravityN[this.gH])) {
+            if (!this.velocity[this.gH]) 
+                continue;
+            var wallPosition = this.velocity[this.gH] / this.gravityN[this.gH] > 0 ? -1 : 1; // -1 is left, 1 is right
+            if (!this.wall &&
+                    this.collidesWithEntityAtOffset(entity, wallPosition * this.gravityN[this.gV], this.gravityN[this.gH])) {
                 if (response.overlap) {
                     if (response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs() && this.velocity[this.gH]) {
                         this.wall = entity;

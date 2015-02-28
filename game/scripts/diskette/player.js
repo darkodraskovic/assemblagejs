@@ -46,7 +46,7 @@ var Player = Anime.extend({
     update: function () {
 //        window.console.log(this.standing);
 //        window.console.log(this.position.y);
-//        window.console.log(this.velocity.y);
+//        window.console.log(this.sprite.scale);
         
         this.processControls();
 
