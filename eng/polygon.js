@@ -141,18 +141,18 @@ A_.POLYGON.Utils.drawSATPolygon = function (graphics, SATPolygon, props) {
     if (_.isUndefined(props)) {
         props = {};
         props.lineWidth = 2;
-        props.lineColor = A_.POLYGON.Colors.green;
+        props.lineColor = A_.UTILS.Colors.green;
         props.lineAlpha = 0.67;
-        props.fillColor = A_.POLYGON.Colors.violet;
+        props.fillColor = A_.UTILS.Colors.violet;
         props.fillAlpha = 0.5;
     }
-    graphics.beginFill(props.fillColor, props.fillAlpha)
-    graphics.lineStyle(props.lineWidth, props.lineColor, props.lineAlpha)
+    graphics.beginFill(props.fillColor, props.fillAlpha);
+    graphics.lineStyle(props.lineWidth, props.lineColor, props.lineAlpha);
     graphics.drawPolygon(calcPointsArr);
     graphics.endFill();
 };
 
-A_.POLYGON.Colors = {
+A_.UTILS.Colors = {
     'aliceblue': '0xF0F8FF',
     'antiquewhite': '0xFAEBD7',
     'aquamarine': '0x7FFFD4',

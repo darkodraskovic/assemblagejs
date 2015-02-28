@@ -29,8 +29,6 @@ var SceneryPyramid = A_.SPRITES.Sprite.extend({
     spriteSheet: "diskette/pyramid.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.setOrigin(1, 0);
-
 //        var displacementTexture = PIXI.Texture.fromImage("game/graphics/diskette/pyramidDisplacementMap.png");
 //        var displacementFilter = new PIXI.DisplacementFilter(displacementTexture);
 //        displacementFilter.scale.x = 10;

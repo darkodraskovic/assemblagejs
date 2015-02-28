@@ -1,28 +1,39 @@
 var Diskette = A_.SPRITES.Kinematic.extend({
-    spriteSheet: "diskette/owl.png",
+    spriteSheet: "diskette/diskette.png",
     collisionResponse: "active",
     drawCollisionPolygon: false,
     elasticity: 0.5,
-    springForce: 600,
+    springForce: 650,
     springScan: 1,
     bounceTreshold: 200,
     frameWidth: 32,
-    frameHeight: 32,
+    frameHeight: 32,  
+    insertingFrameCount: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.friction.x = 10;
+        this.friction.x = 6;
         this.friction.y = 0;
         this.setGravity(0, 20, 60);
         this.maxVelocity.x = 600;
         this.maxVelocity.y = 800;
         this.dynamicsMap = this.level.findLayerByName("Dynamics").tilemap;
-        this.addAnimation("inserting", _.range(0, 10), 0.1);
+        this.addAnimation("inserting", _.range(0, 10), 0.2);
         this.springSound = this.level.createSound({
             urls: ['diskette/bounce.ogg'],
             volume: 1
         });
     },
     update: function () {
+        if (this.inserting) {
+            if (this.currentAnimation.currentFrame.floor() !== this.insertingFrameCount % this.currentAnimation.totalFrames) {
+                this.insertingFrameCount++;
+            }
+            if (this.insertingFrameCount >= this.currentAnimation.totalFrames * 2 + 6) {
+                this.currentAnimation.stop();
+                this.destroy();
+            }
+            return;
+        }
         var spring = this.detectDynamics();
         if (spring)
             this.processDynamics(spring);
@@ -72,6 +83,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
+
     },
     collideWithKinematic: function (other, response) {
         var elasticity = this.elasticity;
@@ -83,5 +95,12 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         }
         this._super(other, response);
         this.elasticity = elasticity;
+
+        if (other instanceof Computer && response.aInB) {
+            this.setAnimation("inserting");
+            this.inserting = true;
+            this.setPosition(other.getSlotX(), other.getSlotY());
+            this.collides = false;
+        }
     }
 });

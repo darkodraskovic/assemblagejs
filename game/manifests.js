@@ -79,7 +79,7 @@ brownian = {
 var diskette = {
     directory: "diskette/",
     type: "tiled",
-    scripts: ["diskette", "anime", "ball", "diskette",
+    scripts: ["diskette", "anime", "ball", "diskette", "computer",
         "player", "scenery"],
     map: "diskette1",
     graphics: ["ball.png", "blocks.png", "computer.png", "crosshair.png",

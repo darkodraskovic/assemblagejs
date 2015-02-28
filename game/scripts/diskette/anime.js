@@ -9,7 +9,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
     drawCollisionPolygon: false,
     facing: "right",
     elasticity: 0,
-    jumpForce: 800,
+    jumpForce: 625,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.force = new SAT.Vector(100, 100);
@@ -17,7 +17,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
         this.friction.y = 0;
         this.maxVelocity.x = 300;
         this.maxVelocity.y = 800;
-        this.setGravity(0, 30, 60);
+        this.setGravity(0, 25, 60);
         var animationSpeed = 0.25;
         this.addAnimation("idle", [0], 0);
         this.addAnimation("walking", _.range(10, 20), animationSpeed);

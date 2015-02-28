@@ -93,21 +93,30 @@ A_.SPRITES.Sprite = Class.extend({
     createPIXISprite: function (w, h) {
         // We'll use the graphics PIXI obj to render an invisible texture,
         // which we'll pass to PIXI.Sprite's constructor.
-        var graphic = new PIXI.Graphics();
+        var graphics = new PIXI.Graphics();
         // Specifies a simple one-color fill that subsequent calls to other 
         // Graphics methods use when drawing. Second argument specifies the alpha. 
-        graphic.beginFill(0xFFFFFF, 0);
-        graphic.drawRect(0, 0, w, h);
-        graphic.endFill();
-        // A texture stores the information that represents an image or part 
-        // of an image. It cannot be added to the display list directly. 
-        // Instead we use it as the texture for a PIXI.Sprite. 
-        // If no frame is provided then the whole image is used. (PIXI doc)
-        // generateTexture() is a function that returns a texture of the 
-        // graphics object that can then be used to create sprites (PIXI doc)
-        var sprite = new PIXI.Sprite(graphic.generateTexture(false));
-        sprite.anchor.x = 0.5;
-        sprite.anchor.y = 0.5;
+        graphics.beginFill(0xFFFFFF, 0);
+        graphics.drawRect(0, 0, w, h);
+        graphics.endFill();
+
+        var sprite;
+        if (this.graphics) {
+            sprite = graphics;
+            sprite.pivot.x = 0.5;
+            sprite.pivot.y = 0.5;
+        }
+        else {
+            // A texture stores the information that represents an image or part 
+            // of an image. It cannot be added to the display list directly. 
+            // Instead we use it as the texture for a PIXI.Sprite. 
+            // If no frame is provided then the whole image is used. (PIXI doc)
+            // generateTexture() is a function that returns a texture of the 
+            // graphics object that can then be used to create sprites (PIXI doc)
+            sprite = new PIXI.Sprite(graphics.generateTexture(false));
+            sprite.anchor.x = 0.5;
+            sprite.anchor.y = 0.5;
+        }
 
         return sprite;
     },
@@ -129,7 +138,11 @@ A_.SPRITES.Sprite = Class.extend({
         // Used to optimize getters & setters.
         this.position = this.sprite.position;
         this.scale = this.sprite.scale;
-        this.origin = sprite.anchor;
+        if (this.sprite instanceof PIXI.Graphics) {
+            this.origin = sprite.pivot;
+        }
+        else
+            this.origin = sprite.anchor;
     },
     // ANIMATION
     // frames is an array of nums refering to the index of texture in this.textures

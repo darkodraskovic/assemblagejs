@@ -29,6 +29,7 @@ var levelManager = A_.game.levelManager;
 
 // DISKETTE
 var player; 
+var level;
 
 Dynamics = {
     U_SPRING: 1,
@@ -40,7 +41,7 @@ Dynamics = {
     VIRUS_KILLER: 6
 };
 levelManager.loadLevel(diskette, function () {
-    var level = levelManager.createLevel(diskette, "level1");
+    level = levelManager.createLevel(diskette, "level1");
     for (var i = 0; i < 50; i++) {
         var star = level.createSprite(SceneryStar, level.findLayerByName("Sky"),
                 Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);

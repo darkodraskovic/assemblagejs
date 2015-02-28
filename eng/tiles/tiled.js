@@ -145,7 +145,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                         args["frameHeight"] = oData["height"];
                     }
                     var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
-                    o.setPositionRelative(o.getWidth() / 2, -o.getHeight() / 2);
+                    o.setPositionRelative(o.getWidth() / 2, o.getHeight() / 2);
                 }
                 o.setRotation(oData["rotation"].toRad());
                 if (o instanceof A_.SPRITES.Colliding)

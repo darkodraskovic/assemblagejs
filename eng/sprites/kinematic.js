@@ -18,7 +18,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.slopeNormal = new SAT.Vector(0, 0);
 
         this.collisionStatics = [];
-        this._lastStaticCollisionNormal = new SAT.Vector(0, 0);
         this._collisionNormal = new SAT.Vector(0, 0);
         this.wall = null;
     },
@@ -74,9 +73,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.synchCollisionPolygon();
 
         // Reset collision vars
-        this._lastStaticCollisionNormal.x = 0;
-        this._lastStaticCollisionNormal.y = 0;
-
         this.collided = false;
         this.ceiling = null;
         this.wall = null;
@@ -85,9 +81,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.slopeNormal.y = 0;
 
         // Process COLLISION
-        this.processTileCollisions();
-        this.processStatics();
         this.processSpriteCollisions();
+//        this.processStatics();
+        this.processTileCollisions();
         this.processStatics();
 
         this._super();
@@ -149,8 +145,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
         this.synchCollisionPolygon();
-
-        this._lastStaticCollisionNormal.copy(response.overlapN);
     },
     collideWithKinematic: function (other, response) {
         if (!response.overlap)
@@ -219,7 +213,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         if (collisionNormal[this.gV] === this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] >= 0) {
             if (this.velocity[this.gV].abs() < this.bounceTreshold) {
                 this.velocity[this.gV] = 0;
-            }
+            } 
         }
     },
     processStanding: function (overlapN) {
@@ -236,7 +230,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             var entity = this.collisionStatics[i];
             var response = this.response;
             if (!this.standing &&
-                    this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
+                    this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV] * A_.game.dt)) {
                 if (response.overlap) {
                     this.processStanding(response.overlapN);
                     if (response.overlapN[this.gV] === this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] >= 0) {

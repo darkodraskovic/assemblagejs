@@ -9,8 +9,8 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.friction.x = 2;
         this.friction.y = 0;
         this.setGravity(0, 10);
-        this.maxVelocity.x = 700;
-        this.maxVelocity.y = 700;
+        this.maxVelocity.x = 800;
+        this.maxVelocity.y = 800;
         this.lifeTime = 3;
         this.lifeTimer = 0;
     },
