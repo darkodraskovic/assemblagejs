@@ -57,17 +57,17 @@
             <url>eng/sprites/kinematic.js</url>
             <bookmark id="19">
                 <name/>
-                <line>89</line>
+                <line>87</line>
                 <key/>
             </bookmark>
             <bookmark id="18">
                 <name/>
-                <line>185</line>
+                <line>181</line>
                 <key/>
             </bookmark>
             <bookmark id="21">
                 <name/>
-                <line>227</line>
+                <line>233</line>
                 <key/>
             </bookmark>
         </file>
@@ -84,7 +84,9 @@
         <group>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/diskette/player.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/diskette/ball.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/main.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/kinematic.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/platformer.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/diskette/anime.js</file>
         </group>
     </open-files>

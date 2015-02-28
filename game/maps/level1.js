@@ -109,8 +109,8 @@
                  "type":"PlayerPlatformer",
                  "visible":true,
                  "width":0,
-                 "x":1208,
-                 "y":888
+                 "x":1224,
+                 "y":464
                 }, 
                 {
                  "gid":1763,

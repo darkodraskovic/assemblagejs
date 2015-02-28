@@ -218,7 +218,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
         this.processControls();
 
         if (this.tryJump) {
-            if (this.ground) {
+            if (this.standing) {
                 this.velocity.y = this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce;
                 this.jumps = true;
                 this.jumpSound.play();

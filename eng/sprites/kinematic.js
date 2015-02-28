@@ -88,7 +88,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.processStatics();
         this.processSpriteCollisions();
         this.processStatics();
-        this.processImpulse(this._lastStaticCollisionNormal, this._vector.copy(this.velocity).reverse());
+
+        this._vector.copy(this.velocity).reverse()
+        if (this._vector.dot(this._lastStaticCollisionNormal) < 0) {
+            this.processImpulse(this._lastStaticCollisionNormal, this._vector.copy(this.velocity).reverse());
+        }
 
         this._super();
     },
@@ -192,28 +196,28 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 var velocityDiff = this._vector;
                 velocityDiff.copy(other.velocity);
                 velocityDiff.sub(this.velocity);
-                other._collisionNormal.copy(response.overlapN).reverse();
-                other._vector.copy(velocityDiff).reverse();
-                this.processImpulse(response.overlapN, velocityDiff, other);
-                other.processImpulse(other._collisionNormal, other._vector, this);
-                this.processStanding(response.overlapN);
-                other.processStanding(other._collisionNormal);
+                if (velocityDiff.dot(response.overlapN) < 0) {
+                    other._collisionNormal.copy(response.overlapN).reverse();
+                    other._vector.copy(velocityDiff).reverse();
+                    this.processImpulse(response.overlapN, velocityDiff, other);
+                    other.processImpulse(other._collisionNormal, other._vector, this);
+                    this.processStanding(response.overlapN);
+                    other.processStanding(other._collisionNormal);
+                }
             }
         }
     },
     processImpulse: function (collisionNormal, velocityDiff, other) {
         // Calculate the impulse
         // I = -(1 + e) * (((Vb - Va) dot N) * N) * (Mb / (Ma + Mb))
-        if (velocityDiff.dot(collisionNormal) < 0) {
-            velocityDiff.project(collisionNormal);
+        velocityDiff.project(collisionNormal);
 
-            velocityDiff.x *= -(1 + (velocityDiff.x.abs() > this.bounceTreshold ? this.elasticity : 0));
-            velocityDiff.y *= -(1 + (velocityDiff.y.abs() > this.bounceTreshold ? this.elasticity : 0));
+        velocityDiff.x *= -(1 + (velocityDiff.x.abs() > this.bounceTreshold ? this.elasticity : 0));
+        velocityDiff.y *= -(1 + (velocityDiff.y.abs() > this.bounceTreshold ? this.elasticity : 0));
 
-            if (other)
-                velocityDiff.scale(other.mass / (this.mass + other.mass));
-            this.velocity.sub(velocityDiff);
-        }
+        if (other)
+            velocityDiff.scale(other.mass / (this.mass + other.mass));
+        this.velocity.sub(velocityDiff);
     },
     processStanding: function (overlapN) {
         if (overlapN.dot(this.gravityN) > 0) {
@@ -222,7 +226,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
                 this.standing = true;
             }
-            if (overlapN[this.gV] === this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] >= 0) {
+            if (overlapN[this.gV] === this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] >= 0) {
                 if (this.velocity[this.gV].abs() > this.bounceTreshold) {
                     this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
                 } else {
@@ -235,7 +239,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         for (var i = 0, len = this.collisionStatics.length; i < len; i++) {
             var entity = this.collisionStatics[i];
             var response = this.response;
-            if (!this.standing && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
+            if (!this.standing && this.velocity[this.gV] / this.gravityN[this.gV] >= 0 && 
+                    this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
                 if (response.overlap) {
                     // Platformer hits the ground, ie. perfectly horizontal plane.
                     this.processStanding(response.overlapN);
@@ -255,7 +260,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 }
             }
             // Platformer hits the wall, ie. perfectly vertical plane.
-            if (!this.wall && this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gV], this.gravityN[this.gH])) {
+            if (!this.wall && this.velocity[this.gH] / this.gravityN[this.gH] > 0 && 
+                    this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gV], this.gravityN[this.gH])) {
                 if (response.overlap) {
                     if (response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs() && this.velocity[this.gH]) {
                         this.wall = entity;
