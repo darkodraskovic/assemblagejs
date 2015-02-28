@@ -16,10 +16,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         this.slopeNormal = new SAT.Vector(0, 0);
 
-        this.collisionEntities = [];
+        this.collisionStatics = [];
         this._lastStaticCollisionNormal = new SAT.Vector(0, 0);
         this._collisionNormal = new SAT.Vector(0, 0);
-        this.ground = null;
         this.wall = null;
     },
     setGravity: function (x, y, slopeTolerance) {
@@ -78,20 +77,17 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this._lastStaticCollisionNormal.y = 0;
 
         this.collided = false;
-        this.ground = null;
         this.ceiling = null;
         this.wall = null;
         this.standing = false;
         this.slopeNormal.x = 0;
         this.slopeNormal.y = 0;
-        
+
         // Process COLLISION
         this.processTileCollisions();
-        this.processStatics(this.collisionEntities[i]);
-        
+        this.processStatics();
         this.processSpriteCollisions();
-        this.processStatics(this.collisionEntities[i]);
-
+        this.processStatics();
         this.processImpulse(this._lastStaticCollisionNormal, this._vector.copy(this.velocity).reverse());
 
         this._super();
@@ -139,12 +135,12 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
     },
     collideWithStatic: function (other, response) {
+        this.collisionStatics.push(other);
+
         if (this.collisionResponse === "sensor") {
             this.collided = true;
             return;
         }
-
-        this.collisionEntities.push(other);
 
         if (!response.overlap)
             return;
@@ -200,8 +196,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 other._vector.copy(velocityDiff).reverse();
                 this.processImpulse(response.overlapN, velocityDiff, other);
                 other.processImpulse(other._collisionNormal, other._vector, this);
-                this.processDynamic(response.overlapN);
-                other.processDynamic(other._collisionNormal);
+                this.processStanding(response.overlapN);
+                other.processStanding(other._collisionNormal);
             }
         }
     },
@@ -210,47 +206,45 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // I = -(1 + e) * (((Vb - Va) dot N) * N) * (Mb / (Ma + Mb))
         if (velocityDiff.dot(collisionNormal) < 0) {
             velocityDiff.project(collisionNormal);
-            var eX = 0
-            if (velocityDiff.x.abs() > this.bounceTreshold) {
-                eX = this.elasticity;
-            }
-            var eY = 0
-            if (velocityDiff.y.abs() > this.bounceTreshold) {
-                eY = this.elasticity;
-            }
-            velocityDiff.x *= (-(1 + eX));
-            velocityDiff.y *= (-(1 + eY));
+
+            velocityDiff.x *= -(1 + (velocityDiff.x.abs() > this.bounceTreshold ? this.elasticity : 0));
+            velocityDiff.y *= -(1 + (velocityDiff.y.abs() > this.bounceTreshold ? this.elasticity : 0));
+
             if (other)
                 velocityDiff.scale(other.mass / (this.mass + other.mass));
             this.velocity.sub(velocityDiff);
         }
     },
-    processStatics: function () {
-        for (var i = 0, len = this.collisionEntities.length; i < len; i++) {
-            var entity = this.collisionEntities[i];
-            if (!this.ground && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
-                if (this.response.overlap) {
-                    // Platformer hits the ground, ie. perfectly horizontal plane.
-                    if (this.response.overlapN[this.gV] === this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] >= 0) {
-                        if (this.velocity[this.gV].abs() > this.bounceTreshold) {
-                            this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
-                        } else {
-                            this.velocity[this.gV] = 0;
-                        }
-                    }
-                    this.ground = entity;
-                    this.slopeNormal.x = this.response.overlapN.x;
-                    this.slopeNormal.y = this.response.overlapN.y;
-                    // See if the entity is standing.
-                    if (this.slopeNormal[this.gH] > -this.slopeOffset && this.slopeNormal[this.gH] < this.slopeOffset) {
-                        this.standing = true;
-                    }
+    processStanding: function (overlapN) {
+        if (overlapN.dot(this.gravityN) > 0) {
+            this.slopeNormal.x = overlapN.x;
+            this.slopeNormal.y = overlapN.y;
+            if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
+                this.standing = true;
+            }
+            if (overlapN[this.gV] === this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] >= 0) {
+                if (this.velocity[this.gV].abs() > this.bounceTreshold) {
+                    this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
+                } else {
+                    this.velocity[this.gV] = 0;
                 }
             }
-            if (!this.ceiling && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], -this.gravityN[this.gV])) {
-                if (this.response.overlap) {
+        }
+    },
+    processStatics: function () {
+        for (var i = 0, len = this.collisionStatics.length; i < len; i++) {
+            var entity = this.collisionStatics[i];
+            var response = this.response;
+            if (!this.standing && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
+                if (response.overlap) {
+                    // Platformer hits the ground, ie. perfectly horizontal plane.
+                    this.processStanding(response.overlapN);
+                }
+            }
+            else if (!this.ceiling && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], -this.gravityN[this.gV])) {
+                if (response.overlap) {
                     // Platformer hits the ceiling, ie. perfectly horizontal plane.
-                    if (this.response.overlapN[this.gV] === -this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] < 0) {
+                    if (response.overlapN[this.gV] === -this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] < 0) {
                         if (this.velocity[this.gV].abs() > this.bounceTreshold) {
                             this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
                         } else {
@@ -261,35 +255,31 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 }
             }
             // Platformer hits the wall, ie. perfectly vertical plane.
-            if (!this.wall && this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gV], this.gravityN[this.gH]) ||
-                    this.collidesWithEntityAtOffset(entity, this.gravityN[this.gV], this.gravityN[this.gH])) {
-                if (this.response.overlap && this.response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs()
-                        && entity.collisonResponse === "static" && this.velocity[this.gH]) {
-                    this.wall = entity;
-                    if (this.velocity[this.gH].abs() > this.bounceTreshold) {
-                        this.velocity[this.gH] = -this.velocity[this.gH] * this.elasticity;
-                    } else {
-                        this.velocity[this.gH] = 0;
+            if (!this.wall && this.collidesWithEntityAtOffset(entity, -this.gravityN[this.gV], this.gravityN[this.gH])) {
+                if (response.overlap) {
+                    if (response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs() && this.velocity[this.gH]) {
+                        this.wall = entity;
+                        if (this.velocity[this.gH].abs() > this.bounceTreshold) {
+                            this.velocity[this.gH] = -this.velocity[this.gH] * this.elasticity;
+                        } else {
+                            this.velocity[this.gH] = 0;
+                        }
+                    }
+                }
+            }
+            else if (!this.wall && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gV], this.gravityN[this.gH])) {
+                if (response.overlap) {
+                    if (response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs() && this.velocity[this.gH]) {
+                        this.wall = entity;
+                        if (this.velocity[this.gH].abs() > this.bounceTreshold) {
+                            this.velocity[this.gH] = -this.velocity[this.gH] * this.elasticity;
+                        } else {
+                            this.velocity[this.gH] = 0;
+                        }
                     }
                 }
             }
         }
-        this.collisionEntities.length = 0;
-    },
-    processDynamic: function (overlapN) {
-        if (overlapN.dot(this.gravityN) > 0) {
-            if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
-                this.slopeNormal.x = overlapN.x;
-                this.slopeNormal.y = overlapN.y;
-            }
-            if (overlapN[this.gV] === this.gravityN[this.gV] && this.velocity.y / this.gravityN[this.gV] >= 0) {
-                if (this.velocity[this.gV].abs() > this.bounceTreshold) {
-                    this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
-                } else {
-                    this.velocity[this.gV] = 0;
-                }
-                this.standing = true;
-            }
-        }
+        this.collisionStatics.length = 0;
     }
 });
