@@ -218,6 +218,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         if (other)
             velocityDiff.scale(other.mass / (this.mass + other.mass));
+        
         this.velocity.sub(velocityDiff);
     },
     processStanding: function (overlapN) {
@@ -228,11 +229,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 this.standing = true;
             }
             if (overlapN[this.gV] === this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] >= 0) {
-                if (this.velocity[this.gV].abs() > this.bounceTreshold) {
-                    this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
-                } else {
-                    this.velocity[this.gV] = 0;
-                }
+                this._processVelocity(this.gV);
             }
         }
     },
@@ -249,32 +246,31 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             else if (!this.ceiling && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], -this.gravityN[this.gV])) {
                 if (response.overlap) {
                     if (response.overlapN[this.gV] === -this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] < 0) {
-                        if (this.velocity[this.gV].abs() > this.bounceTreshold) {
-                            this.velocity[this.gV] = -this.velocity[this.gV] * this.elasticity;
-                        } else {
-                            this.velocity[this.gV] = 0;
-                        }
+                        this._processVelocity(this.gV);
                         this.ceiling = entity;
                     }
                 }
             }
-            if (!this.velocity[this.gH]) 
+            if (!this.velocity[this.gH])
                 continue;
-            var wallPosition = this.velocity[this.gH] / this.gravityN[this.gH] > 0 ? -1 : 1; // -1 is left, 1 is right
-            if (!this.wall &&
-                    this.collidesWithEntityAtOffset(entity, wallPosition * this.gravityN[this.gV], this.gravityN[this.gH])) {
+            var sign = this.velocity[this.gH] / this.gravityN[this.gH] < 0 ? -1 : 1;
+            if (!this.wall && 
+                    this.collidesWithEntityAtOffset(entity, sign * this.gravityN[this.gV], this.gravityN[this.gH])) {
                 if (response.overlap) {
                     if (response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs() && this.velocity[this.gH]) {
+                        this._processVelocity(this.gH);
                         this.wall = entity;
-                        if (this.velocity[this.gH].abs() > this.bounceTreshold) {
-                            this.velocity[this.gH] = -this.velocity[this.gH] * this.elasticity;
-                        } else {
-                            this.velocity[this.gH] = 0;
-                        }
                     }
                 }
             }
         }
         this.collisionStatics.length = 0;
+    },
+    _processVelocity: function (orientation) {
+        if (this.velocity[orientation].abs() > this.bounceTreshold) {
+            this.velocity[orientation] = -this.velocity[orientation] * this.elasticity;
+        } else {
+            this.velocity[orientation] = 0;
+        }
     }
 });
