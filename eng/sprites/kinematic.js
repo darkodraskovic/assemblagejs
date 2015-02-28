@@ -218,7 +218,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         if (other)
             velocityDiff.scale(other.mass / (this.mass + other.mass));
-        
+
         this.velocity.sub(velocityDiff);
     },
     processStanding: function (overlapN) {
@@ -237,7 +237,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         for (var i = 0, len = this.collisionStatics.length; i < len; i++) {
             var entity = this.collisionStatics[i];
             var response = this.response;
-            if (!this.standing && this.velocity[this.gV] / this.gravityN[this.gV] >= 0 &&
+            if (!this.standing && 
                     this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
                 if (response.overlap) {
                     this.processStanding(response.overlapN);
@@ -254,7 +254,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             if (!this.velocity[this.gH])
                 continue;
             var sign = this.velocity[this.gH] / this.gravityN[this.gH] < 0 ? -1 : 1;
-            if (!this.wall && 
+            if (!this.wall &&
                     this.collidesWithEntityAtOffset(entity, sign * this.gravityN[this.gV], this.gravityN[this.gH])) {
                 if (response.overlap) {
                     if (response.overlapN[this.gH].abs() === this.gravityN[this.gV].abs() && this.velocity[this.gH]) {

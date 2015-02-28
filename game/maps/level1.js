@@ -109,8 +109,8 @@
                  "type":"PlayerPlatformer",
                  "visible":true,
                  "width":0,
-                 "x":1224,
-                 "y":464
+                 "x":1032,
+                 "y":808
                 }, 
                 {
                  "gid":1763,
@@ -126,110 +126,6 @@
                  "width":0,
                  "x":640,
                  "y":320
-                }, 
-                {
-                 "gid":1762,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Undead",
-                 "visible":true,
-                 "width":0,
-                 "x":480,
-                 "y":600
-                }, 
-                {
-                 "gid":1762,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Undead",
-                 "visible":true,
-                 "width":0,
-                 "x":448,
-                 "y":600
-                }, 
-                {
-                 "gid":1762,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Undead",
-                 "visible":true,
-                 "width":0,
-                 "x":512,
-                 "y":600
-                }, 
-                {
-                 "gid":1762,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Undead",
-                 "visible":true,
-                 "width":0,
-                 "x":552,
-                 "y":600
-                }, 
-                {
-                 "gid":1762,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Undead",
-                 "visible":true,
-                 "width":0,
-                 "x":592,
-                 "y":600
-                }, 
-                {
-                 "gid":1762,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Undead",
-                 "visible":true,
-                 "width":0,
-                 "x":632,
-                 "y":600
-                }, 
-                {
-                 "height":56,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Undead",
-                 "visible":true,
-                 "width":32,
-                 "x":608,
-                 "y":408
                 }, 
                 {
                  "height":0,

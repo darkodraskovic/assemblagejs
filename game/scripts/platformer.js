@@ -207,13 +207,12 @@ var PlayerPlatformer = AnimePlatformer.extend({
         }
     },
     fireJetpack: function () {
-        if (!this.ground) {
+        if (!this.standing) {
             this.velocity.y = (this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce) * 0.75;
             this.jetpackSound.play();
         }
     },
     update: function () {
-//        window.console.log(this.ground !== null);
 //        window.console.log(this.standing);
         this.processControls();
 
@@ -307,12 +306,12 @@ var Undead = AnimePlatformer.extend({
 //        if (_.random(1, 100) < this.jumpProbability) {
 //            this.tryJump = true;
 //        }
-//        else if (this.ground) {
+//        else if (this.standing) {
 //            this.velocity.x = -this.velocity.x;
 //            this.setX(this.prevX);
 //            this.flipFacing();
 //        }
-        if (this.ground) {
+        if (this.standing) {
             this.velocity.x = -this.velocity.x;
             this.setX(this.prevX);
             this.flipFacing();
@@ -335,7 +334,7 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
     update: function () {
         this._super();
         var undead = this.undead;
-        if (!this.collided && undead.ground) {
+        if (!this.collided && undead.standing) {
             if (_.random(1, 100) < undead.jumpProbability) {
                 undead.tryJump = true;
             } else if (_.random(1, 100) > 75) {
