@@ -29,7 +29,6 @@ A_.TILES.Tile = Class.extend({
         this.collisionPolygon = collisionPolygon;
 //            this.collisionPolygon.pos.x = A_.level.container.toLocal(A_.level.origin, this.sprite).x;
 //            this.collisionPolygon.pos.y = A_.level.container.toLocal(A_.level.origin, this.sprite).y;
-        this.collisonResponse = "static";
         this.collides = true;
     },
     removeFromLevel: function () {

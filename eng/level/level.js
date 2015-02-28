@@ -172,10 +172,6 @@ A_.LEVEL.Level = Class.extend({
         return sprite;
     },
     createSound: function (props) {
-//        _.each(props["urls"], function (url, i, list) {
-//            list[i] = "game/sounds/" + url;
-//        });
-
         var urls = props["urls"];
         for (var i = 0, len = urls.length; i < len; i++) {
             urls[i] = "game/sounds/" + urls[i];
@@ -207,27 +203,16 @@ A_.LEVEL.Level = Class.extend({
             layer.removeChildren();
             this.container.removeChild(layer);
         }, this);
-
     },
     // START/STOP level execution
     play: function () {
         this.running = true;
-//        _.each(this.sprites, function (sprite) {
-//            if (sprite.currentAnimation) {
-//                sprite.currentAnimation.play();
-//            }
-//        });
         for (var i = 0, len = this.sprites.length; i < len; i++) {
             this.sprites[i].currentAnimation.play();
         }
     },
     pause: function () {
         this.running = false;
-//        _.each(this.sprites, function (sprite) {
-//            if (sprite.currentAnimation) {
-//                sprite.currentAnimation.stop();
-//            }
-//        });
         for (var i = 0, len = this.sprites.length; i < len; i++) {
             this.sprites[i].currentAnimation.stop();
         }
@@ -252,7 +237,7 @@ A_.LEVEL.Level = Class.extend({
         for (var i = 0, len = this.images.length; i < len; i++) {
             this.images[i].update();
         }
-        
+
         // Update SPRITES
         for (var i = 0, len = this.sprites.length; i < len; i++) {
             this.sprites[i].update();
@@ -342,12 +327,12 @@ A_.LEVEL.Level = Class.extend({
         }
     },
     setWidth: function (w) {
-      this.width = w;
-      this.container.hitArea.width = w;
+        this.width = w;
+        this.container.hitArea.width = w;
     },
     setHeight: function (h) {
-      this.height = h;
-      this.container.hitArea.height = h;
+        this.height = h;
+        this.container.hitArea.height = h;
     },
     getWidth: function () {
         return this.width;

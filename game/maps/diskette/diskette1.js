@@ -165,8 +165,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":344,
-                 "y":696
+                 "x":1184,
+                 "y":424
                 }, 
                 {
                  "height":32,
@@ -417,7 +417,7 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1192,
+                 "x":1104,
                  "y":504
                 }, 
                 {
