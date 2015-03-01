@@ -88,7 +88,7 @@ var diskette = {
         "star.png", "sun.png"],
     sounds: [["bounce.ogg"], ["throw.ogg"]],
     camera: {
-        innerBoundOffset: 0.25,
+        innerBoundOffset: 0.35,
         worldBounded: true,
         followType: "bounded"
     }

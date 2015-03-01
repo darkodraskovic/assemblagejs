@@ -4,16 +4,15 @@ var Anime = A_.SPRITES.Kinematic.extend({
     bounded: false,
     wrap: true,
     collisionResponse: "passive",
-    collisionWidth: 32,
+    collisionWidth: 28,
     collisionHeight: 68,
     drawCollisionPolygon: false,
     facing: "right",
     elasticity: 0,
-    jumpForce: 625,
+//    jumpForce: 625,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.force = new SAT.Vector(100, 100);
-        this.friction.x = 56;
+        this.friction.x = 256;
         this.friction.y = 0;
         this.maxVelocity.x = 300;
         this.maxVelocity.y = 800;
@@ -25,34 +24,33 @@ var Anime = A_.SPRITES.Kinematic.extend({
         this.animations["jumping"].loop = false;
         this.addAnimation("falling", _.range(25, 30), animationSpeed);
         this.animations["falling"].loop = false;
+        this.addAnimation("crouching", _.range(30, 36), animationSpeed * 2);
+        this.animations["crouching"].loop = false;
+        this.animations["crouching"].onComplete = this.onCrouchingComplete.bind(this);
+    },
+    onCrouchingComplete: function () {
+//        window.console.log("Crouching completed");
     },
     update: function () {
         if (this.standing) {
-            if (this.applyForce) {
+            if (this.velocity.x) {
                 this.setAnimation("walking");
             } else {
-                this.setAnimation("idle");
+                if (this.crouching) {
+                    this.setAnimation("crouching");
+                }
+                else {
+                    this.setAnimation("idle");
+                }
             }
         } else {
-//            if (this.velocity.y < this.gravity[this.gVertical]) {
-                this.setAnimation("jumping");
-//            } else if (this.velocity.y > this.gravity[this.gVertical]) {
-//                this.setAnimation("falling");
-//            }
-        }
-        
-        if (this.applyForce) {
-            if (this.facing === "right") {
-                this.acceleration.x = this.force.x;
-            }
-            else if (this.facing === "left") {
-                this.acceleration.x = -this.force.x;
+            if (this.velocity.y < -this.gravity[this.gV]) {
+//                this.setAnimation("jumping");
+                this.setAnimation("falling");
+            } else {
+                this.setAnimation("falling");
             }
         }
-        else {
-            this.acceleration.x = 0;
-        }
-
 
         // FLIP
         if (this.facing === "right") {

@@ -22,6 +22,10 @@ A_.Game = Class.extend({
         this.renderer.view.oncontextmenu = function (e) {
             e.preventDefault();
         };
+        window.onresize = this.onResizeWindow.bind(this);
+        this.onResizeWindow();
+    },
+    onResizeWindow: function () {
         this.renderer.view.style.position = "absolute";
         this.renderer.view.style.top = window.innerHeight / 2 - this.renderer.height / 2;
         this.renderer.view.style.left = window.innerWidth / 2 - this.renderer.width / 2;

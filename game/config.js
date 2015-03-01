@@ -16,8 +16,8 @@ A_.CONFIG.renderer = {
     resolution: 1
 };
 A_.CONFIG.screen = {
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 768,
 //    color: 0x757575
     color: A_.UTILS.Colors.darkslateblue
 };

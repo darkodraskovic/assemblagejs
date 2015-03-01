@@ -1,22 +1,26 @@
 var Player = Anime.extend({
     spriteSheet: "diskette/player.png",
     followee: true,
-    throwForce: 1000,
+    throwForce: 700,
     throwTimer: 0,
     throwTime: 0.75,
+    jumpForce: 680,
+    speed: 500,
+    mass: 0.5,
+//    drawCollisionPolygon: true,
 //    elasticity: 0.5,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
+        A_.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
         A_.game.renderer.view.addEventListener("mouseover", function (event) {
             A_.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
         });
 
-//        A_.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
-
         A_.INPUT.addMapping("left", A_.KEY.A);
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("jump", A_.KEY.SPACE);
+        A_.INPUT.addMapping("crouch", A_.KEY.S);
 
         this.throwSound = this.level.createSound({
             urls: ['diskette/throw.ogg'],
@@ -32,22 +36,25 @@ var Player = Anime.extend({
         this.progressBarInner = this.level.createSprite(ProgressBarInner, this.level.findLayerByName("HUD"), this.getX(), this.getY(),
                 {color: A_.UTILS.Colors.purple, alpha: 0.75, owner: this});
         this.progressBarInner.setVisible(false);
+
     },
     processControls: function () {
-        if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
-            this.applyForce = true;
-            if (A_.INPUT.down["right"] && A_.INPUT.down["left"]) {
-                this.applyForce = false;
-            }
-            else if (A_.INPUT.down["right"]) {
-                this.facing = "right";
+        if (!(A_.INPUT.down["right"] && A_.INPUT.down["left"])) {
+            if (A_.INPUT.down["right"]) {
+                this.velocity.x = this.speed;
             }
             else if (A_.INPUT.down["left"]) {
-                this.facing = "left";
+                this.velocity.x = -this.speed;
             }
         }
-        else {
-            this.applyForce = false;
+//        if (!(A_.INPUT.down["right"] || A_.INPUT.down["left"])) {
+//            this.velocity.x = 0;
+//        }
+        
+        if (this.standing && !(A_.INPUT.down["right"] || A_.INPUT.down["left"]) && A_.INPUT.down["crouch"]) {
+            this.crouching = true;
+        } else {
+            this.crouching = false;
         }
 
         if (A_.INPUT.down["jump"]) {
@@ -56,23 +63,32 @@ var Player = Anime.extend({
             }
         }
     },
+    processFacing: function () {
+        var mousePosition = this.level.getMousePosition();
+        if (mousePosition.x < this.getX()) {
+            this.facing = "left";
+        } else {
+            this.facing = "right";
+        }
+    },
     update: function () {
 //        window.console.log(this.standing);
-//        window.console.log(this.position.y);
+//        window.console.log(this.velocity.y);
 //        window.console.log(this.sprite.scale);
 
         this.processControls();
+        this.processFacing();
 
         if (this.level.leftpressed) {
             this.throwTimerRunning = true;
             this.throwTimer = 0;
-            this.progressBarInner.setVisible(true);
+//            this.progressBarInner.setVisible(true);
         }
         if (this.level.leftreleased) {
-            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
-//            this.throwBall(this.throwForce);
+//            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
+            this.throwBall(this.throwForce);
             this.progressBarInner.percent = 0;
-            this.progressBarInner.setVisible(false);
+//            this.progressBarInner.setVisible(false);
         }
         if (this.level.leftdown) {
             if (this.throwTimerRunning) {

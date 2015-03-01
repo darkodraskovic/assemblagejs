@@ -10,7 +10,7 @@
             </bookmark>
             <bookmark id="14">
                 <name/>
-                <line>64</line>
+                <line>71</line>
                 <key/>
             </bookmark>
         </file>
@@ -49,17 +49,17 @@
             <url>eng/sprites/kinematic.js</url>
             <bookmark id="19">
                 <name/>
-                <line>88</line>
+                <line>86</line>
                 <key/>
             </bookmark>
             <bookmark id="18">
                 <name/>
-                <line>181</line>
+                <line>175</line>
                 <key/>
             </bookmark>
             <bookmark id="21">
                 <name/>
-                <line>233</line>
+                <line>227</line>
                 <key/>
             </bookmark>
         </file>
@@ -84,14 +84,8 @@
         <group>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/level/level.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/diskette/player.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/tiles/tile.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/main.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/kinematic.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/diskette/diskette.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/platformer.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/farer.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/diskette/anime.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/sprite.js</file>
         </group>
     </open-files>
 </project-private>

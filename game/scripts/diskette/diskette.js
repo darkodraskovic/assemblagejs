@@ -7,11 +7,11 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     springScan: 1,
     bounceTreshold: 200,
     frameWidth: 32,
-    frameHeight: 32,  
+    frameHeight: 32,
     insertingFrameCount: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.friction.x = 6;
+        this.friction.x = 10;
         this.friction.y = 0;
         this.setGravity(0, 20, 60);
         this.maxVelocity.x = 600;
@@ -41,6 +41,13 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         if (this.name === "Springer") {
 //            window.console.log(this.velocity.y);
 //            window.console.log(spring);
+        }
+        
+        if (!this.standing) {
+            this.friction.x = 4;
+        }
+        else {
+            this.friction.x = 16;
         }
         this._super();
     },
