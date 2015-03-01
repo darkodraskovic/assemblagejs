@@ -253,9 +253,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             }
             else if (!this.ceiling && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], -this.gravityN[this.gV])) {
                 if (response.overlap) {
+                    this.ceiling = entity;
                     if (response.overlapN[this.gV] === -this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] < 0) {
                         this._processVelocity(this.gV);
-                        this.ceiling = entity;
                     }
                     else if (response.overlapN[this.gH].abs() !== 1) {
                         this._processStaticImpulse(response.overlapN);

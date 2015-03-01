@@ -106,7 +106,8 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         if (other instanceof Computer && response.aInB) {
             this.setAnimation("inserting");
             this.inserting = true;
-            this.setPosition(other.getSlotX(), other.getSlotY());
+//            this.setPosition(other.getSlotX(), other.getSlotY());
+            this.setX(other.getSlotX());
             this.collides = false;
         }
     }

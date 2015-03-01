@@ -165,8 +165,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":1056,
-                 "y":472
+                 "x":968,
+                 "y":168
                 }, 
                 {
                  "height":32,
