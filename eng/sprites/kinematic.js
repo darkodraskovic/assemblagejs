@@ -85,17 +85,21 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         // Process COLLISION
 
-        this.processSpriteCollisions();
-        this.processTileCollisions();
+        if (this.collides && !(this.collisionResponse === "static")) {
+            this.processSpriteCollisions();
+            this.processTileCollisions();
+        }
 
         this._super();
     },
     processTileCollisions: function () {
-        this.ceiling = null;
-        this.wall = null;
-        this.ground = null;
-//        var x = this.getX();
-        var y = this.getY();
+        if (this.gravitySet) {
+            this.ceiling = null;
+            this.wall = null;
+            this.ground = null;
+            var x = this.getX();
+            var y = this.getY();
+        }
         for (var i = 0; i < this.level.tileMaps.length; i++) {
             var tilemap = this.level.tileMaps[i];
             var yStart = tilemap.getMapY(this.aabbTop());
@@ -124,17 +128,19 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
         if (this.gravitySet) {
             this.processTiles();
-//        if (!this.wall)
-//            this.setX(x);
-            if (!this.ceiling && !this.ground && this.gravityN[this.gV])
-                this.setY(y);
+            if (this.velocity.len2()) {
+                if (!this.wall)
+                    this.setX(x);
+                if (!this.ground && !this.ceiling)
+                    this.setY(y);
+            }
         } else {
             this._processStaticImpulse(this._collisionNormal);
         }
     },
     processSpriteCollisions: function () {
-        if (!this.collides || this.collisionResponse === "static")
-            return;
+//        if (!this.collides || this.collisionResponse === "static")
+//            return;
 
         var entities = this.level.sprites;
         for (var i = 0, len = entities.length; i < len; i++) {

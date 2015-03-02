@@ -1,4 +1,7 @@
 // SAT EXTENSION
+SAT.Polygon.prototype.applyScale = function () {
+    this.scale.x = this.scale.y = 1;
+}
 SAT.Polygon.prototype.setScale = function (x, y) {
     var relScaleX = x / this.scale.x;
     var relScaleY = y / this.scale.y;

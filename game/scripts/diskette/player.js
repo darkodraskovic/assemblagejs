@@ -32,7 +32,7 @@ var Player = Anime.extend({
         this.setMouseReactivity(true);
         this.setSpritePoint("ball", 0, -this.getHeight() / 3);
 
-        this.dynamicsMap = this.level.findLayerByName("Dynamics").tilemap;
+//        this.dynamicsMap = this.level.findLayerByName("Dynamics").tilemap;
 
         this.progressBarInner = this.level.createSprite(ProgressBarInner, this.level.findLayerByName("HUD"), this.getX(), this.getY(),
                 {color: A_.UTILS.Colors.purple, alpha: 0.75, owner: this});
@@ -42,7 +42,7 @@ var Player = Anime.extend({
         var crouchPolygon = this.collisionPolygon.clone();
         crouchPolygon.setScaleY(0.65);
         crouchPolygon.translate(0, this.collisionHeight * (1 - crouchPolygon.scale.y));
-        crouchPolygon.scale.x = crouchPolygon.scale.y = 1;
+        crouchPolygon.applyScale();
         this.crouchPolygon = this.createCollisionPolygon(crouchPolygon);
     },
     processControls: function () {

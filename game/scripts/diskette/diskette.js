@@ -3,6 +3,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     collisionResponse: "active",
     drawCollisionPolygon: false,
     elasticity: 0.5,
+//    elasticity: 0,
     springForce: 650,
     springScan: 1,
     bounceTreshold: 200,
