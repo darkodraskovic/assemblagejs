@@ -1,5 +1,6 @@
 var ScenerySun = A_.SPRITES.Sprite.extend({
     spriteSheet: "diskette/moon.png",
+    bounded: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         var sineProps = {period: 1, periodRand: 50, amplitude: 0.012, amplitudeRand: 50};
@@ -14,6 +15,7 @@ var ScenerySun = A_.SPRITES.Sprite.extend({
 
 var SceneryStar = A_.SPRITES.Sprite.extend({
     spriteSheet: "diskette/star.png",
+    bounded: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         var sineProps = {period: 0.5, periodRand: 25, amplitude: 0.15, amplitudeRand: 50};
@@ -27,6 +29,7 @@ var SceneryStar = A_.SPRITES.Sprite.extend({
 });
 var SceneryPyramid = A_.SPRITES.Sprite.extend({
     spriteSheet: "diskette/pyramid.png",
+    bounded: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 //        var displacementTexture = PIXI.Texture.fromImage("game/graphics/diskette/pyramidDisplacementMap.png");

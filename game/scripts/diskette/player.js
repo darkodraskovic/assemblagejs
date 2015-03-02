@@ -1,12 +1,13 @@
 var Player = Anime.extend({
     spriteSheet: "diskette/player.png",
     followee: true,
-    throwForce: 700,
+    throwForce: 750,
     throwTimer: 0,
     throwTime: 0.75,
     jumpForce: 680,
+//    jumpForce: 600,
     speed: 500,
-    mass: 0.5,
+    mass: 0.4,
 //    drawCollisionPolygon: true,
 //    elasticity: 0.5,
     init: function (parent, x, y, props) {
@@ -36,27 +37,43 @@ var Player = Anime.extend({
         this.progressBarInner = this.level.createSprite(ProgressBarInner, this.level.findLayerByName("HUD"), this.getX(), this.getY(),
                 {color: A_.UTILS.Colors.purple, alpha: 0.75, owner: this});
         this.progressBarInner.setVisible(false);
-
+        
+        this.uprightPolygon = this.collisionPolygon;
+        var crouchPolygon = this.collisionPolygon.clone();
+        crouchPolygon.setScaleY(0.65);
+        crouchPolygon.translate(0, this.collisionHeight * (1 - crouchPolygon.scale.y));
+        crouchPolygon.scale.x = crouchPolygon.scale.y = 1;
+        this.crouchPolygon = this.createCollisionPolygon(crouchPolygon);
     },
     processControls: function () {
-        if (!(A_.INPUT.down["right"] && A_.INPUT.down["left"])) {
+        if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
             if (A_.INPUT.down["right"]) {
                 this.velocity.x = this.speed;
             }
             else if (A_.INPUT.down["left"]) {
                 this.velocity.x = -this.speed;
             }
+            if (this.standing) {
+                this.platformerState = "walking";
+            }
+
         }
-//        if (!(A_.INPUT.down["right"] || A_.INPUT.down["left"])) {
-//            this.velocity.x = 0;
-//        }
-        
-        if (this.standing && !(A_.INPUT.down["right"] || A_.INPUT.down["left"]) && A_.INPUT.down["crouch"]) {
-            this.crouching = true;
-        } else {
-            this.crouching = false;
+        else if (this.standing && A_.INPUT.down["crouch"]) {
+            this.platformerState = "crouching";
+        }
+        else {
+            this.platformerState = "idle";
+        }
+        if (!this.standing) {
+            this.platformerState = "falling";
         }
 
+        if (this.platformerState === "crouching") {
+            this.setCollisionPolygon(this.crouchPolygon);
+        }
+        else {
+            this.setCollisionPolygon(this.uprightPolygon);
+        }
         if (A_.INPUT.down["jump"]) {
             if (this.standing) {
                 this.velocity.y = this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce;
@@ -87,7 +104,7 @@ var Player = Anime.extend({
         if (this.level.leftreleased) {
 //            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
             this.throwBall(this.throwForce);
-            this.progressBarInner.percent = 0;
+//            this.progressBarInner.percent = 0;
 //            this.progressBarInner.setVisible(false);
         }
         if (this.level.leftdown) {
@@ -107,8 +124,10 @@ var Player = Anime.extend({
         this._super();
     },
     throwBall: function (force) {
-        var point = this.getSpritePoint("ball");
-        var ball = this.level.createSprite(Ball, this.layer, point.getX(), point.getY());
+//        var point = this.getSpritePoint("ball");
+//        var ball = this.level.createSprite(Ball, this.layer, point.getX(), point.getY());
+//        var ball = this.level.createSprite(Ball, this.layer, this.getX(), this.aabbTop());
+        var ball = this.level.createSprite(Ball, this.layer, this.getX(), this.aabbTop() + (this.platformerState === "crouching" ? 16 : 20));
         var angle = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
         ball.velocity.x = force * Math.cos(angle);
         ball.velocity.y = force * Math.sin(angle);

@@ -11,7 +11,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     insertingFrameCount: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.friction.x = 10;
+        this.friction.x = 8;
         this.friction.y = 0;
         this.setGravity(0, 20, 60);
         this.maxVelocity.x = 600;
@@ -47,7 +47,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
             this.friction.x = 4;
         }
         else {
-            this.friction.x = 16;
+            this.friction.x = 10;
         }
         this._super();
     },

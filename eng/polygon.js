@@ -92,6 +92,18 @@ SAT.Polygon.prototype.calcBounds = function () {
     this.h = this.maxY - this.minY;
 };
 
+SAT.Polygon.prototype.clone = function () {
+    var points = _.map(this.points,
+            function (point) {
+                return point.clone();
+            });
+    var polygon = new SAT.Polygon(this.pos.clone(), points);
+//    polygon.setAngle(this.angle);
+//    polygon.setOffset(this.offset.clone());
+    polygon.scale = new SAT.Vector(1, 1);
+//    polygon.calcBounds();
+    return polygon;
+};
 // ENGINE polygon UTILS
 A_.POLYGON.Utils = {};
 
@@ -111,7 +123,8 @@ A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData) {
     return SATPolygon;
 };
 
-A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon, translated) {
+
+A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon) {
     var calcPoints = _.map(SATPolygon.calcPoints,
             function (calcPoint) {
                 return calcPoint.clone();
@@ -129,13 +142,13 @@ A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon, translated) {
 };
 
 A_.POLYGON.Utils.drawSATPolygon = function (graphics, SATPolygon, props) {
-    var calcPointsArr = [];
+    var pointsArr = [];
     if (SATPolygon.baked) {
         _.each(SATPolygon.baked.points, function (point, i) {
-            calcPointsArr[i] = point;
+            pointsArr[i] = point;
         });
     } else {
-        calcPointsArr = (this.SATPolygonToPIXIPolygon(SATPolygon, true)).points;
+        pointsArr = (this.SATPolygonToPIXIPolygon(SATPolygon, true)).points;
     }
 
     if (_.isUndefined(props)) {
@@ -146,9 +159,10 @@ A_.POLYGON.Utils.drawSATPolygon = function (graphics, SATPolygon, props) {
         props.fillColor = A_.UTILS.Colors.violet;
         props.fillAlpha = 0.5;
     }
+    graphics.clear();
     graphics.beginFill(props.fillColor, props.fillAlpha);
     graphics.lineStyle(props.lineWidth, props.lineColor, props.lineAlpha);
-    graphics.drawPolygon(calcPointsArr);
+    graphics.drawPolygon(pointsArr);
     graphics.endFill();
 };
 

@@ -135,8 +135,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     args["frameWidth"] = oData["width"];
                     args["frameHeight"] = oData["height"];
                     var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
-                    o.setPositionRelative(o.collisionPolygon.w / 2, o.collisionPolygon.h / 2);
-
+                    o.setPositionRelative(o.collisionPolygon.w * o.getOrigin().x, o.collisionPolygon.h * o.getOrigin().y);
                 }
                 else {
                     var type = eval(oData["type"]);
@@ -145,7 +144,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                         args["frameHeight"] = oData["height"];
                     }
                     var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
-                    o.setPositionRelative(o.getWidth() / 2, o.getHeight() / 2);
+                    o.setPositionRelative(o.getWidth() * o.getOrigin().x, o.getHeight() * o.getOrigin().y);
                 }
                 o.setRotation(oData["rotation"].toRad());
                 if (o instanceof A_.SPRITES.Colliding)

@@ -6,10 +6,25 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 
         this.response = new SAT.Response();
         this._vector = new SAT.Vector();
-        
-        this.collisionPolygon = this.createCollisionPolygon(this.collisionPolygon);
-        this.setCollisionDebug();
+
+        if (this.drawCollisionPolygon && A_.game.debug) {
+            this.debugGraphics = new PIXI.Graphics();
+            this.level.debugLayer.addChild(this.debugGraphics);
+        }
+
+        this.setCollisionPolygon(this.createCollisionPolygon(this.collisionPolygon));
         this.synchCollisionPolygon();
+    },
+    setCollisionPolygon: function (polygon) {
+        this.collisionPolygon = polygon;
+        if (this.drawCollisionPolygon && A_.game.debug)
+            A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
+    },
+    redrawCollisionPolygon: function () {
+        A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
+    },
+    resetCollisionData: function () {
+        this.collisionWidth = this.collisionHeight = this.collisionOffsetX = this.collisionOffsetY = 0;
     },
     createCollisionPolygon: function (polygon) {
         if (!_.isNumber(this.collisionWidth))
@@ -33,23 +48,21 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
             this.collisionOffsetX += collisionPolygon.offset.x;
             this.collisionOffsetY += collisionPolygon.offset.y;
         }
-        
+        if (!collisionPolygon.scale)
+            collisionPolygon.scale = new SAT.Vector(1, 1);
+
         collisionPolygon.setOffset(new SAT.Vector(this.collisionOffsetX, this.collisionOffsetY));
-        collisionPolygon.scale = new SAT.Vector(1, 1);
+
         collisionPolygon.calcBounds();
 
-//        if (this.interactive())
+//        if (this.getMouseReactivity())
 //            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
-        return collisionPolygon;
-    },
-    setCollisionDebug: function () {
         if (this.drawCollisionPolygon && A_.game.debug) {
-            this.collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(this.collisionPolygon, false);
-            this.debugGraphics = new PIXI.Graphics();
-            this.level.debugLayer.addChild(this.debugGraphics);
-            A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
+            collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
         }
+
+        return collisionPolygon;
     },
     updateDebug: function () {
         // Update debug transform

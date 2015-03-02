@@ -9,6 +9,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
     drawCollisionPolygon: false,
     facing: "right",
     elasticity: 0,
+    platformerState: "idle",
 //    jumpForce: 625,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -26,31 +27,13 @@ var Anime = A_.SPRITES.Kinematic.extend({
         this.animations["falling"].loop = false;
         this.addAnimation("crouching", _.range(30, 36), animationSpeed * 2);
         this.animations["crouching"].loop = false;
-        this.animations["crouching"].onComplete = this.onCrouchingComplete.bind(this);
+//        this.animations["crouching"].onComplete = this.onCrouchingComplete.bind(this);
     },
     onCrouchingComplete: function () {
 //        window.console.log("Crouching completed");
     },
     update: function () {
-        if (this.standing) {
-            if (this.velocity.x) {
-                this.setAnimation("walking");
-            } else {
-                if (this.crouching) {
-                    this.setAnimation("crouching");
-                }
-                else {
-                    this.setAnimation("idle");
-                }
-            }
-        } else {
-            if (this.velocity.y < -this.gravity[this.gV]) {
-//                this.setAnimation("jumping");
-                this.setAnimation("falling");
-            } else {
-                this.setAnimation("falling");
-            }
-        }
+        this.setAnimation(this.platformerState);
 
         // FLIP
         if (this.facing === "right") {

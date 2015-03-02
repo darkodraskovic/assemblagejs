@@ -73,8 +73,8 @@
                  "type":"SceneryPyramid",
                  "visible":true,
                  "width":64,
-                 "x":-200.151515151515,
-                 "y":182.515151515152
+                 "x":-128,
+                 "y":280
                 }, 
                 {
                  "height":64,
@@ -87,8 +87,8 @@
                  "type":"SceneryPyramid",
                  "visible":true,
                  "width":64,
-                 "x":99.3333333333337,
-                 "y":396.454545454546
+                 "x":176,
+                 "y":472
                 }, 
                 {
                  "height":64,
@@ -101,8 +101,8 @@
                  "type":"SceneryPyramid",
                  "visible":true,
                  "width":64,
-                 "x":313.333333333333,
-                 "y":308
+                 "x":400,
+                 "y":384
                 }],
          "opacity":1,
          "properties":
@@ -319,8 +319,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":284,
-                 "y":541
+                 "x":608,
+                 "y":346.5
                 }],
          "opacity":1,
          "type":"objectgroup",

@@ -47,7 +47,7 @@
          "properties":
             {
              "baked":"true",
-             "collision":"true",
+             "collisionResponse":"\"static\"",
              "image":"\"Interior-Furniture.png\""
             },
          "type":"tilelayer",
