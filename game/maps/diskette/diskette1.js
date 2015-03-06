@@ -165,8 +165,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":584,
-                 "y":872
+                 "x":1184,
+                 "y":448
                 }, 
                 {
                  "height":32,
@@ -207,8 +207,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":512,
-                 "y":620
+                 "x":904,
+                 "y":384
                 }, 
                 {
                  "height":32,
@@ -417,8 +417,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1088,
-                 "y":432
+                 "x":904,
+                 "y":424
                 }, 
                 {
                  "height":32,
@@ -683,8 +683,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":744,
-                 "y":736
+                 "x":848,
+                 "y":504
                 }, 
                 {
                  "height":32,
@@ -877,8 +877,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":1016,
-                 "y":392
+                 "x":960,
+                 "y":504
                 }],
          "opacity":1,
          "type":"objectgroup",

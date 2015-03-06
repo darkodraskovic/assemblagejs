@@ -1,7 +1,30 @@
 // SAT EXTENSION
+A_.POLYGON.Polygon = function () {
+    SAT.Polygon.apply(this, arguments);
+    A_.POLYGON._initPolygon(this);
+};
+A_.POLYGON.Polygon.prototype = Object.create(SAT.Polygon.prototype);
+A_.POLYGON.Polygon.prototype.constructor = A_.POLYGON.Polygon;
+
+A_.POLYGON.Box = function () {
+    SAT.Box.apply(this, arguments);
+};
+A_.POLYGON.Box.prototype = Object.create(SAT.Box.prototype);
+A_.POLYGON.Box.prototype.constructor = A_.POLYGON.Box;
+A_.POLYGON.Box.prototype.toPolygon = function () {
+    var polygon = SAT.Box.prototype.toPolygon.apply(this, arguments);
+    A_.POLYGON._initPolygon(polygon);
+    return polygon;
+};
+
+A_.POLYGON._initPolygon = function (polygon) {
+    polygon.scale = new SAT.Vector(1, 1);
+    polygon.calcBounds();
+}
+
 SAT.Polygon.prototype.applyScale = function () {
     this.scale.x = this.scale.y = 1;
-}
+};
 SAT.Polygon.prototype.setScale = function (x, y) {
     var relScaleX = x / this.scale.x;
     var relScaleY = y / this.scale.y;
@@ -17,7 +40,6 @@ SAT.Polygon.prototype.setScale = function (x, y) {
 
     this.offset.scale(relScaleX, relScaleY);
     this._recalc();
-//    this.recalc();
 
 };
 
@@ -32,7 +54,6 @@ SAT.Polygon.prototype.setScaleX = function (x) {
     this.w *= relScaleX;
 
     this.offset.x *= relScaleX;
-//    this.recalc();
     this._recalc();
 
 };
@@ -47,7 +68,6 @@ SAT.Polygon.prototype.setScaleY = function (y) {
     this.h *= relScaleY;
 
     this.offset.y *= relScaleY;
-//    this.recalc();
     this._recalc();
 };
 
@@ -64,10 +84,12 @@ SAT.Polygon.prototype.getBottom = function () {
     return this.pos.y + this.maxY;
 };
 SAT.Polygon.prototype.getCenterX = function () {
-    return this.pos.x + (this.maxX - this.minX) / 2;
+//    return this.pos.x + (this.maxX - this.minX) / 2;
+    return this.getLeft() + (this.maxX - this.minX) / 2;
 };
 SAT.Polygon.prototype.getCenterY = function () {
-    return this.pos.y + (this.maxY - this.minY) / 2;
+//    return this.pos.y + (this.maxY - this.minY) / 2;
+    return this.getTop() + (this.maxY - this.minY) / 2;
 };
 
 SAT.Polygon.prototype.getWidth = function () {
@@ -100,32 +122,36 @@ SAT.Polygon.prototype.clone = function () {
             function (point) {
                 return point.clone();
             });
-    var polygon = new SAT.Polygon(this.pos.clone(), points);
+    var polygon = new A_.POLYGON.Polygon(this.pos.clone(), points);
 //    polygon.setAngle(this.angle);
 //    polygon.setOffset(this.offset.clone());
-    polygon.scale = new SAT.Vector(1, 1);
 //    polygon.calcBounds();
     return polygon;
 };
 // ENGINE polygon UTILS
 A_.POLYGON.Utils = {};
 
-A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData) {
+A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData, mapData) {
     var vectors = _.map(oData.polygon, function (vertex) {
         return new SAT.Vector(vertex.x, vertex.y);
     });
 
-    var SATPolygon = new SAT.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
+    if (mapData.orientation === "isometric") {
+        for (var i = 0; i < vectors.length; i++) {
+            var vector = vectors[i];
+            // Tiled gives an equal value to a tile width and height in isometric maps, ie.
+            // tilewidth = tileheight (w gets the value of h). We devide x and y to get ortho map coordinates,
+            // and afterwards transform them in iso screen/level coordinates.
+            var x = vector.x / mapData.tileheight; // get ortho map coordinates
+            var y = vector.y / mapData.tileheight;
+            vector.x = (x - y) * (mapData.tilewidth / 2);   // transform them into iso (x,y part) level coords (tile dim part)
+            vector.y = (x + y) * (mapData.tileheight / 2);
+        }
+    }
+    var SATPolygon = new A_.POLYGON.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
     SATPolygon.calcBounds();
-
-    var offsetX = (SATPolygon.minX + SATPolygon.w / 2);
-    var offsetY = (SATPolygon.minY + SATPolygon.h / 2);
-    var offset = new SAT.Vector(-offsetX, -offsetY);
-    SATPolygon.setOffset(offset);
-
     return SATPolygon;
 };
-
 
 A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon) {
     var calcPoints = _.map(SATPolygon.calcPoints,
@@ -166,6 +192,28 @@ A_.POLYGON.Utils.drawSATPolygon = function (graphics, SATPolygon, props) {
     graphics.beginFill(props.fillColor, props.fillAlpha);
     graphics.lineStyle(props.lineWidth, props.lineColor, props.lineAlpha);
     graphics.drawPolygon(pointsArr);
+    graphics.endFill();
+};
+
+A_.POLYGON.Utils.drawTiledPolygon = function (graphics, polygon, props) {
+    var points = [];
+    for (var i = 0; i < polygon.length; i++) {
+        points [2 * i] = polygon[i].x;
+        points [2 * i + 1] = polygon[i].y;
+    }
+
+    if (_.isUndefined(props)) {
+        props = {};
+        props.lineWidth = 2;
+        props.lineColor = A_.UTILS.Colors.green;
+        props.lineAlpha = 0.67;
+        props.fillColor = A_.UTILS.Colors.violet;
+        props.fillAlpha = 0.5;
+    }
+    graphics.clear();
+    graphics.beginFill(props.fillColor, props.fillAlpha);
+    graphics.lineStyle(props.lineWidth, props.lineColor, props.lineAlpha);
+    graphics.drawPolygon(points);
     graphics.endFill();
 };
 

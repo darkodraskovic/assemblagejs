@@ -1,6 +1,7 @@
 var Particle = A_.SPRITES.Kinematic.extend({
     collisionResponse: "active",
     drawCollisionPolygon: true,
+//    drawCollisionPolygon: false,
     elasticity: 1,
     bounceTreshold: 0,
     init: function (parent, x, y, props) {

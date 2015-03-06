@@ -8,7 +8,7 @@ var Player = Anime.extend({
 //    jumpForce: 600,
     speed: 500,
     mass: 0.4,
-//    drawCollisionPolygon: true,
+    drawCollisionPolygon: true,
 //    elasticity: 0.5,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -37,13 +37,13 @@ var Player = Anime.extend({
         this.progressBarInner = this.level.createSprite(ProgressBarInner, this.level.findLayerByName("HUD"), this.getX(), this.getY(),
                 {color: A_.UTILS.Colors.purple, alpha: 0.75, owner: this});
         this.progressBarInner.setVisible(false);
-        
+
+        // TODO
         this.uprightPolygon = this.collisionPolygon;
-        var crouchPolygon = this.collisionPolygon.clone();
-        crouchPolygon.setScaleY(0.65);
-        crouchPolygon.translate(0, this.collisionHeight * (1 - crouchPolygon.scale.y));
-        crouchPolygon.applyScale();
-        this.crouchPolygon = this.createCollisionPolygon(crouchPolygon);
+        this.collisionWidth = this.collisionPolygon.w;
+        this.collisionHeight = this.collisionPolygon.h * 0.65;
+        this.collisionOffsetY = this.collisionPolygon.h * 0.175;
+        this.crouchPolygon = this.createCollisionPolygon();
     },
     processControls: function () {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
@@ -97,8 +97,8 @@ var Player = Anime.extend({
         this.processFacing();
 
         if (this.level.leftpressed) {
-            this.throwTimerRunning = true;
-            this.throwTimer = 0;
+//            this.throwTimerRunning = true;
+//            this.throwTimer = 0;
 //            this.progressBarInner.setVisible(true);
         }
         if (this.level.leftreleased) {
@@ -107,12 +107,12 @@ var Player = Anime.extend({
 //            this.progressBarInner.percent = 0;
 //            this.progressBarInner.setVisible(false);
         }
-        if (this.level.leftdown) {
-            if (this.throwTimerRunning) {
-                this.throwTimer += A_.game.dt;
-                this.progressBarInner.percent = this.throwTimer.map(0, this.throwTime, 0, 100).clamp(0, 100);
-            }
-        }
+//        if (this.level.leftdown) {
+//            if (this.throwTimerRunning) {
+//                this.throwTimer += A_.game.dt;
+//                this.progressBarInner.percent = this.throwTimer.map(0, this.throwTime, 0, 100).clamp(0, 100);
+//            }
+//        }
         if (this.level.rightpressed) {
             if (this.throwTimerRunning) {
                 this.throwTimerRunning = false;

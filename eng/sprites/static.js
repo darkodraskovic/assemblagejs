@@ -38,21 +38,20 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 
         var collisionPolygon;
 
+        var offsetX = 0;
+        var offsetY = 0;
         if (!polygon) {
-            this.collisionOffsetX -= this.collisionWidth * this.getOrigin().x;
-            this.collisionOffsetY -= this.collisionHeight * this.getOrigin().y;
-            var box = new SAT.Box(new SAT.Vector(0, 0), this.collisionWidth, this.collisionHeight);
+            var box = new A_.POLYGON.Box(new SAT.Vector(0, 0), this.collisionWidth, this.collisionHeight);
             collisionPolygon = box.toPolygon();
+            offsetX = this.collisionOffsetX - this.collisionWidth * this.getOrigin().x;
+            offsetY = this.collisionOffsetY - this.collisionHeight * this.getOrigin().y;
         } else {
             collisionPolygon = polygon;
-            this.collisionOffsetX += collisionPolygon.offset.x;
-            this.collisionOffsetY += collisionPolygon.offset.y;
+//            offsetX = this.collisionOffsetX - (collisionPolygon.minX + collisionPolygon.w * this.getOrigin().x);
+//            offsetY = this.collisionOffsetY - (collisionPolygon.minY + collisionPolygon.h * this.getOrigin().y);
         }
-        if (!collisionPolygon.scale)
-            collisionPolygon.scale = new SAT.Vector(1, 1);
-
-        collisionPolygon.setOffset(new SAT.Vector(this.collisionOffsetX, this.collisionOffsetY));
-
+        collisionPolygon.setOffset(new SAT.Vector(offsetX, offsetY));
+//        collisionPolygon.translate(offsetX, offsetY);
         collisionPolygon.calcBounds();
 
 //        if (this.getMouseReactivity())

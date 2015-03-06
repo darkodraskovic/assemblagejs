@@ -254,7 +254,7 @@ A_.LEVEL.Level = Class.extend({
             }
         }
 
-        this.sortEntities();
+//        this.sortEntities();
 
         this.camera.update();
 
@@ -271,7 +271,15 @@ A_.LEVEL.Level = Class.extend({
         for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
             var sprite = this.spritesToDestroy[i];
             sprite.removeFromLevel();
-            this.sprites.splice(this.sprites.indexOf(sprite), 1);
+//            this.sprites.splice(this.sprites.indexOf(sprite), 1);
+            var index = this.sprites.indexOf(sprite);
+            if (index >= 0) {
+                var sprites = this.sprites;
+                for (var i = index, len = sprites.length; i < len - 1; i++) {
+                    sprites[i] = sprites[i + 1];
+                }
+                sprites.length = len - 1;
+            }
         }
         this.spritesToDestroy.length = 0;
 

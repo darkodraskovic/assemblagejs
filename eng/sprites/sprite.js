@@ -76,6 +76,7 @@ A_.SPRITES.Sprite = Class.extend({
 
 //        this.parent = parent;
         this.setPosition(x, y);
+//        this.setOrigin(this.getOrigin().x, this.getOrigin().y)
     },
     setFollowee: function (isFollowee) {
         if (isFollowee) {
@@ -563,9 +564,14 @@ A_.SPRITES.Sprite = Class.extend({
         if (_.contains(spritesToDestroy, this))
             return;
 
-        _.each(this.sprites, function (sprite) {
-            sprite.destroy();
-        });
+//        _.each(this.sprites, function (sprite) {
+//            sprite.destroy();
+//        });
+        if (this.sprites.length) {
+            for (var i = 0; i < this.sprites.length; i++) {
+                this.sprites[i].destroy();
+            }
+        }
 
         this.onDestruction();
         spritesToDestroy.push(this);

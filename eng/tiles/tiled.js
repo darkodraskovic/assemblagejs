@@ -30,7 +30,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 img = level.manifest.directory + img;
             }
 
-            var image = level.createImage(layer, {image: img, width: level.width, height: level.height, 
+            var image = level.createImage(layer, {image: img, width: level.width, height: level.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
             level.addImageLayer(layer);
             if (layer.active) {
@@ -59,6 +59,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 }
             }
 
+
             var mapW = layerData["width"];
             var mapH = layerData["height"];
             var tileW = tileset.tilewidth;
@@ -81,7 +82,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH);
+            var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH, mapData.orientation);
             tilemap.populateTilelayer(tileData2D);
 
             layer.baked = baked;
@@ -116,7 +117,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
 
                 // POLY || RECT
                 if (oData["polygon"]) {
-                    var collisionPolygon = A_.POLYGON.Utils.TiledPolygonToSATPolygon(oData);
+                    var collisionPolygon = A_.POLYGON.Utils.TiledPolygonToSATPolygon(oData, mapData);
                     args.collisionPolygon = collisionPolygon;
                     var type;
                     if (oData["type"] !== "" && oData["type"] !== "Polygon") {
@@ -130,6 +131,9 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     }
                     var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
+                    if (o.sprite instanceof PIXI.Graphics) {
+                        A_.POLYGON.Utils.drawTiledPolygon(o.sprite, oData["polygon"]);
+                    }
                 }
                 else if (oData.type === "Rectangle" || oData.type === "") {
                     args["frameWidth"] = oData["width"];
@@ -147,6 +151,12 @@ A_.TILES.createTiledMap = function (mapData, level) {
                     o.setPositionRelative(o.getWidth() * o.getOrigin().x, o.getHeight() * o.getOrigin().y);
                 }
                 o.setRotation(oData["rotation"].toRad());
+                if (mapData.orientation === "isometric") {
+                    var x = o.getX() / mapData.tileheight;
+                    var y = o.getY() / mapData.tileheight;
+                    o.position.x = (x - y) * (mapData.tilewidth / 2);
+                    o.position.y = (x + y) * (mapData.tileheight / 2);
+                }
                 if (o instanceof A_.SPRITES.Colliding)
                     o.synchCollisionPolygon();
             }

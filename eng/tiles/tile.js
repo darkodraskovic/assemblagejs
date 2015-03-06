@@ -16,16 +16,41 @@ A_.TILES.Tile = Class.extend({
         var tileTexture = new PIXI.Texture(tilemap.baseTexture, frame);
         this.sprite = new PIXI.Sprite(tileTexture);
         tilemap.layer.addChild(this.sprite);
-        this.sprite.position.x = tilemap.getLevelX(x);
-        this.sprite.position.y = tilemap.getLevelY(y);
+        if (tilemap.orientation === "isometric") {
+            this.sprite.position.x = tilemap.getLevelIsoX(x, y);
+            this.sprite.position.y = tilemap.getLevelIsoY(x, y);
+        }
+        else {
+            this.sprite.position.x = tilemap.getLevelX(x);
+            this.sprite.position.y = tilemap.getLevelY(y);
+        }
     },
     initCollision: function (tilemap, x, y) {
         var collisionPolygon;
-        var box = new SAT.Box(new SAT.Vector(tilemap.getLevelX(x), tilemap.getLevelY(y)), tilemap.tileW, tilemap.tileH);
-        collisionPolygon = box.toPolygon();
-        collisionPolygon.w = box.w;
-        collisionPolygon.h = box.h;
-        collisionPolygon.calcBounds();
+        if (tilemap.orientation === "isometric") {
+            var colX = tilemap.getLevelIsoX(x, y);
+            var colY = tilemap.getLevelIsoY(x, y);
+            collisionPolygon = new A_.POLYGON.Polygon(new SAT.Vector(colX, colY), [
+                new SAT.Vector(0, 0),
+                new SAT.Vector(-tilemap.tileW / 2, tilemap.tileH / 2),
+                new SAT.Vector(0, tilemap.tileH),
+                new SAT.Vector(tilemap.tileW / 2, tilemap.tileH / 2),
+            ]);
+            collisionPolygon.setOffset(new SAT.Vector(tilemap.tileW / 2, 0));
+            collisionPolygon.calcBounds();
+            var graphics = new PIXI.Graphics();
+            A_.POLYGON.Utils.drawSATPolygon(graphics, collisionPolygon);
+            tilemap.layer.addChild(graphics);
+            graphics.position.x = collisionPolygon.pos.x;
+            graphics.position.y = collisionPolygon.pos.y;
+        }
+        else {
+            var box = new SAT.Box(new SAT.Vector(tilemap.getLevelX(x), tilemap.getLevelY(y)), tilemap.tileW, tilemap.tileH);
+            collisionPolygon = box.toPolygon();
+            collisionPolygon.w = box.w;
+            collisionPolygon.h = box.h;
+            collisionPolygon.calcBounds();
+        }
         this.collisionPolygon = collisionPolygon;
 //            this.collisionPolygon.pos.x = A_.level.container.toLocal(A_.level.origin, this.sprite).x;
 //            this.collisionPolygon.pos.y = A_.level.container.toLocal(A_.level.origin, this.sprite).y;

@@ -76,6 +76,34 @@ brownian = {
     }
 };
 
+box2D = {
+    directory: "box2D/",
+    type: "tiled",
+    scripts: ["box2D"],
+    map: "Box2D",
+    graphics: [],
+    sounds: [],
+    camera: {
+        innerBoundOffset: 0.25,
+        worldBounded: true,
+        followType: "centered"
+    }
+};
+
+var isometric = {
+    directory: "Isometric/",
+    type: "tiled",
+    scripts: ["isometric"],
+    map: "isometric2",
+    graphics: ["player.png", "tileset.png", "tileset2.png"],
+    sounds: [],
+    camera: {
+        innerBoundOffset: 0.25,
+        worldBounded: false,
+        followType: "centered"
+    }
+};
+
 var diskette = {
     directory: "diskette/",
     type: "tiled",
@@ -101,3 +129,5 @@ A_.LEVEL.Manifests["farer1"] = farer1;
 A_.LEVEL.Manifests["rot1"] = rot1;
 A_.LEVEL.Manifests["brownian"] = brownian;
 A_.LEVEL.Manifests["diskette"] = diskette;
+A_.LEVEL.Manifests["box2D"] = box2D;
+A_.LEVEL.Manifests["isometric"] = isometric;

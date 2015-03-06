@@ -80,6 +80,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // Reset collision vars
         this.collided = false;
         this.standing = false;
+        this._collisionNormal.x = this._collisionNormal.y = 0;
         this.slopeNormal.x = 0;
         this.slopeNormal.y = 0;
 
@@ -87,6 +88,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         if (this.collides && !(this.collisionResponse === "static")) {
             this.processSpriteCollisions();
+            this._processStaticImpulse(this._collisionNormal);
             this.processTileCollisions();
         }
 
@@ -102,10 +104,21 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         }
         for (var i = 0; i < this.level.tileMaps.length; i++) {
             var tilemap = this.level.tileMaps[i];
-            var yStart = tilemap.getMapY(this.aabbTop());
-            var yEnd = tilemap.getMapY(this.aabbBottom());
-            var xStart = tilemap.getMapX(this.aabbLeft());
-            var xEnd = tilemap.getMapX(this.aabbRight());
+            var yStart, yEnd, xStart, xEnd;
+            var top = this.aabbTop(), bottom = this.aabbBottom(), 
+                    left = this.aabbLeft(), right = this.aabbRight();
+            if (tilemap.orientation === "isometric") {
+                yStart = tilemap.getMapIsoY(right, top);
+                yEnd = tilemap.getMapIsoY(left, bottom);
+                xStart = tilemap.getMapIsoX(left, top);
+                xEnd = tilemap.getMapIsoX(right, bottom);
+            }
+            else {
+                yStart = tilemap.getMapY(top);
+                yEnd = tilemap.getMapY(bottom);
+                xStart = tilemap.getMapX(left);
+                xEnd = tilemap.getMapX(right);
+            }
 
             for (var row = yStart; row <= yEnd; row++) {
                 for (var col = xStart; col <= xEnd; col++) {
@@ -134,9 +147,10 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 if (!this.ground && !this.ceiling)
                     this.setY(y);
             }
-        } else {
-            this._processStaticImpulse(this._collisionNormal);
         }
+//        else {
+        this._processStaticImpulse(this._collisionNormal);
+//        }
     },
     processSpriteCollisions: function () {
 //        if (!this.collides || this.collisionResponse === "static")
@@ -171,7 +185,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
         this.synchCollisionPolygon();
 
-        this._processStaticImpulse(response.overlapN);
+        this._collisionNormal.copy(this.response.overlapN);
+//        this._processStaticImpulse(response.overlapN);
         if (this.gravitySet)
             this.processStanding(response.overlapN);
     },
@@ -229,8 +244,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         // I = -(1 + e) * (((Vb - Va) dot N) * N) * (Mb / (Ma + Mb))
         velocityDiff.project(collisionNormal);
 
-        velocityDiff.x *= -(1 + (velocityDiff.x.abs() > this.bounceTreshold ? this.elasticity : 0));
-        velocityDiff.y *= -(1 + (velocityDiff.y.abs() > this.bounceTreshold ? this.elasticity : 0));
+        velocityDiff.x *= -(1 + (velocityDiff.x.abs() >= this.bounceTreshold ? this.elasticity : 0));
+        velocityDiff.y *= -(1 + (velocityDiff.y.abs() >= this.bounceTreshold ? this.elasticity : 0));
 
         velocityDiff.scale(other.mass / (this.mass + other.mass));
 
@@ -243,6 +258,15 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 }
             }
             this.processStanding(collisionNormal);
+        }
+    },
+    _processStaticImpulse: function (overlapN) {
+        this._vector.copy(this.velocity).reverse();
+        if (this._vector.dot(overlapN) < 0) {
+            this._vector.project(overlapN);
+            this._vector.x *= -(1 + (this._vector.x.abs() >= this.bounceTreshold ? this.elasticity : 0));
+            this._vector.y *= -(1 + (this._vector.y.abs() >= this.bounceTreshold ? this.elasticity : 0));
+            this.velocity.sub(this._vector);
         }
     },
     processStanding: function (overlapN) {
@@ -264,9 +288,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     if (response.overlapN[this.gV] === this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] >= 0) {
                         this._processVelocity(this.gV);
                     }
-                    else if (response.overlapN[this.gH].abs() !== 1) {
-                        this._processStaticImpulse(response.overlapN);
-                    }
+//                    else if (response.overlapN[this.gH].abs() !== 1) {
+//                        this._processStaticImpulse(response.overlapN);
+//                    }
                     this.ground = entity;
                     this.processStanding(response.overlapN);
                 }
@@ -277,9 +301,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                     if (response.overlapN[this.gV] === -this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] < 0) {
                         this._processVelocity(this.gV);
                     }
-                    else if (response.overlapN[this.gH].abs() !== 1) {
-                        this._processStaticImpulse(response.overlapN);
-                    }
+//                    else if (response.overlapN[this.gH].abs() !== 1) {
+//                        this._processStaticImpulse(response.overlapN);
+//                    }
                 }
             }
             if (!this.velocity[this.gH])
@@ -292,9 +316,9 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                         this._processVelocity(this.gH);
                         this.wall = entity;
                     }
-                    else if (response.overlapN[this.gV].abs() !== 1) {
-                        this._processStaticImpulse(response.overlapN);
-                    }
+//                    else if (response.overlapN[this.gV].abs() !== 1) {
+//                        this._processStaticImpulse(response.overlapN);
+//                    }
                 }
             }
         }
@@ -305,15 +329,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             this.velocity[orientation] = -this.velocity[orientation] * this.elasticity;
         } else {
             this.velocity[orientation] = 0;
-        }
-    },
-    _processStaticImpulse: function (overlapN) {
-        this._vector.copy(this.velocity).reverse();
-        if (this._vector.dot(overlapN) < 0) {
-            this._vector.project(overlapN);
-            this._vector.x *= -(1 + (this._vector.x.abs() > this.bounceTreshold ? this.elasticity : 0));
-            this._vector.y *= -(1 + (this._vector.y.abs() > this.bounceTreshold ? this.elasticity : 0));
-            this.velocity.sub(this._vector);
         }
     }
 });

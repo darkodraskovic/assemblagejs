@@ -1,8 +1,9 @@
 A_.TILES.Tilemap = Class.extend({
-    init: function (layer, img, tileW, tileH) {
+    init: function (layer, img, tileW, tileH, orientation) {
         this.layer = layer;
         this.baked = false;
         this.level = layer.level;
+        this.orientation = orientation;
 
         this.baseTexture = new PIXI.BaseTexture.fromImage("game/graphics/" + img, PIXI.scaleModes.LINEAR);
         this.imgCols = this.baseTexture.width / tileW;
@@ -82,6 +83,7 @@ A_.TILES.Tilemap = Class.extend({
         }
     },
     // UTILS
+    // Orthogonal
     getLevelX: function (x) {
         return (x * this.tileW);
     },
@@ -93,5 +95,24 @@ A_.TILES.Tilemap = Class.extend({
     },
     getMapY: function (y) {
         return (y / this.tileH).floor();
+    },
+    // Isometric
+    orthoToIsoX: function (x, y) {
+        return x - y;
+    },
+    orthoToIsoY: function (x, y) {
+        return x + y;
+    },
+    getMapIsoX: function (x, y) {
+      return ((x / (this.tileW / 2) + y / (this.tileH / 2)) / 2).floor();
+    },
+    getMapIsoY: function (x, y) {
+        return ((y / (this.tileH / 2) - x / (this.tileW / 2)) /2).floor();  
+    },
+    getLevelIsoX: function (x, y) {
+        return (x - y) * (this.tileW / 2) - this.tileW / 2;
+    },
+    getLevelIsoY: function (x, y) {
+        return (x + y) * (this.tileH / 2);
     }
 });
