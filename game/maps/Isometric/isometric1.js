@@ -44,20 +44,6 @@
          "name":"Sprites",
          "objects":[
                 {
-                 "height":32,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Player",
-                 "visible":true,
-                 "width":32,
-                 "x":160,
-                 "y":576
-                }, 
-                {
                  "height":0,
                  "name":"",
                  "polygon":[
@@ -86,7 +72,7 @@
                 }, 
                 {
                  "height":0,
-                 "name":"",
+                 "name":"Poly",
                  "polygon":[
                         {
                          "x":0,
@@ -114,6 +100,37 @@
                  "width":0,
                  "x":256,
                  "y":544
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":32,
+                         "y":0
+                        }, 
+                        {
+                         "x":32,
+                         "y":-32
+                        }, 
+                        {
+                         "x":0,
+                         "y":-64
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Player",
+                 "visible":true,
+                 "width":0,
+                 "x":160,
+                 "y":448
                 }],
          "opacity":1,
          "type":"objectgroup",

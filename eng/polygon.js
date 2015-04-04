@@ -9,6 +9,7 @@ A_.POLYGON.Polygon.prototype.constructor = A_.POLYGON.Polygon;
 A_.POLYGON.Box = function () {
     SAT.Box.apply(this, arguments);
 };
+
 A_.POLYGON.Box.prototype = Object.create(SAT.Box.prototype);
 A_.POLYGON.Box.prototype.constructor = A_.POLYGON.Box;
 A_.POLYGON.Box.prototype.toPolygon = function () {
@@ -25,6 +26,7 @@ A_.POLYGON._initPolygon = function (polygon) {
 SAT.Polygon.prototype.applyScale = function () {
     this.scale.x = this.scale.y = 1;
 };
+
 SAT.Polygon.prototype.setScale = function (x, y) {
     var relScaleX = x / this.scale.x;
     var relScaleY = y / this.scale.y;
@@ -40,7 +42,7 @@ SAT.Polygon.prototype.setScale = function (x, y) {
 
     this.offset.scale(relScaleX, relScaleY);
     this._recalc();
-
+    this.calcBounds();
 };
 
 SAT.Polygon.prototype.setScaleX = function (x) {
@@ -55,6 +57,7 @@ SAT.Polygon.prototype.setScaleX = function (x) {
 
     this.offset.x *= relScaleX;
     this._recalc();
+    this.calcBounds();
 
 };
 SAT.Polygon.prototype.setScaleY = function (y) {
@@ -69,27 +72,26 @@ SAT.Polygon.prototype.setScaleY = function (y) {
 
     this.offset.y *= relScaleY;
     this._recalc();
+    this.calcBounds();
 };
 
 SAT.Polygon.prototype.getLeft = function () {
-    return this.pos.x + this.minX;
+    return this.getCenterX() - this.wHalf;
 };
 SAT.Polygon.prototype.getRight = function () {
-    return this.pos.x + this.maxX;
+    return this.getCenterX() + this.wHalf;
 };
 SAT.Polygon.prototype.getTop = function () {
-    return this.pos.y + this.minY;
+    return this.getCenterY() - this.hHalf;
 };
 SAT.Polygon.prototype.getBottom = function () {
-    return this.pos.y + this.maxY;
+    return this.getCenterY() + this.hHalf;
 };
 SAT.Polygon.prototype.getCenterX = function () {
-//    return this.pos.x + (this.maxX - this.minX) / 2;
-    return this.getLeft() + (this.maxX - this.minX) / 2;
+    return this.pos.x + this.centerOffsetX;
 };
 SAT.Polygon.prototype.getCenterY = function () {
-//    return this.pos.y + (this.maxY - this.minY) / 2;
-    return this.getTop() + (this.maxY - this.minY) / 2;
+    return this.pos.y + this.centerOffsetY;
 };
 
 SAT.Polygon.prototype.getWidth = function () {
@@ -115,6 +117,10 @@ SAT.Polygon.prototype.calcBounds = function () {
     this.maxY = _.max(ys);
     this.w = this.maxX - this.minX;
     this.h = this.maxY - this.minY;
+    this.wHalf = this.w/2;
+    this.hHalf = this.h/2;
+    this.centerOffsetX = this.maxX - this.w / 2;
+    this.centerOffsetY = this.maxY - this.h / 2;
 };
 
 SAT.Polygon.prototype.clone = function () {
@@ -149,7 +155,6 @@ A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData, mapData) {
         }
     }
     var SATPolygon = new A_.POLYGON.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
-    SATPolygon.calcBounds();
     return SATPolygon;
 };
 

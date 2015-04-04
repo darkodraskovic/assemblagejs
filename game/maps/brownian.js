@@ -491,8 +491,8 @@
                  "type":"Particle",
                  "visible":true,
                  "width":0,
-                 "x":72,
-                 "y":728
+                 "x":448,
+                 "y":576
                 }, 
                 {
                  "height":0,

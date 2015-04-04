@@ -104,13 +104,13 @@ A_.TILES.Tilemap = Class.extend({
         return x + y;
     },
     getMapIsoX: function (x, y) {
-      return ((x / (this.tileW / 2) + y / (this.tileH / 2)) / 2).floor();
+      return (((x - this.level.getWidth() / 2) / (this.tileW / 2) + y / (this.tileH / 2)) / 2).floor();
     },
     getMapIsoY: function (x, y) {
-        return ((y / (this.tileH / 2) - x / (this.tileW / 2)) /2).floor();  
+        return ((y / (this.tileH / 2) - (x  - this.level.getWidth() / 2) / (this.tileW / 2)) /2).floor();  
     },
     getLevelIsoX: function (x, y) {
-        return (x - y) * (this.tileW / 2) - this.tileW / 2;
+        return (x - y) * (this.tileW / 2) - this.tileW / 2 + this.level.getWidth() / 2;
     },
     getLevelIsoY: function (x, y) {
         return (x + y) * (this.tileH / 2);

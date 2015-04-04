@@ -7,7 +7,8 @@ var Anime = A_.SPRITES.Kinematic.extend({
     frameWidth: 64,
     frameHeight: 64,
     collisionResponse: "active",
-    collisionOffsetY: 6,
+    collisionOffsetX: 19,
+    collisionOffsetY: 14,
     collisionWidth: 26,
     collisionHeight: 48,
     animSpeed: 0.15,
@@ -62,14 +63,6 @@ var Anime = A_.SPRITES.Kinematic.extend({
             this.setAnimation(this.motionState + "_" + this.facing);
         }
         else {
-            if (!this.groaned) {
-                var sound = this.level.createSound({
-                    urls: ['grunt.wav'],
-                    volume: 0.5
-                });
-                sound.play();
-                this.groaned = true;
-            }
             this.setAnimation("death");
         }
 
@@ -100,9 +93,13 @@ var Player = Anime.extend({
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
         this.force = new SAT.Vector(512, 512);
-        
+
         window.tilemap = this.level.findLayerByName("Tiles").tilemap;
         window.player = this;
+        window.level = this.level;
+
+        this.initMouseReactivity();
+        this.setMouseReactivity(true);
     },
     update: function () {
         var cd = "";
@@ -132,7 +129,71 @@ var Player = Anime.extend({
             this.facing = "left";
         } else
             this.facing = "up";
+
+        if (this.level.leftpressed) {
+//            window.console.log("Clicked on level");
+            var tm = this.level.findLayerByName("Tiles").tilemap;
+            var pos = this.level.getMousePosition();
+            window.console.log(tm.getMapIsoX(pos.x, pos.y));
+        }
         
+        if (this.leftpressed) {
+            window.console.log("Clicked on player");
+        }
+
         this._super();
     }
+});
+
+var Cube = A_.SPRITES.Kinematic.extend({
+    spriteSheet: "Isometric/cube.png",
+    drawCollisionPolygon: true,
+    collisionResponse: "static",
+//    collisionOffsetY: 14.25
+});
+
+var Sphere = A_.SPRITES.Kinematic.extend({
+    spriteSheet: "Isometric/sphere.png",
+    drawCollisionPolygon: true,
+//    collisionOffsetY: 8,
+    followee: true,
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
+
+        A_.INPUT.addMapping("left", A_.KEY.A);
+        A_.INPUT.addMapping("right", A_.KEY.D);
+        A_.INPUT.addMapping("down", A_.KEY.S);
+        A_.INPUT.addMapping("up", A_.KEY.W);
+
+        this.collisionResponse = "active";
+        this.maxVelocity = new SAT.Vector(256, 256);
+        this.speed = 256;
+        this.friction.x = this.friction.y = 64;
+
+        window.level = this.level;
+        window.player = this;
+    },
+    update: function () {
+        if (A_.INPUT.down["up"]) {
+            this.acceleration.y = -this.speed;
+        } else if (A_.INPUT.down["down"]) {
+            this.acceleration.y = this.speed;
+        }
+        else
+            this.acceleration.y = 0;
+
+        if (A_.INPUT.down["left"]) {
+            this.acceleration.x = -this.speed;
+        } else if (A_.INPUT.down["right"]) {
+            this.acceleration.x = this.speed;
+        }
+        else
+            this.acceleration.x = 0;
+
+        if (this.level.leftpressed) {
+            window.console.log("Clicked on level");
+        }
+        this._super();
+    }
+
 });

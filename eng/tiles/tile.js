@@ -38,11 +38,11 @@ A_.TILES.Tile = Class.extend({
             ]);
             collisionPolygon.setOffset(new SAT.Vector(tilemap.tileW / 2, 0));
             collisionPolygon.calcBounds();
-            var graphics = new PIXI.Graphics();
-            A_.POLYGON.Utils.drawSATPolygon(graphics, collisionPolygon);
-            tilemap.layer.addChild(graphics);
-            graphics.position.x = collisionPolygon.pos.x;
-            graphics.position.y = collisionPolygon.pos.y;
+//            var graphics = new PIXI.Graphics();
+//            A_.POLYGON.Utils.drawSATPolygon(graphics, collisionPolygon);
+//            tilemap.layer.addChild(graphics);
+//            graphics.position.x = collisionPolygon.pos.x;
+//            graphics.position.y = collisionPolygon.pos.y;
         }
         else {
             var box = new SAT.Box(new SAT.Vector(tilemap.getLevelX(x), tilemap.getLevelY(y)), tilemap.tileW, tilemap.tileH);

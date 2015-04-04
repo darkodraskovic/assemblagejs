@@ -6,6 +6,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
     collisionResponse: "passive",
     collisionWidth: 28,
     collisionHeight: 68,
+    collisionOffsetX: 6,
     drawCollisionPolygon: false,
     facing: "right",
     elasticity: 0,

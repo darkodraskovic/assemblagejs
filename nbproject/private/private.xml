@@ -84,13 +84,14 @@
         <group>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/manifests.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/Isometric/isometric.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/tiles/tile.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/tiles/tilemap.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/tiles/tile.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/main.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/static.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/kinematic.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/sprite.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/brownian.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/diskette/anime.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/polygon.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/sprite.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/tiles/tiled.js</file>
         </group>
     </open-files>

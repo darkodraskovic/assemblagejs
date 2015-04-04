@@ -6,6 +6,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
 
     var layersData = mapData["layers"];
 
+    var currentTilemap;
     for (i = 0; i < layersData.length; i++) {
         var layer = level.createEmptyLayer();
         var layerData = layersData[i];
@@ -83,6 +84,7 @@ A_.TILES.createTiledMap = function (mapData, level) {
             }
 
             var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH, mapData.orientation);
+            currentTilemap = tilemap;
             tilemap.populateTilelayer(tileData2D);
 
             layer.baked = baked;
@@ -115,17 +117,15 @@ A_.TILES.createTiledMap = function (mapData, level) {
                 args["name"] = oData["name"];
                 args["type"] = oData["type"];
 
-                // POLY || RECT
+                // Polygon
                 if (oData["polygon"]) {
                     var collisionPolygon = A_.POLYGON.Utils.TiledPolygonToSATPolygon(oData, mapData);
                     args.collisionPolygon = collisionPolygon;
                     var type;
-                    if (oData["type"] !== "" && oData["type"] !== "Polygon") {
+                    if (oData["type"]) {
                         type = eval(oData["type"]);
                     } else {
                         type = A_.SPRITES.Colliding;
-                    }
-                    if (!type.prototype.spriteSheet) {
                         args["frameWidth"] = collisionPolygon.w;
                         args["frameHeight"] = collisionPolygon.h;
                     }
@@ -135,12 +135,14 @@ A_.TILES.createTiledMap = function (mapData, level) {
                         A_.POLYGON.Utils.drawTiledPolygon(o.sprite, oData["polygon"]);
                     }
                 }
-                else if (oData.type === "Rectangle" || oData.type === "") {
+                // Rectangle
+                else if (oData.type === "") {
                     args["frameWidth"] = oData["width"];
                     args["frameHeight"] = oData["height"];
                     var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                     o.setPositionRelative(o.collisionPolygon.w * o.getOrigin().x, o.collisionPolygon.h * o.getOrigin().y);
                 }
+                // Tile || Rectangle
                 else {
                     var type = eval(oData["type"]);
                     if (!type.prototype.spriteSheet) {
@@ -148,13 +150,16 @@ A_.TILES.createTiledMap = function (mapData, level) {
                         args["frameHeight"] = oData["height"];
                     }
                     var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
-                    o.setPositionRelative(o.getWidth() * o.getOrigin().x, o.getHeight() * o.getOrigin().y);
+
+                    if (mapData.orientation !== "isometric")
+                        o.setPositionRelative(o.getWidth() * o.getOrigin().x, o.getHeight() * o.getOrigin().y);
                 }
+
                 o.setRotation(oData["rotation"].toRad());
                 if (mapData.orientation === "isometric") {
                     var x = o.getX() / mapData.tileheight;
                     var y = o.getY() / mapData.tileheight;
-                    o.position.x = (x - y) * (mapData.tilewidth / 2);
+                    o.position.x = (x - y) * (mapData.tilewidth / 2) + level.getWidth() / 2;
                     o.position.y = (x + y) * (mapData.tileheight / 2);
                 }
                 if (o instanceof A_.SPRITES.Colliding)

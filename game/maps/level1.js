@@ -109,8 +109,8 @@
                  "type":"PlayerPlatformer",
                  "visible":true,
                  "width":0,
-                 "x":1032,
-                 "y":808
+                 "x":1248,
+                 "y":472
                 }, 
                 {
                  "gid":1763,
@@ -439,7 +439,7 @@
                      "collisionResponse":"\"static\""
                     },
                  "rotation":0,
-                 "type":"Polygon",
+                 "type":"",
                  "visible":true,
                  "width":0,
                  "x":832,

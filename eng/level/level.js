@@ -12,6 +12,7 @@ A_.LEVEL.Level = Class.extend({
         this.sprite = this.container;
         this.initMouseReactivity();
         this.setMouseReactivity(true);
+        // WARNING: Hit area culls objects outside level w & h, eg. objects on negative coords.
         this.container.hitArea = new PIXI.Rectangle(0, 0, this.game.renderer.width, this.game.renderer.height);
 
         this.tileLayers = [];
@@ -254,7 +255,7 @@ A_.LEVEL.Level = Class.extend({
             }
         }
 
-//        this.sortEntities();
+        this.sortEntities();
 
         this.camera.update();
 

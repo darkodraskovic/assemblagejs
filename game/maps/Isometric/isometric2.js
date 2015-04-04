@@ -44,20 +44,6 @@
          "name":"Sprites",
          "objects":[
                 {
-                 "height":32,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Player",
-                 "visible":true,
-                 "width":32,
-                 "x":192,
-                 "y":544
-                }, 
-                {
                  "height":0,
                  "name":"",
                  "polygon":[
@@ -114,6 +100,65 @@
                  "width":0,
                  "x":352,
                  "y":576
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":-32
+                        }, 
+                        {
+                         "x":-32,
+                         "y":-32
+                        }, 
+                        {
+                         "x":-32,
+                         "y":0
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":32,
+                 "y":32
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":96,
+                 "y":128
+                }, 
+                {
+                 "height":32,
+                 "name":"Player",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Player",
+                 "visible":true,
+                 "width":32,
+                 "x":96,
+                 "y":160
                 }],
          "opacity":1,
          "type":"objectgroup",

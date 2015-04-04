@@ -47,12 +47,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
             offsetY = this.collisionOffsetY - this.collisionHeight * this.getOrigin().y;
         } else {
             collisionPolygon = polygon;
-//            offsetX = this.collisionOffsetX - (collisionPolygon.minX + collisionPolygon.w * this.getOrigin().x);
-//            offsetY = this.collisionOffsetY - (collisionPolygon.minY + collisionPolygon.h * this.getOrigin().y);
+            offsetX = this.collisionOffsetX;
+            offsetY = this.collisionOffsetY;
         }
         collisionPolygon.setOffset(new SAT.Vector(offsetX, offsetY));
-//        collisionPolygon.translate(offsetX, offsetY);
-        collisionPolygon.calcBounds();
 
 //        if (this.getMouseReactivity())
 //            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);

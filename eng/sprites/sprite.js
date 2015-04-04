@@ -1,6 +1,6 @@
 A_.SPRITES.Sprite = Class.extend({
     destroyThis: false,
-    bounded: true,
+    bounded: false,
     wrap: false,
     outOfBounds: false,
     updates: true,
@@ -104,8 +104,8 @@ A_.SPRITES.Sprite = Class.extend({
         var sprite;
         if (this.graphics) {
             sprite = graphics;
-            sprite.pivot.x = 0.5;
-            sprite.pivot.y = 0.5;
+//            sprite.pivot.x = 0.5;
+//            sprite.pivot.y = 0.5;
         }
         else {
             // A texture stores the information that represents an image or part 
@@ -114,9 +114,10 @@ A_.SPRITES.Sprite = Class.extend({
             // If no frame is provided then the whole image is used. (PIXI doc)
             // generateTexture() is a function that returns a texture of the 
             // graphics object that can then be used to create sprites (PIXI doc)
+//            sprite = new PIXI.DisplayObjectContainer();
             sprite = new PIXI.Sprite(graphics.generateTexture(false));
-            sprite.anchor.x = 0.5;
-            sprite.anchor.y = 0.5;
+//            sprite.anchor.x = 0.5;
+//            sprite.anchor.y = 0.5;
         }
 
         return sprite;
@@ -144,6 +145,8 @@ A_.SPRITES.Sprite = Class.extend({
         }
         else
             this.origin = sprite.anchor;
+//            this.origin = sprite.pivot;
+        
     },
     // ANIMATION
     // frames is an array of nums refering to the index of texture in this.textures
@@ -159,8 +162,8 @@ A_.SPRITES.Sprite = Class.extend({
 
         var animation = new PIXI.MovieClip(textures);
 
-        animation.anchor.x = 0.5;
-        animation.anchor.y = 0.5;
+//        animation.anchor.x = 0.5;
+//        animation.anchor.y = 0.5;
         // MovieClip is the child of the transparent this.sprite and is invisible by default.
         animation.visible = false;
         // set the speed that the MovieClip will play at; higher is faster, lower is slower
@@ -364,6 +367,8 @@ A_.SPRITES.Sprite = Class.extend({
     // Flip is a scaling with a negative factor.
     flipX: function () {
         this.setScaleX(this.getScaleX() * -1);
+        this.setXRelative(-this.sprite.width * (1 - this.origin.x));
+//        this.collisionPolygon.calcBounds();
     },
     getFlippedX: function () {
         return this.getScale().x < 0;
@@ -380,6 +385,7 @@ A_.SPRITES.Sprite = Class.extend({
     },
     flipY: function () {
         this.setScaleY(this.getScaleY() * -1);
+        this.setYRelative(-this.sprite.height * (1 - this.origin.y));
     },
     getFlippedY: function () {
         return this.getScale().y < 0;
