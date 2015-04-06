@@ -144,11 +144,10 @@ var Cube = A_.SPRITES.Kinematic.extend({
     spriteSheet: "Isometric/cube.png",
     drawCollisionPolygon: true,
     collisionResponse: "static",
-    origin: new PIXI.Point(0.5, 1),
-//    collisionOffsetY: 8,
+    origin: new PIXI.Point(0.5, 0.86),
+    collisionOffsetY: 8,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.setOffset(0, 8);
     }
 });
 

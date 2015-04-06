@@ -102,8 +102,8 @@
                  "type":"Sphere",
                  "visible":true,
                  "width":0,
-                 "x":560,
-                 "y":448
+                 "x":196,
+                 "y":140
                 }, 
                 {
                  "height":0,
@@ -693,6 +693,37 @@
                  "width":0,
                  "x":644,
                  "y":364
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":-28
+                        }, 
+                        {
+                         "x":-28,
+                         "y":-28
+                        }, 
+                        {
+                         "x":-28,
+                         "y":0
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Cube",
+                 "visible":true,
+                 "width":0,
+                 "x":56,
+                 "y":56
                 }],
          "opacity":1,
          "properties":

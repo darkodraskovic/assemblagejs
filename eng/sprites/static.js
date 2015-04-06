@@ -48,6 +48,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
             offsetY = this.collisionOffsetY;
         }
         collisionPolygon.setOffset(new SAT.Vector(offsetX, offsetY));
+        collisionPolygon.calcBounds();
 
 //        if (this.getMouseReactivity())
 //            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
