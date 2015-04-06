@@ -57,6 +57,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
         this.addAnimation("moving", _.range(1, 7), 0.15);
         this.addAnimation("launching", [17], 0);
         this.addAnimation("falling", [18], 0);
+        this.setOrigin(0.5, 0.5);
     },
     update: function () {
         if (this.applyForce) {
@@ -447,5 +448,7 @@ var ExplosionPlatformer = A_.SPRITES.Sprite.extend({
             urls: ['dull.wav'],
             volume: 0.5
         }).play();
+        
+        this.setOrigin(0.5, 0.5);
     }
 });

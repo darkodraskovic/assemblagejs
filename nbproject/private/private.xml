@@ -18,7 +18,7 @@
             <url>game/scripts/platformer.js</url>
             <bookmark id="17">
                 <name/>
-                <line>242</line>
+                <line>243</line>
                 <key/>
             </bookmark>
         </file>
@@ -88,10 +88,9 @@
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/tiles/tile.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/main.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/static.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/brownian.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/diskette/anime.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/polygon.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/scripts/platformer.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/sprite.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/polygon.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/tiles/tiled.js</file>
         </group>
     </open-files>

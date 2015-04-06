@@ -1,7 +1,7 @@
 A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
     collides: true,
     drawCollisionPolygon: true,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
         this.response = new SAT.Response();
@@ -15,18 +15,18 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         this.setCollisionPolygon(this.createCollisionPolygon(this.collisionPolygon));
         this.synchCollisionPolygon();
     },
-    setCollisionPolygon: function (polygon) {
+    setCollisionPolygon: function(polygon) {
         this.collisionPolygon = polygon;
         if (this.drawCollisionPolygon && A_.game.debug)
             A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
     },
-    redrawCollisionPolygon: function () {
+    redrawCollisionPolygon: function() {
         A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
     },
-    resetCollisionData: function () {
+    resetCollisionData: function() {
         this.collisionWidth = this.collisionHeight = this.collisionOffsetX = this.collisionOffsetY = 0;
     },
-    createCollisionPolygon: function (polygon) {
+    createCollisionPolygon: function(polygon) {
         if (!_.isNumber(this.collisionWidth))
             this.collisionWidth = this.getWidth();
         if (!_.isNumber(this.collisionHeight))
@@ -61,7 +61,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 
         return collisionPolygon;
     },
-    updateDebug: function () {
+    updateDebug: function() {
         // Update debug transform
         var debugGraphics = this.debugGraphics;
         var colPol = this.collisionPolygon;
@@ -70,61 +70,60 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         debugGraphics.rotation = colPol.angle;
         debugGraphics.scale = colPol.scale;
     },
-    collidesWithEntity: function (other) {
+    collidesWithEntity: function(other) {
         this.response.clear();
         return (SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response));
     },
-    collidesWithEntityAtOffset: function (other, offsetX, offsetY) {
+    collidesWithEntityAtOffset: function(other, offsetX, offsetY) {
         this.response.clear();
         this.collisionPolygon.translate(offsetX, offsetY);
         var collides = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
         this.collisionPolygon.translate(-offsetX, -offsetY);
         return collides;
     },
-    containsPoint: function (x, y) {
+    containsPoint: function(x, y) {
         this._vector.x = x;
         this._vector.y = y;
         return SAT.pointInPolygon(this._vector, this.collisionPolygon);
     },
 //    TRANSFORMATIONS
-    setScale: function (x, y) {
+    setScale: function(x, y) {
         this._super(x, y);
         this.collisionPolygon.setScale(x, y);
     },
-    setScaleX: function (x) {
+    setScaleX: function(x) {
         this._super(x);
         this.collisionPolygon.setScaleX(x);
     },
-    setScaleY: function (y) {
+    setScaleY: function(y) {
         this._super(y);
         this.collisionPolygon.setScaleY(y);
     },
-    setSize: function (x, y) {
+    setSize: function(x, y) {
         this._super(x, y);
         this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
     },
-    setWidth: function (w) {
+    setWidth: function(w) {
         this._super(w);
         this.collisionPolygon.setScaleX(this.getScaleX());
     },
-    setHeight: function (h) {
+    setHeight: function(h) {
         this._super(h);
         this.collisionPolygon.setScaleY(this.getScaleY());
     },
-    setOrigin: function (x, y) {
+    setOrigin: function(x, y) {
         var delta = this._super(x, y);
         var colPol = this.collisionPolygon;
 
-        this._vector.x = delta[0] + colPol.offset.x;
-        this._vector.y = delta[1] + colPol.offset.y;
-        colPol.setOffset(this._vector);
+        colPol.translate(delta[0] * Math.sign(colPol.scale.x), delta[1]* Math.sign(colPol.scale.y));
+//        colPol.calcBounds();
 
         if (this.debugGraphics) {
-            this.debugGraphics.pivot.x -= delta[0] / colPol.scale.x;
-            this.debugGraphics.pivot.y -= delta[1] / colPol.scale.y;
+            this.debugGraphics.pivot.x -= delta[0] / colPol.scale.x * Math.sign(colPol.scale.x);
+            this.debugGraphics.pivot.y -= delta[1] / colPol.scale.y * Math.sign(colPol.scale.y);
         }
     },
-    synchCollisionPolygon: function () {
+    synchCollisionPolygon: function() {
         var colPol = this.collisionPolygon;
 
         // Synch position.
@@ -147,7 +146,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
             this.updateDebug();
         }
     },
-    removeFromLevel: function () {
+    removeFromLevel: function() {
         if (this.debugGraphics) {
             this.level.debugLayer.removeChild(this.debugGraphics);
             this.debugGraphics = null;
@@ -155,38 +154,38 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         this._super();
     },
     // UTILS
-    aabbWidth: function () {
+    aabbWidth: function() {
         return this.collisionPolygon.getWidth();
     },
-    aabbHeight: function () {
+    aabbHeight: function() {
         return this.collisionPolygon.getHeight();
     },
-    aabbBottom: function () {
+    aabbBottom: function() {
         return this.collisionPolygon.getBottom();
     },
-    aabbTop: function () {
+    aabbTop: function() {
         return this.collisionPolygon.getTop();
     },
-    aabbLeft: function () {
+    aabbLeft: function() {
         return this.collisionPolygon.getLeft();
     },
-    aabbRight: function () {
+    aabbRight: function() {
         return this.collisionPolygon.getRight();
     },
-    aabbCenterX: function () {
+    aabbCenterX: function() {
         return this.collisionPolygon.getCenterX();
     },
-    aabbCenterY: function () {
+    aabbCenterY: function() {
         return this.collisionPolygon.getCenterY();
     },
-    aabbOverlapsSegment: function (axis, a, b) {
+    aabbOverlapsSegment: function(axis, a, b) {
         if (axis === "y") {
             return (this.aabbTop() < b && this.aabbBottom() > a);
         } else if (axis === "x") {
             return (this.aabbLeft() < b && this.aabbRight() > a);
         }
     },
-    aabbOverlapsEntity: function (entity) {
+    aabbOverlapsEntity: function(entity) {
         return (this.aabbTop() < entity.aabbBottom() && this.aabbBottom() > entity.aabbTop()
                 && this.aabbLeft() < entity.aabbRight() && this.aabbRight() > entity.aabbLeft());
     }

@@ -14,6 +14,7 @@ var Player = A_.SPRITES.Kinematic.extend({
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("down", A_.KEY.S);
         A_.INPUT.addMapping("up", A_.KEY.W);
+        this.setOrigin(0.5, 0.5);
         this.laser1 = this.level.createSprite(Laser, this, 18, -12);
         this.laser2 = this.level.createSprite(Laser, this, 18, 12);
         this.setSpritePoint("bullet1", 18, -12);
@@ -179,6 +180,7 @@ var Rotor = A_.SPRITES.Kinematic.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.016);
+        this.setOrigin(0.5, 0.5);
     }
 });
 var Explosion = A_.SPRITES.Sprite.extend({
@@ -200,6 +202,8 @@ var Explosion = A_.SPRITES.Sprite.extend({
             urls: ['explosion.mp3'],
             volume: 0.2
         }).play();
+        
+        this.setOrigin(0.5, 0.5);
     }
 });
 

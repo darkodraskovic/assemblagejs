@@ -38,6 +38,7 @@ var Player = Anime.extend({
                 {color: A_.UTILS.Colors.purple, alpha: 0.75, owner: this});
         this.progressBarInner.setVisible(false);
 
+        this.setOrigin(0.5, 0.5);
         // TODO
         this.uprightPolygon = this.collisionPolygon;
         this.collisionWidth = this.collisionPolygon.w;

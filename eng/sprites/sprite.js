@@ -367,8 +367,6 @@ A_.SPRITES.Sprite = Class.extend({
     // Flip is a scaling with a negative factor.
     flipX: function () {
         this.setScaleX(this.getScaleX() * -1);
-        this.setXRelative(-this.sprite.width * (1 - this.origin.x));
-//        this.collisionPolygon.calcBounds();
     },
     getFlippedX: function () {
         return this.getScale().x < 0;
