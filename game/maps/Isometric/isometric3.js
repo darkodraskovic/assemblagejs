@@ -53,14 +53,14 @@
                         }, 
                         {
                          "x":0,
-                         "y":28
+                         "y":-28
                         }, 
                         {
-                         "x":28,
-                         "y":28
+                         "x":-28,
+                         "y":-28
                         }, 
                         {
-                         "x":28,
+                         "x":-28,
                          "y":0
                         }],
                  "properties":
@@ -71,8 +71,39 @@
                  "type":"Cube",
                  "visible":true,
                  "width":0,
-                 "x":420,
-                 "y":336
+                 "x":364,
+                 "y":112
+                }, 
+                {
+                 "height":0,
+                 "name":"Sphere",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":-28,
+                         "y":0
+                        }, 
+                        {
+                         "x":-28,
+                         "y":-28
+                        }, 
+                        {
+                         "x":0,
+                         "y":-28
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Sphere",
+                 "visible":true,
+                 "width":0,
+                 "x":560,
+                 "y":448
                 }, 
                 {
                  "height":0,
@@ -84,107 +115,14 @@
                         }, 
                         {
                          "x":0,
-                         "y":28
+                         "y":-28
                         }, 
                         {
-                         "x":28,
-                         "y":28
+                         "x":-28,
+                         "y":-28
                         }, 
                         {
-                         "x":28,
-                         "y":0
-                        }],
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Cube",
-                 "visible":true,
-                 "width":0,
-                 "x":420,
-                 "y":308
-                }, 
-                {
-                 "height":0,
-                 "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":0,
-                         "y":28
-                        }, 
-                        {
-                         "x":28,
-                         "y":28
-                        }, 
-                        {
-                         "x":28,
-                         "y":0
-                        }],
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Cube",
-                 "visible":true,
-                 "width":0,
-                 "x":420,
-                 "y":280
-                }, 
-                {
-                 "height":0,
-                 "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":0,
-                         "y":28
-                        }, 
-                        {
-                         "x":28,
-                         "y":28
-                        }, 
-                        {
-                         "x":28,
-                         "y":0
-                        }],
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Cube",
-                 "visible":true,
-                 "width":0,
-                 "x":420,
-                 "y":252
-                }, 
-                {
-                 "height":0,
-                 "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":0,
-                         "y":28
-                        }, 
-                        {
-                         "x":28,
-                         "y":28
-                        }, 
-                        {
-                         "x":28,
+                         "x":-28,
                          "y":0
                         }],
                  "properties":
@@ -196,7 +134,7 @@
                  "visible":true,
                  "width":0,
                  "x":392,
-                 "y":308
+                 "y":112
                 }, 
                 {
                  "height":0,
@@ -211,11 +149,11 @@
                          "y":-28
                         }, 
                         {
-                         "x":28,
+                         "x":-28,
                          "y":-28
                         }, 
                         {
-                         "x":28,
+                         "x":-28,
                          "y":0
                         }],
                  "properties":
@@ -223,11 +161,42 @@
 
                     },
                  "rotation":0,
-                 "type":"Sphere",
+                 "type":"Cube",
                  "visible":true,
                  "width":0,
-                 "x":476,
-                 "y":364
+                 "x":56,
+                 "y":56
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":-28
+                        }, 
+                        {
+                         "x":-28,
+                         "y":-28
+                        }, 
+                        {
+                         "x":-28,
+                         "y":0
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Cube",
+                 "visible":true,
+                 "width":0,
+                 "x":504,
+                 "y":420
                 }],
          "opacity":1,
          "properties":

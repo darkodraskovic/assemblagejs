@@ -4,6 +4,7 @@ A_.SPRITES.Sprite = Class.extend({
     wrap: false,
     outOfBounds: false,
     updates: true,
+    origin: new PIXI.Point(0, 0),
     // init() is called when the sprite is instantiated with new keyword.
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
     init: function (parent, x, y, props) {
@@ -116,10 +117,10 @@ A_.SPRITES.Sprite = Class.extend({
             // graphics object that can then be used to create sprites (PIXI doc)
 //            sprite = new PIXI.DisplayObjectContainer();
             sprite = new PIXI.Sprite(graphics.generateTexture(false));
-//            sprite.anchor.x = 0.5;
-//            sprite.anchor.y = 0.5;
+            sprite.anchor.x = this.origin.x;
+            sprite.anchor.y = this.origin.y;
         }
-
+        this.origin = sprite.anchor;
         return sprite;
     },
     initializePIXISprite: function (sprite) {
@@ -162,8 +163,8 @@ A_.SPRITES.Sprite = Class.extend({
 
         var animation = new PIXI.MovieClip(textures);
 
-//        animation.anchor.x = 0.5;
-//        animation.anchor.y = 0.5;
+        animation.anchor.x = this.origin.x;
+        animation.anchor.y = this.origin.y;
         // MovieClip is the child of the transparent this.sprite and is invisible by default.
         animation.visible = false;
         // set the speed that the MovieClip will play at; higher is faster, lower is slower

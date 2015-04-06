@@ -13,7 +13,7 @@ var Particle = A_.SPRITES.Kinematic.extend({
         this.velocity.x = _.random(-this.maxVelocity.x, this.maxVelocity.x);
         this.velocity.y = _.random(-this.maxVelocity.y, this.maxVelocity.y);
         this.angularSpeed = _.random(-Math.PI, Math.PI);
-//        this.setOrigin(0.5, 0.5);
-        this.flipX();
+        this.setOrigin(0.5, 0.5);
+//        this.flipX();
     }
 });
