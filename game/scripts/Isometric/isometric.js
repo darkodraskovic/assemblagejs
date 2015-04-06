@@ -15,7 +15,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
     elasticity: 0,
     alive: true,
     bounded: false,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 60;
         this.force = new SAT.Vector(64, 64);
@@ -34,11 +34,11 @@ var Anime = A_.SPRITES.Kinematic.extend({
         this.animations["death"].loop = false;
 
         var that = this;
-        this.animations["death"].onComplete = function () {
+        this.animations["death"].onComplete = function() {
             that.destroy();
         };
     },
-    update: function () {
+    update: function() {
         if (this.motionState === "moving") {
             if (this.cardinalContains("N")) {
                 this.acceleration.y = -this.force.y;
@@ -68,7 +68,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
 
         this._super();
     },
-    cardinalContains: function (cont, car) {
+    cardinalContains: function(cont, car) {
         if (!car)
             car = this.cardinalDir;
 
@@ -82,7 +82,7 @@ var Player = Anime.extend({
     spriteSheet: "Isometric/player.png",
     followee: true,
     mass: 4,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
         A_.INPUT.addMapping("left", A_.KEY.A);
@@ -101,7 +101,7 @@ var Player = Anime.extend({
         this.initMouseReactivity();
         this.setMouseReactivity(true);
     },
-    update: function () {
+    update: function() {
         var cd = "";
         if (A_.INPUT.down["up"]) {
             cd = "N";
@@ -131,14 +131,9 @@ var Player = Anime.extend({
             this.facing = "up";
 
         if (this.level.leftpressed) {
-//            window.console.log("Clicked on level");
             var tm = this.level.findLayerByName("Tiles").tilemap;
             var pos = this.level.getMousePosition();
             window.console.log(tm.getMapIsoX(pos.x, pos.y));
-        }
-        
-        if (this.leftpressed) {
-            window.console.log("Clicked on player");
         }
 
         this._super();
@@ -149,17 +144,20 @@ var Cube = A_.SPRITES.Kinematic.extend({
     spriteSheet: "Isometric/cube.png",
     drawCollisionPolygon: true,
     collisionResponse: "static",
-    origin: new PIXI.Point(0.5, 1)
-//    collisionOffsetY: 14.25
+    origin: new PIXI.Point(0.5, 1),
+//    collisionOffsetY: 8,
+    init: function(parent, x, y, props) {
+        this._super(parent, x, y, props);
+        this.setOffset(0, 8);
+    }
 });
 
 var Sphere = A_.SPRITES.Kinematic.extend({
     spriteSheet: "Isometric/sphere.png",
     drawCollisionPolygon: true,
-//    collisionOffsetY: 8,
     followee: true,
     origin: new PIXI.Point(0.5, 1),
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
         A_.INPUT.addMapping("left", A_.KEY.A);
@@ -175,7 +173,7 @@ var Sphere = A_.SPRITES.Kinematic.extend({
         window.level = this.level;
         window.player = this;
     },
-    update: function () {
+    update: function() {
         if (A_.INPUT.down["up"]) {
             this.acceleration.y = -this.speed;
         } else if (A_.INPUT.down["down"]) {
@@ -192,9 +190,6 @@ var Sphere = A_.SPRITES.Kinematic.extend({
         else
             this.acceleration.x = 0;
 
-        if (this.level.leftpressed) {
-            window.console.log("Clicked on level");
-        }
         this._super();
     }
 

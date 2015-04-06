@@ -20,9 +20,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         if (this.drawCollisionPolygon && A_.game.debug)
             A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
     },
-    redrawCollisionPolygon: function() {
-        A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
-    },
     resetCollisionData: function() {
         this.collisionWidth = this.collisionHeight = this.collisionOffsetX = this.collisionOffsetY = 0;
     },

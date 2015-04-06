@@ -130,7 +130,6 @@ A_.TILES.createTiledMap = function (mapData, level) {
                         args["frameHeight"] = collisionPolygon.h;
                     }
                     var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
-                    o.setPositionRelative(-collisionPolygon.offset.x, -collisionPolygon.offset.y);
                     if (o.sprite instanceof PIXI.Graphics) {
                         A_.POLYGON.Utils.drawTiledPolygon(o.sprite, oData["polygon"]);
                     }
