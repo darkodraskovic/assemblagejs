@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="New document 1">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="379.07269"
+     inkscape:cy="661.65116"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:snap-bbox="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="715"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2989"
+       empspacing="4"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       spacingx="4px"
+       spacingy="4px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-308.2677)">
+    <path
+       style="fill:#37c837;fill-opacity:1;stroke:none"
+       d="m 380,372.36218 24,-12 24,12 -24,12 z"
+       id="rect3761"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3764"
+       d="m 380,384.36218 0,-12 24,12 0,12 z"
+       style="fill:#2ca02c;fill-opacity:1;stroke:none"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#165016;fill-opacity:1;stroke:none"
+       d="m 428,384.36218 0,-12 -24,12 0,12 z"
+       id="path3766"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3768"
+       d="m 440,372.36218 24,-12 24,12 -24,12 z"
+       style="fill:#5fbcd3;fill-opacity:1;stroke:none"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#37abc8;fill-opacity:1;stroke:none"
+       d="m 440,384.36218 0,-12 24,12 0,12 z"
+       id="path3770"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3772"
+       d="m 488,384.36218 0,-12 -24,12 0,12 z"
+       style="fill:#216778;fill-opacity:1;stroke:none"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#afe9dd;fill-opacity:1;stroke:none"
+       id="rect3776"
+       width="16"
+       height="12"
+       x="404.64285"
+       y="281.96933" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3780"
+       d="m 380,408.36218 24,-12 24,12 -24,12 z"
+       style="fill:#ac9d93;fill-opacity:1;stroke:none" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       style="fill:#917c6f;fill-opacity:1;stroke:none"
+       d="m 380,420.36218 0,-12 24,12 0,12 z"
+       id="path3782"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3784"
+       d="m 428,420.36218 0,-12 -24,12 0,12 z"
+       style="fill:#483e37;fill-opacity:1;stroke:none" />
+    <path
+       style="fill:#de8787;fill-opacity:1;stroke:none"
+       d="m 440,408.36218 24,-12 24,12 -24,12 z"
+       id="path3786"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3788"
+       d="m 440,420.36218 0,-12 24,12 0,12 z"
+       style="fill:#c83737;fill-opacity:1;stroke:none"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#782121;fill-opacity:1;stroke:none"
+       d="m 488,420.36218 0,-12 -24,12 0,12 z"
+       id="path3790"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\Users\Darko\Radovi\AppDev\JS\Assemblage\game\graphics\Isometric\isometricGround.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

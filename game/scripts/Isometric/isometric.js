@@ -7,14 +7,15 @@ var Anime = A_.SPRITES.Kinematic.extend({
     frameWidth: 64,
     frameHeight: 64,
     collisionResponse: "active",
-    collisionOffsetX: 19,
-    collisionOffsetY: 14,
-    collisionWidth: 26,
-    collisionHeight: 48,
+//    collisionOffsetX: 19,
+//    collisionOffsetY: 14,
+//    collisionWidth: 26,
+//    collisionHeight: 48,
     animSpeed: 0.15,
     elasticity: 0,
     alive: true,
     bounded: false,
+    origin: {x: 0.5, y: 1},
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 60;
@@ -37,6 +38,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
         this.animations["death"].onComplete = function() {
             that.destroy();
         };
+        
     },
     update: function() {
         if (this.motionState === "moving") {
@@ -100,6 +102,7 @@ var Player = Anime.extend({
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
+        
     },
     update: function() {
         var cd = "";

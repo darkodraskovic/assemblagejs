@@ -49,6 +49,7 @@ A_.TILES.createTiledMap = function(mapData, level) {
             // This layer property must be set by user.
             var img = layer["image"];
             var tileset;
+            var spacing;            
             for (var j = 0; j < mapData["tilesets"].length; j++) {
                 var tilesetimg = mapData["tilesets"][j].image;
                 if (tilesetimg.indexOf("/") > -1) {
@@ -56,6 +57,7 @@ A_.TILES.createTiledMap = function(mapData, level) {
                 }
                 if (tilesetimg === img) {
                     tileset = mapData["tilesets"][j];
+                    spacing = mapData["tilesets"][j]["spacing"];
                     break;
                 }
             }
@@ -83,7 +85,8 @@ A_.TILES.createTiledMap = function(mapData, level) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH, mapData.orientation);
+            var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH, 
+                mapData.orientation, spacing, layer.offset);
             currentTilemap = tilemap;
             tilemap.populateTilelayer(tileData2D);
 
@@ -150,8 +153,9 @@ A_.TILES.createTiledMap = function(mapData, level) {
                     var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
 
                 }
-
+                // General object transform
                 o.setRotation(oData["rotation"].toRad());
+                
                 if (mapData.orientation === "isometric") {
                     var x = o.getX() / mapData.tileheight;
                     var y = o.getY() / mapData.tileheight;

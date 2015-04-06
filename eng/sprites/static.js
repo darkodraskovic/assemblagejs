@@ -114,7 +114,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
         var colPol = this.collisionPolygon;
 
         colPol.translate(delta[0] * Math.sign(colPol.scale.x), delta[1]* Math.sign(colPol.scale.y));
-//        colPol.calcBounds();
+        colPol.calcBounds();
 
         if (this.debugGraphics) {
             this.debugGraphics.pivot.x -= delta[0] / colPol.scale.x * Math.sign(colPol.scale.x);

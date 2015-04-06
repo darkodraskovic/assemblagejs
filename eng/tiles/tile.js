@@ -1,5 +1,5 @@
 A_.TILES.Tile = Class.extend({
-    init: function (gid, x, y, tilemap) {
+    init: function(gid, x, y, tilemap) {
         this.gid = gid;
         // TODO: Remove this reference.
         this.tilemap = tilemap;
@@ -9,23 +9,27 @@ A_.TILES.Tile = Class.extend({
             this.initCollision(tilemap, x, y);
         }
     },
-    createSprite: function (tilemap, x, y) {
+    createSprite: function(tilemap, x, y) {
         var frameInd = this.gid - 1;
-        var frame = new PIXI.Rectangle((frameInd % tilemap.imgCols) * tilemap.tileW,
-                Math.floor(frameInd / tilemap.imgCols) * tilemap.tileH, tilemap.tileW, tilemap.tileH);
+        var frame = tilemap.frameRectangle;
+        frame.x = (frameInd % tilemap.imgCols) * (tilemap.tileW + tilemap.spacing);
+        frame.y = Math.floor(frameInd / tilemap.imgCols) * (tilemap.tileH + tilemap.spacing);
         var tileTexture = new PIXI.Texture(tilemap.baseTexture, frame);
         this.sprite = new PIXI.Sprite(tileTexture);
         tilemap.layer.addChild(this.sprite);
         if (tilemap.orientation === "isometric") {
             this.sprite.position.x = tilemap.getLevelIsoX(x, y);
             this.sprite.position.y = tilemap.getLevelIsoY(x, y);
+//            this.sprite.position.y = tilemap.getLevelIsoY(x, y) - tilemap.offset ? tilemap.spacing : 0;
+            if (tilemap.offset)
+                this.sprite.position.y -= tilemap.spacing;
         }
         else {
             this.sprite.position.x = tilemap.getLevelX(x);
             this.sprite.position.y = tilemap.getLevelY(y);
         }
     },
-    initCollision: function (tilemap, x, y) {
+    initCollision: function(tilemap, x, y) {
         var collisionPolygon;
         if (tilemap.orientation === "isometric") {
             var colX = tilemap.getLevelIsoX(x, y);
@@ -56,7 +60,7 @@ A_.TILES.Tile = Class.extend({
 //            this.collisionPolygon.pos.y = A_.level.container.toLocal(A_.level.origin, this.sprite).y;
         this.collides = true;
     },
-    removeFromLevel: function () {
+    removeFromLevel: function() {
         this.sprite.parent.removeChild(this.sprite);
     }
 });

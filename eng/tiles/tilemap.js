@@ -1,18 +1,24 @@
 A_.TILES.Tilemap = Class.extend({
-    init: function (layer, img, tileW, tileH, orientation) {
+    init: function (layer, img, tileW, tileH, orientation, spacing, offset) {
         this.layer = layer;
         this.baked = false;
         this.level = layer.level;
+        
+        // For isometric maps processing
         this.orientation = orientation;
+        this.spacing = _.isNaN(spacing) ? 0 : spacing;
+        this.offset = offset || false;
 
         this.baseTexture = new PIXI.BaseTexture.fromImage("game/graphics/" + img, PIXI.scaleModes.LINEAR);
-        this.imgCols = this.baseTexture.width / tileW;
-        this.imgRows = this.baseTexture.height / tileH;
+        this.imgCols = this.baseTexture.width / (tileW + this.spacing);
+        this.imgRows = this.baseTexture.height / (tileH + this.spacing);
 
         this.tileW = tileW;
         this.tileH = tileH;
 
         this.tiles = [];
+        // For tile sprite creation.
+        this.frameRectangle = new PIXI.Rectangle(0, 0, this.tileW, this.tileH + this.spacing);
     },
     populateTilelayer: function (layerData) {
         if (this.layer.collisionResponse) {
