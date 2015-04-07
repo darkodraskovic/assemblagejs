@@ -1,26 +1,31 @@
 A_.TILES.Tilemap = Class.extend({
-    init: function (layer, img, tileW, tileH, orientation, spacing, offset) {
+    init: function (layer, img, tileW, tileH, spacing, orientation) {
         this.layer = layer;
         this.baked = false;
         this.level = layer.level;
+        this.tileW = tileW;
+        this.tileH = tileH;
         
         // For isometric maps processing
-        this.orientation = orientation;
-        this.spacing = _.isNaN(spacing) ? 0 : spacing;
-        this.offset = offset || false;
+        this.spacing = _.isUndefined(spacing) ? 0 : spacing;
+        this.offset = layer.offset || false;
+        this.orientation = orientation || "orthogonal";
+        if (this.orientation === "isometric") {
+            this.tileW_half = this.tileW / 2;
+            this.tileH_half = this.tileH / 2;
+            this.levelW_half = this.level.getWidth() / 2;
+        }
 
         this.baseTexture = new PIXI.BaseTexture.fromImage("game/graphics/" + img, PIXI.scaleModes.LINEAR);
         this.imgCols = this.baseTexture.width / (tileW + this.spacing);
         this.imgRows = this.baseTexture.height / (tileH + this.spacing);
 
-        this.tileW = tileW;
-        this.tileH = tileH;
 
         this.tiles = [];
         // For tile sprite creation.
         this.frameRectangle = new PIXI.Rectangle(0, 0, this.tileW, this.tileH + this.spacing);
     },
-    populateTilelayer: function (layerData) {
+    populate: function (layerData) {
         if (this.layer.collisionResponse) {
             this.collisionResponse = "static";
             this.level.tileMaps.push(this);
@@ -103,22 +108,16 @@ A_.TILES.Tilemap = Class.extend({
         return (y / this.tileH).floor();
     },
     // Isometric
-    orthoToIsoX: function (x, y) {
-        return x - y;
-    },
-    orthoToIsoY: function (x, y) {
-        return x + y;
-    },
     getMapIsoX: function (x, y) {
-      return (((x - this.level.getWidth() / 2) / (this.tileW / 2) + y / (this.tileH / 2)) / 2).floor();
+      return (((x - this.levelW_half) / this.tileW_half + y / this.tileH_half) / 2).floor();
     },
     getMapIsoY: function (x, y) {
-        return ((y / (this.tileH / 2) - (x  - this.level.getWidth() / 2) / (this.tileW / 2)) /2).floor();  
+        return ((y / this.tileH_half - (x  - this.levelW_half) / this.tileW_half) /2).floor();  
     },
     getLevelIsoX: function (x, y) {
-        return (x - y) * (this.tileW / 2) - this.tileW / 2 + this.level.getWidth() / 2;
+        return (x - y) * this.tileW_half - this.tileW_half + this.levelW_half;
     },
     getLevelIsoY: function (x, y) {
-        return (x + y) * (this.tileH / 2);
+        return (x + y) * this.tileH_half;
     }
 });

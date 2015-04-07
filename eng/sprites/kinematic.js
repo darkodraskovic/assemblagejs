@@ -85,10 +85,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.slopeNormal.y = 0;
 
         // Process COLLISION
-
-        if (this.collides && !(this.collisionResponse === "static")) {
+        if (this.collides && this.collisionResponse !== "static") {
             this.processSpriteCollisions();
-            this._processStaticImpulse(this._collisionNormal);
             this.processTileCollisions();
         }
 
@@ -153,9 +151,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 //        }
     },
     processSpriteCollisions: function () {
-//        if (!this.collides || this.collisionResponse === "static")
-//            return;
-
         var entities = this.level.sprites;
         for (var i = 0, len = entities.length; i < len; i++) {
             var other = entities[i];
@@ -163,6 +158,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 // Bitmasks. Currently inactive. DO NOTE DELETE!
 //                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
 //                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
+//                }
                 this.response.clear();
                 var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
                 if (collided) {
@@ -171,6 +167,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 }
             }
         }
+        this._processStaticImpulse(this._collisionNormal);
     },
     collideWithStatic: function (other, response) {
         if (!response.overlap)
@@ -186,7 +183,6 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         this.synchCollisionPolygon();
 
         this._collisionNormal.copy(this.response.overlapN);
-//        this._processStaticImpulse(response.overlapN);
         if (this.gravitySet)
             this.processStanding(response.overlapN);
     },

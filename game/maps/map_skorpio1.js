@@ -204,8 +204,8 @@
                  "type":"Agent",
                  "visible":true,
                  "width":1,
-                 "x":480,
-                 "y":456
+                 "x":584,
+                 "y":440
                 }, 
                 {
                  "gid":258,
@@ -449,41 +449,8 @@
                  "y":344
                 }, 
                 {
-                 "height":0,
-                 "name":"",
-                 "polygon":[
-                        {
-                         "x":0,
-                         "y":0
-                        }, 
-                        {
-                         "x":16,
-                         "y":0
-                        }, 
-                        {
-                         "x":24,
-                         "y":8
-                        }, 
-                        {
-                         "x":24,
-                         "y":40
-                        }, 
-                        {
-                         "x":16,
-                         "y":48
-                        }, 
-                        {
-                         "x":0,
-                         "y":48
-                        }, 
-                        {
-                         "x":-8,
-                         "y":40
-                        }, 
-                        {
-                         "x":-8,
-                         "y":8
-                        }],
+                 "height":64,
+                 "name":"Player",
                  "properties":
                     {
 
@@ -491,9 +458,9 @@
                  "rotation":0,
                  "type":"PlayerSkorpio",
                  "visible":true,
-                 "width":0,
-                 "x":776,
-                 "y":456
+                 "width":32,
+                 "x":480,
+                 "y":384
                 }],
          "opacity":1,
          "properties":

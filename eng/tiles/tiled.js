@@ -6,7 +6,6 @@ A_.TILES.createTiledMap = function(mapData, level) {
 
     var layersData = mapData["layers"];
 
-    var currentTilemap;
     for (i = 0; i < layersData.length; i++) {
         var layer = level.createEmptyLayer();
         var layerData = layersData[i];
@@ -41,7 +40,7 @@ A_.TILES.createTiledMap = function(mapData, level) {
 
         // if current layer is TILE LAYER
         else if (layerData["type"] === "tilelayer") {
-            // Temporarily turn unser layer.baked option in order to build
+            // Temporarily turn on unset layer.baked option in order to build
             // a tilemap. We'll bake the tilemap later if needed.
             var baked = layer.baked;
             layer.baked = false;
@@ -61,7 +60,6 @@ A_.TILES.createTiledMap = function(mapData, level) {
                     break;
                 }
             }
-
 
             var mapW = layerData["width"];
             var mapH = layerData["height"];
@@ -85,10 +83,9 @@ A_.TILES.createTiledMap = function(mapData, level) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH, 
-                mapData.orientation, spacing, layer.offset);
-            currentTilemap = tilemap;
-            tilemap.populateTilelayer(tileData2D);
+            var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH, spacing,
+                mapData.orientation);
+            tilemap.populate(tileData2D);
 
             layer.baked = baked;
             if (layer.baked) {
@@ -125,10 +122,10 @@ A_.TILES.createTiledMap = function(mapData, level) {
                     var collisionPolygon = A_.POLYGON.Utils.TiledPolygonToSATPolygon(oData, mapData);
                     args.collisionPolygon = collisionPolygon;
                     var type;
-                    if (oData["type"]) {
+                    if (oData["type"]) { // user defined type
                         type = eval(oData["type"]);
                     } else {
-                        type = A_.SPRITES.Colliding;
+                        type = A_.SPRITES.Colliding; // Colliding polygon
                         args["frameWidth"] = collisionPolygon.w;
                         args["frameHeight"] = collisionPolygon.h;
                     }
@@ -137,13 +134,13 @@ A_.TILES.createTiledMap = function(mapData, level) {
                         A_.POLYGON.Utils.drawTiledPolygon(o.sprite, oData["polygon"]);
                     }
                 }
-                // Rectangle
+                // Rectangle - Colliding polygon
                 else if (oData.type === "") {
                     args["frameWidth"] = oData["width"];
                     args["frameHeight"] = oData["height"];
                     var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
                 }
-                // Tile || Rectangle
+                // Tile || Rectangle - user defined type
                 else {
                     var type = eval(oData["type"]);
                     if (!type.prototype.spriteSheet) {
@@ -151,7 +148,6 @@ A_.TILES.createTiledMap = function(mapData, level) {
                         args["frameHeight"] = oData["height"];
                     }
                     var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
-
                 }
                 // General object transform
                 o.setRotation(oData["rotation"].toRad());

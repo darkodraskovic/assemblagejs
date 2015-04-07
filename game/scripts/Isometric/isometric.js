@@ -136,7 +136,7 @@ var Player = Anime.extend({
         if (this.level.leftpressed) {
             var tm = this.level.findLayerByName("Tiles").tilemap;
             var pos = this.level.getMousePosition();
-            window.console.log(tm.getMapIsoX(pos.x, pos.y));
+            window.console.log("x: " + tm.getMapIsoX(pos.x, pos.y) + ", y: " + tm.getMapIsoY(pos.x, pos.y));
         }
 
         this._super();

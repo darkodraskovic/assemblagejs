@@ -569,9 +569,6 @@ A_.SPRITES.Sprite = Class.extend({
         if (_.contains(spritesToDestroy, this))
             return;
 
-//        _.each(this.sprites, function (sprite) {
-//            sprite.destroy();
-//        });
         if (this.sprites.length) {
             for (var i = 0; i < this.sprites.length; i++) {
                 this.sprites[i].destroy();

@@ -94,7 +94,7 @@ var isometric = {
     directory: "Isometric/",
     type: "tiled",
     scripts: ["isometric"],
-    map: "isometric4",
+    map: "isometric2",
     graphics: ["cube.png", "isometricGround.png", "player.png", "sphere.png", "tileset.png", "tileset2.png", "violettileset.png"],
     sounds: [],
     camera: {

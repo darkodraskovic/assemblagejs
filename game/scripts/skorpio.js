@@ -15,6 +15,7 @@ var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
     animSpeed: 0.15,
     elasticity: 0,
     alive: true,
+    origin: {x: 0.5, y:0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 32;
@@ -93,6 +94,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     followee: true,
     player: true,
     mass: 4,
+    drawCollisionPolygon: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -203,6 +205,7 @@ var Rifle = A_.SPRITES.Sprite.extend({
     spriteSheet: "AssaultRifle.png",
     frameWidth: 64,
     frameHeight: 64,
+    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.addAnimation("idle_up", [0], 1);
@@ -227,7 +230,6 @@ var Rifle = A_.SPRITES.Sprite.extend({
         if (this.holder.facing === "up") {
             this.moveToSprite(this.holder, "back");
         } else {
-
             this.moveToSprite(this.holder, "front");
         }
 
@@ -245,6 +247,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     lifeTime: 4,
     lifeTimer: 0,
     collidesWith: A_.COLLISION.Type.ENEMY,
+    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 0;
@@ -320,6 +323,8 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
         this.tip.x = this.getX() + Math.cos(this.getRotation()) * this.getWidth();
         this.tip.y = this.getY() + Math.sin(this.getRotation()) * this.getWidth();
 
+        this.setHeight(this.origH + this.sine.value);
+        
         if (this.level.rightreleased) {
             if (this.laserTip) {
                 if (this.laserTip.fire)
@@ -330,7 +335,6 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
             this.destroy();
         }
 
-        this.setHeight(this.origH + this.sine.value);
         this._super();
     }
 });
@@ -338,6 +342,9 @@ var LaserBeam = A_.SPRITES.Sprite.extend({
 var LaserTip = A_.SPRITES.Kinematic.extend({
     bounded: false,
     collisionResponse: "sensor",
+    collisionWidth: 8,
+    collisionHeight: 8, 
+    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
     },
@@ -385,6 +392,7 @@ var LaserFire = A_.SPRITES.Sprite.extend({
     spriteSheet: "Fire.png",
     frameWidth: 64,
     frameHeight: 64,
+    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);

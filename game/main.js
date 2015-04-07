@@ -10,7 +10,7 @@ var levelManager = A_.game.levelManager;
 //levelManager.startLevel(skorpio2, "lvl1");
 //levelManager.startLevel(brownian, "lvl1");
 //levelManager.startLevel(box2D, "lvl1");
-//levelManager.startLevel(isometric, "lvl1");
+levelManager.startLevel(isometric, "lvl1");
 //levelManager.startLevel(diskette, "d1", onLevelStarted);
 
 // FARER
@@ -42,19 +42,19 @@ Dynamics = {
     VIRUS: 5,
     VIRUS_KILLER: 6
 };
-levelManager.loadLevel(diskette, function () {
-    level = levelManager.createLevel(diskette, "level1");
-    for (var i = 0; i < 50; i++) {
-        var star = level.createSprite(SceneryStar, level.findLayerByName("Sky"),
-                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
-        star.sprite.alpha = Math.random();
-    }
-    level.findSpriteByClass(ScenerySun).setZ("top");
-    player = level.findSpriteByClass(Player);
-    levelManager.activateLevel("level1");
-    levelManager.manageLevels = true;
-    
-    A_.INPUT.addMapping("restart", A_.KEY.T);
-});
+//levelManager.loadLevel(diskette, function () {
+//    level = levelManager.createLevel(diskette, "level1");
+//    for (var i = 0; i < 50; i++) {
+//        var star = level.createSprite(SceneryStar, level.findLayerByName("Sky"),
+//                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
+//        star.sprite.alpha = Math.random();
+//    }
+//    level.findSpriteByClass(ScenerySun).setZ("top");
+//    player = level.findSpriteByClass(Player);
+//    levelManager.activateLevel("level1");
+//    levelManager.manageLevels = true;
+//    
+//    A_.INPUT.addMapping("restart", A_.KEY.T);
+//});
 
 

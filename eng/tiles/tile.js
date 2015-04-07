@@ -20,14 +20,13 @@ A_.TILES.Tile = Class.extend({
         if (tilemap.orientation === "isometric") {
             this.sprite.position.x = tilemap.getLevelIsoX(x, y);
             this.sprite.position.y = tilemap.getLevelIsoY(x, y);
-//            this.sprite.position.y = tilemap.getLevelIsoY(x, y) - tilemap.offset ? tilemap.spacing : 0;
-            if (tilemap.offset)
-                this.sprite.position.y -= tilemap.spacing;
         }
         else {
             this.sprite.position.x = tilemap.getLevelX(x);
             this.sprite.position.y = tilemap.getLevelY(y);
         }
+        if (tilemap.offset)
+            this.sprite.position.y -= tilemap.spacing;
     },
     initCollision: function(tilemap, x, y) {
         var collisionPolygon;

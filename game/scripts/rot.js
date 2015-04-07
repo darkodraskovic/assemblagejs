@@ -2,15 +2,43 @@
 var Ball = A_.SPRITES.Kinematic.extend({
     colTimesCalled: 0,
     spriteSheet: "player_rot.png",
-    collisionResponse: "dynamic",
-    name: "ball",
-    elasticity: 100,
-    elasticityTreshold: 0,
+    elasticity: 0.5,
     followee: true,
-    player: true,
-    init: function (parent, x, y, props) {
-        this.controlled = true;
+    drawCollisionPolygon: true,
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
+
+        A_.INPUT.addMapping("left", A_.KEY.A);
+        A_.INPUT.addMapping("right", A_.KEY.D);
+        A_.INPUT.addMapping("down", A_.KEY.S);
+        A_.INPUT.addMapping("up", A_.KEY.W);
+
+        this.collisionResponse = "active";
+        this.maxVelocity = new SAT.Vector(256, 256);
+        this.speed = 256;
+        this.friction.x = this.friction.y = 64;
+
+        window.level = this.level;
+        window.player = this;
+    },
+    update: function() {
+        if (A_.INPUT.down["up"]) {
+            this.acceleration.y = -this.speed;
+        } else if (A_.INPUT.down["down"]) {
+            this.acceleration.y = this.speed;
+        }
+        else
+            this.acceleration.y = 0;
+
+        if (A_.INPUT.down["left"]) {
+            this.acceleration.x = -this.speed;
+        } else if (A_.INPUT.down["right"]) {
+            this.acceleration.x = this.speed;
+        }
+        else
+            this.acceleration.x = 0;
+
+        this._super();
     }
 });
 
@@ -45,20 +73,17 @@ function createRoguelikeMap(level) {
 
         if (x * y >= (this.mapDataFloors.length - 1) * (this.mapDataFloors[0].length - 1)) {
             this.createRotLayers(level);
-//            window.console.log("created");
         }
     };
     map.create(userCallback.bind(this));
 }
 function createRotLayers(level) {
     var layerFloors = level.createTileLayer("Floor", "tilemap.png", tileW, tileH);
-    layerFloors.tilemap.populateTilelayer(mapDataFloors);
+    layerFloors.tilemap.populate(mapDataFloors);
     var layerWalls = level.createTileLayer("Walls", "tilemap.png", tileW, tileH);
     layerWalls.collisionResponse = "static";    
-    layerWalls.tilemap.populateTilelayer(mapDataWalls);
-
+    layerWalls.tilemap.populate(mapDataWalls);
 
     var layer = level.createSpriteLayer();
     level.createSprite(Ball, layer, 256, 256);   
 }
-

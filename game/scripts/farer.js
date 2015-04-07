@@ -225,7 +225,7 @@ populateLevel = function (level) {
     var spriteLayer = level.createSpriteLayer("Sprites");
     level.createSpriteLayer("Effects");
 
-    window.console.log("created FARER levels");
+    window.console.log("created FARER layers");
 
     player = level.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
     for (var i = 0; i < numRotors; i++) {
