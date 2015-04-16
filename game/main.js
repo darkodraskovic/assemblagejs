@@ -5,7 +5,7 @@ A_.game = new A_.Game();
 
 var levelManager = A_.game.levelManager;
 
-levelManager.startLevel(platformer1, "lvl1");
+//levelManager.startLevel(platformer1, "lvl1");
 //levelManager.startLevel(skorpio1, "lvl1");
 //levelManager.startLevel(skorpio2, "lvl1");
 //levelManager.startLevel(brownian, "lvl1");
@@ -23,12 +23,12 @@ levelManager.startLevel(platformer1, "lvl1");
 //});
 
 // ROT
-//levelManager.loadLevel(rot1, function () {
-//    var level = levelManager.createLevel(rot1, "rot1");
-//    createRoguelikeMap(level);
-//    levelManager.activateLevel("rot1");
-//    levelManager.manageLevels = true;
-//});
+levelManager.loadLevel(rot1, function () {
+    var level = levelManager.createLevel(rot1, "rot1");
+    createRoguelikeMap(level);
+    levelManager.activateLevel("rot1");
+    levelManager.manageLevels = true;
+});
 
 // DISKETTE
 var player; 

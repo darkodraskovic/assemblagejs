@@ -77,22 +77,23 @@ A_.CAMERA.Camera = Class.extend({
         this.y = center.getY() - this.height / 2;
     },
     bind: function () {
-        var level = this.level;
+        var levelW = this.level.getWidth();
+        var levelH = this.level.getHeight();
+        if (this.x + this.width > levelW)
+        {
+            this.x = levelW - this.width;
+        }
         if (this.x < 0)
         {
             this.x = 0;
         }
-        else if (this.x && this.x + this.width > level.getWidth())
+        if (this.y + this.height > levelH)
         {
-            this.x = level.getWidth() - this.width;
+            this.y = levelH - this.height;
         }
         if (this.y < 0)
         {
             this.y = 0;
-        }
-        else if (this.y && this.y + this.height > level.getHeight())
-        {
-            this.y = level.getHeight() - this.height;
         }
     },
     update: function () {

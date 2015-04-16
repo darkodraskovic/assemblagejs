@@ -256,6 +256,7 @@ A_.LEVEL.LevelManager = Class.extend({
             this._createLevels();
             this._activateLevels();
             window.console.log("Managed levels.");
+            window.console.log("===============================================");
             this.manageLevels = false;
         }
     },
