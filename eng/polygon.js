@@ -137,6 +137,15 @@ SAT.Polygon.prototype.clone = function () {
 // ENGINE polygon UTILS
 A_.POLYGON.Utils = {};
 
+A_.POLYGON.Utils.TiledPolygonToPIXIPolygon = function (tiledPolygon) {
+    var points = [];
+    for (var i = 0; i < tiledPolygon.length; i++) {
+        points [2 * i] = tiledPolygon[i].x;
+        points [2 * i + 1] = tiledPolygon[i].y;
+    }
+    return new PIXI.Polygon(points);
+};
+
 A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData, mapData) {
     var vectors = _.map(oData.polygon, function (vertex) {
         return new SAT.Vector(vertex.x, vertex.y);
@@ -154,8 +163,7 @@ A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData, mapData) {
             vector.y = (x + y) * (mapData.tileheight / 2);
         }
     }
-    var SATPolygon = new A_.POLYGON.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
-    return SATPolygon;
+    return new A_.POLYGON.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
 };
 
 A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon) {
@@ -175,52 +183,17 @@ A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon) {
     return new PIXI.Polygon(calcPointsArr);
 };
 
-A_.POLYGON.Utils.drawSATPolygon = function (graphics, SATPolygon, props) {
-    var pointsArr = [];
-    if (SATPolygon.baked) {
-        _.each(SATPolygon.baked.points, function (point, i) {
-            pointsArr[i] = point;
-        });
-    } else {
-        pointsArr = (this.SATPolygonToPIXIPolygon(SATPolygon, true)).points;
-    }
-
-    if (_.isUndefined(props)) {
-        props = {};
-        props.lineWidth = 2;
-        props.lineColor = A_.UTILS.Colors.green;
-        props.lineAlpha = 0.67;
-        props.fillColor = A_.UTILS.Colors.violet;
-        props.fillAlpha = 0.5;
+A_.POLYGON.Utils.drawPolygon = function (graphics, polygon, props) {
+    if (!_.isObject(props)) {
+        props = {};        
     }
     graphics.clear();
-    graphics.beginFill(props.fillColor, props.fillAlpha);
-    graphics.lineStyle(props.lineWidth, props.lineColor, props.lineAlpha);
-    graphics.drawPolygon(pointsArr);
+    graphics.beginFill(props.fillColor || A_.UTILS.Colors.violet, props.fillAlpha || 0.5);
+    graphics.lineStyle(props.lineWidth || 2, props.lineColor || A_.UTILS.Colors.green, props.lineAlpha || 0.67);
+    graphics.drawPolygon(polygon.points);
     graphics.endFill();
 };
 
-A_.POLYGON.Utils.drawTiledPolygon = function (graphics, polygon, props) {
-    var points = [];
-    for (var i = 0; i < polygon.length; i++) {
-        points [2 * i] = polygon[i].x;
-        points [2 * i + 1] = polygon[i].y;
-    }
-
-    if (_.isUndefined(props)) {
-        props = {};
-        props.lineWidth = 2;
-        props.lineColor = A_.UTILS.Colors.green;
-        props.lineAlpha = 0.67;
-        props.fillColor = A_.UTILS.Colors.violet;
-        props.fillAlpha = 0.5;
-    }
-    graphics.clear();
-    graphics.beginFill(props.fillColor, props.fillAlpha);
-    graphics.lineStyle(props.lineWidth, props.lineColor, props.lineAlpha);
-    graphics.drawPolygon(points);
-    graphics.endFill();
-};
 
 A_.UTILS.Colors = {
     'aliceblue': '0xF0F8FF',

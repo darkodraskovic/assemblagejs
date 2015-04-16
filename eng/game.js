@@ -8,7 +8,7 @@ A_.Game = Class.extend({
 
         this.time = new Date().getTime();
         this.dt = new Date().getTime();
-        this.maxTick = 20;
+        this.maxTick = 50;
 
         this.running = true;
         // Cf. run.js
@@ -67,7 +67,7 @@ A_.Game = Class.extend({
             this.time = now;
             this.dt = dt / 1000;
 
-            this.levelManager.updateLevels();
+            this.levelManager._updateLevels();
 
             A_.INPUT.reset();
         }

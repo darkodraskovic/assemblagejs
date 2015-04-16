@@ -76,25 +76,11 @@ brownian = {
     }
 };
 
-box2D = {
-    directory: "box2D/",
-    type: "tiled",
-    scripts: ["box2D"],
-    map: "Box2D",
-    graphics: [],
-    sounds: [],
-    camera: {
-        innerBoundOffset: 0.25,
-        worldBounded: true,
-        followType: "centered"
-    }
-};
-
 var isometric = {
     directory: "Isometric/",
     type: "tiled",
     scripts: ["isometric"],
-    map: "isometric2",
+    map: "isometric4",
     graphics: ["cube.png", "isometricGround.png", "player.png", "sphere.png", "tileset.png", "tileset2.png", "violettileset.png"],
     sounds: [],
     camera: {
@@ -122,6 +108,33 @@ var diskette = {
     }
 };
 
+pongPlayground = {
+    directory: "Pong/",
+    type: "tiled",
+    scripts: ["main"],
+    map: "playground",
+    graphics: ["ball.png", "bar.png", "tiles.png"],
+    sounds: [],
+    camera: {
+        innerBoundOffset: 0.25,
+        worldBounded: true,
+        followType: "centered"
+    }
+};
+pongMainMenu = {
+    directory: "Pong/",
+    type: "tiled",
+    scripts: ["main"],
+    map: "mainMenu",
+    graphics: ["tiles.png"],
+    sounds: [],
+    camera: {
+        innerBoundOffset: 0.25,
+        worldBounded: true,
+        followType: "centered"
+    }
+};
+
 A_.LEVEL.Manifests["skorpio1"] = skorpio1;
 A_.LEVEL.Manifests["skorpio2"] = skorpio2;
 A_.LEVEL.Manifests["platformer1"] = platformer1;
@@ -129,5 +142,7 @@ A_.LEVEL.Manifests["farer1"] = farer1;
 A_.LEVEL.Manifests["rot1"] = rot1;
 A_.LEVEL.Manifests["brownian"] = brownian;
 A_.LEVEL.Manifests["diskette"] = diskette;
-A_.LEVEL.Manifests["box2D"] = box2D;
 A_.LEVEL.Manifests["isometric"] = isometric;
+
+A_.LEVEL.Manifests["pongPlayground"] = pongPlayground;
+A_.LEVEL.Manifests["pongMainMenu"] = pongMainMenu;

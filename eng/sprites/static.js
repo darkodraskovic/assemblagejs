@@ -1,6 +1,7 @@
-A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
+A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     collides: true,
     drawCollisionPolygon: true,
+    collisionResponse: "static",
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -12,13 +13,13 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
             this.level.debugLayer.addChild(this.debugGraphics);
         }
 
-        this.setCollisionPolygon(this.createCollisionPolygon(this.collisionPolygon));
+        this.setCollisionPolygon(this.createCollisionPolygon(this.polygon));
         this.synchCollisionPolygon();
     },
     setCollisionPolygon: function(polygon) {
         this.collisionPolygon = polygon;
         if (this.drawCollisionPolygon && A_.game.debug)
-            A_.POLYGON.Utils.drawSATPolygon(this.debugGraphics, this.collisionPolygon, this.collisionPolygonStyle);
+            A_.POLYGON.Utils.drawPolygon(this.debugGraphics, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
     },
     resetCollisionData: function() {
         this.collisionWidth = this.collisionHeight = this.collisionOffsetX = this.collisionOffsetY = 0;
@@ -35,26 +36,20 @@ A_.SPRITES.Colliding = A_.SPRITES.Sprite.extend({
 
         var collisionPolygon;
 
-        var offsetX = 0;
-        var offsetY = 0;
         if (!polygon) {
             var box = new A_.POLYGON.Box(new SAT.Vector(0, 0), this.collisionWidth, this.collisionHeight);
             collisionPolygon = box.toPolygon();
-            offsetX = this.collisionOffsetX - this.collisionWidth * this.getOrigin().x;
-            offsetY = this.collisionOffsetY - this.collisionHeight * this.getOrigin().y;
         } else {
             collisionPolygon = polygon;
-            offsetX = this.collisionOffsetX;
-            offsetY = this.collisionOffsetY;
         }
-        collisionPolygon.setOffset(new SAT.Vector(offsetX, offsetY));
+        collisionPolygon.setOffset(new SAT.Vector(this.collisionOffsetX, this.collisionOffsetY));
         collisionPolygon.calcBounds();
 
 //        if (this.getMouseReactivity())
 //            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
         if (this.drawCollisionPolygon && A_.game.debug) {
-            collisionPolygon.baked = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
+            collisionPolygon.PIXIPolygon = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon);
         }
 
         return collisionPolygon;

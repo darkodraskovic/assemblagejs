@@ -48,7 +48,7 @@ A_.TILES.createTiledMap = function(mapData, level) {
             // This layer property must be set by user.
             var img = layer["image"];
             var tileset;
-            var spacing;            
+            var spacing;
             for (var j = 0; j < mapData["tilesets"].length; j++) {
                 var tilesetimg = mapData["tilesets"][j].image;
                 if (tilesetimg.indexOf("/") > -1) {
@@ -84,7 +84,7 @@ A_.TILES.createTiledMap = function(mapData, level) {
             }
 
             var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH, spacing,
-                mapData.orientation);
+                    mapData.orientation);
             tilemap.populate(tileData2D);
 
             layer.baked = baked;
@@ -105,62 +105,37 @@ A_.TILES.createTiledMap = function(mapData, level) {
         // if the current layer is OBJECT LAYER
         else if (layerData["type"] === "objectgroup") {
             level.addSpriteLayer(layer);
-            // loop through all objects conained in the layer
             for (var j = 0; j < layerData["objects"].length; j++) {
-                // copy object data into temp var
                 var args = {};
                 var oData = layerData["objects"][j];
                 for (var prop in oData["properties"]) {
                     args[prop] = eval(oData["properties"][prop]);
                 }
-
                 args["name"] = oData["name"];
-                args["type"] = oData["type"];
 
-                // Polygon
                 if (oData["polygon"]) {
-                    var collisionPolygon = A_.POLYGON.Utils.TiledPolygonToSATPolygon(oData, mapData);
-                    args.collisionPolygon = collisionPolygon;
-                    var type;
-                    if (oData["type"]) { // user defined type
-                        type = eval(oData["type"]);
-                    } else {
-                        type = A_.SPRITES.Colliding; // Colliding polygon
-                        args["frameWidth"] = collisionPolygon.w;
-                        args["frameHeight"] = collisionPolygon.h;
-                    }
-                    var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
-                    if (o.sprite instanceof PIXI.Graphics) {
-                        A_.POLYGON.Utils.drawTiledPolygon(o.sprite, oData["polygon"]);
-                    }
+                    args.polygon = A_.POLYGON.Utils.TiledPolygonToSATPolygon(oData, mapData);
                 }
-                // Rectangle - Colliding polygon
-                else if (oData.type === "") {
-                    args["frameWidth"] = oData["width"];
-                    args["frameHeight"] = oData["height"];
-                    var o = level.createSprite(A_.SPRITES.Colliding, layer, oData["x"], oData["y"], args);
+
+                var type;
+                if (oData["type"]) { // user defined type
+                    type = eval(oData["type"]);
+                } else {
+                    type = A_.SPRITES.Colliding; // Colliding polygon
                 }
-                // Tile || Rectangle - user defined type
-                else {
-                    var type = eval(oData["type"]);
-                    if (!type.prototype.spriteSheet) {
-                        args["frameWidth"] = oData["width"];
-                        args["frameHeight"] = oData["height"];
-                    }
-                    var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
-                }
+                var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
+
                 // General object transform
                 o.setRotation(oData["rotation"].toRad());
-                
+
                 if (mapData.orientation === "isometric") {
                     var x = o.getX() / mapData.tileheight;
                     var y = o.getY() / mapData.tileheight;
                     o.position.x = (x - y) * (mapData.tilewidth / 2) + level.getWidth() / 2;
                     o.position.y = (x + y) * (mapData.tileheight / 2);
                 }
-
+                
                 if (o instanceof A_.SPRITES.Colliding) {
-                    o.setPositionRelative(-o.collisionPolygon.offset.x, -o.collisionPolygon.offset.y);
                     o.synchCollisionPolygon();
                 }
             }

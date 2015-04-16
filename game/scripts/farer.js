@@ -82,7 +82,7 @@ var Player = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var Laser = A_.SPRITES.Sprite.extend({
+var Laser = A_.SPRITES.Animated.extend({
     spriteSheet: "laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -171,19 +171,23 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var Rotor = A_.SPRITES.Kinematic.extend({
+var Rotor = A_.SPRITES.Colliding.extend({
     spriteSheet: "rotor.png",
     frameWidth: 45,
     frameHeight: 45,
-    collisionResponse: "static",
-    angularSpeed: Math.PI / 2,
+//    collisionResponse: "static",
+//    angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.016);
-        this.setOrigin(0.5, 0.5);
+        this.setOrigin(0.5, 0.5);        
+    },
+    update: function () {
+        this.setRotation(this.getRotation() + Math.PI / 2 * A_.game.dt);
+        this.synchCollisionPolygon();
     }
 });
-var Explosion = A_.SPRITES.Sprite.extend({
+var Explosion = A_.SPRITES.Animated.extend({
     spriteSheet: "Explosion.png",
     frameWidth: 128,
     frameHeight: 128,

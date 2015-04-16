@@ -9,13 +9,13 @@ var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
     frameWidth: 64,
     frameHeight: 64,
     collisionResponse: "active",
-    collisionOffsetY: 6,
+    collisionOffsetX: 18,
+    collisionOffsetY: 14,
     collisionWidth: 26,
     collisionHeight: 48,
     animSpeed: 0.15,
     elasticity: 0,
     alive: true,
-    origin: {x: 0.5, y:0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 32;
@@ -38,6 +38,8 @@ var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
         this.animations["death"].onComplete = function () {
             that.destroy();
         };
+        
+        this.setOrigin(0.5, 0.5)
     },
     update: function () {
         if (this.motionState === "moving") {
@@ -94,7 +96,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     followee: true,
     player: true,
     mass: 4,
-    drawCollisionPolygon: false,
+    drawCollisionPolygon: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -201,7 +203,7 @@ var Agent = AnimeSkorpio.extend({
     }
 });
 
-var Rifle = A_.SPRITES.Sprite.extend({
+var Rifle = A_.SPRITES.Animated.extend({
     spriteSheet: "AssaultRifle.png",
     frameWidth: 64,
     frameHeight: 64,
@@ -244,6 +246,8 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     collisionResponse: "sensor",
     collisionWidth: 12,
     collisionHeight: 10,
+    collisionOffsetX: -6,
+    collisionOffsetY: -5,
     lifeTime: 4,
     lifeTimer: 0,
     collidesWith: A_.COLLISION.Type.ENEMY,
@@ -283,7 +287,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var LaserBeam = A_.SPRITES.Sprite.extend({
+var LaserBeam = A_.SPRITES.Animated.extend({
     spriteSheet: "Muzzleflashes-Shots.png",
     frameWidth: 32,
     frameHeight: 32,
@@ -374,7 +378,7 @@ var LaserTip = A_.SPRITES.Kinematic.extend({
             }
             if (this.timer < 0) {
                 this.level.createSprite(ExplosionSkorpio, this.level.findLayerByName("Effects"),
-                        other.getX(), other.getY());
+                        other.getCenterX(), other.getCenterY());
                 other.destroy();
                 this.timer = null;
             }
@@ -388,11 +392,11 @@ var LaserTip = A_.SPRITES.Kinematic.extend({
 });
 
 
-var LaserFire = A_.SPRITES.Sprite.extend({
+var LaserFire = A_.SPRITES.Animated.extend({
     spriteSheet: "Fire.png",
     frameWidth: 64,
     frameHeight: 64,
-    origin: {x: 0.5, y: 0.5},
+//    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
@@ -408,6 +412,7 @@ var LaserFire = A_.SPRITES.Sprite.extend({
 //        blur.blurX = blur.blurY = 1;
 //        this.sprite.filters = [blur];
         this.setZ("top");
+        this.setOrigin(0.5, 0.5);
     },
     update: function () {
         this.setPosition(this.laserTip.getX(), this.laserTip.getY());
@@ -421,10 +426,10 @@ var LaserFire = A_.SPRITES.Sprite.extend({
 });
 
 
-var ExplosionSkorpio = A_.SPRITES.Sprite.extend({
+var ExplosionSkorpio = A_.SPRITES.Animated.extend({
     spriteSheet: "Explosion.png",
     frameWidth: 128,
-    frameHeight: 128,
+    frameHeight: 128,    
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -439,6 +444,7 @@ var ExplosionSkorpio = A_.SPRITES.Sprite.extend({
             urls: ['explosion.mp3'],
             volume: 0.6
         }).play();
+        this.setOrigin(0.5, 0.5);
     }
 });
 

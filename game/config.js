@@ -16,9 +16,12 @@ A_.CONFIG.renderer = {
     resolution: 1
 };
 A_.CONFIG.screen = {
-    width: 800,
-    height: 600,
-//    color: 0x757575
+    width: 1024,
+    height: 768,
     color: A_.UTILS.Colors.darkslateblue
 };
 
+A_.CONFIG.pixelRounding = false;
+
+// PIXI.scaleModes : Object {DEFAULT: 0, LINEAR: 0, NEAREST: 1}
+PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;

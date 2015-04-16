@@ -9,8 +9,9 @@ var levelManager = A_.game.levelManager;
 //levelManager.startLevel(skorpio1, "lvl1");
 //levelManager.startLevel(skorpio2, "lvl1");
 //levelManager.startLevel(brownian, "lvl1");
-//levelManager.startLevel(box2D, "lvl1");
-levelManager.startLevel(isometric, "lvl1");
+//levelManager.startLevel(isometric, "lvl1");
+//levelManager.startLevel(pongPlayground, "playground");
+levelManager.startLevel(pongMainMenu, "mainMenu");
 //levelManager.startLevel(diskette, "d1", onLevelStarted);
 
 // FARER

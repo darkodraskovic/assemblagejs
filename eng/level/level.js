@@ -209,7 +209,8 @@ A_.LEVEL.Level = Class.extend({
     play: function() {
         this.running = true;
         for (var i = 0, len = this.sprites.length; i < len; i++) {
-            this.sprites[i].currentAnimation.play();
+            if (this.sprites[i] instanceof A_.SPRITES.Animated)
+                this.sprites[i].currentAnimation.play();
         }
     },
     pause: function() {
@@ -302,8 +303,10 @@ A_.LEVEL.Level = Class.extend({
         this.processParallax(x, y);
         this.processScale();
 
-//        this.container.position.x = Math.round(this.container.position.x);
-//        this.container.position.y = Math.round(this.container.position.y);
+        if (A_.CONFIG.pixelRounding) {
+            this.container.position.x = Math.round(this.container.position.x);
+            this.container.position.y = Math.round(this.container.position.y);
+        }
     },
     processParallax: function(x, y) {
         for (var i = 0; i < this.layers.length; i++) {

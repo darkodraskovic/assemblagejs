@@ -137,21 +137,6 @@
                  "y":96
                 }, 
                 {
-                 "gid":259,
-                 "height":1,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Computer",
-                 "visible":true,
-                 "width":1,
-                 "x":224,
-                 "y":160
-                }, 
-                {
                  "height":0,
                  "name":"Diamond",
                  "polygon":[
@@ -461,6 +446,48 @@
                  "width":32,
                  "x":480,
                  "y":384
+                }, 
+                {
+                 "height":64,
+                 "name":"Computer",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Computer",
+                 "visible":true,
+                 "width":32,
+                 "x":288,
+                 "y":96
+                }, 
+                {
+                 "height":64,
+                 "name":"Computer",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Computer",
+                 "visible":true,
+                 "width":32,
+                 "x":288,
+                 "y":384
+                }, 
+                {
+                 "height":64,
+                 "name":"Computer",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Computer",
+                 "visible":true,
+                 "width":32,
+                 "x":736,
+                 "y":288
                 }],
          "opacity":1,
          "properties":

@@ -85,23 +85,6 @@ A_.LEVEL.LevelManager = Class.extend({
         }
     },
     // Level CREATION & DESTRUCTION
-    _createLevel: function (manifest, name, activate) {
-        this.levelsToCreate.push({manifest: manifest, name: name, activate: activate});
-    },
-    createLevels: function () {
-        _.each(this.levelsToCreate, function (levelToCreate) {
-            var manifest = levelToCreate.manifest;
-            var name = levelToCreate.name;
-
-            var level = this.createLevel(manifest, name);
-
-            if (level && levelToCreate.activate) {
-                this.activateLevel(name);
-            }
-        }, this);
-
-        this.levelsToCreate.length = 0;
-    },
     createLevel: function (manifest, name) {
         if (!_.contains(this.manifests, manifest)) {
             window.console.log("Cannot find manifest");
@@ -131,6 +114,20 @@ A_.LEVEL.LevelManager = Class.extend({
 
         return level;
     },
+    _createLevels: function () {
+        _.each(this.levelsToCreate, function (levelToCreate) {
+            var manifest = levelToCreate.manifest;
+            var name = levelToCreate.name;
+
+            var level = this.createLevel(manifest, name);
+
+            if (level && levelToCreate.activate) {
+                this.activateLevel(name);
+            }
+        }, this);
+
+        this.levelsToCreate.length = 0;
+    },
     destroyLevel: function (name) {
         var level = this.findCreatedLevel(name);
         if (!level) {
@@ -139,7 +136,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.levelsToDestroy.push(level);
     },
-    destroyLevels: function () {
+    _destroyLevels: function () {
         _.each(this.levelsToDestroy, function (level) {
             level.clear();
 
@@ -165,7 +162,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.levelsToActivate.push(level);
     },
-    activateLevels: function () {
+    _activateLevels: function () {
         _.each(this.levelsToActivate, function (level) {
             level.setScale(level.scale);
 
@@ -191,7 +188,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.levelsToDeactivate.push(level);
     },
-    deactivateLevels: function () {
+    _deactivateLevels: function () {
         _.each(this.levelsToDeactivate, function (level) {
             var ind = this.activeLevels.indexOf(level);
             if (ind > -1)
@@ -220,7 +217,7 @@ A_.LEVEL.LevelManager = Class.extend({
             this.manageLevels = true;
         }
         else {
-            this._createLevel(manifest, name, true);
+            this.levelsToCreate.push({manifest: manifest, name: name, activate: true});
             this.manageLevels = true;
         }
     },
@@ -229,7 +226,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.deactivateLevel(name);
         this.destroyLevel(name);
-        this._createLevel(level.manifest, level.name, true);
+        this.levelsToCreate.push({manifest: level.manifest, name: level.name, activate: true});
 
         this.manageLevels = true;
     },
@@ -243,20 +240,17 @@ A_.LEVEL.LevelManager = Class.extend({
         this.destroyLevel(name);
         this.manageLevels = true;
     },
-    updateLevels: function () {
-//        _.each(this.activeLevels, function (level) {
-//            level.run();
-//        });
+    _updateLevels: function () {
         for (var i = 0, len = this.activeLevels.length; i < len; i++) {
             this.activeLevels[i].run();
         }
 
         if (this.manageLevels) {
             window.console.log("managed levels");
-            this.deactivateLevels();
-            this.destroyLevels();
-            this.createLevels();
-            this.activateLevels();
+            this._deactivateLevels();
+            this._destroyLevels();
+            this._createLevels();
+            this._activateLevels();
             this.manageLevels = false;
         }
     },

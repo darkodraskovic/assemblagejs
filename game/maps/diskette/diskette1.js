@@ -165,8 +165,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":1184,
-                 "y":448
+                 "x":640,
+                 "y":672
                 }, 
                 {
                  "height":32,
@@ -830,7 +830,7 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -841,7 +841,7 @@
                 }, 
                 {
                  "height":0,
-                 "name":"",
+                 "name":"PolyG",
                  "polygon":[
                         {
                          "x":0,
@@ -857,7 +857,7 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+
                     },
                  "rotation":0,
                  "type":"",
@@ -879,6 +879,41 @@
                  "width":32,
                  "x":960,
                  "y":504
+                }, 
+                {
+                 "height":0,
+                 "name":"Graphics",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":32,
+                         "y":-32
+                        }, 
+                        {
+                         "x":96,
+                         "y":-32
+                        }, 
+                        {
+                         "x":128,
+                         "y":32
+                        }, 
+                        {
+                         "x":0,
+                         "y":64
+                        }],
+                 "properties":
+                    {
+                     "fillColor":"0xFF0000"
+                    },
+                 "rotation":0,
+                 "type":"A_.SPRITES.Graphics",
+                 "visible":true,
+                 "width":0,
+                 "x":1216,
+                 "y":352
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -892,8 +927,27 @@
          "draworder":"topdown",
          "height":32,
          "name":"HUD",
-         "objects":[],
+         "objects":[
+                {
+                 "height":32,
+                 "name":"Text",
+                 "properties":
+                    {
+                     "fill":"\"Green\"",
+                     "text":"\"Hello World!\""
+                    },
+                 "rotation":0,
+                 "type":"A_.SPRITES.Text",
+                 "visible":true,
+                 "width":32,
+                 "x":32,
+                 "y":32
+                }],
          "opacity":1,
+         "properties":
+            {
+             "parallax":"0"
+            },
          "type":"objectgroup",
          "visible":true,
          "width":48,

@@ -13,20 +13,6 @@
          "name":"Particles",
          "objects":[
                 {
-                 "height":32,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Particle",
-                 "visible":true,
-                 "width":32,
-                 "x":184,
-                 "y":248
-                }, 
-                {
                  "height":0,
                  "name":"",
                  "polygon":[
@@ -118,34 +104,6 @@
                  "width":0,
                  "x":304,
                  "y":432
-                }, 
-                {
-                 "height":48,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Particle",
-                 "visible":true,
-                 "width":24,
-                 "x":712,
-                 "y":56
-                }, 
-                {
-                 "height":24,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Particle",
-                 "visible":true,
-                 "width":48,
-                 "x":592,
-                 "y":592
                 }, 
                 {
                  "height":0,
@@ -335,104 +293,6 @@
                  "y":448
                 }, 
                 {
-                 "height":72,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Particle",
-                 "visible":true,
-                 "width":64,
-                 "x":152,
-                 "y":368
-                }, 
-                {
-                 "height":24,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Particle",
-                 "visible":true,
-                 "width":48,
-                 "x":560,
-                 "y":712
-                }, 
-                {
-                 "height":96,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"Particle",
-                 "visible":true,
-                 "width":72,
-                 "x":680,
-                 "y":176
-                }, 
-                {
-                 "height":8,
-                 "name":"",
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1024,
-                 "x":0,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "name":"",
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1024,
-                 "x":0,
-                 "y":760
-                }, 
-                {
-                 "height":752,
-                 "name":"",
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":8,
-                 "x":0,
-                 "y":8
-                }, 
-                {
-                 "height":752,
-                 "name":"",
-                 "properties":
-                    {
-                     "collisionResponse":"\"static\""
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":8,
-                 "x":1016,
-                 "y":8
-                }, 
-                {
                  "height":0,
                  "name":"",
                  "polygon":[
@@ -532,6 +392,196 @@
                  "width":0,
                  "x":536,
                  "y":128
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":64,
+                         "y":64
+                        }, 
+                        {
+                         "x":160,
+                         "y":-64
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Particle",
+                 "visible":true,
+                 "width":0,
+                 "x":96,
+                 "y":448
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":-32,
+                         "y":32
+                        }, 
+                        {
+                         "x":-32,
+                         "y":64
+                        }, 
+                        {
+                         "x":0,
+                         "y":128
+                        }, 
+                        {
+                         "x":32,
+                         "y":128
+                        }, 
+                        {
+                         "x":32,
+                         "y":0
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Particle",
+                 "visible":true,
+                 "width":0,
+                 "x":800,
+                 "y":352
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":1024,
+                         "y":0
+                        }, 
+                        {
+                         "x":1024,
+                         "y":32
+                        }, 
+                        {
+                         "x":0,
+                         "y":32
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":0,
+                 "y":0
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":32,
+                         "y":0
+                        }, 
+                        {
+                         "x":32,
+                         "y":736
+                        }, 
+                        {
+                         "x":0,
+                         "y":736
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":0,
+                 "y":32
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":960,
+                         "y":0
+                        }, 
+                        {
+                         "x":960,
+                         "y":32
+                        }, 
+                        {
+                         "x":0,
+                         "y":32
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":32,
+                 "y":736
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":32,
+                         "y":0
+                        }, 
+                        {
+                         "x":32,
+                         "y":736
+                        }, 
+                        {
+                         "x":0,
+                         "y":736
+                        }],
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":992,
+                 "y":32
                 }],
          "opacity":1,
          "type":"objectgroup",

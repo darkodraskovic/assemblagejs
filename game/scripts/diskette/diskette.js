@@ -3,14 +3,12 @@ var Diskette = A_.SPRITES.Kinematic.extend({
     collisionResponse: "active",
     drawCollisionPolygon: false,
     elasticity: 0.5,
-//    elasticity: 0,
     springForce: 650,
     springScan: 1,
     bounceTreshold: 200,
     frameWidth: 32,
     frameHeight: 32,
     insertingFrameCount: 0,
-//    origin: new PIXI.Point(0.5, 0.5),
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 8;

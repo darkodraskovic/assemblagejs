@@ -2,10 +2,10 @@ var Computer = A_.SPRITES.Kinematic.extend({
     bounded: false,
     spriteSheet: "diskette/computer.png",
     collisionResponse: "sensor",
-    drawCollisionPolygon: false,
+    drawCollisionPolygon: true,
     collisionWidth: 38,
-    collisionOffsetX: -3,
-    collisionOffsetY: 2,
+    collisionOffsetX: 16,
+    collisionOffsetY: 4,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setZ("bottom");
@@ -17,6 +17,6 @@ var Computer = A_.SPRITES.Kinematic.extend({
         return this.getY() + 27;
     },
     getSlotX: function () {
-        return this.getX() - 2;
+        return this.getX() + this.collisionOffsetX;
     }
 });

@@ -182,6 +182,9 @@ var PlayerPlatformer = AnimePlatformer.extend({
             urls: ['jump.wav'],
             volume: 1
         });
+        
+        level = this.level;
+        player = this;
     },
     processControls: function () {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
@@ -429,7 +432,7 @@ var Platform = A_.SPRITES.Colliding.extend({
     }
 });
 
-var ExplosionPlatformer = A_.SPRITES.Sprite.extend({
+var ExplosionPlatformer = A_.SPRITES.Animated.extend({
     spriteSheet: "Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
