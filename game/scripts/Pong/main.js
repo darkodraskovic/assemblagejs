@@ -6,7 +6,7 @@ var GameController = A_.SPRITES.Graphics.extend({
         this._super(parent, x, y, props);
         controller = this;
         level = this.level;
-        this.level.setScale(2);        
+        this.level.setScale(2);
     }
 });
 
@@ -53,7 +53,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this._super(parent, x, y, props);
         this.friction.x = 0;
         this.friction.y = 0;
-        this.maxVelocity.x = this.maxVelocity.y = 192;
+        this.maxVelocity.x = this.maxVelocity.y = 256;
         this.setGravity(0, 0);
         this.velocity.x = this.maxVelocity.x;
         this.velocity.y = _.random(-this.maxVelocity.y, this.maxVelocity.y);
@@ -72,7 +72,17 @@ var Ball = A_.SPRITES.Kinematic.extend({
     },
     collideWithStatic: function (other, response) {
         this._super(other, response);
-        this.pointsText.points++;
+        if (response.overlap) {
+            other.destroy();
+            this.pointsText.points++;
+        }
+    },
+    collideWithKinematic: function (other, response) {
+        this._super(other, response);
+        if (response.overlap) {
+            if (other instanceof Bar)
+                this.velocity.y += other.velocity.y * 0.75; 
+        }
     }
 });
 
@@ -82,12 +92,12 @@ var Bar = A_.SPRITES.Kinematic.extend({
     drawCollisionPolygon: false,
     elasticity: 1,
     bounceTreshold: 0,
-    velocityStep: 128,
+    velocityStep: 64,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.friction.x = 64;
-        this.friction.y = 64;
-        this.maxVelocity.x = this.maxVelocity.y = 256;
+        this.friction.x = 32;
+        this.friction.y = 32;
+        this.maxVelocity.x = this.maxVelocity.y = 288;
         this.setGravity(0, 0);
 
         A_.INPUT.addMapping("down", A_.KEY.S);
@@ -104,8 +114,15 @@ var Bar = A_.SPRITES.Kinematic.extend({
         this._super();
     }
 });
- 
- var Brick = A_.SPRITES.Colliding.extend({
+
+var Brick = A_.SPRITES.Colliding.extend({
     spriteSheet: "Pong/brick.png",
-    drawCollisionPolygon: false
+    drawCollisionPolygon: false,
+    frameWidth: 16,
+    frameHeight: 32,
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
+        this.setAnimation("all");
+        this.currentAnimation.gotoAndStop(_.random(0, 1));
+    }
 });

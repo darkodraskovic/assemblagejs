@@ -1,3 +1,26 @@
+/*
+Given a player sprite and a level object, now walk through an example event functionality:
+
+// Play the intro animation on the player 
+// when the level starts
+level.bind('start',player,function() {
+  this.showIntro();
+});
+
+// Bind a method on player using the method name
+level.bind('finish',player,'showFinal');
+
+// Trigger the start event on the level
+level.trigger('start');
+
+// Unbind the player from the start event
+level.unbind('start',player);
+
+// Release the player from listening
+// to all events (such as if it's blown up)
+player.debind();
+*/
+
 A_.EventDispatcher = Class.extend({
     bind: function (event, target, callback) {
         // Handle the case where there is no target provided

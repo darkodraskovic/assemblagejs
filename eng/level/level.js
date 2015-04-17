@@ -208,6 +208,8 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
             layer.removeChildren();
             this.container.removeChild(layer);
         }, this);
+        
+        this.debind();
     },
     // START/STOP level execution
     play: function() {
