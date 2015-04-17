@@ -11,7 +11,7 @@ var levelManager = A_.game.levelManager;
 //levelManager.startLevel(brownian, "lvl1");
 //levelManager.startLevel(isometric, "lvl1");
 //levelManager.startLevel(pongPlayground, "playground");
-//levelManager.startLevel(pongMainMenu, "mainMenu");
+levelManager.startLevel(pongMainMenu, "mainMenu");
 //levelManager.startLevel(diskette, "d1", onLevelStarted);
 
 // FARER
@@ -23,12 +23,12 @@ var levelManager = A_.game.levelManager;
 //});
 
 // ROT
-levelManager.loadLevel(rot1, function () {
-    var level = levelManager.createLevel(rot1, "rot1");
-    createRoguelikeMap(level);
-    levelManager.activateLevel("rot1");
-    levelManager.manageLevels = true;
-});
+//levelManager.loadLevel(rot1, function () {
+//    var level = levelManager.createLevel(rot1, "rot1");
+//    createRoguelikeMap(level);
+//    levelManager.activateLevel("rot1");
+//    levelManager.manageLevels = true;
+//});
 
 // DISKETTE
 var player; 

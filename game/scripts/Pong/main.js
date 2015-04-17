@@ -6,7 +6,7 @@ var GameController = A_.SPRITES.Graphics.extend({
         this._super(parent, x, y, props);
         controller = this;
         level = this.level;
-        this.level.setScale(2);
+        this.level.setScale(2);        
     }
 });
 
@@ -16,12 +16,26 @@ var Text = A_.SPRITES.Text.extend({
         this._super(parent, x, y, props);
         this.initMouseReactivity();
         this.setMouseReactivity(true);
-    },
+    }
+});
+
+var StartText = Text.extend({
     update: function () {
         if (this.leftpressed) {
             levelManager.deactivateLevel(this.level.name);
             levelManager.startLevel(pongPlayground, "playground");
         }
+
+        this._super();
+    }
+});
+
+// HUD
+
+var PointsText = Text.extend({
+    points: 0,
+    update: function () {
+        this.sprite.setText(this.points);
 
         this._super();
     }
@@ -44,6 +58,9 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.velocity.x = this.maxVelocity.x;
         this.velocity.y = _.random(-this.maxVelocity.y, this.maxVelocity.y);
         this.setOrigin(0.5, 0.5);
+        this.level.bind('create', this, function () {
+            this.pointsText = this.level.findSpriteByClass(PointsText);
+        })
     },
     update: function () {
         if (this.getX() > this.level.getWidth()) {
@@ -52,6 +69,10 @@ var Ball = A_.SPRITES.Kinematic.extend({
         }
 
         this._super();
+    },
+    collideWithStatic: function (other, response) {
+        this._super(other, response);
+        this.pointsText.points++;
     }
 });
 
@@ -84,3 +105,7 @@ var Bar = A_.SPRITES.Kinematic.extend({
     }
 });
  
+ var Brick = A_.SPRITES.Colliding.extend({
+    spriteSheet: "Pong/brick.png",
+    drawCollisionPolygon: false
+});

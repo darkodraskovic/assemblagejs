@@ -110,8 +110,10 @@ A_.LEVEL.LevelManager = Class.extend({
         else {
             level.createDummyLayer();
             window.console.log("Created GENERIC LEVEL :)");
-        }
-
+        }                
+        
+        level.trigger('create');
+        
         return level;
     },
     _createLevels: function () {
@@ -139,6 +141,7 @@ A_.LEVEL.LevelManager = Class.extend({
     },
     _destroyLevels: function () {
         _.each(this.levelsToDestroy, function (level) {
+            level.trigger('destroy');
             level.clear();
 
             var ind = this.createdLevels.indexOf(level);
@@ -170,6 +173,7 @@ A_.LEVEL.LevelManager = Class.extend({
             this.game.stage.addChild(level.container);
             this.activeLevels.push(level);
 
+            level.trigger('activate');
             level.play();
             window.console.log("Level STARTS...");
         }, this);
@@ -192,6 +196,7 @@ A_.LEVEL.LevelManager = Class.extend({
     },
     _deactivateLevels: function () {
         _.each(this.levelsToDeactivate, function (level) {
+            level.trigger('deactivate');
             var ind = this.activeLevels.indexOf(level);
             if (ind > -1)
                 this.activeLevels.splice(ind, 1);

@@ -1,4 +1,4 @@
-A_.LEVEL.Level = Class.extend({
+A_.LEVEL.Level = A_.EventDispatcher.extend({
     width: 0,
     height: 0,
     scale: 1,
@@ -42,6 +42,10 @@ A_.LEVEL.Level = Class.extend({
         this._MousePosition = {x: 0, y: 0};
 
         this.running = false;
+        
+//        this.bind('start', function () {
+//            window.console.log(this.name + " STARTS...");
+//        });
     },
     // LAYER management
     createEmptyLayer: function(name) {

@@ -1,4 +1,4 @@
-A_.SPRITES.Sprite = Class.extend({
+A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     destroyThis: false,
     bounded: false,
     wrap: false,
@@ -422,6 +422,8 @@ A_.SPRITES.Sprite = Class.extend({
         if (_.contains(spritesToDestroy, this))
             return;
 
+        this.debind();
+        
         if (this.sprites.length) {
             for (var i = 0; i < this.sprites.length; i++) {
                 this.sprites[i].destroy();

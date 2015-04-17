@@ -167,7 +167,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
                 this.response.clear();
                 var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
                 if (collided) {
-                    other.collisionResponse === "static" || this.collisionResponse === "lite" ? this.collideWithStatic(other, this.response) : this.collideWithKinematic(other, this.response);
+                    other.collisionResponse === "static" ? this.collideWithStatic(other, this.response) : this.collideWithKinematic(other, this.response);
 //                    }
                 }
             }
@@ -209,6 +209,17 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
         if (this.collisionResponse === "sensor" || other.collisionResponse === "sensor" || other.collisionResponse === "lite")
             return;
 
+        if (this.collisionResponse === "lite") {
+            this.setPositionRelative(-response.overlapV.x, -response.overlapV.y);
+            this.synchCollisionPolygon();
+
+            this._collisionNormal.copy(this.response.overlapN);
+            if (this.gravitySet)
+                this.processStanding(response.overlapN);
+            
+            return;
+        }
+
         else if (this.collisionResponse === "active" || (this.collisionResponse === "passive" && other.collisionResponse === "active")) {
             // PENETRATION resolution
             var coefficientX = Math.abs(this.velocity.x) / (Math.abs(this.velocity.x) + Math.abs(other.velocity.x));
@@ -246,11 +257,11 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         velocityDiff.x *= -(1 + (velocityDiff.x.abs() >= this.bounceTreshold ? this.elasticity : 0));
         velocityDiff.y *= -(1 + (velocityDiff.y.abs() >= this.bounceTreshold ? this.elasticity : 0));
-        
+
         velocityDiff.scale(other.mass / (this.mass + other.mass));
 
         this.velocity.sub(velocityDiff);
-        
+
         if (this.gravitySet) {
             if (collisionNormal[this.gV] === this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] >= 0) {
                 if (this.velocity[this.gV].abs() < this.bounceTreshold) {

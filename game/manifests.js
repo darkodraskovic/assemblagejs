@@ -113,7 +113,7 @@ pongPlayground = {
     type: "tiled",
     scripts: ["main"],
     map: "playground",
-    graphics: ["ball.png", "bar.png", "tiles.png"],
+    graphics: ["ball.png", "bar.png", "brick.png", "tiles.png"],
     sounds: [],
     camera: {
         innerBoundOffset: 0.25,
