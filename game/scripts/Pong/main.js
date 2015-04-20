@@ -8,6 +8,24 @@ var GameController = A_.SPRITES.Graphics.extend({
         controller = this;
         level = this.level;
         this.level.setScale(2);
+
+        A_.INPUT.addMapping("pause", A_.KEY.P);
+        this.level.bind('pause', function () {
+            window.console.log("Paused");
+        })
+        this.level.bind('play', function () {
+            window.console.log("Played");
+        })
+    },
+    update: function () {
+        if (A_.INPUT.pressed["pause"]) {
+            if (this.level.running)
+                this.level.pause();
+            else
+                this.level.play();
+        }
+
+        this._super();
     }
 });
 

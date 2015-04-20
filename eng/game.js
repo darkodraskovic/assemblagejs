@@ -1,4 +1,4 @@
-A_.Game = Class.extend({
+A_.Game = A_.EventDispatcher.extend({
     init: function () {
         this.createRenderer(A_.CONFIG.screen, A_.CONFIG.renderer);
 
@@ -6,11 +6,9 @@ A_.Game = Class.extend({
 
         this.debug = A_.CONFIG.debug;
 
-        this.time = new Date().getTime();
-        this.dt = new Date().getTime();
         this.maxTick = 50;
 
-        this.running = true;
+        this.play();
         // Cf. run.js
         requestAnimFrame(runGame);
     },
@@ -35,42 +33,35 @@ A_.Game = Class.extend({
         if (!this.running) {
             this.time = new Date().getTime();
             this.running = true;
+            this.trigger('play');
         }
     },
-    pause: function (callback) {
+    pause: function () {
         if (this.running) {
             this.running = false;
-            this.stopped = true;
-            this.onPausedCallback = callback;
-        }
-    },
-    onPaused: function () {
-        window.console.log("game stopped");
-        if (this.onPausedCallback) {
-            this.onPausedCallback();
-            this.onPausedCallback = null;
+            this._paused = true;
         }
     },
     run: function () {
         if (!this.running) {
-            if (this.stopped) {
-                this.stopped = false;
-                this.onPaused();
+            if (this._paused) {
+                this._paused = false;
+                this.trigger('pause');
             }
+            return;
         }
-        else {
-            var now = new Date().getTime();
-            var dt = now - this.time;
-            this.dt = dt;
-            if (dt > this.maxTick)
-                dt = this.maxTick;
-            this.time = now;
-            this.dt = dt / 1000;
 
-            this.levelManager._updateLevels();
+        var now = new Date().getTime();
+        var dt = now - this.time;
+        this.dt = dt;
+        if (dt > this.maxTick)
+            dt = this.maxTick;
+        this.time = now;
+        this.dt = dt / 1000;
 
-            A_.INPUT.reset();
-        }
+        this.levelManager._updateLevels();
+
+        A_.INPUT.reset();
 
         this.renderer.render(this.stage);
     }
