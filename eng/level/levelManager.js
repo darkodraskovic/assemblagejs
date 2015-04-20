@@ -17,7 +17,7 @@ A_.LEVEL.LevelManager = Class.extend({
         this.levelsToActivate = [];
     },
     // Level LOADING
-    loadLevel: function (manifest, callback) {
+    loadLevel: function (manifest, onComplete, onProgress) {
         if (_.contains(this.loadedLevels, manifest)) {
             window.console.log("Level is already loaded.");
             return;
@@ -50,38 +50,35 @@ A_.LEVEL.LevelManager = Class.extend({
             }
             manifest.addedDirectory = true;
         }
-        this._activateLevelLoader(callback, manifest);
-    },
-    _activateLevelLoader: function (callback, manifest) {
+
         var loader = new A_.LEVEL.Loader();
-        loader.loadScripts(this._onScriptsLoaded.bind(this, callback, manifest, loader), manifest.scripts);
+        if (onProgress) {
+            loader.bind('load', onProgress)
+        }
+        loader.loadScripts(this._onScriptsLoaded.bind(this, onComplete, manifest, loader), manifest.scripts);
     },
-    _onScriptsLoaded: function (callback, manifest, loader) {
-        window.console.log("Loaded scripts");
+    _onScriptsLoaded: function (onComplete, manifest, loader) {
         if (manifest.type === "tiled") {
-            loader.loadMap(this._onMapLoaded.bind(this, callback, manifest, loader), manifest.map);
+            loader.loadMap(this._onMapLoaded.bind(this, onComplete, manifest, loader), manifest.map);
         }
         else {
-            loader.loadGraphics(this._onGraphicsLoaded.bind(this, callback, manifest, loader), manifest.graphics);
+            loader.loadGraphics(this._onGraphicsLoaded.bind(this, onComplete, manifest, loader), manifest.graphics);
         }
     },
-    _onMapLoaded: function (callback, manifest, loader) {
-        window.console.log("Loaded map");
+    _onMapLoaded: function (onComplete, manifest, loader) {
         this.maps[manifest.map] = TileMaps[manifest.mapName];
-        loader.loadGraphics(this._onGraphicsLoaded.bind(this, callback, manifest, loader), manifest.graphics);
+        loader.loadGraphics(this._onGraphicsLoaded.bind(this, onComplete, manifest, loader), manifest.graphics);
     },
-    _onGraphicsLoaded: function (callback, manifest, loader) {
-        window.console.log("Loaded graphics");
-        loader.loadSounds(this._onSoundsLoaded.bind(this, callback, manifest), manifest.sounds);
+    _onGraphicsLoaded: function (onComplete, manifest, loader) {
+        loader.loadSounds(this._onSoundsLoaded.bind(this, onComplete, manifest), manifest.sounds);
     },
-    _onSoundsLoaded: function (callback, manifest) {
-        window.console.log("Loaded sounds");
+    _onSoundsLoaded: function (onComplete, manifest) {
         window.console.log("Loaded EVERYTHING :)");
 
         this.loadedLevels.push(manifest);
 
-        if (callback) {
-            callback();
+        if (onComplete) {
+            onComplete();
         }
     },
     // Level CREATION & DESTRUCTION
@@ -105,15 +102,15 @@ A_.LEVEL.LevelManager = Class.extend({
 
         if (level.manifest.type === "tiled") {
             A_.TILES.createTiledMap(this.maps[level.manifest.map], level);
-            window.console.log("Created TILED LEVEL :)");
+            window.console.log("Created TILED level :)");
         }
         else {
             level.createDummyLayer();
-            window.console.log("Created GENERIC LEVEL :)");
-        }                
-        
+            window.console.log("Created GENERIC level :)");
+        }
+
         level.trigger('create');
-        
+
         return level;
     },
     _createLevels: function () {
@@ -147,7 +144,7 @@ A_.LEVEL.LevelManager = Class.extend({
             var ind = this.createdLevels.indexOf(level);
             this.createdLevels.splice(ind, 1);
 
-            window.console.log("Level destroyed.");
+            window.console.log("Level " + level.name + " DESTROYED.");
         }, this);
 
         this.levelsToDestroy.length = 0;
@@ -175,7 +172,7 @@ A_.LEVEL.LevelManager = Class.extend({
 
             level.trigger('activate');
             level.play();
-            window.console.log("Level STARTS...");
+            window.console.log("Level " + level.name + " STARTS...");
         }, this);
 
         this.levelsToActivate.length = 0;
@@ -230,7 +227,7 @@ A_.LEVEL.LevelManager = Class.extend({
     },
     restartLevel: function (name) {
         var level = this.findActiveLevel(name);
-        
+
         if (!level)
             return;
 
@@ -260,7 +257,6 @@ A_.LEVEL.LevelManager = Class.extend({
             this._destroyLevels();
             this._createLevels();
             this._activateLevels();
-            window.console.log("Managed levels.");
             window.console.log("===============================================");
             this.manageLevels = false;
         }

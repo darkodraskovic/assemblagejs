@@ -114,7 +114,7 @@ pongPlayground = {
     scripts: ["main"],
     map: "playground",
     graphics: ["ball.png", "bar.png", "brick.png", "tiles.png"],
-    sounds: [],
+    sounds: [['bounce.wav'], ['xylo1.wav']],
     camera: {
         innerBoundOffset: 0.25,
         worldBounded: true,

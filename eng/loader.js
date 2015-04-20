@@ -1,12 +1,15 @@
-A_.LEVEL.Loader = Class.extend({
+A_.LEVEL.Loader = A_.EventDispatcher.extend({
     // SCRIPT loader
     loadScripts: function (callback, scriptsToLoad) {
-        if (!callback) {
+        // If the func is called with only one argument, ie. an array of script names
+        if (!scriptsToLoad) {
+            scriptsToLoad = callback;
             callback = function () {
                 window.console.log("Scripts loaded!");
             };
         }
-        if (scriptsToLoad.length < 1) {
+        // If the user supplied no scripts to load
+        if (!scriptsToLoad.length) {
             callback();
             return;
         }
@@ -17,7 +20,7 @@ A_.LEVEL.Loader = Class.extend({
         this.loadScript("game/scripts/" + this.scriptsToLoad[this.scriptCounter] + ".js", this.onScriptLoaded.bind(this));
     },
     loadScript: function (url, callback) {
-        // Adding the script tag to the head
+        // Adding the script tag to the head...
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
         script.type = 'text/javascript';
@@ -28,36 +31,45 @@ A_.LEVEL.Loader = Class.extend({
         script.onreadystatechange = callback;
         script.onload = callback;
 
-        // Fire the loading
+        // Fire the loading!
         head.appendChild(script);
     },
     onScriptLoaded: function () {
+        this.trigger('load');
         this.scriptCounter++;
+        // If there are more scripts to load
         if (this.scriptCounter < this.scriptsToLoad.length) {
             this.loadScript("game/scripts/" + this.scriptsToLoad[this.scriptCounter] + ".js", this.onScriptLoaded.bind(this));
-        } else {
+        }
+        // Call the user supplied callback
+        else {
+            window.console.log("SCRITPS loaded.");
             this.onScriptsLoaded();
         }
     },
     // MAP loader
     loadMap: function (callback, mapData) {
-        if (!callback) {
+        // If the func is called with only one argument, ie. a map filename
+        if (!mapData) {
+            mapData = callback;
             callback = function () {
-                window.console.log("Maps loaded!");
+                window.console.log("MAP loaded.");
             };
         }
-        if (!mapData) {
-            callback();
-            return;
-        }
-
-        this.loadScript("game/maps/" + mapData + ".js", callback);
+        
+        this.loadScript("game/maps/" + mapData + ".js", this.onMapLoaded.bind(this, callback));
+    },
+    onMapLoaded: function (callback) {
+        this.trigger('load');
+        window.console.log("MAP loaded.");
+        callback();
     },
     // GRAPHICS loader
     loadGraphics: function (callback, graphicsToLoad) {
-        if (!callback) {
+        if (!graphicsToLoad) {
+            graphicsToLoad = callback();
             callback = function () {
-                window.console.log("Graphics loaded!");
+                window.console.log("GRAPHICS loaded!");
             };
         }
         if (graphicsToLoad.length < 1) {
@@ -69,14 +81,20 @@ A_.LEVEL.Loader = Class.extend({
             return "game/graphics/" + asset;
         });
         this.assetLoader = new PIXI.AssetLoader(graphicsToLoad);
-        this.assetLoader.onComplete = callback;
+        this.assetLoader.onComplete = this.onGraphicsLoaded.bind(this, callback);
+        this.assetLoader.onProgress = this.trigger.bind(this, 'load');
         this.assetLoader.load();
+    },
+    onGraphicsLoaded: function (callback) {
+        window.console.log("GRAPHICS loaded!");
+        callback();
     },
     // SOUND loader
     loadSounds: function (callback, soundsToLoad) {
-        if (!callback) {
+        if (!soundsToLoad) {
+            soundsToLoad = callback();
             callback = function () {
-                window.console.log("Sounds loaded!");
+                window.console.log("SOUNDS loaded!");
             };
         }
         if (soundsToLoad.length < 1) {
@@ -84,7 +102,6 @@ A_.LEVEL.Loader = Class.extend({
             return;
         }
 
-        this.soundCounter = 0;
         soundsToLoad = _.each(soundsToLoad, function (sound, i) {
             soundsToLoad[i] = _.map(sound, function (name) {
                 if (name.indexOf("game/sounds/") < 0)
@@ -93,8 +110,11 @@ A_.LEVEL.Loader = Class.extend({
                     return name;
             });
         });
+        
+        this.soundCounter = 0;
         this.soundsToLoad = soundsToLoad;
         this.onSoundsLoaded = callback;
+        
         this.loadSound();
     },
     loadSound: function () {
@@ -105,10 +125,12 @@ A_.LEVEL.Loader = Class.extend({
         });
     },
     onSoundLoaded: function () {
+        this.trigger('load');
         this.soundCounter++;
         if (this.soundCounter < this.soundsToLoad.length) {
             this.loadSound();
         } else {
+            window.console.log("SOUNDS loaded.");
             this.onSoundsLoaded();
         }
     }

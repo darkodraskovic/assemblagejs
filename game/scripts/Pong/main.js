@@ -2,6 +2,7 @@ var controller;
 var level;
 
 var GameController = A_.SPRITES.Graphics.extend({
+    playingDrone: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         controller = this;
@@ -53,14 +54,22 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this._super(parent, x, y, props);
         this.friction.x = 0;
         this.friction.y = 0;
-        this.maxVelocity.x = this.maxVelocity.y = 256;
+        this.maxVelocity.x = this.maxVelocity.y = 224;
         this.setGravity(0, 0);
         this.velocity.x = this.maxVelocity.x;
         this.velocity.y = _.random(-this.maxVelocity.y, this.maxVelocity.y);
         this.setOrigin(0.5, 0.5);
         this.level.bind('create', this, function () {
             this.pointsText = this.level.findSpriteByClass(PointsText);
-        })
+        });
+        this.breakSound = this.level.createSound({
+            urls: ['Pong/xylo1.wav'],
+            volume: 1
+        });
+        this.bounceSound = this.level.createSound({
+            urls: ['Pong/bounce.wav'],
+            volume: 1
+        });
     },
     update: function () {
         if (this.getX() > this.level.getWidth()) {
@@ -73,6 +82,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     collideWithStatic: function (other, response) {
         this._super(other, response);
         if (response.overlap) {
+            this.breakSound.play();
             other.destroy();
             this.pointsText.points++;
         }
@@ -80,8 +90,10 @@ var Ball = A_.SPRITES.Kinematic.extend({
     collideWithKinematic: function (other, response) {
         this._super(other, response);
         if (response.overlap) {
-            if (other instanceof Bar)
-                this.velocity.y += other.velocity.y * 0.75; 
+            if (other instanceof Bar) {
+                this.velocity.y += other.velocity.y * 0.75;
+                this.bounceSound.play();
+            }
         }
     }
 });
