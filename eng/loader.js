@@ -5,7 +5,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
         if (!scriptsToLoad) {
             scriptsToLoad = callback;
             callback = function () {
-                window.console.log("Scripts loaded!");
+                window.console.log("Scripts loaded.");
             };
         }
         // If the user supplied no scripts to load
@@ -14,10 +14,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
             return;
         }
 
-        this.scriptCounter = 0;
-        this.scriptsToLoad = scriptsToLoad;
-        this.onScriptsLoaded = callback;
-        this.loadScript("game/scripts/" + this.scriptsToLoad[this.scriptCounter] + ".js", this.onScriptLoaded.bind(this));
+        this.loadScript("game/scripts/" + scriptsToLoad[0] + ".js", this._onScriptLoaded.bind(this, callback, scriptsToLoad));
     },
     loadScript: function (url, callback) {
         // Adding the script tag to the head...
@@ -34,17 +31,17 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
         // Fire the loading!
         head.appendChild(script);
     },
-    onScriptLoaded: function () {
+    _onScriptLoaded: function (callback, scriptsToLoad) {
         this.trigger('load');
-        this.scriptCounter++;
+        scriptsToLoad.shift();
         // If there are more scripts to load
-        if (this.scriptCounter < this.scriptsToLoad.length) {
-            this.loadScript("game/scripts/" + this.scriptsToLoad[this.scriptCounter] + ".js", this.onScriptLoaded.bind(this));
+        if (scriptsToLoad.length) {
+            this.loadScript("game/scripts/" + scriptsToLoad[0] + ".js", this._onScriptLoaded.bind(this, callback, scriptsToLoad));
         }
-        // Call the user supplied callback
+        // Call the user supplied callback.
         else {
             window.console.log("SCRITPS loaded.");
-            this.onScriptsLoaded();
+            callback();
         }
     },
     // MAP loader
@@ -56,10 +53,10 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
                 window.console.log("MAP loaded.");
             };
         }
-        
-        this.loadScript("game/maps/" + mapData + ".js", this.onMapLoaded.bind(this, callback));
+
+        this.loadScript("game/maps/" + mapData + ".js", this._onMapLoaded.bind(this, callback));
     },
-    onMapLoaded: function (callback) {
+    _onMapLoaded: function (callback) {
         this.trigger('load');
         window.console.log("MAP loaded.");
         callback();
@@ -69,7 +66,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
         if (!graphicsToLoad) {
             graphicsToLoad = callback();
             callback = function () {
-                window.console.log("GRAPHICS loaded!");
+                window.console.log("GRAPHICS loaded.");
             };
         }
         if (graphicsToLoad.length < 1) {
@@ -81,12 +78,12 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
             return "game/graphics/" + asset;
         });
         this.assetLoader = new PIXI.AssetLoader(graphicsToLoad);
-        this.assetLoader.onComplete = this.onGraphicsLoaded.bind(this, callback);
+        this.assetLoader.onComplete = this._onGraphicsLoaded.bind(this, callback);
         this.assetLoader.onProgress = this.trigger.bind(this, 'load');
         this.assetLoader.load();
     },
-    onGraphicsLoaded: function (callback) {
-        window.console.log("GRAPHICS loaded!");
+    _onGraphicsLoaded: function (callback) {
+        window.console.log("GRAPHICS loaded.");
         callback();
     },
     // SOUND loader
@@ -94,7 +91,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
         if (!soundsToLoad) {
             soundsToLoad = callback();
             callback = function () {
-                window.console.log("SOUNDS loaded!");
+                window.console.log("SOUNDS loaded.");
             };
         }
         if (soundsToLoad.length < 1) {
@@ -110,28 +107,23 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
                     return name;
             });
         });
-        
-        this.soundCounter = 0;
-        this.soundsToLoad = soundsToLoad;
-        this.onSoundsLoaded = callback;
-        
-        this.loadSound();
+
+        this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, callback, soundsToLoad));
     },
-    loadSound: function () {
-        var that = this;
+    loadSound: function (sound, callback) {
         new Howl({
-            urls: that.soundsToLoad[that.soundCounter],
-            onload: that.onSoundLoaded.bind(that)
+            urls: sound,
+            onload: callback
         });
     },
-    onSoundLoaded: function () {
+    _onSoundLoaded: function (callback, soundsToLoad) {
         this.trigger('load');
-        this.soundCounter++;
-        if (this.soundCounter < this.soundsToLoad.length) {
-            this.loadSound();
+        soundsToLoad.shift();
+        if (soundsToLoad.length) {
+            this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, callback, soundsToLoad));
         } else {
             window.console.log("SOUNDS loaded.");
-            this.onSoundsLoaded();
+            callback();
         }
     }
 });
