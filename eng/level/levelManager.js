@@ -17,6 +17,15 @@ A_.LEVEL.LevelManager = Class.extend({
         this.levelsToActivate = [];
     },
     // Level LOADING
+    createEmptyManifest: function () {
+        return {
+            directory: "",
+            scripts: [],
+            map: "",
+            graphics: [],
+            sounds: []
+        };
+    },
     loadLevel: function (manifest, onComplete, onProgress) {
         if (_.contains(this.loadedLevels, manifest)) {
             window.console.log("Level is already loaded.");
@@ -25,23 +34,17 @@ A_.LEVEL.LevelManager = Class.extend({
 
         if (!manifest || !_.contains(this.manifests, manifest)) {
             window.console.log("Cannot find manifest. Creating a dummy one.");
-            manifest = {
-                directory: "",
-                type: "generic",
-                scripts: [],
-                map: "",
-                graphics: [],
-                sounds: []
-            };
+            manifest = this.createEmptyManifest();
         }
 
-        manifest.mapName = manifest.map;
 
         if (!manifest.pathAdded) {
             for (var i = 0; i < manifest.scripts.length; i++) {
-                manifest.scripts[i] = A_.CONFIG.directories.scripts + manifest.directory + manifest.scripts[i];
+                manifest.scripts[i] = A_.CONFIG.directories.scripts + manifest.directory + manifest.scripts[i] + ".js";
             }
-            manifest.map = A_.CONFIG.directories.maps + manifest.directory + manifest.map;
+            if (manifest.map) {
+                manifest.map = A_.CONFIG.directories.maps + manifest.directory + manifest.map + ".js";
+            }
             for (var i = 0; i < manifest.graphics.length; i++) {
                 manifest.graphics[i] = A_.CONFIG.directories.graphics + manifest.directory + manifest.graphics[i];
             }
@@ -60,7 +63,7 @@ A_.LEVEL.LevelManager = Class.extend({
         loader.loadScripts(this._onScriptsLoaded.bind(this, onComplete, manifest, loader), manifest.scripts);
     },
     _onScriptsLoaded: function (onComplete, manifest, loader) {
-        if (manifest.type === "tiled") {
+        if (manifest.map) {
             loader.loadMap(this._onMapLoaded.bind(this, onComplete, manifest, loader), manifest.map);
         }
         else {
@@ -68,7 +71,10 @@ A_.LEVEL.LevelManager = Class.extend({
         }
     },
     _onMapLoaded: function (onComplete, manifest, loader) {
-        this.maps[manifest.map] = TileMaps[manifest.mapName];
+        var start = manifest.map.lastIndexOf("/") + 1; 
+        var end = manifest.map.indexOf(".js");
+        var mapName = manifest.map.substring(start, end);
+        this.maps[manifest.map] = TileMaps[mapName];
         loader.loadGraphics(this._onGraphicsLoaded.bind(this, onComplete, manifest, loader), manifest.graphics);
     },
     _onGraphicsLoaded: function (onComplete, manifest, loader) {
@@ -102,7 +108,7 @@ A_.LEVEL.LevelManager = Class.extend({
         if (this.game.debug)
             level.createDebugLayer();
 
-        if (level.manifest.type === "tiled") {
+        if (level.manifest.map) {
             A_.TILES.createTiledMap(this.maps[level.manifest.map], level);
             window.console.log("Created TILED level :)");
         }

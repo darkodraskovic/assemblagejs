@@ -14,7 +14,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
             return;
         }
 
-        this.loadScript(scriptsToLoad[0] + ".js", this._onScriptLoaded.bind(this, callback, scriptsToLoad));
+        this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, callback, scriptsToLoad));
     },
     loadScript: function (url, callback) {
         // Adding the script tag to the head...
@@ -36,7 +36,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
         scriptsToLoad.shift();
         // If there are more scripts to load
         if (scriptsToLoad.length) {
-            this.loadScript(scriptsToLoad[0] + ".js", this._onScriptLoaded.bind(this, callback, scriptsToLoad));
+            this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, callback, scriptsToLoad));
         }
         // Call the user supplied callback.
         else {
@@ -54,7 +54,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
             };
         }
 
-        this.loadScript(mapData + ".js", this._onMapLoaded.bind(this, callback));
+        this.loadScript(mapData, this._onMapLoaded.bind(this, callback));
     },
     _onMapLoaded: function (callback) {
         this.trigger('load');

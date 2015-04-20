@@ -1,6 +1,5 @@
 var skorpio1 = {
     directory: "",
-    type: "tiled",
     scripts: ["skorpio"],
     map: "map_skorpio1",
     graphics: ["AgentComplete.png", "AssaultRifle.png", "player_skorpio.png", "Computer1.png",
@@ -20,7 +19,6 @@ skorpio2.map = "map_skorpio2";
 
 farer1 = {
     directory: "",
-    type: "generic",
     scripts: ["farer"],
     map: "",
     graphics: ["bullet.png", "Explosion.png", "laser.png",
@@ -35,7 +33,6 @@ farer1 = {
 
 rot1 = {
     directory: "",
-    type: "generic",
     scripts: ["rot"],
     map: "",
     graphics: ["player_rot.png", "tilemap.png"],
@@ -49,7 +46,6 @@ rot1 = {
 
 platformer1 = {
     directory: "",
-    type: "tiled",
     scripts: ["platformer"],
     map: "level1",
     graphics: ["ball.png", "sci-fi-platformer-tiles-32x32.png", "moving_platform.png", "player_platformer.png",
@@ -64,7 +60,6 @@ platformer1 = {
 
 brownian = {
     directory: "",
-    type: "tiled",
     scripts: ["brownian"],
     map: "brownian",
     graphics: [],
@@ -78,7 +73,6 @@ brownian = {
 
 var isometric = {
     directory: "Isometric/",
-    type: "tiled",
     scripts: ["isometric"],
     map: "isometric4",
     graphics: ["cube.png", "isometricGround.png", "player.png", "sphere.png", "tileset.png", "tileset2.png", "violettileset.png"],
@@ -92,7 +86,6 @@ var isometric = {
 
 var diskette = {
     directory: "diskette/",
-    type: "tiled",
     scripts: ["diskette", "anime", "ball", "diskette", "computer",
         "player", "scenery"],
     map: "diskette1",
@@ -110,7 +103,6 @@ var diskette = {
 
 pongPlayground = {
     directory: "Pong/",
-    type: "tiled",
     scripts: ["main"],
     map: "playground",
     graphics: ["ball.png", "bar.png", "brick.png", "tiles.png"],
