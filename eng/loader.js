@@ -14,7 +14,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
             return;
         }
 
-        this.loadScript("game/scripts/" + scriptsToLoad[0] + ".js", this._onScriptLoaded.bind(this, callback, scriptsToLoad));
+        this.loadScript(scriptsToLoad[0] + ".js", this._onScriptLoaded.bind(this, callback, scriptsToLoad));
     },
     loadScript: function (url, callback) {
         // Adding the script tag to the head...
@@ -36,7 +36,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
         scriptsToLoad.shift();
         // If there are more scripts to load
         if (scriptsToLoad.length) {
-            this.loadScript("game/scripts/" + scriptsToLoad[0] + ".js", this._onScriptLoaded.bind(this, callback, scriptsToLoad));
+            this.loadScript(scriptsToLoad[0] + ".js", this._onScriptLoaded.bind(this, callback, scriptsToLoad));
         }
         // Call the user supplied callback.
         else {
@@ -54,7 +54,7 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
             };
         }
 
-        this.loadScript("game/maps/" + mapData + ".js", this._onMapLoaded.bind(this, callback));
+        this.loadScript(mapData + ".js", this._onMapLoaded.bind(this, callback));
     },
     _onMapLoaded: function (callback) {
         this.trigger('load');
@@ -74,9 +74,6 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
             return;
         }
 
-        graphicsToLoad = _.map(graphicsToLoad, function (asset) {
-            return "game/graphics/" + asset;
-        });
         this.assetLoader = new PIXI.AssetLoader(graphicsToLoad);
         this.assetLoader.onComplete = this._onGraphicsLoaded.bind(this, callback);
         this.assetLoader.onProgress = this.trigger.bind(this, 'load');
@@ -98,15 +95,6 @@ A_.LEVEL.Loader = A_.EventDispatcher.extend({
             callback();
             return;
         }
-
-        soundsToLoad = _.each(soundsToLoad, function (sound, i) {
-            soundsToLoad[i] = _.map(sound, function (name) {
-                if (name.indexOf("game/sounds/") < 0)
-                    return "game/sounds/" + name;
-                else
-                    return name;
-            });
-        });
 
         this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, callback, soundsToLoad));
     },

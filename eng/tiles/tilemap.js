@@ -16,7 +16,7 @@ A_.TILES.Tilemap = Class.extend({
             this.levelW_half = this.level.getWidth() / 2;
         }
 
-        this.baseTexture = new PIXI.BaseTexture.fromImage("game/graphics/" + img, PIXI.scaleModes.LINEAR);
+        this.baseTexture = new PIXI.BaseTexture.fromImage(A_.CONFIG.directories.graphics + img, PIXI.scaleModes.LINEAR);
         this.imgCols = this.baseTexture.width / (tileW + this.spacing);
         this.imgRows = this.baseTexture.height / (tileH + this.spacing);
 

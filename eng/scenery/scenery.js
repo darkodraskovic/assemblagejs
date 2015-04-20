@@ -8,7 +8,7 @@ A_.SCENERY.TiledSprite = Class.extend({
         }
 
         if (this.image) {
-            this.image = "game/graphics/" + this.image;
+            this.image = A_.CONFIG.directories.graphics + this.image;
         }
         var texture = new PIXI.Texture.fromImage(this.image);
 

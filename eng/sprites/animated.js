@@ -7,7 +7,7 @@ A_.SPRITES.Animated = A_.SPRITES.Sprite.extend({
         if (this.spriteSheet) {
             // A texture stores the information that represents an image. 
             // All textures have a base texture. (PIXI doc)
-            this.spriteSheet = "game/graphics/" + this.spriteSheet;
+            this.spriteSheet = A_.CONFIG.directories.graphics + this.spriteSheet;
             this.baseTexture = new PIXI.BaseTexture.fromImage(this.spriteSheet, PIXI.scaleModes.LINEAR);
             // If the frame size is not specified in the class definition, 
             // or the frame w/h is set to 0, use the dims of the image itself.

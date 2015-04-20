@@ -34,21 +34,23 @@ A_.LEVEL.LevelManager = Class.extend({
                 sounds: []
             };
         }
+
         manifest.mapName = manifest.map;
-        if (manifest.directory && !manifest.addedDirectory) {
+
+        if (!manifest.pathAdded) {
             for (var i = 0; i < manifest.scripts.length; i++) {
-                manifest.scripts[i] = manifest.directory + manifest.scripts[i];
+                manifest.scripts[i] = A_.CONFIG.directories.scripts + manifest.directory + manifest.scripts[i];
             }
-            manifest.map = manifest.directory + manifest.map;
+            manifest.map = A_.CONFIG.directories.maps + manifest.directory + manifest.map;
             for (var i = 0; i < manifest.graphics.length; i++) {
-                manifest.graphics[i] = manifest.directory + manifest.graphics[i];
+                manifest.graphics[i] = A_.CONFIG.directories.graphics + manifest.directory + manifest.graphics[i];
             }
             for (var i = 0; i < manifest.sounds.length; i++) {
                 for (var j = 0; j < manifest.sounds[i].length; j++) {
-                    manifest.sounds[i][j] = manifest.directory + manifest.sounds[i][j];
+                    manifest.sounds[i][j] = A_.CONFIG.directories.sounds + manifest.directory + manifest.sounds[i][j];
                 }
             }
-            manifest.addedDirectory = true;
+            manifest.pathAdded = true;
         }
 
         var loader = new A_.LEVEL.Loader();

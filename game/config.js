@@ -21,6 +21,13 @@ A_.CONFIG.screen = {
     color: A_.UTILS.Colors.darkslateblue
 };
 
+A_.CONFIG.directories = {
+    scripts: "game/scripts/",
+    maps: "game/maps/",
+    graphics: "game/graphics/",
+    sounds: "game/sounds/"
+};
+
 A_.CONFIG.pixelRounding = false;
 
 // PIXI.scaleModes : Object {DEFAULT: 0, LINEAR: 0, NEAREST: 1}
