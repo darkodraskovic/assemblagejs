@@ -75,28 +75,8 @@ A_.LEVEL.LevelManager = Class.extend({
             this.loadLevel(manifest, this.createLevel.bind(this, manifest, name));
             return;
         }
-        else if (this.findLevelByName(name)) {
-            window.console.log("The level is already created.");
-            return;
-        }
 
-        var level = new A_.LEVEL.Level(this.game, this);
-        level.manifest = manifest;
-
-        level.name = name;
-
-        level.cameraOptions = A_.UTILS.copy(level.manifest.camera);
-        level.createCamera();
-
-        if (this.game.debug)
-            level.createDebugLayer();
-
-        if (level.manifest.map) {
-            A_.TILES.createTiledMap(this.maps[level.manifest.map], level);
-        }
-        else {
-            level.createDummyLayer();
-        }
+        var level = new A_.LEVEL.Level(this, name, A_.UTILS.copy(A_.CONFIG.camera), manifest);
 
         this._levelsToCreate.push(level);
 
@@ -140,9 +120,9 @@ A_.LEVEL.LevelManager = Class.extend({
         }
         this._levelsToCreate.length = 0;
     },
-    updateLevels: function () {
+    update: function () {
         for (var i = 0, len = this.levels.length; i < len; i++) {
-            this.levels[i].run();
+            this.levels[i].update();
         }
         this._manageLevels();
     },
@@ -151,5 +131,5 @@ A_.LEVEL.LevelManager = Class.extend({
         return _.find(this.levels, function (level) {
             return level.name === name;
         });
-    },
+    }
 });

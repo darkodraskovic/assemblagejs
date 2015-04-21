@@ -28,6 +28,12 @@ A_.CONFIG.directories = {
     sounds: "game/sounds/"
 };
 
+A_.CONFIG.camera = {
+    innerBoundOffset: 0.25,
+    worldBounded: true,
+    followType: "bounded" // or "centered"
+}
+
 A_.CONFIG.pixelRounding = false;
 
 // PIXI.scaleModes : Object {DEFAULT: 0, LINEAR: 0, NEAREST: 1}

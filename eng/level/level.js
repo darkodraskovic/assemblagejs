@@ -3,9 +3,12 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
     height: 0,
     scale: 1,
     scaleSpeed: 2,
-    init: function (game, levelManager) {
-        this.game = game;
+    init: function (levelManager, name, cameraOptions, manifest) {
         this.levelManager = levelManager;
+        this.game = levelManager.game;
+        this.name = name;
+        this.cameraOptions = cameraOptions;
+        this.manifest = manifest;
 
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.mouseReactivityInjection
@@ -20,7 +23,6 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         this.imageLayers = [];
         // All previous layers.
         this.layers = [];
-        this.debugLayer = null;
 
         this.images = [];
         // Colliding tilemaps
@@ -41,11 +43,17 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         // Helper object. Its purpose is to avoid getMousePosition() object creation.
         this._MousePosition = {x: 0, y: 0};
 
-        this.running = false;
+        this.createCamera();
 
-//        this.bind('start', function () {
-//            window.console.log(this.name + " STARTS...");
-//        });
+        if (this.game.debug)
+            this.createDebugLayer();
+
+        if (this.manifest.map) {
+            A_.TILES.createTiledMap(this.levelManager.maps[this.manifest.map], this);
+        }
+        else {
+            this.createDummyLayer();
+        }
     },
     // LAYER management
     createEmptyLayer: function (name) {
@@ -235,7 +243,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         }
     },
     // Level LOOP/UPDATE
-    run: function () {
+    update: function () {
         if (!this.running) {
             if (this._paused) {
                 this.trigger('pause');

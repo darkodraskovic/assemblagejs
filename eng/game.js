@@ -6,7 +6,6 @@ A_.Game = A_.EventDispatcher.extend({
 
         this.maxTick = 50;
         this.play();
-        // Cf. run.js
         requestAnimFrame(runGame);
     },
     createRenderer: function (screenOptions, rendererOptions) {
@@ -39,7 +38,7 @@ A_.Game = A_.EventDispatcher.extend({
             this._paused = true;
         }
     },
-    run: function () {
+    update: function () {
         if (!this.running) {
             if (this._paused) {
                 this._paused = false;
@@ -56,7 +55,7 @@ A_.Game = A_.EventDispatcher.extend({
         this.time = now;
         this.dt = dt / 1000;
 
-        this.levelManager.updateLevels();
+        this.levelManager.update();
 
         A_.INPUT.reset();
 
@@ -65,8 +64,7 @@ A_.Game = A_.EventDispatcher.extend({
 });
 
 function runGame() {
-    A_.game.run();
+    A_.game.update();
 
     requestAnimFrame(runGame);
 }
-
