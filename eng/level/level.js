@@ -363,8 +363,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         return this.height;
     },
     createCamera: function () {
-        this.cameraOptions.level = this;
-        this.camera = new A_.CAMERA.Camera(this.game.renderer.width, this.game.renderer.height, this.cameraOptions);
+        this.camera = new A_.CAMERA.Camera(this, this.game.renderer.width, this.game.renderer.height, this.cameraOptions);
     },
     // Layer Z POSITION
     toTopOfContainer: function (layer) {

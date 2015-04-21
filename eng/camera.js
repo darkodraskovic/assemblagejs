@@ -1,30 +1,17 @@
 A_.CAMERA.Camera = Class.extend({
-    init: function (w, h, props) {
-        for (var prop in props) {
-            this[prop] = props[prop];
-        }
-
-        this.x = 0;
-        this.y = 0;
+    init: function (level, w, h, props) {
+        this.level = level;
         this.width = w;
         this.height = h;
+        this.x = 0;
+        this.y = 0;
 
-        if (!this.worldBounded) {
-            this.worldBounded = false;
-        }
-
-        if (!this.followType) {
-            this.followType = "centered";
-        }
-        
-        if (!this.innerBoundOffset) {
-            this.innerBoundOffset = 0.25;
-        }
-        this.innerBounds = {};
-        this.setInnerBounds(this.innerBoundOffset);
+        this.worldBounded = (props && props.worldBounded) || false;
+        this.followType = (props && props.followType) || "centered";
+        this.setInnerBounds((props && props.innerBoundOffset) || 0.25);
     },
     setInnerBounds: function (innerBoundOffset) {
-        this.innerBoundOffset = innerBoundOffset;
+        this.innerBounds = this.innerBounds || {};
         this.innerBounds.left = innerBoundOffset;
         this.innerBounds.right = 1 - innerBoundOffset;
         this.innerBounds.top = innerBoundOffset;
@@ -76,7 +63,7 @@ A_.CAMERA.Camera = Class.extend({
         this.x = center.getX() - this.width / 2;
         this.y = center.getY() - this.height / 2;
     },
-    bind: function () {
+    bound: function () {
         var levelW = this.level.getWidth();
         var levelH = this.level.getHeight();
         
@@ -108,7 +95,7 @@ A_.CAMERA.Camera = Class.extend({
         }
 
         if (this.worldBounded) {
-            this.bind();
+            this.bound();
         }
     }
 });

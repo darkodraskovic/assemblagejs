@@ -71,12 +71,12 @@ A_.LEVEL.LevelManager = Class.extend({
     // Level CREATION & DESTRUCTION
     createLevel: function (manifest, name) {
         if (!_.contains(this.loadedManifests, manifest)) {
-            window.console.log("Loading level manifest first.");
+            window.console.log("LOADING level manifest first.");
             this.loadLevel(manifest, this.createLevel.bind(this, manifest, name));
             return;
         }
 
-        var level = new A_.LEVEL.Level(this, name, A_.UTILS.copy(A_.CONFIG.camera), manifest);
+        var level = new A_.LEVEL.Level(this, name, A_.CONFIG.camera, manifest);
 
         this._levelsToCreate.push(level);
 
