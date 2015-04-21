@@ -12,7 +12,6 @@ var levelManager = A_.game.levelManager;
 //levelManager.createLevel(isometric, "lvl1");
 //levelManager.createLevel(pongPlayground, "playground");
 levelManager.createLevel(pongMainMenu, "mainMenu");
-//levelManager.createLevel(diskette, "d1", onLevelStarted);
 
 // FARER
 //levelManager.loadLevel(farer1, function () {

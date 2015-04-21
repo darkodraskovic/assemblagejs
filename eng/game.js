@@ -59,7 +59,7 @@ A_.Game = A_.EventDispatcher.extend({
         this.time = now;
         this.dt = dt / 1000;
 
-        this.levelManager._updateLevels();
+        this.levelManager.updateLevels();
 
         A_.INPUT.reset();
 

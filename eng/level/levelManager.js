@@ -113,30 +113,14 @@ A_.LEVEL.LevelManager = Class.extend({
 
         if (level.manifest.map) {
             A_.TILES.createTiledMap(this.maps[level.manifest.map], level);
-            window.console.log("Created TILED level :)");
         }
         else {
             level.createDummyLayer();
-            window.console.log("Created GENERIC level :)");
         }
-
-        level.trigger('create');
 
         this.levelsToCreate.push(level);
 
         return level;
-    },
-    _createLevels: function () {
-        _.each(this.levelsToCreate, function (level) {
-            level.setScale(level.scale);
-
-            this.game.stage.addChild(level.container);
-            this.levels.push(level);
-
-            level.play();
-        }, this);
-
-        this.levelsToCreate.length = 0;
     },
     destroyLevel: function (level) {
         if (_.isString(level))
@@ -146,8 +130,14 @@ A_.LEVEL.LevelManager = Class.extend({
 
         this.levelsToDestroy.push(level);
     },
-    _destroyLevels: function () {
-        _.each(this.levelsToDestroy, function (level) {
+    updateLevels: function () {
+        for (var i = 0, len = this.levels.length; i < len; i++) {
+            this.levels[i].run();
+        }
+
+        // DESTROY levels
+        for (i = 0, len = this.levelsToDestroy.length; i < len; i++) {
+            var level = this.levelsToDestroy[i];
             level.clear();
             level.trigger('destroy');
 
@@ -156,26 +146,23 @@ A_.LEVEL.LevelManager = Class.extend({
                 this.levels.splice(ind, 1);
 
             window.console.log("Level " + level.name + " DESTROYED.");
-        }, this);
-
-        this.levelsToDestroy.length = 0;
-    },
-    restartLevel: function (level) {
-        if (_.isString(level))
-            level = this.findLevelByName(level);
-        if (!level)
-            return;
-
-        this.destroyLevel(level);
-        this.createLevel(level.manifest, level.name);
-    },
-    _updateLevels: function () {
-        for (var i = 0, len = this.levels.length; i < len; i++) {
-            this.levels[i].run();
         }
+        this.levelsToDestroy.length = 0;
 
-        this._destroyLevels();
-        this._createLevels();
+        // CREATE levels
+        for (i = 0, len = this.levelsToCreate.length; i < len; i++) {
+            var level = this.levelsToCreate[i];
+
+            this.game.stage.addChild(level.container);
+            this.levels.push(level);
+
+            level.play();
+
+            level.trigger('create');
+            
+            window.console.log("Level " + level.name + " CREATED.");
+        }
+        this.levelsToCreate.length = 0;
     },
     // HELPER FUNCS
     findLevelByName: function (name) {
