@@ -209,6 +209,8 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
             this.container.removeChild(layer);
         }, this);
 
+        A_.game.stage.removeChild(this.container);
+
         this.debind();
     },
     // START/STOP level execution

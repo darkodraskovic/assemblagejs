@@ -11,10 +11,10 @@ var GameController = A_.SPRITES.Graphics.extend({
 
         A_.INPUT.addMapping("pause", A_.KEY.P);
         this.level.bind('pause', function () {
-            window.console.log("Paused");
+//            window.console.log("Paused");
         })
         this.level.bind('play', function () {
-            window.console.log("Played");
+//            window.console.log("Played");
         })
     },
     update: function () {
@@ -41,8 +41,8 @@ var Text = A_.SPRITES.Text.extend({
 var StartText = Text.extend({
     update: function () {
         if (this.leftpressed) {
-            levelManager.deactivateLevel(this.level.name);
-            levelManager.startLevel(pongPlayground, "playground");
+            this.level.pause();
+            levelManager.createLevel(pongPlayground, "playground");
         }
 
         this._super();
@@ -91,8 +91,8 @@ var Ball = A_.SPRITES.Kinematic.extend({
     },
     update: function () {
         if (this.getX() > this.level.getWidth()) {
-            levelManager.stopLevel(this.level.name);
-            levelManager.activateLevel("mainMenu");
+            levelManager.destroyLevel(this.level);
+            levelManager.findLevelByName("mainMenu").play();
         }
 
         this._super();

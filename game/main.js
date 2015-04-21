@@ -5,44 +5,28 @@ A_.game = new A_.Game();
 
 var levelManager = A_.game.levelManager;
 
-//levelManager.startLevel(platformer1, "lvl1");
-//levelManager.startLevel(skorpio1, "lvl1");
-//levelManager.startLevel(skorpio2, "lvl1");
-//levelManager.startLevel(brownian, "lvl1");
-//levelManager.startLevel(isometric, "lvl1");
-//levelManager.startLevel(pongPlayground, "playground");
-levelManager.startLevel(pongMainMenu, "mainMenu");
-//levelManager.startLevel(diskette, "d1", onLevelStarted);
+//levelManager.createLevel(platformer1, "lvl1");
+//levelManager.createLevel(skorpio1, "lvl1");
+//levelManager.createLevel(skorpio2, "lvl1");
+//levelManager.createLevel(brownian, "lvl1");
+//levelManager.createLevel(isometric, "lvl1");
+//levelManager.createLevel(pongPlayground, "playground");
+levelManager.createLevel(pongMainMenu, "mainMenu");
+//levelManager.createLevel(diskette, "d1", onLevelStarted);
 
 // FARER
 //levelManager.loadLevel(farer1, function () {
 //    var level = levelManager.createLevel(farer1, "farer1");
 //    populateLevel(level);
-//    levelManager.activateLevel("farer1");
-//    levelManager.manageLevels = true;
 //});
 
 // ROT
 //levelManager.loadLevel(rot1, function () {
 //    var level = levelManager.createLevel(rot1, "rot1");
 //    createRoguelikeMap(level);
-//    levelManager.activateLevel("rot1");
-//    levelManager.manageLevels = true;
 //});
 
 // DISKETTE
-var player; 
-var level;
-
-Dynamics = {
-    U_SPRING: 1,
-    L_SPRING: 2,
-    R_SPRING: 3,
-    UL_SPRING: 4,
-    UR_SPRING: 5,
-    VIRUS: 5,
-    VIRUS_KILLER: 6
-};
 //levelManager.loadLevel(diskette, function () {
 //    level = levelManager.createLevel(diskette, "level1");
 //    for (var i = 0; i < 50; i++) {
@@ -52,8 +36,6 @@ Dynamics = {
 //    }
 //    level.findSpriteByClass(ScenerySun).setZ("top");
 //    player = level.findSpriteByClass(Player);
-//    levelManager.activateLevel("level1");
-//    levelManager.manageLevels = true;
 //    
 //    A_.INPUT.addMapping("restart", A_.KEY.T);
 //});

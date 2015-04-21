@@ -1,3 +1,16 @@
+var player; 
+var level;
+
+var Dynamics = {
+    U_SPRING: 1,
+    L_SPRING: 2,
+    R_SPRING: 3,
+    UL_SPRING: 4,
+    UR_SPRING: 5,
+    VIRUS: 5,
+    VIRUS_KILLER: 6
+};
+
 var Diskette = A_.SPRITES.Kinematic.extend({
     spriteSheet: "diskette/diskette.png",
     collisionResponse: "active",
