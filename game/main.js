@@ -10,8 +10,8 @@ var levelManager = A_.game.levelManager;
 //levelManager.createLevel(skorpio2, "lvl1");
 //levelManager.createLevel(brownian, "lvl1");
 //levelManager.createLevel(isometric, "lvl1");
-//levelManager.createLevel(pongPlayground, "playground");
 levelManager.createLevel(pongMainMenu, "mainMenu");
+//levelManager.createLevel(pongPlayground, "playground");
 
 // FARER
 //levelManager.loadLevel(farer1, function () {

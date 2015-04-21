@@ -1,6 +1,5 @@
 A_.LEVEL.LevelManager = Class.extend({
-    init: function (game, manifests) {
-        this.manifests = manifests;
+    init: function (game) {
         this.game = game;
         this.maps = {};
         // An array of loaded level manifests.
@@ -8,30 +7,15 @@ A_.LEVEL.LevelManager = Class.extend({
         // An array of active levels.
         this.levels = [];
 
-        this.levelsToDestroy = [];
-        this.levelsToCreate = [];
+        this._levelsToDestroy = [];
+        this._levelsToCreate = [];
     },
     // Level LOADING
-    createEmptyManifest: function () {
-        return {
-            directory: "",
-            scripts: [],
-            map: "",
-            graphics: [],
-            sounds: []
-        };
-    },
     loadLevel: function (manifest, onComplete, onProgress) {
         if (_.contains(this.loadedManifests, manifest)) {
             window.console.log("Level is already loaded.");
             return;
         }
-
-        if (!manifest || !_.contains(this.manifests, manifest)) {
-            window.console.log("Cannot find manifest. Creating a dummy one.");
-            manifest = this.createEmptyManifest();
-        }
-
 
         if (!manifest.pathAdded) {
             for (var i = 0; i < manifest.scripts.length; i++) {
@@ -86,11 +70,7 @@ A_.LEVEL.LevelManager = Class.extend({
     },
     // Level CREATION & DESTRUCTION
     createLevel: function (manifest, name) {
-        if (!_.contains(this.manifests, manifest)) {
-            window.console.log("Cannot find level manifest.");
-            return;
-        }
-        else if (!_.contains(this.loadedManifests, manifest)) {
+        if (!_.contains(this.loadedManifests, manifest)) {
             window.console.log("Loading level manifest first.");
             this.loadLevel(manifest, this.createLevel.bind(this, manifest, name));
             return;
@@ -118,7 +98,7 @@ A_.LEVEL.LevelManager = Class.extend({
             level.createDummyLayer();
         }
 
-        this.levelsToCreate.push(level);
+        this._levelsToCreate.push(level);
 
         return level;
     },
@@ -128,16 +108,12 @@ A_.LEVEL.LevelManager = Class.extend({
         if (!level)
             return;
 
-        this.levelsToDestroy.push(level);
+        this._levelsToDestroy.push(level);
     },
-    updateLevels: function () {
-        for (var i = 0, len = this.levels.length; i < len; i++) {
-            this.levels[i].run();
-        }
-
+    _manageLevels: function () {
         // DESTROY levels
-        for (i = 0, len = this.levelsToDestroy.length; i < len; i++) {
-            var level = this.levelsToDestroy[i];
+        for (i = 0, len = this._levelsToDestroy.length; i < len; i++) {
+            var level = this._levelsToDestroy[i];
             level.clear();
             level.trigger('destroy');
 
@@ -147,11 +123,11 @@ A_.LEVEL.LevelManager = Class.extend({
 
             window.console.log("Level " + level.name + " DESTROYED.");
         }
-        this.levelsToDestroy.length = 0;
+        this._levelsToDestroy.length = 0;
 
         // CREATE levels
-        for (i = 0, len = this.levelsToCreate.length; i < len; i++) {
-            var level = this.levelsToCreate[i];
+        for (i = 0, len = this._levelsToCreate.length; i < len; i++) {
+            var level = this._levelsToCreate[i];
 
             this.game.stage.addChild(level.container);
             this.levels.push(level);
@@ -159,10 +135,16 @@ A_.LEVEL.LevelManager = Class.extend({
             level.play();
 
             level.trigger('create');
-            
+
             window.console.log("Level " + level.name + " CREATED.");
         }
-        this.levelsToCreate.length = 0;
+        this._levelsToCreate.length = 0;
+    },
+    updateLevels: function () {
+        for (var i = 0, len = this.levels.length; i < len; i++) {
+            this.levels[i].run();
+        }
+        this._manageLevels();
     },
     // HELPER FUNCS
     findLevelByName: function (name) {

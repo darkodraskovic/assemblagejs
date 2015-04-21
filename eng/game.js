@@ -1,13 +1,10 @@
 A_.Game = A_.EventDispatcher.extend({
     init: function () {
         this.createRenderer(A_.CONFIG.screen, A_.CONFIG.renderer);
-
-        this.levelManager = new A_.LEVEL.LevelManager(this, A_.LEVEL.Manifests);
-
+        this.levelManager = new A_.LEVEL.LevelManager(this);
         this.debug = A_.CONFIG.debug;
 
         this.maxTick = 50;
-
         this.play();
         // Cf. run.js
         requestAnimFrame(runGame);

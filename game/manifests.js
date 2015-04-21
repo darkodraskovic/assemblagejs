@@ -101,7 +101,7 @@ var diskette = {
     }
 };
 
-pongPlayground = {
+var pongPlayground = {
     directory: "Pong/",
     scripts: ["main"],
     map: "playground",
@@ -113,7 +113,7 @@ pongPlayground = {
         followType: "centered"
     }
 };
-pongMainMenu = {
+var pongMainMenu = {
     directory: "Pong/",
     type: "tiled",
     scripts: ["main"],
@@ -126,15 +126,3 @@ pongMainMenu = {
         followType: "centered"
     }
 };
-
-A_.LEVEL.Manifests["skorpio1"] = skorpio1;
-A_.LEVEL.Manifests["skorpio2"] = skorpio2;
-A_.LEVEL.Manifests["platformer1"] = platformer1;
-A_.LEVEL.Manifests["farer1"] = farer1;
-A_.LEVEL.Manifests["rot1"] = rot1;
-A_.LEVEL.Manifests["brownian"] = brownian;
-A_.LEVEL.Manifests["diskette"] = diskette;
-A_.LEVEL.Manifests["isometric"] = isometric;
-
-A_.LEVEL.Manifests["pongPlayground"] = pongPlayground;
-A_.LEVEL.Manifests["pongMainMenu"] = pongMainMenu;

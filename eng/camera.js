@@ -79,6 +79,7 @@ A_.CAMERA.Camera = Class.extend({
     bind: function () {
         var levelW = this.level.getWidth();
         var levelH = this.level.getHeight();
+        
         if (this.x + this.width > levelW)
         {
             this.x = levelW - this.width;
