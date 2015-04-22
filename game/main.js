@@ -1,14 +1,21 @@
 var MyGame = A_.Game.extend({
     init: function () {
         this._super();
-        // CUSTOM code
+        var LevelManager = A_.LEVEL.LevelManager.extend({
+            update: function () {
+                // CUSTOM code
+                this._super();
+            }
+        });
+        this.levelManager = new LevelManager(this);
+
     },
     update: function () {
         // CUSTOM code
         this._super();
     }
 });
-A_.game = new MyGame();
+new MyGame();
 
 // MANIFESTS
 var skorpio1 = {
@@ -74,7 +81,7 @@ var diskette = {
     map: "diskette1",
     graphics: ["ball.png", "blocks.png", "computer.png", "crosshair.png",
         "diskette.png", "dynamics.png", "medical.png", "moon.png", "owl.png",
-        "player.png", "player_wb.png", "pyramid.png", "pyramidDisplacementMap.png", "sky.png", 
+        "player.png", "player_wb.png", "pyramid.png", "pyramidDisplacementMap.png", "sky.png",
         "star.png", "sun.png"],
     sounds: [["bounce.ogg"], ["throw.ogg"]],
 };
@@ -103,14 +110,14 @@ var levelManager = A_.game.levelManager;
 //levelManager.createLevel(skorpio2, "lvl1");
 //levelManager.createLevel(brownian, "lvl1");
 //levelManager.createLevel(isometric, "lvl1");
-//levelManager.createLevel(pongMainMenu, "mainMenu");
+levelManager.createLevel(pongMainMenu, "mainMenu");
 //levelManager.createLevel(pongPlayground, "playground");
 
 // FARER
-levelManager.loadLevel(farer1, function () {
-    var level = levelManager.createLevel(farer1, "farer1");
-    populateLevel(level);
-});
+//levelManager.loadLevel(farer1, function () {
+//    var level = levelManager.createLevel(farer1, "farer1");
+//    populateLevel(level);
+//});
 
 // ROT
 //levelManager.loadLevel(rot1, function () {

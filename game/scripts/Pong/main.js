@@ -18,12 +18,6 @@ var GameController = A_.SPRITES.Graphics.extend({
         })
     },
     update: function () {
-        if (A_.INPUT.pressed["pause"]) {
-            if (this.level.running)
-                this.level.pause();
-            else
-                this.level.play();
-        }
 
         this._super();
     }
