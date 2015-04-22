@@ -1,13 +1,13 @@
-A_.TILES.createTiledMap = function(mapData, level) {
-    var level = level;
+A_.TILES.createTiledMap = function(mapData, scene) {
+    var scene = scene;
 
-    level.setWidth(mapData["width"] * mapData["tilewidth"]);
-    level.setHeight(mapData["height"] * mapData["tileheight"]);
+    scene.setWidth(mapData["width"] * mapData["tilewidth"]);
+    scene.setHeight(mapData["height"] * mapData["tileheight"]);
 
     var layersData = mapData["layers"];
 
     for (i = 0; i < layersData.length; i++) {
-        var layer = level.createEmptyLayer();
+        var layer = scene.createEmptyLayer();
         var layerData = layersData[i];
 
         for (var prop in layerData) {
@@ -27,14 +27,14 @@ A_.TILES.createTiledMap = function(mapData, level) {
             var img = layerData["image"];
             if (img.indexOf("/") > -1) {
                 img = img.substring(img.lastIndexOf("/") + 1);
-                img = level.manifest.directory + img;
+                img = scene.manifest.directory + img;
             }
 
-            var image = level.createImage(layer, {image: img, width: level.width, height: level.height,
+            var image = scene.createImage(layer, {image: img, width: scene.width, height: scene.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
-            level.addImageLayer(layer);
+            scene.addImageLayer(layer);
             if (layer.active) {
-                level.images.push(image);
+                scene.images.push(image);
             }
         }
 
@@ -83,13 +83,13 @@ A_.TILES.createTiledMap = function(mapData, level) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, level.manifest.directory + img, tileW, tileH, spacing,
+            var tilemap = new A_.TILES.Tilemap(layer, scene.manifest.directory + img, tileW, tileH, spacing,
                     mapData.orientation);
             tilemap.populate(tileData2D);
 
             layer.baked = baked;
             if (layer.baked) {
-                layer = level.bakeLayer(layer);
+                layer = scene.bakeLayer(layer);
                 var tiles = tilemap.tiles;
                 for (var l = 0, cols = tiles.length; l < cols; l++) {
                     for (var m = 0, rows = tiles[0].length; m < rows; m++) {
@@ -99,12 +99,12 @@ A_.TILES.createTiledMap = function(mapData, level) {
                     }
                 }
             }
-            level.addTileLayer(layer);
+            scene.addTileLayer(layer);
         }
 
         // if the current layer is OBJECT LAYER
         else if (layerData["type"] === "objectgroup") {
-            level.addSpriteLayer(layer);
+            scene.addSpriteLayer(layer);
             for (var j = 0; j < layerData["objects"].length; j++) {
                 var args = {};
                 var oData = layerData["objects"][j];
@@ -123,7 +123,7 @@ A_.TILES.createTiledMap = function(mapData, level) {
                 } else {
                     type = A_.SPRITES.Colliding; // Colliding polygon
                 }
-                var o = level.createSprite(type, layer, oData["x"], oData["y"], args);
+                var o = scene.createSprite(type, layer, oData["x"], oData["y"], args);
 
                 // General object transform
                 o.setRotation(oData["rotation"].toRad());
@@ -131,7 +131,7 @@ A_.TILES.createTiledMap = function(mapData, level) {
                 if (mapData.orientation === "isometric") {
                     var x = o.getX() / mapData.tileheight;
                     var y = o.getY() / mapData.tileheight;
-                    o.position.x = (x - y) * (mapData.tilewidth / 2) + level.getWidth() / 2;
+                    o.position.x = (x - y) * (mapData.tilewidth / 2) + scene.getWidth() / 2;
                     o.position.y = (x + y) * (mapData.tileheight / 2);
                 }
                 
@@ -141,9 +141,9 @@ A_.TILES.createTiledMap = function(mapData, level) {
             }
 
             if (layer.baked) {
-                layer = level.bakeLayer(layer, level);
+                layer = scene.bakeLayer(layer, scene);
             }
         }
     }
-    level.manageSprites();
+    scene.manageSprites();
 };

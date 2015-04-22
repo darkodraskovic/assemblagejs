@@ -21,7 +21,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         this.position = this.sprite.position;
         this.scale = this.sprite.scale;
 
-        this.level = parent.level;
+        this.scene = parent.scene;
         this.spritePoints = [];
         this.addons = [];
 
@@ -47,28 +47,28 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     },
     setFollowee: function(isFollowee) {
         if (isFollowee) {
-            this.level.camera.followee = this;
+            this.scene.camera.followee = this;
             this.followee = true;
             return;
         }
-        else if (this.level.camera.followee === this) {
-            this.level.camera.followee = null;
+        else if (this.scene.camera.followee === this) {
+            this.scene.camera.followee = null;
         }
         this.followee = false;
     },
     getLeft: function() {
-        return this.sprite.getBounds().x / this.level.scale + this.level.camera.x;
+        return this.sprite.getBounds().x / this.scene.scale + this.scene.camera.x;
     },
     getRight: function() {
         var bounds = this.sprite.getBounds();
-        return (bounds.x + bounds.width) / this.level.scale + this.level.camera.x;
+        return (bounds.x + bounds.width) / this.scene.scale + this.scene.camera.x;
     },
     getTop: function() {
-        return this.sprite.getBounds().y / this.level.scale + this.level.camera.y;
+        return this.sprite.getBounds().y / this.scene.scale + this.scene.camera.y;
     },
     getBottom: function() {
         var bounds = this.sprite.getBounds();
-        return (bounds.y + bounds.height) / this.level.scale + this.level.camera.y;
+        return (bounds.y + bounds.height) / this.scene.scale + this.scene.camera.y;
     },
     getCenterX: function() {
         return this.getLeft() + this.getWidth() / 2;
@@ -82,7 +82,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     },
     isOnScreen: function() {
         var bounds = this.sprite.getBounds();
-        var renderer = this.level.game.renderer;
+        var renderer = this.scene.game.renderer;
 
         if (bounds.x + bounds.width < 0)
             return false;
@@ -154,11 +154,11 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     setPositionRelative: function(x, y) {
         this.setPosition(this.position.x + x, this.position.y + y);
     },
-    getPositionLevel: function() {
-        return this.level.container.toLocal(this.level.origin, this.sprite);
+    getPositionScene: function() {
+        return this.scene.container.toLocal(this.scene.origin, this.sprite);
     },
     getPositionScreen: function() {
-        return this.sprite.toGlobal(this.level.origin);
+        return this.sprite.toGlobal(this.scene.origin);
     },
     setWidth: function(w) {
         this.sprite.width = w;
@@ -343,9 +343,9 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     },
     moveToLayer: function(layer) {
         if (_.isString(layer)) {
-            var dest = this.level.findLayerByName(layer);
+            var dest = this.scene.findLayerByName(layer);
         } else if (_.isNumber(layer)) {
-            var dest = this.level.findLayerByNumber(layer);
+            var dest = this.scene.findLayerByNumber(layer);
         }
         if (dest) {
             if (this.container) {
@@ -383,23 +383,23 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     update: function() {
         if (!this.container) {
             if (this.bounded) {
-                this.setPosition(Math.max(0, Math.min(this.getX(), this.level.width)),
-                        Math.max(0, Math.min(this.getY(), this.level.height)));
+                this.setPosition(Math.max(0, Math.min(this.getX(), this.scene.width)),
+                        Math.max(0, Math.min(this.getY(), this.scene.height)));
             } else if (this.wrap) {
                 if (this.getX() < 0) {
-                    this.setX(this.level.width);
-                } else if (this.getX() > this.level.width) {
+                    this.setX(this.scene.width);
+                } else if (this.getX() > this.scene.width) {
                     this.setX(0);
                 }
                 if (this.getY() < 0) {
-                    this.setY(this.level.height);
-                } else if (this.getY() > this.level.height) {
+                    this.setY(this.scene.height);
+                } else if (this.getY() > this.scene.height) {
                     this.setY(0);
                 }
             }
             else {
-                if (this.getX() < 0 || this.getX() > this.level.width ||
-                        this.getY() < 0 || this.getY() > this.level.height) {
+                if (this.getX() < 0 || this.getX() > this.scene.width ||
+                        this.getY() < 0 || this.getY() > this.scene.height) {
                     this.outOfBounds = true;
                 } else {
                     this.outOfBounds = false;
@@ -418,7 +418,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         }
     },
     destroy: function() {
-        var spritesToDestroy = this.level.spritesToDestroy;
+        var spritesToDestroy = this.scene.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
 
@@ -433,7 +433,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         this.onDestruction();
         spritesToDestroy.push(this);
     },
-    removeFromLevel: function() {
+    removeFromScene: function() {
         this.setFollowee(false);
         this.sprite.parent.removeChild(this.sprite);
     },

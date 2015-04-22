@@ -1,11 +1,11 @@
-A_.LEVEL.Level = A_.EventDispatcher.extend({
+A_.SCENE.Scene = A_.EventDispatcher.extend({
     width: 0,
     height: 0,
     scale: 1,
     scaleSpeed: 2,
-    init: function (levelManager, name, cameraOptions, manifest) {
-        this.levelManager = levelManager;
-        this.game = levelManager.game;
+    init: function (sceneManager, name, cameraOptions, manifest) {
+        this.sceneManager = sceneManager;
+        this.game = sceneManager.game;
         this.name = name;
         this.cameraOptions = cameraOptions;
         this.manifest = manifest;
@@ -15,7 +15,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         this.sprite = this.container;
         this.initMouseReactivity();
         this.setMouseReactivity(true);
-        // WARNING: Hit area culls objects outside level w & h, eg. objects on negative coords.
+        // WARNING: Hit area culls objects outside scene w & h, eg. objects on negative coords.
         this.container.hitArea = new PIXI.Rectangle(0, 0, this.game.renderer.width, this.game.renderer.height);
 
         this.tileLayers = [];
@@ -34,9 +34,9 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         this.spritesToCreate = [];
         this.spritesToDestroy = [];
 
-        // Used to calculate the level position of sprites.
+        // Used to calculate the scene position of sprites.
         this.origin = new PIXI.Point(0, 0);
-        // The level size defaults to screen witdth x height.
+        // The scene size defaults to screen witdth x height.
         this.setWidth(this.game.renderer.width);
         this.setHeight(this.game.renderer.height);
 
@@ -49,7 +49,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
             this.createDebugLayer();
 
         if (this.manifest.map) {
-            A_.TILES.createTiledMap(this.levelManager.maps[this.manifest.map], this);
+            A_.TILES.createTiledMap(this.sceneManager.maps[this.manifest.map], this);
         }
         else {
             this.createDummyLayer();
@@ -63,7 +63,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         // defined per sprite class.
         layer.collision = false;
         layer.parallax = 100;
-        layer.level = this;
+        layer.scene = this;
         if (name)
             layer.name = name;
         return layer;
@@ -77,8 +77,8 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         if (!props.height) {
             props.height = this.height;
         }
-        if (!props.level) {
-            props.level = this;
+        if (!props.scene) {
+            props.scene = this;
         }
 
         this.createImage(layer, props);
@@ -105,7 +105,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
     },
     createDummyLayer: function () {
         var layer = this.createEmptyLayer();
-        var text = new PIXI.Text("Level loaded :)", {font: "Bold 50px Courier New", fill: "Black",
+        var text = new PIXI.Text("Scene loaded :)", {font: "Bold 50px Courier New", fill: "Black",
             stroke: "LightGrey", strokeThickness: 0,
             dropShadow: true, dropShadowColor: '#444444', dropShadowAngle: Math.PI / 4, dropShadowDistance: 4});
         layer.addChild(text);
@@ -153,7 +153,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
 //        }
 //    }
         sprite.alpha = layer.alpha;
-        sprite.level = layer.level;
+        sprite.scene = layer.scene;
         sprite.position.x = layer.position.x;
         sprite.position.y = layer.position.y;
         sprite.parallax = layer.parallax;
@@ -211,8 +211,8 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         this.destroySounds();
 
         _.each(this.layers, function (layer) {
-            layer.level = null;
-            delete(layer.level);
+            layer.scene = null;
+            delete(layer.scene);
             layer.removeChildren();
             this.container.removeChild(layer);
         }, this);
@@ -221,7 +221,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
 
         this.debind();
     },
-    // START/STOP level execution
+    // START/STOP scene execution
     play: function () {
         if (!this.running) {
             this.running = true;
@@ -242,7 +242,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
             this._paused = true;
         }
     },
-    // Level LOOP/UPDATE
+    // Scene LOOP/UPDATE
     update: function () {
         if (!this.running) {
             if (this._paused) {
@@ -284,7 +284,7 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
     manageSprites: function () {
         for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
             var sprite = this.spritesToDestroy[i];
-            sprite.removeFromLevel();
+            sprite.removeFromScene();
             this.sprites.splice(this.sprites.indexOf(sprite), 1);
             // DO NOT DELETE: Previous line should be replace by this, currently, BUGGY code.
 //            var sprites = this.sprites;
@@ -387,17 +387,17 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
         return y += this.camera.y;
     },
     getMousePosition: function () {
-        var levelPosition = this._MousePosition;
+        var scenePosition = this._MousePosition;
         var stagePosition = this.container.stage.getMousePosition();
-        levelPosition.x = stagePosition.x;
-        levelPosition.y = stagePosition.y;
+        scenePosition.x = stagePosition.x;
+        scenePosition.y = stagePosition.y;
 
-        levelPosition.x /= this.scale;
-        levelPosition.y /= this.scale;
-        levelPosition.x += this.camera.x;
-        levelPosition.y += this.camera.y;
+        scenePosition.x /= this.scale;
+        scenePosition.y /= this.scale;
+        scenePosition.x += this.camera.x;
+        scenePosition.y += this.camera.y;
 
-        return levelPosition;
+        return scenePosition;
     },
     // FIND
     // Layer
@@ -459,4 +459,4 @@ A_.LEVEL.Level = A_.EventDispatcher.extend({
     }
 });
 
-A_.LEVEL.Level.inject(A_.INPUT.mouseReactivityInjection);
+A_.SCENE.Scene.inject(A_.INPUT.mouseReactivityInjection);

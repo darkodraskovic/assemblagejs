@@ -1,19 +1,19 @@
-A_.LEVEL.LevelManager = Class.extend({
+A_.SCENE.SceneManager = Class.extend({
     init: function (game) {
         this.game = game;
         this.maps = {};
-        // An array of loaded level manifests.
+        // An array of loaded scene manifests.
         this.loadedManifests = [];
-        // An array of active levels.
-        this.levels = [];
+        // An array of active scenes.
+        this.scenes = [];
 
-        this._levelsToDestroy = [];
-        this._levelsToCreate = [];
+        this._scenesToDestroy = [];
+        this._scenesToCreate = [];
     },
-    // Level LOADING
-    loadLevel: function (manifest, onComplete, onProgress) {
+    // Scene LOADING
+    loadScene: function (manifest, onComplete, onProgress) {
         if (_.contains(this.loadedManifests, manifest)) {
-            window.console.log("Level is already loaded.");
+            window.console.log("Scene is already loaded.");
             return;
         }
 
@@ -35,7 +35,7 @@ A_.LEVEL.LevelManager = Class.extend({
             manifest.pathAdded = true;
         }
 
-        var loader = new A_.LEVEL.Loader();
+        var loader = new A_.Loader();
         if (onProgress) {
             loader.bind('load', onProgress)
         }
@@ -68,68 +68,71 @@ A_.LEVEL.LevelManager = Class.extend({
             onComplete();
         }
     },
-    // Level CREATION & DESTRUCTION
-    createLevel: function (manifest, name) {
+    // Scene CREATION & DESTRUCTION
+    createScene: function (manifest, name) {
         if (!_.contains(this.loadedManifests, manifest)) {
-            window.console.log("LOADING level manifest first.");
-            this.loadLevel(manifest, this.createLevel.bind(this, manifest, name));
+            window.console.log("LOADING scene manifest first.");
+            this.loadScene(manifest, this.createScene.bind(this, manifest, name));
             return;
         }
 
-        var level = new A_.LEVEL.Level(this, name, A_.CONFIG.camera, manifest);
+        var scene = new A_.SCENE.Scene(this, name, A_.CONFIG.camera, manifest);
 
-        this._levelsToCreate.push(level);
-
-        return level;
+        this._scenesToCreate.push(scene);
+        return scene;
     },
-    destroyLevel: function (level) {
-        if (_.isString(level))
-            level = this.findLevelByName(level);
-        if (!level)
+    destroyScene: function (scene) {
+        if (_.isString(scene))
+            scene = this.findSceneByName(scene);
+        if (!scene)
             return;
 
-        this._levelsToDestroy.push(level);
+        this._scenesToDestroy.push(scene);
     },
-    _manageLevels: function () {
-        // DESTROY levels
-        for (i = 0, len = this._levelsToDestroy.length; i < len; i++) {
-            var level = this._levelsToDestroy[i];
-            level.clear();
-            level.trigger('destroy');
+    _manageScenes: function () {       
+        // DESTROY scenes
+        if (this._scenesToDestroy.length) {
+            for (var i = 0, len = this._scenesToDestroy.length; i < len; i++) {
+                var scene = this._scenesToDestroy[i];
+                scene.clear();
+                scene.trigger('destroy');
 
-            var ind = this.levels.indexOf(level);
-            if (ind > -1)
-                this.levels.splice(ind, 1);
+                var ind = this.scenes.indexOf(scene);
+                if (ind > -1)
+                    this.scenes.splice(ind, 1);
 
-            window.console.log("Level " + level.name + " DESTROYED.");
+                window.console.log("Scene " + scene.name + " DESTROYED.");
+            }
+            this._scenesToDestroy.length = 0;
         }
-        this._levelsToDestroy.length = 0;
 
-        // CREATE levels
-        for (i = 0, len = this._levelsToCreate.length; i < len; i++) {
-            var level = this._levelsToCreate[i];
+        // CREATE scenes
+        if (this._scenesToCreate.length) {
+            for (i = 0, len = this._scenesToCreate.length; i < len; i++) {
+                var scene = this._scenesToCreate[i];
 
-            this.game.stage.addChild(level.container);
-            this.levels.push(level);
+                this.game.stage.addChild(scene.container);
+                this.scenes.push(scene);
 
-            level.play();
+                scene.play();
 
-            level.trigger('create');
+                scene.trigger('create');
 
-            window.console.log("Level " + level.name + " CREATED.");
+                window.console.log("Scene " + scene.name + " CREATED.");
+            }
+            this._scenesToCreate.length = 0;
         }
-        this._levelsToCreate.length = 0;
     },
     update: function () {
-        for (var i = 0, len = this.levels.length; i < len; i++) {
-            this.levels[i].update();
+        for (var i = 0, len = this.scenes.length; i < len; i++) {
+            this.scenes[i].update();
         }
-        this._manageLevels();
+        this._manageScenes();
     },
     // HELPER FUNCS
-    findLevelByName: function (name) {
-        return _.find(this.levels, function (level) {
-            return level.name === name;
+    findSceneByName: function (name) {
+        return _.find(this.scenes, function (scene) {
+            return scene.name === name;
         });
     }
 });

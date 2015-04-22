@@ -4,7 +4,7 @@
   TileMaps[name] = data;
  } else {
   onTileMapLoaded(name,data);
- }})("level1",
+ }})("platformer",
 { "height":42,
  "layers":[
         {

@@ -1,20 +1,20 @@
 /*
-Given a player sprite and a level object, now walk through an example event functionality:
+Given a player sprite and a scene object, now walk through an example event functionality:
 
 // Play the intro animation on the player 
-// when the level starts
-level.bind('start',player,function() {
+// when the scene starts
+scene.bind('start',player,function() {
   this.showIntro();
 });
 
 // Bind a method on player using the method name
-level.bind('finish',player,'showFinal');
+scene.bind('finish',player,'showFinal');
 
-// Trigger the start event on the level
-level.trigger('start');
+// Trigger the start event on the scene
+scene.trigger('start');
 
 // Unbind the player from the start event
-level.unbind('start',player);
+scene.unbind('start',player);
 
 // Release the player from listening
 // to all events (such as if it's blown up)

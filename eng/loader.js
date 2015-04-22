@@ -1,4 +1,4 @@
-A_.LEVEL.Loader = A_.EventDispatcher.extend({
+A_.Loader = A_.EventDispatcher.extend({
     // SCRIPT loader
     loadScripts: function (callback, scriptsToLoad) {
         // If the func is called with only one argument, ie. an array of script names

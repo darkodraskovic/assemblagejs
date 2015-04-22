@@ -96,9 +96,9 @@ var Player = Anime.extend({
         this.maxVelocity = new SAT.Vector(256, 256);
         this.force = new SAT.Vector(512, 512);
 
-        window.tilemap = this.level.findLayerByName("Tiles").tilemap;
+        window.tilemap = this.scene.findLayerByName("Tiles").tilemap;
         window.player = this;
-        window.level = this.level;
+        window.scene = this.scene;
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
@@ -123,7 +123,7 @@ var Player = Anime.extend({
         } else
             this.motionState = "idle";
 
-        var rot = (A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition())).toDeg();
+        var rot = (A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition())).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
@@ -133,9 +133,9 @@ var Player = Anime.extend({
         } else
             this.facing = "up";
 
-        if (this.level.leftpressed) {
-            var tm = this.level.findLayerByName("Tiles").tilemap;
-            var pos = this.level.getMousePosition();
+        if (this.scene.leftpressed) {
+            var tm = this.scene.findLayerByName("Tiles").tilemap;
+            var pos = this.scene.getMousePosition();
             window.console.log("x: " + tm.getMapIsoX(pos.x, pos.y) + ", y: " + tm.getMapIsoY(pos.x, pos.y));
         }
 
@@ -171,7 +171,7 @@ var Sphere = A_.SPRITES.Kinematic.extend({
         this.speed = 256;
         this.friction.x = this.friction.y = 64;
 
-        window.level = this.level;
+        window.scene = this.scene;
         window.player = this;
     },
     update: function() {

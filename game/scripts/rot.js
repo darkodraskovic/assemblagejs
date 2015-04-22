@@ -18,7 +18,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.speed = 256;
         this.friction.x = this.friction.y = 64;
 
-        window.level = this.level;
+        window.scene = this.scene;
         window.player = this;
     },
     update: function() {
@@ -50,11 +50,11 @@ var mapDataFloors = [];
 var mapDataWalls = [];
 
 // PROCEDURES
-function createRoguelikeMap(level) {
-    level.width = 960;
-    level.height = 960;
-    var mapW = level.width / tileW;
-    var mapH = level.height / tileH;
+function createRoguelikeMap(scene) {
+    scene.width = 960;
+    scene.height = 960;
+    var mapW = scene.width / tileW;
+    var mapH = scene.height / tileH;
     for (var i = 0; i < mapW; i++) {
         mapDataFloors[i] = [];
         mapDataWalls[i] = [];
@@ -72,18 +72,18 @@ function createRoguelikeMap(level) {
             this.mapDataWalls[x][y] = 43;
 
         if (x * y >= (this.mapDataFloors.length - 1) * (this.mapDataFloors[0].length - 1)) {
-            this.createRotLayers(level);
+            this.createRotLayers(scene);
         }
     };
     map.create(userCallback.bind(this));
 }
-function createRotLayers(level) {
-    var layerFloors = level.createTileLayer("Floor", "tilemap.png", tileW, tileH);
+function createRotLayers(scene) {
+    var layerFloors = scene.createTileLayer("Floor", "tilemap.png", tileW, tileH);
     layerFloors.tilemap.populate(mapDataFloors);
-    var layerWalls = level.createTileLayer("Walls", "tilemap.png", tileW, tileH);
+    var layerWalls = scene.createTileLayer("Walls", "tilemap.png", tileW, tileH);
     layerWalls.collisionResponse = "static";    
     layerWalls.tilemap.populate(mapDataWalls);
 
-    var layer = level.createSpriteLayer();
-    level.createSprite(Ball, layer, 256, 256);   
+    var layer = scene.createSpriteLayer();
+    scene.createSprite(Ball, layer, 256, 256);   
 }

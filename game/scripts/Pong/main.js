@@ -1,19 +1,14 @@
-var controller;
-var level;
-
 var GameController = A_.SPRITES.Graphics.extend({
     playingDrone: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        controller = this;
-        level = this.level;
-        this.level.setScale(2);
+        this.scene.setScale(2);
 
         A_.INPUT.addMapping("pause", A_.KEY.P);
-        this.level.bind('pause', function () {
+        this.scene.bind('pause', function () {
 //            window.console.log("Paused");
         })
-        this.level.bind('play', function () {
+        this.scene.bind('play', function () {
 //            window.console.log("Played");
         })
     },
@@ -35,8 +30,8 @@ var Text = A_.SPRITES.Text.extend({
 var StartText = Text.extend({
     update: function () {
         if (this.leftpressed) {
-            this.level.pause();
-            levelManager.createLevel(pongPlayground, "playground");
+            this.scene.pause();
+            sceneManager.createScene(pongPlayground, "playground");
         }
 
         this._super();
@@ -71,22 +66,22 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.velocity.x = this.maxVelocity.x;
         this.velocity.y = _.random(-this.maxVelocity.y, this.maxVelocity.y);
         this.setOrigin(0.5, 0.5);
-        this.level.bind('create', this, function () {
-            this.pointsText = this.level.findSpriteByClass(PointsText);
+        this.scene.bind('create', this, function () {
+            this.pointsText = this.scene.findSpriteByClass(PointsText);
         });
-        this.breakSound = this.level.createSound({
+        this.breakSound = this.scene.createSound({
             urls: ['Pong/xylo1.wav'],
             volume: 1
         });
-        this.bounceSound = this.level.createSound({
+        this.bounceSound = this.scene.createSound({
             urls: ['Pong/bounce.wav'],
             volume: 1
         });
     },
     update: function () {
-        if (this.getX() > this.level.getWidth()) {
-            levelManager.destroyLevel(this.level);
-            levelManager.findLevelByName("mainMenu").play();
+        if (this.getX() > this.scene.getWidth()) {
+            sceneManager.destroyScene(this.scene);
+            sceneManager.findSceneByName("mainMenu").play();
         }
 
         this._super();

@@ -1,21 +1,11 @@
 var MyGame = A_.Game.extend({
-    init: function () {
-        this._super();
-        var LevelManager = A_.LEVEL.LevelManager.extend({
-            update: function () {
-                // CUSTOM code
-                this._super();
-            }
-        });
-        this.levelManager = new LevelManager(this);
-
-    },
     update: function () {
         // CUSTOM code
         this._super();
     }
 });
 new MyGame();
+//new A_.Game();
 
 // MANIFESTS
 var skorpio1 = {
@@ -52,7 +42,7 @@ rot1 = {
 platformer1 = {
     directory: "",
     scripts: ["platformer"],
-    map: "level1",
+    map: "platformer",
     graphics: ["ball.png", "sci-fi-platformer-tiles-32x32.png", "moving_platform.png", "player_platformer.png",
         "Explosion.png", "undead.png"],
     sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"], ["jetpack.wav"], ["jump.wav"]],
@@ -103,38 +93,38 @@ var pongMainMenu = {
 };
 
 // START
-var levelManager = A_.game.levelManager;
+var sceneManager = A_.game.sceneManager;
 
-//levelManager.createLevel(platformer1, "lvl1");
-//levelManager.createLevel(skorpio1, "lvl1");
-//levelManager.createLevel(skorpio2, "lvl1");
-//levelManager.createLevel(brownian, "lvl1");
-//levelManager.createLevel(isometric, "lvl1");
-levelManager.createLevel(pongMainMenu, "mainMenu");
-//levelManager.createLevel(pongPlayground, "playground");
+sceneManager.createScene(platformer1, "lvl1");
+//sceneManager.createScene(skorpio1, "lvl1");
+//sceneManager.createScene(skorpio2, "lvl1");
+//sceneManager.createScene(brownian, "lvl1");
+//sceneManager.createScene(isometric, "lvl1");
+//sceneManager.createScene(pongMainMenu, "mainMenu");
+//sceneManager.createScene(pongPlayground, "playground");
 
 // FARER
-//levelManager.loadLevel(farer1, function () {
-//    var level = levelManager.createLevel(farer1, "farer1");
-//    populateLevel(level);
+//sceneManager.loadScene(farer1, function () {
+//    var scene = sceneManager.createScene(farer1, "farer1");
+//    populateScene(scene);
 //});
 
 // ROT
-//levelManager.loadLevel(rot1, function () {
-//    var level = levelManager.createLevel(rot1, "rot1");
-//    createRoguelikeMap(level);
+//sceneManager.loadScene(rot1, function () {
+//    var scene = sceneManager.createScene(rot1, "rot1");
+//    createRoguelikeMap(scene);
 //});
 
 // DISKETTE
-//levelManager.loadLevel(diskette, function () {
-//    level = levelManager.createLevel(diskette, "level1");
+//sceneManager.loadScene(diskette, function () {
+//    scene = sceneManager.createScene(diskette, "scene1");
 //    for (var i = 0; i < 50; i++) {
-//        var star = level.createSprite(SceneryStar, level.findLayerByName("Sky"),
+//        var star = scene.createSprite(SceneryStar, scene.findLayerByName("Sky"),
 //                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
 //        star.sprite.alpha = Math.random();
 //    }
-//    level.findSpriteByClass(ScenerySun).setZ("top");
-//    player = level.findSpriteByClass(Player);
+//    scene.findSpriteByClass(ScenerySun).setZ("top");
+//    player = scene.findSpriteByClass(Player);
 //    
 //    A_.INPUT.addMapping("restart", A_.KEY.T);
 //});

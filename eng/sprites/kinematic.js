@@ -105,8 +105,8 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
             var x = this.getX();
             var y = this.getY();
         }
-        for (var i = 0; i < this.level.tileMaps.length; i++) {
-            var tilemap = this.level.tileMaps[i];
+        for (var i = 0; i < this.scene.tileMaps.length; i++) {
+            var tilemap = this.scene.tileMaps[i];
             var yStart, yEnd, xStart, xEnd;
             var top = this.aabbTop(), bottom = this.aabbBottom(),
                     left = this.aabbLeft(), right = this.aabbRight();
@@ -156,7 +156,7 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 //        }
     },
     processSpriteCollisions: function () {
-        var entities = this.level.sprites;
+        var entities = this.scene.sprites;
         for (var i = 0, len = entities.length; i < len; i++) {
             var other = entities[i];
             if (other.collides && other !== this) {

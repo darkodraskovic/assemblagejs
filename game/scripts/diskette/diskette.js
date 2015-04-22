@@ -1,5 +1,5 @@
 var player; 
-var level;
+var scene;
 
 var Dynamics = {
     U_SPRING: 1,
@@ -29,9 +29,9 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         this.setGravity(0, 20, 60);
         this.maxVelocity.x = 600;
         this.maxVelocity.y = 800;
-        this.dynamicsMap = this.level.findLayerByName("Dynamics").tilemap;
+        this.dynamicsMap = this.scene.findLayerByName("Dynamics").tilemap;
         this.addAnimation("inserting", _.range(0, 10), 0.2);
-        this.springSound = this.level.createSound({
+        this.springSound = this.scene.createSound({
             urls: ['diskette/bounce.ogg'],
             volume: 1
         });

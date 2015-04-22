@@ -18,12 +18,12 @@ A_.TILES.Tile = Class.extend({
         this.sprite = new PIXI.Sprite(tileTexture);
         tilemap.layer.addChild(this.sprite);
         if (tilemap.orientation === "isometric") {
-            this.sprite.position.x = tilemap.getLevelIsoX(x, y);
-            this.sprite.position.y = tilemap.getLevelIsoY(x, y);
+            this.sprite.position.x = tilemap.getSceneIsoX(x, y);
+            this.sprite.position.y = tilemap.getSceneIsoY(x, y);
         }
         else {
-            this.sprite.position.x = tilemap.getLevelX(x);
-            this.sprite.position.y = tilemap.getLevelY(y);
+            this.sprite.position.x = tilemap.getSceneX(x);
+            this.sprite.position.y = tilemap.getSceneY(y);
         }
         if (tilemap.offset)
             this.sprite.position.y -= tilemap.spacing;
@@ -31,8 +31,8 @@ A_.TILES.Tile = Class.extend({
     initCollision: function(tilemap, x, y) {
         var collisionPolygon;
         if (tilemap.orientation === "isometric") {
-            var colX = tilemap.getLevelIsoX(x, y);
-            var colY = tilemap.getLevelIsoY(x, y);
+            var colX = tilemap.getSceneIsoX(x, y);
+            var colY = tilemap.getSceneIsoY(x, y);
             collisionPolygon = new A_.POLYGON.Polygon(new SAT.Vector(colX, colY), [
                 new SAT.Vector(0, 0),
                 new SAT.Vector(-tilemap.tileW / 2, tilemap.tileH / 2),
@@ -48,18 +48,18 @@ A_.TILES.Tile = Class.extend({
 //            graphics.position.y = collisionPolygon.pos.y;
         }
         else {
-            var box = new SAT.Box(new SAT.Vector(tilemap.getLevelX(x), tilemap.getLevelY(y)), tilemap.tileW, tilemap.tileH);
+            var box = new SAT.Box(new SAT.Vector(tilemap.getSceneX(x), tilemap.getSceneY(y)), tilemap.tileW, tilemap.tileH);
             collisionPolygon = box.toPolygon();
             collisionPolygon.w = box.w;
             collisionPolygon.h = box.h;
             collisionPolygon.calcBounds();
         }
         this.collisionPolygon = collisionPolygon;
-//            this.collisionPolygon.pos.x = A_.level.container.toLocal(A_.level.origin, this.sprite).x;
-//            this.collisionPolygon.pos.y = A_.level.container.toLocal(A_.level.origin, this.sprite).y;
+//            this.collisionPolygon.pos.x = A_.scene.container.toLocal(A_.scene.origin, this.sprite).x;
+//            this.collisionPolygon.pos.y = A_.scene.container.toLocal(A_.scene.origin, this.sprite).y;
         this.collides = true;
     },
-    removeFromLevel: function() {
+    removeFromScene: function() {
         this.sprite.parent.removeChild(this.sprite);
     }
 });

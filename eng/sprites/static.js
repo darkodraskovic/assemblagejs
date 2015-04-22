@@ -10,7 +10,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 
         if (this.drawCollisionPolygon && A_.game.debug) {
             this.debugGraphics = new PIXI.Graphics();
-            this.level.debugLayer.addChild(this.debugGraphics);
+            this.scene.debugLayer.addChild(this.debugGraphics);
         }
 
         this.setCollisionPolygon(this.createCollisionPolygon(this.polygon));
@@ -139,9 +139,9 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
             this.updateDebug();
         }
     },
-    removeFromLevel: function() {
+    removeFromScene: function() {
         if (this.debugGraphics) {
-            this.level.debugLayer.removeChild(this.debugGraphics);
+            this.scene.debugLayer.removeChild(this.debugGraphics);
             this.debugGraphics = null;
         }
         this._super();

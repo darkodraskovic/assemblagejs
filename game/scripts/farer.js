@@ -15,13 +15,13 @@ var Player = A_.SPRITES.Kinematic.extend({
         A_.INPUT.addMapping("down", A_.KEY.S);
         A_.INPUT.addMapping("up", A_.KEY.W);
         this.setOrigin(0.5, 0.5);
-        this.laser1 = this.level.createSprite(Laser, this, 18, -12);
-        this.laser2 = this.level.createSprite(Laser, this, 18, 12);
+        this.laser1 = this.scene.createSprite(Laser, this, 18, -12);
+        this.laser2 = this.scene.createSprite(Laser, this, 18, 12);
         this.setSpritePoint("bullet1", 18, -12);
         this.setSpritePoint("bullet2", 18, 12);
     },
     update: function () {
-        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
+        var rot = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
         this.setRotation(rot);
         
         var speedSign = 0;
@@ -59,7 +59,7 @@ var Player = A_.SPRITES.Kinematic.extend({
         this.acceleration.x *= cos;
         this.acceleration.y *= sin;
 
-        if (this.level.leftpressed) {
+        if (this.scene.leftpressed) {
             this.shootBullet();
         }
         
@@ -69,13 +69,13 @@ var Player = A_.SPRITES.Kinematic.extend({
     shootBullet: function () {
         var rot = this.getRotation();
         var pos1 = this.getSpritePoint("bullet1").getPosition();
-        var bullet1 = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), pos1.x, pos1.y);
+        var bullet1 = this.scene.createSprite(Bullet, this.scene.findLayerByName("Effects"), pos1.x, pos1.y);
         bullet1.setRotation(rot);
         bullet1.velocity.x = Math.cos(rot) * bullet1.maxVelocity.x;
         bullet1.velocity.y = Math.sin(rot) * bullet1.maxVelocity.y;
 
         var pos2 = this.getSpritePoint("bullet2").getPosition();
-        var bullet2 = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), pos2.x, pos2.y);
+        var bullet2 = this.scene.createSprite(Bullet, this.scene.findLayerByName("Effects"), pos2.x, pos2.y);
         bullet2.setRotation(rot);
         bullet2.velocity.x = Math.cos(rot) * bullet2.maxVelocity.x;
         bullet2.velocity.y = Math.sin(rot) * bullet2.maxVelocity.y;
@@ -89,7 +89,7 @@ var Laser = A_.SPRITES.Animated.extend({
         this.sprite.alpha = 0.4;
         this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
-        this.sound = this.level.createSound({
+        this.sound = this.scene.createSound({
             urls: ['laser-beam.mp3'],
             loop: true,
             volume: 0.75
@@ -102,14 +102,14 @@ var Laser = A_.SPRITES.Animated.extend({
         this.sine = this.addon("Sine", sineProps);
     },
     update: function () {
-        if (this.level.rightpressed) {
+        if (this.scene.rightpressed) {
             this.toggleFire("on");
         }
-        if (this.level.rightreleased) {
+        if (this.scene.rightreleased) {
             this.toggleFire("off");
         }
-        if (this.level.rightdown) {
-            this.setWidth(A_.UTILS.distanceTo(this.getPositionLevel(), this.level.getMousePosition()));
+        if (this.scene.rightdown) {
+            this.setWidth(A_.UTILS.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
         }
 
         this.setHeight(this.origH + this.sine.value);
@@ -124,7 +124,7 @@ var Laser = A_.SPRITES.Animated.extend({
         if (state === "on") {
             this.on = true;
             this.sprite.alpha = 0.75;
-            this.setWidth(A_.UTILS.distanceTo(this.getPositionLevel(), this.level.getMousePosition()));
+            this.setWidth(A_.UTILS.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
 
             this.sound.play(function (id) {
                 this.soundId = id;
@@ -150,7 +150,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.friction.x = this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 800;
         this.bounded = false;
-        this.level.createSound({
+        this.scene.createSound({
             urls: ['bullet.wav'],
             volume: 0.75
         }).play();
@@ -164,7 +164,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this._super();
     },
     collideWithStatic: function (other, response) {
-        this.level.createSprite(Explosion, this.level.findLayerByName("Effects"),
+        this.scene.createSprite(Explosion, this.scene.findLayerByName("Effects"),
                 other.getX(), other.getY());
         other.destroy();
         this.destroy();
@@ -202,7 +202,7 @@ var Explosion = A_.SPRITES.Animated.extend({
             that.destroy();
         };
 
-        this.level.createSound({
+        this.scene.createSound({
             urls: ['explosion.mp3'],
             volume: 0.2
         }).play();
@@ -216,24 +216,24 @@ var player;
 var numRotors = 40;
 
 // PROCEDURES
-populateLevel = function (level) {
-    level.setWidth(2048);
-    level.setHeight(2048);
+populateScene = function (scene) {
+    scene.setWidth(2048);
+    scene.setHeight(2048);
 
-    var layer = level.createImageLayer("Starfield", {image: "starfield.png"});
+    var layer = scene.createImageLayer("Starfield", {image: "starfield.png"});
     layer.parallax = 10;
 
-    layer = level.createImageLayer("Nebula", {image: "nebula.png"});
+    layer = scene.createImageLayer("Nebula", {image: "nebula.png"});
     layer.parallax = 20;
 
-    var spriteLayer = level.createSpriteLayer("Sprites");
-    level.createSpriteLayer("Effects");
+    var spriteLayer = scene.createSpriteLayer("Sprites");
+    scene.createSpriteLayer("Effects");
 
     window.console.log("created FARER layers");
 
-    player = level.createSprite(Player, spriteLayer, level.width / 2, level.height / 2);
+    player = scene.createSprite(Player, spriteLayer, scene.width / 2, scene.height / 2);
     for (var i = 0; i < numRotors; i++) {
-        level.createSprite(Rotor, spriteLayer, _.random(0, level.width), _.random(0, level.height));
+        scene.createSprite(Rotor, spriteLayer, _.random(0, scene.width), _.random(0, scene.height));
     }
 };
 

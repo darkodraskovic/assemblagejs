@@ -1,6 +1,6 @@
 A_.CAMERA.Camera = Class.extend({
-    init: function (level, w, h, props) {
-        this.level = level;
+    init: function (scene, w, h, props) {
+        this.scene = scene;
         this.width = w;
         this.height = h;
         this.x = 0;
@@ -64,20 +64,20 @@ A_.CAMERA.Camera = Class.extend({
         this.y = center.getY() - this.height / 2;
     },
     bound: function () {
-        var levelW = this.level.getWidth();
-        var levelH = this.level.getHeight();
+        var sceneW = this.scene.getWidth();
+        var sceneH = this.scene.getHeight();
         
-        if (this.x + this.width > levelW)
+        if (this.x + this.width > sceneW)
         {
-            this.x = levelW - this.width;
+            this.x = sceneW - this.width;
         }
         if (this.x < 0)
         {
             this.x = 0;
         }
-        if (this.y + this.height > levelH)
+        if (this.y + this.height > sceneH)
         {
-            this.y = levelH - this.height;
+            this.y = sceneH - this.height;
         }
         if (this.y < 0)
         {

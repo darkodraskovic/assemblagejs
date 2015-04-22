@@ -66,7 +66,7 @@ var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
         }
         else {
             if (!this.groaned) {
-                var sound = this.level.createSound({
+                var sound = this.scene.createSound({
                     urls: ['grunt.wav'],
                     volume: 0.5
                 });
@@ -108,7 +108,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
         this.force = new SAT.Vector(512, 512);
-        this.rifle = this.level.createSprite(Rifle, this.layer,
+        this.rifle = this.scene.createSprite(Rifle, this.layer,
                 this.getX(), this.getY(),
                 {holder: this, animSpeed: this.animSpeed});
     },
@@ -131,7 +131,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         } else
             this.motionState = "idle";
 
-        var rot = (A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition())).toDeg();
+        var rot = (A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition())).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
@@ -143,10 +143,10 @@ var PlayerSkorpio = AnimeSkorpio.extend({
 
 //        window.console.log("updt skorpio");
 
-        if (this.level.leftpressed) {
+        if (this.scene.leftpressed) {
             this.shootBullet();
         }
-        if (this.level.rightpressed) {
+        if (this.scene.rightpressed) {
             this.shootLaser();
         }
         this._super();
@@ -154,8 +154,8 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     },
     shootBullet: function () {
         var sprPt = this.rifle.getSpritePoint(this.facing);
-        var bullet = this.level.createSprite(Bullet, this.level.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
-        var rot = A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition());
+        var bullet = this.scene.createSprite(Bullet, this.scene.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
+        var rot = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
         bullet.setRotation(rot);
         bullet.velocity.x = Math.cos(rot) * bullet.maxVelocity.x;
         bullet.velocity.y = Math.sin(rot) * bullet.maxVelocity.y;
@@ -163,7 +163,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     },
     shootLaser: function () {
         var pos = this.getPosition();
-        this.level.createSprite(LaserBeam, this.level.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
+        this.scene.createSprite(LaserBeam, this.scene.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
     }
 });
 
@@ -258,7 +258,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 600;
         this.bounded = false;
-        this.level.createSound({
+        this.scene.createSound({
             urls: ['gunshot.mp3'],
             volume: 0.5
         }).play();
@@ -298,17 +298,17 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.setAnimation("all", 18, 0);
         this.setOrigin(0, 0.5);
 
-        this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), this.level.getMousePosition()));
+        this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), this.scene.getMousePosition()));
         var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
 
         this.tip = {x: this.getX(), y: this.getY()};
-        this.laserTip = this.level.createSprite(LaserTip, this.level.findLayerByName("Effects"),
+        this.laserTip = this.scene.createSprite(LaserTip, this.scene.findLayerByName("Effects"),
                 this.getX() + Math.cos(this.getRotation()) * this.getWidth(),
                 this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collisionWidth: 4, collisionHeight: 4});
         this.laserTip.laser = this;
-        this.sound = this.level.createSound({
+        this.sound = this.scene.createSound({
             urls: ['laser-beam.mp3'],
             loop: true,
             volume: 0.4
@@ -322,14 +322,14 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
 
-        this.setRotation(A_.UTILS.angleTo(this.getPosition(), this.level.getMousePosition()));
-        this.setWidth(A_.UTILS.distanceTo(this.getPosition(), this.level.getMousePosition()));
+        this.setRotation(A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition()));
+        this.setWidth(A_.UTILS.distanceTo(this.getPosition(), this.scene.getMousePosition()));
         this.tip.x = this.getX() + Math.cos(this.getRotation()) * this.getWidth();
         this.tip.y = this.getY() + Math.sin(this.getRotation()) * this.getWidth();
 
         this.setHeight(this.origH + this.sine.value);
         
-        if (this.level.rightreleased) {
+        if (this.scene.rightreleased) {
             if (this.laserTip) {
                 if (this.laserTip.fire)
                     this.laserTip.fire.destroy();
@@ -377,13 +377,13 @@ var LaserTip = A_.SPRITES.Kinematic.extend({
                 this.timer -= A_.game.dt;
             }
             if (this.timer < 0) {
-                this.level.createSprite(ExplosionSkorpio, this.level.findLayerByName("Effects"),
+                this.scene.createSprite(ExplosionSkorpio, this.scene.findLayerByName("Effects"),
                         other.getCenterX(), other.getCenterY());
                 other.destroy();
                 this.timer = null;
             }
             if (!this.fire) {
-                this.fire = this.level.createSprite(LaserFire, this.level.findLayerByName("Effects"),
+                this.fire = this.scene.createSprite(LaserFire, this.scene.findLayerByName("Effects"),
                         this.getX(), this.getY());
                 this.fire.laserTip = this;
             }
@@ -401,7 +401,7 @@ var LaserFire = A_.SPRITES.Animated.extend({
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
-        this.sound = this.level.createSound({
+        this.sound = this.scene.createSound({
             urls: ['fire.wav'],
             loop: true,
             volume: 0.3
@@ -440,7 +440,7 @@ var ExplosionSkorpio = A_.SPRITES.Animated.extend({
         this.animations["explode"].onComplete = function () {
             that.destroy();
         };
-        this.level.createSound({
+        this.scene.createSound({
             urls: ['explosion.mp3'],
             volume: 0.6
         }).play();

@@ -131,7 +131,7 @@ window.addEventListener("keyup", function(event) {
 
 A_.INPUT.mousePosition = {};
 A_.INPUT.mousePosition.screen = {};
-A_.INPUT.mousePosition.level = {};
+A_.INPUT.mousePosition.scene = {};
 A_.INPUT.mousewheel = null;
 
 A_.INPUT.processMouseWheel = function(e) {

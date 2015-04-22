@@ -1,6 +1,6 @@
 A_.SCENERY.TiledSprite = Class.extend({
     init: function (parent, props) {
-        this.level = parent.level;
+        this.scene = parent.scene;
         this.parent = parent;
 
         for (var prop in props) {
@@ -36,9 +36,9 @@ A_.SCENERY.TiledSprite = Class.extend({
         pos.y += this.velocity.y * A_.game.dt;
         
         if (pos.x > 0) 
-            pos.x -= this.level.getWidth();
+            pos.x -= this.scene.getWidth();
         if (pos.y > 0) {
-            pos.y -= this.level.getHeight();
+            pos.y -= this.scene.getHeight();
         }
     }
 });
