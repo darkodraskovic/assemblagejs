@@ -164,13 +164,12 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         sprite.baked = true;
         return sprite;
     },
-    // IMAGES
+    // ENTITIES management
     createImage: function (layer, props) {
         var image = new A_.SCENERY.TiledSprite(layer, props);
         layer.addChild(image.sprite);
         return image;
     },
-    // ENTITIES management
     createSprite: function (SpriteClass, layer, x, y, props) {
         if (!SpriteClass)
             return;
@@ -272,7 +271,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
             }
         }
 
-        this.sortEntities();
+        this.sortSprites();
 
         this.camera.update();
 
@@ -303,7 +302,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         }
         this.spritesToCreate.length = 0;
     },
-    sortEntities: function () {
+    sortSprites: function () {
         // TODO: Currently only sorting on y axis. Add a generic sort routine
         // based on an arbitrary property.
         _.each(this.spriteLayers, function (layer) {

@@ -1,11 +1,14 @@
 var MyGame = A_.Game.extend({
+    init: function () {
+        this._super();
+        // CUSTOM code
+    },
     update: function () {
         // CUSTOM code
         this._super();
     }
 });
 new MyGame();
-//new A_.Game();
 
 // MANIFESTS
 var skorpio1 = {
@@ -95,12 +98,12 @@ var pongMainMenu = {
 // START
 var sceneManager = A_.game.sceneManager;
 
-sceneManager.createScene(platformer1, "lvl1");
+//sceneManager.createScene(platformer1, "lvl1");
 //sceneManager.createScene(skorpio1, "lvl1");
 //sceneManager.createScene(skorpio2, "lvl1");
 //sceneManager.createScene(brownian, "lvl1");
 //sceneManager.createScene(isometric, "lvl1");
-//sceneManager.createScene(pongMainMenu, "mainMenu");
+sceneManager.createScene(pongMainMenu, "mainMenu");
 //sceneManager.createScene(pongPlayground, "playground");
 
 // FARER
