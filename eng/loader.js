@@ -16,12 +16,12 @@ A_.Loader = A_.EventDispatcher.extend({
 
         this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, callback, scriptsToLoad));
     },
-    loadScript: function (url, callback) {
+    loadScript: function (url, callback, path) {
         // Adding the script tag to the head...
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
         script.type = 'text/javascript';
-        script.src = url;
+        script.src = (path || A_.CONFIG.directories.scripts) + url + ".js";
 
         // Then bind the event to the callback function.
         // There are several events for cross browser compatibility.
@@ -54,7 +54,7 @@ A_.Loader = A_.EventDispatcher.extend({
             };
         }
 
-        this.loadScript(mapData, this._onMapLoaded.bind(this, callback));
+        this.loadScript(mapData, this._onMapLoaded.bind(this, callback), A_.CONFIG.directories.maps);
     },
     _onMapLoaded: function (callback) {
         this.trigger('load');
@@ -74,7 +74,9 @@ A_.Loader = A_.EventDispatcher.extend({
             return;
         }
 
-        this.assetLoader = new PIXI.AssetLoader(graphicsToLoad);
+        this.assetLoader = new PIXI.AssetLoader(_.map(graphicsToLoad, function (graphics) {
+            return A_.CONFIG.directories.graphics + graphics;
+        }));
         this.assetLoader.onComplete = this._onGraphicsLoaded.bind(this, callback);
         this.assetLoader.onProgress = this.trigger.bind(this, 'load');
         this.assetLoader.load();
@@ -98,9 +100,11 @@ A_.Loader = A_.EventDispatcher.extend({
 
         this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, callback, soundsToLoad));
     },
-    loadSound: function (sound, callback) {
+    loadSound: function (soundArray, callback) {
         new Howl({
-            urls: sound,
+            urls: _.map(soundArray, function (sound) {
+                return A_.CONFIG.directories.sounds + sound;
+            }),
             onload: callback
         });
     },
@@ -113,5 +117,47 @@ A_.Loader = A_.EventDispatcher.extend({
             window.console.log("SOUNDS loaded.");
             callback();
         }
-    }
+    },
+    // MANIFEST loader
+    // An array of loaded manifests.
+    loadedManifests: [],
+    // A hash of loaded map files.
+    maps: {},
+    loadManifest: function (manifest, onComplete, onProgress) {
+        if (_.contains(this.loadedManifests, manifest)) {
+            window.console.log("The manifest is already loaded.");
+            return;
+        }
+
+        if (onProgress) {
+            this.bind('load', onProgress)
+        }
+        this.loadScripts(this._onManifestScriptsLoaded.bind(this, onComplete, manifest), manifest.scripts);
+    },
+    _onManifestScriptsLoaded: function (onComplete, manifest) {
+        if (manifest.map) {
+            this.loadMap(this._onManifestMapLoaded.bind(this, onComplete, manifest), manifest.map);
+        }
+        else {
+            this.loadGraphics(this._onManifestGraphicsLoaded.bind(this, onComplete, manifest), manifest.graphics);
+        }
+    },
+    _onManifestMapLoaded: function (onComplete, manifest) {
+        var start = manifest.map.lastIndexOf("/") + 1;
+        var mapName = manifest.map.substring(start);
+        this.maps[manifest.map] = TileMaps[mapName];
+        this.loadGraphics(this._onManifestGraphicsLoaded.bind(this, onComplete, manifest), manifest.graphics);
+    },
+    _onManifestGraphicsLoaded: function (onComplete, manifest) {
+        this.loadSounds(this._onManifestSoundsLoaded.bind(this, onComplete, manifest), manifest.sounds);
+    },
+    _onManifestSoundsLoaded: function (onComplete, manifest) {
+        window.console.log("Loaded EVERYTHING :)");
+
+        this.loadedManifests.push(manifest);
+
+        if (onComplete) {
+            onComplete();
+        }
+    },
 });

@@ -2,6 +2,7 @@ A_.Game = A_.EventDispatcher.extend({
     init: function () {
         A_.game = this;
         this.createRenderer(A_.CONFIG.screen, A_.CONFIG.renderer);
+        this.loader = new A_.Loader();
         this.sceneManager = new A_.SCENE.SceneManager(this);
         this.debug = A_.CONFIG.debug;
         this.maxTick = 50;

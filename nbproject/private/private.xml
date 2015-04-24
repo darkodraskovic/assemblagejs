@@ -54,12 +54,12 @@
             </bookmark>
             <bookmark id="18">
                 <name/>
-                <line>231</line>
+                <line>276</line>
                 <key/>
             </bookmark>
             <bookmark id="21">
                 <name/>
-                <line>282</line>
+                <line>326</line>
                 <key/>
             </bookmark>
         </file>
@@ -82,13 +82,9 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/level/level.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/level/levelManager.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/config.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/main.js</file>
             <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/tiles/tiled.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/game.js</file>
-            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/camera.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/scene/sceneManager.js</file>
         </group>
     </open-files>
 </project-private>

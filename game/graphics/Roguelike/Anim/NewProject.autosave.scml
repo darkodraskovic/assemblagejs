@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r3" pixel_mode="1">
+    <folder id="0">
+        <file id="0" name="body.png" width="8" height="18" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="arm.png" width="5" height="13" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="upperLeg.png" width="5" height="10" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="lowerLeg.png" width="4" height="9" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="armBack.png" width="4" height="8" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="entity_000">
+        <obj_info name="entity_000_body" realname="body" type="sprite">
+            <frames>
+                <i folder="0" file="0"/>
+            </frames>
+        </obj_info>
+        <obj_info name="entity_000_arm" realname="arm" type="sprite">
+            <frames>
+                <i folder="0" file="1"/>
+            </frames>
+        </obj_info>
+        <obj_info name="entity_000_upperLeg" realname="upperLeg" type="sprite">
+            <frames>
+                <i folder="0" file="2"/>
+            </frames>
+        </obj_info>
+        <obj_info name="entity_000_lowerLeg" realname="lowerLeg" type="sprite">
+            <frames>
+                <i folder="0" file="3"/>
+            </frames>
+        </obj_info>
+        <obj_info name="entity_000_arm_000" realname="arm_000" type="sprite">
+            <frames/>
+        </obj_info>
+        <obj_info name="entity_000_armBack" realname="armBack" type="sprite">
+            <frames>
+                <i folder="0" file="4"/>
+            </frames>
+        </obj_info>
+        <obj_info name="entity_000_upperLeg_000" realname="upperLeg_000" type="sprite">
+            <frames>
+                <i folder="0" file="2"/>
+            </frames>
+        </obj_info>
+        <animation id="0" name="NewAnimation" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="armBack" folder="0" file="4" abs_x="2" abs_y="21" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="0" z_index="0"/>
+                    <object_ref id="1" name="body" folder="0" file="0" abs_x="-4" abs_y="31" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1"/>
+                    <object_ref id="2" name="upperLeg" folder="0" file="2" abs_x="-4" abs_y="16" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                    <object_ref id="3" name="lowerLeg" folder="0" file="3" abs_x="-4" abs_y="9" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3"/>
+                    <object_ref id="4" name="arm" folder="0" file="1" abs_x="-7.037643" abs_y="26.022913" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="4"/>
+                    <object_ref id="5" name="upperLeg_000" folder="0" file="2" abs_x="10.885167" abs_y="13.995215" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="0" z_index="5"/>
+                </key>
+            </mainline>
+            <timeline id="0" obj="0" name="body">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-4" y="31"/>
+                </key>
+            </timeline>
+            <timeline id="1" obj="1" name="arm">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-7.037643" y="26.022913"/>
+                </key>
+            </timeline>
+            <timeline id="2" obj="2" name="upperLeg">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="-4" y="16"/>
+                </key>
+            </timeline>
+            <timeline id="3" obj="3" name="lowerLeg">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="-4" y="9"/>
+                </key>
+            </timeline>
+            <timeline id="4" obj="5" name="armBack">
+                <key id="0" spin="0">
+                    <object folder="0" file="4" x="2" y="21"/>
+                </key>
+            </timeline>
+            <timeline id="5" obj="6" name="upperLeg_000">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="10.885167" y="13.995215"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

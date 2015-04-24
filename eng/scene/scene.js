@@ -3,12 +3,11 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     height: 0,
     scale: 1,
     scaleSpeed: 2,
-    init: function (sceneManager, name, cameraOptions, manifest) {
+    init: function (sceneManager, name, cameraOptions, map) {
         this.sceneManager = sceneManager;
         this.game = sceneManager.game;
         this.name = name;
         this.cameraOptions = cameraOptions;
-        this.manifest = manifest;
 
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.mouseReactivityInjection
@@ -48,8 +47,8 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         if (this.game.debug)
             this.createDebugLayer();
 
-        if (this.manifest.map) {
-            A_.TILES.createTiledMap(this.sceneManager.maps[this.manifest.map], this);
+        if (map) {
+            A_.TILES.createTiledMap(this.game.loader.maps[map], this);
         }
         else {
             this.createDummyLayer();

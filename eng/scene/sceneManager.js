@@ -1,83 +1,15 @@
 A_.SCENE.SceneManager = Class.extend({
     init: function (game) {
-        this.game = game;
-        this.maps = {};
-        // An array of loaded scene manifests.
-        this.loadedManifests = [];
+        this.game = game;        
         // An array of active scenes.
         this.scenes = [];
 
         this._scenesToDestroy = [];
         this._scenesToCreate = [];
     },
-    // Scene LOADING
-    loadScene: function (manifest, onComplete, onProgress) {
-        if (_.contains(this.loadedManifests, manifest)) {
-            window.console.log("Scene is already loaded.");
-            return;
-        }
-
-        if (!manifest.pathAdded) {
-            for (var i = 0; i < manifest.scripts.length; i++) {
-                manifest.scripts[i] = A_.CONFIG.directories.scripts + manifest.directory + manifest.scripts[i] + ".js";
-            }
-            if (manifest.map) {
-                manifest.map = A_.CONFIG.directories.maps + manifest.directory + manifest.map + ".js";
-            }
-            for (var i = 0; i < manifest.graphics.length; i++) {
-                manifest.graphics[i] = A_.CONFIG.directories.graphics + manifest.directory + manifest.graphics[i];
-            }
-            for (var i = 0; i < manifest.sounds.length; i++) {
-                for (var j = 0; j < manifest.sounds[i].length; j++) {
-                    manifest.sounds[i][j] = A_.CONFIG.directories.sounds + manifest.directory + manifest.sounds[i][j];
-                }
-            }
-            manifest.pathAdded = true;
-        }
-
-        var loader = new A_.Loader();
-        if (onProgress) {
-            loader.bind('load', onProgress)
-        }
-        loader.loadScripts(this._onScriptsLoaded.bind(this, onComplete, manifest, loader), manifest.scripts);
-    },
-    _onScriptsLoaded: function (onComplete, manifest, loader) {
-        if (manifest.map) {
-            loader.loadMap(this._onMapLoaded.bind(this, onComplete, manifest, loader), manifest.map);
-        }
-        else {
-            loader.loadGraphics(this._onGraphicsLoaded.bind(this, onComplete, manifest, loader), manifest.graphics);
-        }
-    },
-    _onMapLoaded: function (onComplete, manifest, loader) {
-        var start = manifest.map.lastIndexOf("/") + 1;
-        var end = manifest.map.indexOf(".js");
-        var mapName = manifest.map.substring(start, end);
-        this.maps[manifest.map] = TileMaps[mapName];
-        loader.loadGraphics(this._onGraphicsLoaded.bind(this, onComplete, manifest, loader), manifest.graphics);
-    },
-    _onGraphicsLoaded: function (onComplete, manifest, loader) {
-        loader.loadSounds(this._onSoundsLoaded.bind(this, onComplete, manifest), manifest.sounds);
-    },
-    _onSoundsLoaded: function (onComplete, manifest) {
-        window.console.log("Loaded EVERYTHING :)");
-
-        this.loadedManifests.push(manifest);
-
-        if (onComplete) {
-            onComplete();
-        }
-    },
     // Scene CREATION & DESTRUCTION
-    createScene: function (manifest, name) {
-        if (!_.contains(this.loadedManifests, manifest)) {
-            window.console.log("LOADING scene manifest first.");
-            this.loadScene(manifest, this.createScene.bind(this, manifest, name));
-            return;
-        }
-
-        var scene = new A_.SCENE.Scene(this, name, A_.CONFIG.camera, manifest);
-
+    createScene: function (name, map) {
+        var scene = new A_.SCENE.Scene(this, name, A_.CONFIG.camera, map);
         this._scenesToCreate.push(scene);
         return scene;
     },

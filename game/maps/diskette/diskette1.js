@@ -15,6 +15,7 @@
          "properties":
             {
              "active":"true",
+             "image":"\"diskette\/sky.png\"",
              "parallax":"0",
              "velocityX":"7",
              "velocityY":"0"
@@ -124,7 +125,7 @@
             {
              "baked":"true",
              "collisionResponse":"\"static\"",
-             "image":"\"blocks.png\""
+             "image":"\"diskette\/blocks.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -141,7 +142,7 @@
             {
              "baked":"true",
              "collisionResponse":"\"static\"",
-             "image":"\"dynamics.png\""
+             "image":"\"diskette\/dynamics.png\""
             },
          "type":"tilelayer",
          "visible":true,

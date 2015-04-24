@@ -1,4 +1,4 @@
-A_.TILES.createTiledMap = function(mapData, scene) {
+A_.TILES.createTiledMap = function (mapData, scene) {
     var scene = scene;
 
     scene.setWidth(mapData["width"] * mapData["tilewidth"]);
@@ -24,13 +24,7 @@ A_.TILES.createTiledMap = function(mapData, scene) {
 
         // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld.
         if (layerData["type"] === "imagelayer") {
-            var img = layerData["image"];
-            if (img.indexOf("/") > -1) {
-                img = img.substring(img.lastIndexOf("/") + 1);
-                img = scene.manifest.directory + img;
-            }
-
-            var image = scene.createImage(layer, {image: img, width: scene.width, height: scene.height,
+            var image = scene.createImage(layer, {image: layer["image"], width: scene.width, height: scene.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
             scene.addImageLayer(layer);
             if (layer.active) {
@@ -46,7 +40,7 @@ A_.TILES.createTiledMap = function(mapData, scene) {
             layer.baked = false;
 
             // This layer property must be set by user.
-            var img = layer["image"];
+            var img = layer["image"].substring(layer["image"].lastIndexOf("/") + 1);
             var tileset;
             var spacing;
             for (var j = 0; j < mapData["tilesets"].length; j++) {
@@ -83,7 +77,7 @@ A_.TILES.createTiledMap = function(mapData, scene) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, scene.manifest.directory + img, tileW, tileH, spacing,
+            var tilemap = new A_.TILES.Tilemap(layer, layer["image"], tileW, tileH, spacing,
                     mapData.orientation);
             tilemap.populate(tileData2D);
 
@@ -134,7 +128,7 @@ A_.TILES.createTiledMap = function(mapData, scene) {
                     o.position.x = (x - y) * (mapData.tilewidth / 2) + scene.getWidth() / 2;
                     o.position.y = (x + y) * (mapData.tileheight / 2);
                 }
-                
+
                 if (o instanceof A_.SPRITES.Colliding) {
                     o.synchCollisionPolygon();
                 }

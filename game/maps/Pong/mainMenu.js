@@ -14,7 +14,7 @@
          "opacity":1,
          "properties":
             {
-             "image":"\"tiles.png\""
+             "image":"\"Pong\/tiles.png\""
             },
          "type":"tilelayer",
          "visible":true,
