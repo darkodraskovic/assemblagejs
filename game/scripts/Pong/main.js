@@ -31,9 +31,8 @@ var StartText = Text.extend({
     update: function () {
         if (this.leftpressed) {
             this.scene.pause();
-            sceneManager.createScene(pongPlayground, "playground");
+            sceneManager.startScene("playground", "Pong/playground", pongPlayground);
         }
-
         this._super();
     }
 });

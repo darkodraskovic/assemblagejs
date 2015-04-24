@@ -1,6 +1,6 @@
 A_.SCENE.SceneManager = Class.extend({
     init: function (game) {
-        this.game = game;        
+        this.game = game;
         // An array of active scenes.
         this.scenes = [];
 
@@ -21,7 +21,7 @@ A_.SCENE.SceneManager = Class.extend({
 
         this._scenesToDestroy.push(scene);
     },
-    _manageScenes: function () {       
+    _manageScenes: function () {
         // DESTROY scenes
         if (this._scenesToDestroy.length) {
             for (var i = 0, len = this._scenesToDestroy.length; i < len; i++) {
@@ -54,6 +54,19 @@ A_.SCENE.SceneManager = Class.extend({
             }
             this._scenesToCreate.length = 0;
         }
+    },
+    startScene: function (name, map, manifest) {
+        if (manifest)
+            this.game.loader.loadManifest(manifest, this.createScene.bind(this, name, map));
+        else
+            this.createScene(name, map);
+    },
+    restartScene: function (name) {
+        var scene = this.findSceneByName(name);
+        if (!scene)
+            return;
+        this.destroyScene(scene);
+        this.createScene(scene.name, scene.map);
     },
     update: function () {
         for (var i = 0, len = this.scenes.length; i < len; i++) {

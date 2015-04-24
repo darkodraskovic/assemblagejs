@@ -8,6 +8,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         this.game = sceneManager.game;
         this.name = name;
         this.cameraOptions = cameraOptions;
+        this.map = map;
 
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.mouseReactivityInjection

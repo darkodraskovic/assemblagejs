@@ -126,6 +126,8 @@ A_.Loader = A_.EventDispatcher.extend({
     loadManifest: function (manifest, onComplete, onProgress) {
         if (_.contains(this.loadedManifests, manifest)) {
             window.console.log("The manifest is already loaded.");
+            if (onComplete)
+                onComplete();
             return;
         }
 

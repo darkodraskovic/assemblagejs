@@ -97,36 +97,36 @@ new MyGame();
 var sceneManager = A_.game.sceneManager;
 var loader = A_.game.loader;
 
-//sceneManager.createScene(platformer1, "lvl1");
+//sceneManager.startScene("lvl1", "platformer", platformer1);
 //sceneManager.createScene(skorpio1, "lvl1");
 //sceneManager.createScene(skorpio2, "lvl1");
 //sceneManager.createScene(brownian, "lvl1");
 //sceneManager.createScene(isometric, "lvl1");
-//sceneManager.createScene(pongMainMenu, "mainMenu");
+sceneManager.startScene("mainMenu", "Pong/mainMenu", pongMainMenu);
 //sceneManager.createScene(pongPlayground, "playground");
 
 // FARER
-//sceneManager.loadManifest(farer1, function () {
-//    var scene = sceneManager.createScene(farer1, "farer1");
+//loader.loadManifest(farer1, function () {
+//    var scene = sceneManager.createScene("farer1");
 //    populateScene(scene);
 //});
 
 // ROT
-//sceneManager.loadManifest(rot1, function () {
-//    var scene = sceneManager.createScene(rot1, "rot1");
+//loader.loadManifest(rot1, function () {
+//    var scene = sceneManager.createScene("rot1");
 //    createRoguelikeMap(scene);
 //});
 
 // DISKETTE
-loader.loadManifest(diskette, function () {
-    var scene = sceneManager.createScene("Diskette Level 1", "diskette/diskette1");
-    for (var i = 0; i < 50; i++) {
-        var star = scene.createSprite(SceneryStar, scene.findLayerByName("Sky"),
-                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
-        star.sprite.alpha = Math.random();
-    }
-    scene.findSpriteByClass(ScenerySun).setZ("top");
-    player = scene.findSpriteByClass(Player);
-    
-    A_.INPUT.addMapping("restart", A_.KEY.T);
-});
+//loader.loadManifest(diskette, function () {
+//    var scene = sceneManager.createScene("Diskette Level 1", "diskette/diskette1");
+//    for (var i = 0; i < 50; i++) {
+//        var star = scene.createSprite(SceneryStar, scene.findLayerByName("Sky"),
+//                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
+//        star.sprite.alpha = Math.random();
+//    }
+//    scene.findSpriteByClass(ScenerySun).setZ("top");
+//    player = scene.findSpriteByClass(Player);
+//    
+//    A_.INPUT.addMapping("restart", A_.KEY.T);
+//});
