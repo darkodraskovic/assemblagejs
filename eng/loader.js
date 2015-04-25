@@ -39,15 +39,18 @@ A_.Loader = A_.EventDispatcher.extend({
         }
     },
     // MAP loader
-    loadMap: function (mapData, callback) {
-        if (!mapData) {
+    loadMap: function (map, callback) {
+        if (!map) {
             (callback || function () {
                 window.console.log("No map to load.");
             })();
+            return;
         }
-        this.loadScript(mapData, this._onMapLoaded.bind(this, callback), A_.CONFIG.directories.maps);
+        this.loadScript(map, this._onMapLoaded.bind(this, map, callback), A_.CONFIG.directories.maps);
     },
-    _onMapLoaded: function (callback) {
+    _onMapLoaded: function (map, callback) {
+        this.maps[map] = TileMaps[map.substring(map.lastIndexOf("/") + 1)];
+
         this.trigger('load');
         (callback || function () {
             window.console.log("MAP loaded.");
@@ -59,6 +62,7 @@ A_.Loader = A_.EventDispatcher.extend({
             (callback || function () {
                 window.console.log("No graphics to load.");
             })();
+            return;
         }
 
         this.assetLoader = new PIXI.AssetLoader(_.map(graphicsToLoad, function (graphics) {
@@ -79,8 +83,8 @@ A_.Loader = A_.EventDispatcher.extend({
             (callback || function () {
                 window.console.log("No sounds to load.");
             })();
+            return;
         }
-
         this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, soundsToLoad, callback));
     },
     loadSound: function (soundArray, callback) {
@@ -116,26 +120,18 @@ A_.Loader = A_.EventDispatcher.extend({
         if (onProgress) {
             this.bind('load', onProgress)
         }
-        this.loadScripts(manifest.scripts, this._onManifestScriptsLoaded.bind(this, onComplete, manifest));
+        this.loadScripts(manifest.scripts, this._onManifestScriptsLoaded.bind(this, manifest, onComplete));
     },
-    _onManifestScriptsLoaded: function (onComplete, manifest) {
-        if (manifest.map) {
-            this.loadMap(manifest.map, this._onManifestMapLoaded.bind(this, onComplete, manifest));
-        }
-        else {
-            this.loadGraphics(manifest.graphics, this._onManifestGraphicsLoaded.bind(this, onComplete, manifest));
-        }
+    _onManifestScriptsLoaded: function (manifest, onComplete) {
+        this.loadMap(manifest.map, this._onManifestMapLoaded.bind(this, manifest, onComplete));
     },
-    _onManifestMapLoaded: function (onComplete, manifest) {
-        var start = manifest.map.lastIndexOf("/") + 1;
-        var mapName = manifest.map.substring(start);
-        this.maps[manifest.map] = TileMaps[mapName];
-        this.loadGraphics(manifest.graphics, this._onManifestGraphicsLoaded.bind(this, onComplete, manifest));
+    _onManifestMapLoaded: function (manifest, onComplete) {
+        this.loadGraphics(manifest.graphics, this._onManifestGraphicsLoaded.bind(this, manifest, onComplete));
     },
-    _onManifestGraphicsLoaded: function (onComplete, manifest) {
-        this.loadSounds(manifest.sounds, this._onManifestSoundsLoaded.bind(this, onComplete, manifest));
+    _onManifestGraphicsLoaded: function (manifest, onComplete) {
+        this.loadSounds(manifest.sounds, this._onManifestSoundsLoaded.bind(this, manifest, onComplete));
     },
-    _onManifestSoundsLoaded: function (onComplete, manifest) {
+    _onManifestSoundsLoaded: function (manifest, onComplete) {
         this.loadedManifests.push(manifest);
         (onComplete || function () {
             window.console.log("Loaded EVERYTHING :)");

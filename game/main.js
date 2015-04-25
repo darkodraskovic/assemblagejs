@@ -102,13 +102,13 @@ var loader = A_.game.loader;
 //sceneManager.createScene(skorpio2, "lvl1");
 //sceneManager.createScene(brownian, "lvl1");
 //sceneManager.createScene(isometric, "lvl1");
-sceneManager.startScene("mainMenu", "Pong/mainMenu", pongMainMenu);
+//sceneManager.startScene("mainMenu", "Pong/mainMenu", pongMainMenu);
 
 // FARER
-//loader.loadManifest(farer1, function () {
-//    var scene = sceneManager.createScene("farer1");
-//    populateScene(scene);
-//});
+loader.loadManifest(farer1, function () {
+    var scene = sceneManager.createScene("farer1");
+    populateScene(scene);
+});
 
 // ROT
 //loader.loadManifest(rot1, function () {
