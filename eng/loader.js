@@ -2,7 +2,7 @@ A_.Loader = A_.EventDispatcher.extend({
     onAssetLoaded: function (numAssets) {
         return function (callback) {
             if (numAssets) 
-                this.trigger('load');
+                this.trigger('loaded');
             if (--numAssets <= 0) {
                 (callback || function () {
                     window.console.log("Asset loaded.");
@@ -38,25 +38,10 @@ A_.Loader = A_.EventDispatcher.extend({
     loadMap: function (map, callback) {
         this.loadScript(map, callback, A_.CONFIG.directories.maps);
     },
-    // GRAPHICS loader
-    loadGraphics: function (graphicsToLoad, callback) {
-        if (!graphicsToLoad || !graphicsToLoad.length) {
-            (callback || function () {
-                window.console.log("No graphics to load.");
-            })();
-            return;
-        }
-        function onGraphicsLoaded(callback) {
-            (callback || function () {
-            window.console.log("GRAPHICS loaded.");
-        })();
-        }
-        var assetLoader = new PIXI.AssetLoader(_.map(graphicsToLoad, function (graphics) {
-            return A_.CONFIG.directories.graphics + graphics;
-        }));
-        assetLoader.onComplete = onGraphicsLoaded.bind(this, callback);
-        assetLoader.onProgress = this.trigger.bind(this, 'load');
-        assetLoader.load();
+    loadGraphics: function (image, callback) {
+        var imageLoader = new PIXI.ImageLoader(A_.CONFIG.directories.graphics + image);
+        imageLoader.on('loaded', callback);
+        imageLoader.load();
     },
     loadSound: function (soundArray, callback) {
         new Howl({
@@ -75,7 +60,7 @@ A_.Loader = A_.EventDispatcher.extend({
         var onAssetTypeLoaded = this.onAssetLoaded((manifest && _.keys(manifest).length) || 0);
         this.loadAssets(manifest.scripts, "Script", onAssetTypeLoaded.bind(this, onComplete));
         this.loadAssets(manifest.maps, "Map", onAssetTypeLoaded.bind(this, onComplete));
-        this.loadGraphics(manifest.graphics, onAssetTypeLoaded.bind(this, onComplete));
+        this.loadAssets(manifest.graphics, "Graphics", onAssetTypeLoaded.bind(this, onComplete));
         this.loadAssets(manifest.sounds, "Sound", onAssetTypeLoaded.bind(this, onComplete));
     }
 });
