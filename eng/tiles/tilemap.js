@@ -77,9 +77,7 @@ A_.TILES.Tilemap = Class.extend({
             this.removeTile(x, y);
         }
 
-        var tile = new A_.TILES.Tile(gid, x, y, this);
-        this.tiles[x][y] = tile;
-        return tile;
+        return this.tiles[x][y] = new A_.TILES.Tile(gid, x, y, this);
     },
     removeTile: function (x, y) {
         if (this.layer.baked)
@@ -87,14 +85,20 @@ A_.TILES.Tilemap = Class.extend({
 
         if (this.tiles[x] && this.tiles[x][y]) {
             var tile = this.tiles[x][y];
-
             this.tiles[x][y] = null;
-
-            tile.removeFromScene();
+            tile.parent.removeChild(tile);
         }
     },
     // UTILS
     // Orthogonal
+    forEachTile: function (fn) {
+        for (var i = 0; i < this.mapW; i++) {
+            for (var j = 0; j < this.mapH; j++) {
+                if (this.tiles[i][j])
+                    fn(this.tiles[i][j]);
+            }
+        }
+    },
     getSceneX: function (x) {
         return (x * this.tileW);
     },

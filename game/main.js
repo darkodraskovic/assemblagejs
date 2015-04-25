@@ -85,9 +85,9 @@ var loader = A_.game.loader;
 
 //sceneManager.startScene(platformer, "lvl1", "platformer");
 //sceneManager.startScene(skorpio, "lvl1", "map_skorpio1");
-//sceneManager.startScene(brownian, "lvl1", "brownian");
-//sceneManager.startScene(isometric, "lvl1", "Isometric/isometric4");
-sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu");
+sceneManager.startScene(brownian, "lvl1", "brownian");
+//sceneManager.startScene(isometric, "lvl1", "Isometric/isometric1");
+//sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu");
 
 // FARER
 //loader.loadManifest(farer, function () {

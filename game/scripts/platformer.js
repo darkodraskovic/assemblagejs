@@ -1,33 +1,22 @@
-A_.TILES.Tile.inject({
-    init: function (gid, sprite, x, y, tilemap) {
-        this._super(gid, sprite, x, y, tilemap);
-        if (this.tilemap.layer.name === "Thrus") {
-            this.turned = "on";
-        }
-        this.explosionSound = this.tilemap.scene.createSound({
-            urls: ['e.wav'],
-            volume: 1
-        });
-    },
-    turnOn: function () {
-        this.sprite.alpha = 1;
-        this.collides = true;
-        this.turned = "on";
-    },
-    turnOff: function () {
-        this.sprite.alpha = 0.5;
-        this.collides = false;
-        this.turned = "off";
-    },
-    toggleTurned: function () {
-        if (this.turned === "on") {
-            this.turnOff();
-        }
-        else {
-            this.turnOn();
-        }
+A_.TILES.Tile.prototype.turnOn = function () {
+    this.alpha = 1;
+    this.collides = true;
+    this.turned = "on";
+};
+A_.TILES.Tile.prototype.turnOff = function () {
+    this.alpha = 0.5;
+    this.collides = false;
+    this.turned = "off";
+};
+A_.TILES.Tile.prototype.toggleTurned = function () {
+    if (this.turned === "on") {
+        this.turnOff();
     }
-});
+    else {
+        this.turnOn();
+    }
+    this.toggleSound.play();
+};
 
 var AnimePlatformer = A_.SPRITES.Kinematic.extend({
     frameWidth: 32,
@@ -182,9 +171,20 @@ var PlayerPlatformer = AnimePlatformer.extend({
             urls: ['jump.wav'],
             volume: 1
         });
-        
+
         scene = this.scene;
         player = this;
+        this.scene.bind('create', function () {
+            var tilemap = scene.findLayerByName("Thrus").tilemap;
+            tilemap.forEachTile(player.initTile);
+        })
+    },
+    initTile: function (tile) {
+        tile.turned = "on";
+        tile.toggleSound = this.scene.createSound({
+            urls: ['e.wav'],
+            volume: 1
+        });
     },
     processControls: function () {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
@@ -267,13 +267,13 @@ var PlayerPlatformer = AnimePlatformer.extend({
             var tile = this.thrus.getTileAt(mpl.x, mpl.y);
             if (tile) {
                 tile.toggleTurned();
-                tile.explosionSound.play();
             }
         }
         if (this.scene.leftdown && this.mode === "building") {
             var mpl = this.scene.getMousePosition();
             if (!this.thrus.getTileAt(mpl.x, mpl.y)) {
-                this.thrus.setTile(737, this.thrus.getMapX(mpl.x), this.thrus.getMapX(mpl.y));
+                var tile = this.thrus.setTile(737, this.thrus.getMapX(mpl.x), this.thrus.getMapX(mpl.y));
+                this.initTile(tile);
             }
         }
     }
@@ -451,7 +451,7 @@ var ExplosionPlatformer = A_.SPRITES.Animated.extend({
             urls: ['dull.wav'],
             volume: 0.5
         }).play();
-        
+
         this.setOrigin(0.5, 0.5);
     }
 });
