@@ -1,7 +1,8 @@
 A_.Loader = A_.EventDispatcher.extend({
     onAssetLoaded: function (numAssets) {
         return function (callback) {
-            numAssets ? this.trigger('load') : window.console.log("No assets to load.");
+            if (numAssets) 
+                this.trigger('load');
             if (--numAssets <= 0) {
                 (callback || function () {
                     window.console.log("Asset loaded.");
@@ -89,28 +90,12 @@ A_.Loader = A_.EventDispatcher.extend({
         });
     },
     // MANIFEST loader
-    loadedManifests: [],
     maps: {},
     loadManifest: function (manifest, onComplete, onProgress) {
-        if (_.contains(this.loadedManifests, manifest)) {
-            (onComplete || function () {
-                window.console.log("The manifest is already loaded.");
-            })();
-            return;
-        }
         if (onProgress) {
             this.bind('load', onProgress)
         }
-
-        var numAssets = _.keys(manifest).length;
-        function onAssetTypeLoaded(onComplete) {
-            if (!--numAssets) {
-                this.loadedManifests.push(manifest);
-                (onComplete || function () {
-                    window.console.log("Loaded EVERYTHING :)");
-                })();
-            }
-        }
+        var onAssetTypeLoaded = this.onAssetLoaded((manifest && _.keys(manifest).length) || 0);
         this.loadScripts(manifest.scripts, onAssetTypeLoaded.bind(this, onComplete));
         this.loadMaps(manifest.maps, onAssetTypeLoaded.bind(this, onComplete));
         this.loadGraphics(manifest.graphics, onAssetTypeLoaded.bind(this, onComplete));
