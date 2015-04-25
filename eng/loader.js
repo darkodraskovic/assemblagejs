@@ -10,15 +10,14 @@ A_.Loader = A_.EventDispatcher.extend({
             }
         };
     },
-    // SCRIPT loader
-    loadScripts: function (scriptsToLoad, callback) {
-        var onScriptLoaded = this.onAssetLoaded((scriptsToLoad && scriptsToLoad.length) || 0);
-        if (!scriptsToLoad || !scriptsToLoad.length) {
-            onScriptLoaded(callback);
+    loadAssets: function (assets, type, callback) {
+        var onAssetLoaded = this.onAssetLoaded((assets && assets.length) || 0);
+        if (!assets || !assets.length) {
+            onAssetLoaded(callback);
             return;
         }
-        _.each(scriptsToLoad, function (script) {
-            this.loadScript(script, onScriptLoaded.bind(this, callback));
+        _.each(assets, function (asset) {
+            this["load" + type](asset, onAssetLoaded.bind(this, callback));
         }, this);
     },
     loadScript: function (url, callback, path) {
@@ -36,20 +35,8 @@ A_.Loader = A_.EventDispatcher.extend({
         // Fire the loading!
         head.appendChild(script);
     },
-    // MAP loader
-    loadMaps: function (maps, callback) {
-        var onAssetLoaded = this.onAssetLoaded((maps && maps.length) || 0);
-        if (!maps || !maps.length) {
-            onAssetLoaded.call(this, callback);
-            return;
-        }
-        function onMapLoaded(map, callback) {
-            this.maps[map] = TileMaps[map.substring(map.lastIndexOf("/") + 1)];
-            onAssetLoaded.call(this, callback);
-        }
-        _.each(maps, function (map) {
-            this.loadScript(map, onMapLoaded.bind(this, map, callback), A_.CONFIG.directories.maps);
-        }, this);
+    loadMap: function (map, callback) {
+        this.loadScript(map, callback, A_.CONFIG.directories.maps);
     },
     // GRAPHICS loader
     loadGraphics: function (graphicsToLoad, callback) {
@@ -64,22 +51,12 @@ A_.Loader = A_.EventDispatcher.extend({
             window.console.log("GRAPHICS loaded.");
         })();
         }
-        this.assetLoader = new PIXI.AssetLoader(_.map(graphicsToLoad, function (graphics) {
+        var assetLoader = new PIXI.AssetLoader(_.map(graphicsToLoad, function (graphics) {
             return A_.CONFIG.directories.graphics + graphics;
         }));
-        this.assetLoader.onComplete = onGraphicsLoaded.bind(this, callback);
-        this.assetLoader.onProgress = this.trigger.bind(this, 'load');
-        this.assetLoader.load();
-    },
-    // SOUND loader
-    loadSounds: function (soundsToLoad, callback) {
-        var onSoundLoaded = this.onAssetLoaded((soundsToLoad && soundsToLoad.length) || 0);
-        if (!soundsToLoad || !soundsToLoad.length) {
-            onSoundLoaded(callback);
-        }
-        _.each(soundsToLoad, function (soundArray) {
-            this.loadSound(soundArray, onSoundLoaded.bind(this, callback));
-        }, this);
+        assetLoader.onComplete = onGraphicsLoaded.bind(this, callback);
+        assetLoader.onProgress = this.trigger.bind(this, 'load');
+        assetLoader.load();
     },
     loadSound: function (soundArray, callback) {
         new Howl({
@@ -96,9 +73,9 @@ A_.Loader = A_.EventDispatcher.extend({
             this.bind('load', onProgress)
         }
         var onAssetTypeLoaded = this.onAssetLoaded((manifest && _.keys(manifest).length) || 0);
-        this.loadScripts(manifest.scripts, onAssetTypeLoaded.bind(this, onComplete));
-        this.loadMaps(manifest.maps, onAssetTypeLoaded.bind(this, onComplete));
+        this.loadAssets(manifest.scripts, "Script", onAssetTypeLoaded.bind(this, onComplete));
+        this.loadAssets(manifest.maps, "Map", onAssetTypeLoaded.bind(this, onComplete));
         this.loadGraphics(manifest.graphics, onAssetTypeLoaded.bind(this, onComplete));
-        this.loadSounds(manifest.sounds, onAssetTypeLoaded.bind(this, onComplete));
+        this.loadAssets(manifest.sounds, "Sound", onAssetTypeLoaded.bind(this, onComplete));
     }
 });
