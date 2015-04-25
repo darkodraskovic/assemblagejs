@@ -7,7 +7,9 @@ A_.Loader = A_.EventDispatcher.extend({
             })();
             return;
         }
-        this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, scriptsToLoad, callback));
+        _.each(scriptsToLoad, function (script) {
+            this.loadScript(script, this._onScriptLoaded.bind(this, scriptsToLoad, script, callback));
+        }, this);
     },
     loadScript: function (url, callback, path) {
         // Adding the script tag to the head...
@@ -24,37 +26,36 @@ A_.Loader = A_.EventDispatcher.extend({
         // Fire the loading!
         head.appendChild(script);
     },
-    _onScriptLoaded: function (scriptsToLoad, callback) {
+    _onScriptLoaded: function (scriptsToLoad, script, callback) {
         this.trigger('load');
-        scriptsToLoad.shift();
-        // If there are more scripts to load
-        if (scriptsToLoad.length) {
-            this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, scriptsToLoad, callback));
-        }
-        // Call the user supplied callback.
-        else {
+        scriptsToLoad.splice(scriptsToLoad.indexOf(script), 1);
+        if (!scriptsToLoad.length) {
             (callback || function () {
                 window.console.log("SCRITPS loaded.");
             })();
         }
     },
     // MAP loader
-    loadMap: function (map, callback) {
-        if (!map) {
+    loadMaps: function (maps, callback) {
+        if (!maps || !maps.length) {
             (callback || function () {
                 window.console.log("No map to load.");
             })();
             return;
         }
-        this.loadScript(map, this._onMapLoaded.bind(this, map, callback), A_.CONFIG.directories.maps);
+        _.each(maps, function (map) {
+            this.loadScript(map, this._onMapLoaded.bind(this, maps, map, callback), A_.CONFIG.directories.maps);
+        }, this)
     },
-    _onMapLoaded: function (map, callback) {
+    _onMapLoaded: function (maps, map, callback) {
         this.maps[map] = TileMaps[map.substring(map.lastIndexOf("/") + 1)];
-
+        maps.splice(maps.indexOf(map), 1);
         this.trigger('load');
-        (callback || function () {
-            window.console.log("MAP loaded.");
-        })();
+        if (!maps.length) {
+            (callback || function () {
+                window.console.log("MAPS loaded.");
+            })();
+        }
     },
     // GRAPHICS loader
     loadGraphics: function (graphicsToLoad, callback) {
@@ -85,7 +86,9 @@ A_.Loader = A_.EventDispatcher.extend({
             })();
             return;
         }
-        this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, soundsToLoad, callback));
+        _.each(soundsToLoad, function (soundArray) {
+            this.loadSound(soundArray, this._onSoundLoaded.bind(this, soundsToLoad, soundArray, callback));
+        }, this);
     },
     loadSound: function (soundArray, callback) {
         new Howl({
@@ -95,12 +98,10 @@ A_.Loader = A_.EventDispatcher.extend({
             onload: callback
         });
     },
-    _onSoundLoaded: function (soundsToLoad, callback) {
+    _onSoundLoaded: function (soundsToLoad, soundArray, callback) {
         this.trigger('load');
-        soundsToLoad.shift();
-        if (soundsToLoad.length) {
-            this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, soundsToLoad, callback));
-        } else {
+        soundsToLoad.splice(soundsToLoad.indexOf(soundArray), 1);
+        if (!soundsToLoad.length) {
             (callback || function () {
                 window.console.log("SOUNDS loaded.");
             })();
@@ -116,25 +117,21 @@ A_.Loader = A_.EventDispatcher.extend({
             })();
             return;
         }
-
         if (onProgress) {
             this.bind('load', onProgress)
         }
-        this.loadScripts(manifest.scripts, this._onManifestScriptsLoaded.bind(this, manifest, onComplete));
+        this.loadScripts(manifest.scripts, this._onManifestLoaded.bind(this, manifest, "scripts", onComplete));
+        this.loadMaps(manifest.maps, this._onManifestLoaded.bind(this, manifest, "maps", onComplete));
+        this.loadGraphics(manifest.graphics, this._onManifestLoaded.bind(this, manifest, "graphics", onComplete));
+        this.loadSounds(manifest.sounds, this._onManifestLoaded.bind(this, manifest, "sounds", onComplete));
     },
-    _onManifestScriptsLoaded: function (manifest, onComplete) {
-        this.loadMap(manifest.map, this._onManifestMapLoaded.bind(this, manifest, onComplete));
-    },
-    _onManifestMapLoaded: function (manifest, onComplete) {
-        this.loadGraphics(manifest.graphics, this._onManifestGraphicsLoaded.bind(this, manifest, onComplete));
-    },
-    _onManifestGraphicsLoaded: function (manifest, onComplete) {
-        this.loadSounds(manifest.sounds, this._onManifestSoundsLoaded.bind(this, manifest, onComplete));
-    },
-    _onManifestSoundsLoaded: function (manifest, onComplete) {
-        this.loadedManifests.push(manifest);
-        (onComplete || function () {
-            window.console.log("Loaded EVERYTHING :)");
-        })();
+    _onManifestLoaded: function (manifest, asset, onComplete) {
+        delete manifest[asset];
+        if (!_.keys(manifest).length) {
+            this.loadedManifests.push(manifest);
+            (onComplete || function () {
+                window.console.log("Loaded EVERYTHING :)");
+            })();
+        }
     }
 });

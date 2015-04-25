@@ -1,9 +1,7 @@
 A_.SCENE.SceneManager = Class.extend({
     init: function (game) {
         this.game = game;
-        // An array of active scenes.
         this.scenes = [];
-
         this._scenesToDestroy = [];
         this._scenesToCreate = [];
     },
@@ -55,7 +53,7 @@ A_.SCENE.SceneManager = Class.extend({
             this._scenesToCreate.length = 0;
         }
     },
-    startScene: function (name, map, manifest) {
+    startScene: function (manifest, name, map) {
         if (manifest)
             this.game.loader.loadManifest(manifest, this.createScene.bind(this, name, map));
         else

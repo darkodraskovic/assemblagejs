@@ -1,8 +1,7 @@
 // MANIFESTS
-var skorpio1 = {
-    path: "",
+var skorpio = {
     scripts: ["skorpio"],
-    map: "map_skorpio1",
+    maps: ["map_skorpio1", "map_skorpio2"],
     graphics: ["AgentComplete.png", "AssaultRifle.png", "player_skorpio.png", "Computer1.png",
         "Explosion.png", "Fire.png", "Interior-Furniture.png",
         "Muzzleflashes-Shots.png"],
@@ -10,55 +9,48 @@ var skorpio1 = {
         ["gunshot.mp3"], ["laser-beam.mp3"]],
 };
 
-var skorpio2 = A_.UTILS.copy(skorpio1);
-skorpio2.map = "map_skorpio2";
-
-farer1 = {
-    path: "",
+var farer = {
     scripts: ["farer"],
-    map: "",
+    maps: [],
     graphics: ["bullet.png", "Explosion.png", "laser.png",
         "nebula.png", "player_farer.png", "rotor.png", "starfield.png"],
     sounds: [["bullet.wav"], ["explosion.mp3"], ["laser-beam.mp3"]],
 };
 
-rot1 = {
-    path: "",
+var rot = {
     scripts: ["rot"],
-    map: "",
+    maps: [],
     graphics: ["player_rot.png", "tilemap.png"],
-    sounds: [],
+    sounds: []
 };
 
-platformer1 = {
-    path: "",
+var platformer = {
     scripts: ["platformer"],
-    map: "platformer",
+    maps: ["platformer"],
     graphics: ["ball.png", "sci-fi-platformer-tiles-32x32.png", "moving_platform.png", "player_platformer.png",
         "Explosion.png", "undead.png"],
-    sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"], ["jetpack.wav"], ["jump.wav"]],
+    sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"], ["jetpack.wav"], ["jump.wav"]]
 };
 
-brownian = {
-    path: "",
+var brownian = {
     scripts: ["brownian"],
-    map: "brownian",
+    maps: ["brownian"],
     graphics: [],
-    sounds: [],
+    sounds: []
 };
 
 var isometric = {
-    path: "Isometric/",
-    scripts: ["isometric"],
-    map: "isometric4",
-    graphics: ["cube.png", "isometricGround.png", "player.png", "sphere.png", "tileset.png", "tileset2.png", "violettileset.png"],
-    sounds: [],
+    scripts: ["Isometric/isometric"],
+    maps: ["Isometric/isometric1", "Isometric/isometric2", "Isometric/isometric3", "Isometric/isometric4"],
+    graphics: ["Isometric/cube.png", "Isometric/isometricGround.png", "Isometric/player.png", 
+        "Isometric/sphere.png", "Isometric/tileset.png", "Isometric/tileset2.png", "Isometric/violettileset.png"],
+    sounds: []
 };
 
 var diskette = {
     scripts: ["diskette/diskette", "diskette/anime", "diskette/ball", "diskette/diskette", "diskette/computer",
         "diskette/player", "diskette/scenery"],
-    map: "diskette/diskette1",
+    maps: ["diskette/diskette1", "diskette/diskette2"],
     graphics: ["diskette/ball.png", "diskette/blocks.png", "diskette/computer.png", "diskette/crosshair.png",
         "diskette/diskette.png", "diskette/dynamics.png", "diskette/medical.png", "diskette/moon.png", "diskette/owl.png",
         "diskette/player.png", "diskette/player_wb.png", "diskette/pyramid.png", "diskette/pyramidDisplacementMap.png", "diskette/sky.png",
@@ -66,17 +58,11 @@ var diskette = {
     sounds: [["diskette/bounce.ogg"], ["diskette/throw.ogg"]],
 };
 
-var pongPlayground = {
+var pong = {
     scripts: ["Pong/main"],
-    map: "Pong/playground",
+    maps: ["Pong/mainMenu", "Pong/playground"],
     graphics: ["Pong/ball.png", "Pong/bar.png", "Pong/brick.png", "Pong/tiles.png"],
     sounds: [['Pong/bounce.wav'], ['Pong/xylo1.wav']],
-};
-var pongMainMenu = {
-    scripts: ["Pong/main"],
-    map: "Pong/mainMenu",
-    graphics: ["Pong/tiles.png"],
-    sounds: []
 };
 
 // GAME
@@ -97,18 +83,17 @@ new MyGame();
 var sceneManager = A_.game.sceneManager;
 var loader = A_.game.loader;
 
-//sceneManager.startScene("lvl1", "platformer", platformer1);
-//sceneManager.createScene(skorpio1, "lvl1");
-//sceneManager.createScene(skorpio2, "lvl1");
-//sceneManager.createScene(brownian, "lvl1");
-//sceneManager.createScene(isometric, "lvl1");
-//sceneManager.startScene("mainMenu", "Pong/mainMenu", pongMainMenu);
+//sceneManager.startScene(platformer, "lvl1", "platformer");
+//sceneManager.startScene(skorpio, "lvl1", "map_skorpio1");
+//sceneManager.startScene(brownian, "lvl1", "brownian");
+//sceneManager.startScene(isometric, "lvl1", "Isometric/isometric4");
+//sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu");
 
 // FARER
-loader.loadManifest(farer1, function () {
-    var scene = sceneManager.createScene("farer1");
-    populateScene(scene);
-});
+//loader.loadManifest(farer1, function () {
+//    var scene = sceneManager.createScene("farer1");
+//    populateScene(scene);
+//});
 
 // ROT
 //loader.loadManifest(rot1, function () {
@@ -117,15 +102,15 @@ loader.loadManifest(farer1, function () {
 //});
 
 // DISKETTE
-//loader.loadManifest(diskette, function () {
-//    var scene = sceneManager.createScene("Diskette Level 1", "diskette/diskette1");
-//    for (var i = 0; i < 50; i++) {
-//        var star = scene.createSprite(SceneryStar, scene.findLayerByName("Sky"),
-//                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
-//        star.sprite.alpha = Math.random();
-//    }
-//    scene.findSpriteByClass(ScenerySun).setZ("top");
-//    player = scene.findSpriteByClass(Player);
-//    
-//    A_.INPUT.addMapping("restart", A_.KEY.T);
-//});
+loader.loadManifest(diskette, function () {
+    var scene = sceneManager.createScene("Diskette Level 1", "diskette/diskette1");
+    for (var i = 0; i < 50; i++) {
+        var star = scene.createSprite(SceneryStar, scene.findLayerByName("Sky"),
+                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
+        star.sprite.alpha = Math.random();
+    }
+    scene.findSpriteByClass(ScenerySun).setZ("top");
+    player = scene.findSpriteByClass(Player);
+    
+    A_.INPUT.addMapping("restart", A_.KEY.T);
+});

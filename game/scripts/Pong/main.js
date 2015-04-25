@@ -3,18 +3,6 @@ var GameController = A_.SPRITES.Graphics.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.scene.setScale(2);
-
-        A_.INPUT.addMapping("pause", A_.KEY.P);
-        this.scene.bind('pause', function () {
-//            window.console.log("Paused");
-        })
-        this.scene.bind('play', function () {
-//            window.console.log("Played");
-        })
-    },
-    update: function () {
-
-        this._super();
     }
 });
 
@@ -31,7 +19,7 @@ var StartText = Text.extend({
     update: function () {
         if (this.leftpressed) {
             this.scene.pause();
-            sceneManager.startScene("playground", "Pong/playground", pongPlayground);
+            sceneManager.startScene(pong, "playground", "Pong/playground");
         }
         this._super();
     }

@@ -14,7 +14,7 @@
          "opacity":1,
          "properties":
             {
-             "image":"\"tileset2.png\""
+             "image":"\"Isometric\/tileset2.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -30,7 +30,7 @@
          "properties":
             {
              "collisionResponse":"\"static\"",
-             "image":"\"tileset2.png\""
+             "image":"\"Isometric\/tileset2.png\""
             },
          "type":"tilelayer",
          "visible":true,

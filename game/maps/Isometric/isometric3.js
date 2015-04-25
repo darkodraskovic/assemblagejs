@@ -14,7 +14,7 @@
          "opacity":1,
          "properties":
             {
-             "image":"\"violettileset.png\""
+             "image":"\"Isometric\/violettileset.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -30,7 +30,7 @@
          "properties":
             {
              "collisionResponse":"\"static\"",
-             "image":"\"violettileset.png\""
+             "image":"\"Isometric\/violettileset.png\""
             },
          "type":"tilelayer",
          "visible":true,
