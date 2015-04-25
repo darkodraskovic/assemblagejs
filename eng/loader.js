@@ -1,20 +1,13 @@
 A_.Loader = A_.EventDispatcher.extend({
     // SCRIPT loader
-    loadScripts: function (callback, scriptsToLoad) {
-        // If the func is called with only one argument, ie. an array of script names
-        if (!scriptsToLoad) {
-            scriptsToLoad = callback;
-            callback = function () {
-                window.console.log("Scripts loaded.");
-            };
-        }
-        // If the user supplied no scripts to load
-        if (!scriptsToLoad.length) {
-            callback();
+    loadScripts: function (scriptsToLoad, callback) {
+        if (!scriptsToLoad || !scriptsToLoad.length) {
+            (callback || function () {
+                window.console.log("No scripts to load.");
+            })();
             return;
         }
-
-        this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, callback, scriptsToLoad));
+        this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, scriptsToLoad, callback));
     },
     loadScript: function (url, callback, path) {
         // Adding the script tag to the head...
@@ -31,47 +24,41 @@ A_.Loader = A_.EventDispatcher.extend({
         // Fire the loading!
         head.appendChild(script);
     },
-    _onScriptLoaded: function (callback, scriptsToLoad) {
+    _onScriptLoaded: function (scriptsToLoad, callback) {
         this.trigger('load');
         scriptsToLoad.shift();
         // If there are more scripts to load
         if (scriptsToLoad.length) {
-            this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, callback, scriptsToLoad));
+            this.loadScript(scriptsToLoad[0], this._onScriptLoaded.bind(this, scriptsToLoad, callback));
         }
         // Call the user supplied callback.
         else {
-            window.console.log("SCRITPS loaded.");
-            callback();
+            (callback || function () {
+                window.console.log("SCRITPS loaded.");
+            })();
         }
     },
     // MAP loader
-    loadMap: function (callback, mapData) {
-        // If the func is called with only one argument, ie. a map filename
+    loadMap: function (mapData, callback) {
         if (!mapData) {
-            mapData = callback;
-            callback = function () {
-                window.console.log("MAP loaded.");
-            };
+            (callback || function () {
+                window.console.log("No map to load.");
+            })();
         }
-
         this.loadScript(mapData, this._onMapLoaded.bind(this, callback), A_.CONFIG.directories.maps);
     },
     _onMapLoaded: function (callback) {
         this.trigger('load');
-        window.console.log("MAP loaded.");
-        callback();
+        (callback || function () {
+            window.console.log("MAP loaded.");
+        })();
     },
     // GRAPHICS loader
-    loadGraphics: function (callback, graphicsToLoad) {
-        if (!graphicsToLoad) {
-            graphicsToLoad = callback();
-            callback = function () {
-                window.console.log("GRAPHICS loaded.");
-            };
-        }
-        if (graphicsToLoad.length < 1) {
-            callback();
-            return;
+    loadGraphics: function (graphicsToLoad, callback) {
+        if (!graphicsToLoad || !graphicsToLoad.length) {
+            (callback || function () {
+                window.console.log("No graphics to load.");
+            })();
         }
 
         this.assetLoader = new PIXI.AssetLoader(_.map(graphicsToLoad, function (graphics) {
@@ -82,23 +69,19 @@ A_.Loader = A_.EventDispatcher.extend({
         this.assetLoader.load();
     },
     _onGraphicsLoaded: function (callback) {
-        window.console.log("GRAPHICS loaded.");
-        callback();
+        (callback || function () {
+            window.console.log("GRAPHICS loaded.");
+        })();
     },
     // SOUND loader
-    loadSounds: function (callback, soundsToLoad) {
-        if (!soundsToLoad) {
-            soundsToLoad = callback();
-            callback = function () {
-                window.console.log("SOUNDS loaded.");
-            };
-        }
-        if (soundsToLoad.length < 1) {
-            callback();
-            return;
+    loadSounds: function (soundsToLoad, callback) {
+        if (!soundsToLoad || !soundsToLoad.length) {
+            (callback || function () {
+                window.console.log("No sounds to load.");
+            })();
         }
 
-        this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, callback, soundsToLoad));
+        this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, soundsToLoad, callback));
     },
     loadSound: function (soundArray, callback) {
         new Howl({
@@ -108,58 +91,54 @@ A_.Loader = A_.EventDispatcher.extend({
             onload: callback
         });
     },
-    _onSoundLoaded: function (callback, soundsToLoad) {
+    _onSoundLoaded: function (soundsToLoad, callback) {
         this.trigger('load');
         soundsToLoad.shift();
         if (soundsToLoad.length) {
-            this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, callback, soundsToLoad));
+            this.loadSound(soundsToLoad[0], this._onSoundLoaded.bind(this, soundsToLoad, callback));
         } else {
-            window.console.log("SOUNDS loaded.");
-            callback();
+            (callback || function () {
+                window.console.log("SOUNDS loaded.");
+            })();
         }
     },
     // MANIFEST loader
-    // An array of loaded manifests.
     loadedManifests: [],
-    // A hash of loaded map files.
     maps: {},
     loadManifest: function (manifest, onComplete, onProgress) {
         if (_.contains(this.loadedManifests, manifest)) {
-            window.console.log("The manifest is already loaded.");
-            if (onComplete)
-                onComplete();
+            (onComplete || function () {
+                window.console.log("The manifest is already loaded.");
+            })();
             return;
         }
 
         if (onProgress) {
             this.bind('load', onProgress)
         }
-        this.loadScripts(this._onManifestScriptsLoaded.bind(this, onComplete, manifest), manifest.scripts);
+        this.loadScripts(manifest.scripts, this._onManifestScriptsLoaded.bind(this, onComplete, manifest));
     },
     _onManifestScriptsLoaded: function (onComplete, manifest) {
         if (manifest.map) {
-            this.loadMap(this._onManifestMapLoaded.bind(this, onComplete, manifest), manifest.map);
+            this.loadMap(manifest.map, this._onManifestMapLoaded.bind(this, onComplete, manifest));
         }
         else {
-            this.loadGraphics(this._onManifestGraphicsLoaded.bind(this, onComplete, manifest), manifest.graphics);
+            this.loadGraphics(manifest.graphics, this._onManifestGraphicsLoaded.bind(this, onComplete, manifest));
         }
     },
     _onManifestMapLoaded: function (onComplete, manifest) {
         var start = manifest.map.lastIndexOf("/") + 1;
         var mapName = manifest.map.substring(start);
         this.maps[manifest.map] = TileMaps[mapName];
-        this.loadGraphics(this._onManifestGraphicsLoaded.bind(this, onComplete, manifest), manifest.graphics);
+        this.loadGraphics(manifest.graphics, this._onManifestGraphicsLoaded.bind(this, onComplete, manifest));
     },
     _onManifestGraphicsLoaded: function (onComplete, manifest) {
-        this.loadSounds(this._onManifestSoundsLoaded.bind(this, onComplete, manifest), manifest.sounds);
+        this.loadSounds(manifest.sounds, this._onManifestSoundsLoaded.bind(this, onComplete, manifest));
     },
     _onManifestSoundsLoaded: function (onComplete, manifest) {
-        window.console.log("Loaded EVERYTHING :)");
-
         this.loadedManifests.push(manifest);
-
-        if (onComplete) {
-            onComplete();
-        }
-    },
+        (onComplete || function () {
+            window.console.log("Loaded EVERYTHING :)");
+        })();
+    }
 });

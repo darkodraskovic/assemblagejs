@@ -103,7 +103,6 @@ var loader = A_.game.loader;
 //sceneManager.createScene(brownian, "lvl1");
 //sceneManager.createScene(isometric, "lvl1");
 sceneManager.startScene("mainMenu", "Pong/mainMenu", pongMainMenu);
-//sceneManager.createScene(pongPlayground, "playground");
 
 // FARER
 //loader.loadManifest(farer1, function () {
