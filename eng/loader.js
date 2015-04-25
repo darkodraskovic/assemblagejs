@@ -1,14 +1,23 @@
 A_.Loader = A_.EventDispatcher.extend({
+    onAssetLoaded: function (numAssets) {
+        return function (callback) {
+            numAssets ? this.trigger('load') : window.console.log("No assets to load.");
+            if (--numAssets <= 0) {
+                (callback || function () {
+                    window.console.log("Asset loaded.");
+                })();
+            }
+        };
+    },
     // SCRIPT loader
     loadScripts: function (scriptsToLoad, callback) {
+        var onScriptLoaded = this.onAssetLoaded((scriptsToLoad && scriptsToLoad.length) || 0);
         if (!scriptsToLoad || !scriptsToLoad.length) {
-            (callback || function () {
-                window.console.log("No scripts to load.");
-            })();
+            onScriptLoaded(callback);
             return;
         }
         _.each(scriptsToLoad, function (script) {
-            this.loadScript(script, this._onScriptLoaded.bind(this, scriptsToLoad, script, callback));
+            this.loadScript(script, onScriptLoaded.bind(this, callback));
         }, this);
     },
     loadScript: function (url, callback, path) {
@@ -26,36 +35,20 @@ A_.Loader = A_.EventDispatcher.extend({
         // Fire the loading!
         head.appendChild(script);
     },
-    _onScriptLoaded: function (scriptsToLoad, script, callback) {
-        this.trigger('load');
-        scriptsToLoad.splice(scriptsToLoad.indexOf(script), 1);
-        if (!scriptsToLoad.length) {
-            (callback || function () {
-                window.console.log("SCRITPS loaded.");
-            })();
-        }
-    },
     // MAP loader
     loadMaps: function (maps, callback) {
+        var onAssetLoaded = this.onAssetLoaded((maps && maps.length) || 0);
         if (!maps || !maps.length) {
-            (callback || function () {
-                window.console.log("No map to load.");
-            })();
+            onAssetLoaded.call(this, callback);
             return;
         }
-        _.each(maps, function (map) {
-            this.loadScript(map, this._onMapLoaded.bind(this, maps, map, callback), A_.CONFIG.directories.maps);
-        }, this)
-    },
-    _onMapLoaded: function (maps, map, callback) {
-        this.maps[map] = TileMaps[map.substring(map.lastIndexOf("/") + 1)];
-        maps.splice(maps.indexOf(map), 1);
-        this.trigger('load');
-        if (!maps.length) {
-            (callback || function () {
-                window.console.log("MAPS loaded.");
-            })();
+        function onMapLoaded(map, callback) {
+            this.maps[map] = TileMaps[map.substring(map.lastIndexOf("/") + 1)];
+            onAssetLoaded.call(this, callback);
         }
+        _.each(maps, function (map) {
+            this.loadScript(map, onMapLoaded.bind(this, map, callback), A_.CONFIG.directories.maps);
+        }, this);
     },
     // GRAPHICS loader
     loadGraphics: function (graphicsToLoad, callback) {
@@ -65,29 +58,26 @@ A_.Loader = A_.EventDispatcher.extend({
             })();
             return;
         }
-
+        function onGraphicsLoaded(callback) {
+            (callback || function () {
+            window.console.log("GRAPHICS loaded.");
+        })();
+        }
         this.assetLoader = new PIXI.AssetLoader(_.map(graphicsToLoad, function (graphics) {
             return A_.CONFIG.directories.graphics + graphics;
         }));
-        this.assetLoader.onComplete = this._onGraphicsLoaded.bind(this, callback);
+        this.assetLoader.onComplete = onGraphicsLoaded.bind(this, callback);
         this.assetLoader.onProgress = this.trigger.bind(this, 'load');
         this.assetLoader.load();
     },
-    _onGraphicsLoaded: function (callback) {
-        (callback || function () {
-            window.console.log("GRAPHICS loaded.");
-        })();
-    },
     // SOUND loader
     loadSounds: function (soundsToLoad, callback) {
+        var onSoundLoaded = this.onAssetLoaded((soundsToLoad && soundsToLoad.length) || 0);
         if (!soundsToLoad || !soundsToLoad.length) {
-            (callback || function () {
-                window.console.log("No sounds to load.");
-            })();
-            return;
+            onSoundLoaded(callback);
         }
         _.each(soundsToLoad, function (soundArray) {
-            this.loadSound(soundArray, this._onSoundLoaded.bind(this, soundsToLoad, soundArray, callback));
+            this.loadSound(soundArray, onSoundLoaded.bind(this, callback));
         }, this);
     },
     loadSound: function (soundArray, callback) {
@@ -97,15 +87,6 @@ A_.Loader = A_.EventDispatcher.extend({
             }),
             onload: callback
         });
-    },
-    _onSoundLoaded: function (soundsToLoad, soundArray, callback) {
-        this.trigger('load');
-        soundsToLoad.splice(soundsToLoad.indexOf(soundArray), 1);
-        if (!soundsToLoad.length) {
-            (callback || function () {
-                window.console.log("SOUNDS loaded.");
-            })();
-        }
     },
     // MANIFEST loader
     loadedManifests: [],
@@ -120,18 +101,19 @@ A_.Loader = A_.EventDispatcher.extend({
         if (onProgress) {
             this.bind('load', onProgress)
         }
-        this.loadScripts(manifest.scripts, this._onManifestLoaded.bind(this, manifest, "scripts", onComplete));
-        this.loadMaps(manifest.maps, this._onManifestLoaded.bind(this, manifest, "maps", onComplete));
-        this.loadGraphics(manifest.graphics, this._onManifestLoaded.bind(this, manifest, "graphics", onComplete));
-        this.loadSounds(manifest.sounds, this._onManifestLoaded.bind(this, manifest, "sounds", onComplete));
-    },
-    _onManifestLoaded: function (manifest, asset, onComplete) {
-        delete manifest[asset];
-        if (!_.keys(manifest).length) {
-            this.loadedManifests.push(manifest);
-            (onComplete || function () {
-                window.console.log("Loaded EVERYTHING :)");
-            })();
+
+        var numAssets = _.keys(manifest).length;
+        function onAssetTypeLoaded(onComplete) {
+            if (!--numAssets) {
+                this.loadedManifests.push(manifest);
+                (onComplete || function () {
+                    window.console.log("Loaded EVERYTHING :)");
+                })();
+            }
         }
+        this.loadScripts(manifest.scripts, onAssetTypeLoaded.bind(this, onComplete));
+        this.loadMaps(manifest.maps, onAssetTypeLoaded.bind(this, onComplete));
+        this.loadGraphics(manifest.graphics, onAssetTypeLoaded.bind(this, onComplete));
+        this.loadSounds(manifest.sounds, onAssetTypeLoaded.bind(this, onComplete));
     }
 });
