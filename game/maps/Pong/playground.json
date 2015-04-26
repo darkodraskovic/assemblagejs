@@ -1,10 +1,3 @@
-(function(name,data){
- if(typeof onTileMapLoaded === 'undefined') {
-  if(typeof TileMaps === 'undefined') TileMaps = {};
-  TileMaps[name] = data;
- } else {
-  onTileMapLoaded(name,data);
- }})("playground",
 { "height":24,
  "layers":[
         {
@@ -602,20 +595,6 @@
                  "width":32,
                  "x":32,
                  "y":32
-                }, 
-                {
-                 "height":16,
-                 "name":"Game Controller",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"GameController",
-                 "visible":true,
-                 "width":16,
-                 "x":0,
-                 "y":-16
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -650,4 +629,4 @@
  "tilewidth":16,
  "version":1,
  "width":32
-});
+}

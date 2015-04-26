@@ -8,7 +8,8 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         this.game = sceneManager.game;
         this.name = name;
         this.cameraOptions = cameraOptions;
-        this.map = map ? map.substring(map.lastIndexOf("/") + 1) : "";
+//        this.map = map ? map.substring(map.lastIndexOf("/") + 1) : "";
+        this.map = map;
 
         this.container = new PIXI.DisplayObjectContainer();
         // this.sprite is referenced by the A_.INPUT.mouseReactivityInjection
@@ -49,7 +50,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
             this.createDebugLayer();
 
         if (map) {
-            A_.TILES.createTiledMap(TileMaps[this.map], this);
+            A_.TILES.createTiledMap(A_.DATA[this.map], this);
         }
         else {
             this.createDummyLayer();

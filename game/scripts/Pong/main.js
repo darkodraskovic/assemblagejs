@@ -1,32 +1,24 @@
-var GameController = A_.SPRITES.Graphics.extend({
-    playingDrone: false,
-    init: function (parent, x, y, props) {
-        this._super(parent, x, y, props);
-        this.scene.setScale(2);
-    }
-});
-
-// MENUS
 var Text = A_.SPRITES.Text.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.initMouseReactivity();
         this.setMouseReactivity(true);
+        this.scene.setScale(2);
     }
 });
 
+// MAIN MENU
 var StartText = Text.extend({
     update: function () {
         if (this.leftpressed) {
             this.scene.pause();
-            sceneManager.startScene(pong, "playground", "Pong/playground");
+            sceneManager.startScene(pong, "playground", "Pong/playground.json");
         }
         this._super();
     }
 });
 
 // HUD
-
 var PointsText = Text.extend({
     points: 0,
     update: function () {
@@ -43,7 +35,6 @@ var Ball = A_.SPRITES.Kinematic.extend({
     drawCollisionPolygon: false,
     elasticity: 1,
     bounceTreshold: 0,
-//    wrap: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 0;
@@ -53,7 +44,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.velocity.x = this.maxVelocity.x;
         this.velocity.y = _.random(-this.maxVelocity.y, this.maxVelocity.y);
         this.setOrigin(0.5, 0.5);
-        this.scene.bind('create', this, function () {
+        this.scene.bind('created', this, function () {
             this.pointsText = this.scene.findSpriteByClass(PointsText);
         });
         this.breakSound = this.scene.createSound({
@@ -70,7 +61,6 @@ var Ball = A_.SPRITES.Kinematic.extend({
             sceneManager.destroyScene(this.scene);
             sceneManager.findSceneByName("mainMenu").play();
         }
-
         this._super();
     },
     collideWithStatic: function (other, response) {
@@ -116,7 +106,6 @@ var Bar = A_.SPRITES.Kinematic.extend({
         if (A_.INPUT.down["down"]) {
             this.velocity.y += this.velocityStep;
         }
-
         this._super();
     }
 });

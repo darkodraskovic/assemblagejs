@@ -25,12 +25,10 @@ A_.SCENE.SceneManager = Class.extend({
             for (var i = 0, len = this._scenesToDestroy.length; i < len; i++) {
                 var scene = this._scenesToDestroy[i];
                 scene.clear();
-                scene.trigger('destroy');
-
+                scene.trigger('destroyed');
                 var ind = this.scenes.indexOf(scene);
                 if (ind > -1)
                     this.scenes.splice(ind, 1);
-
                 window.console.log("Scene " + scene.name + " DESTROYED.");
             }
             this._scenesToDestroy.length = 0;
@@ -40,14 +38,10 @@ A_.SCENE.SceneManager = Class.extend({
         if (this._scenesToCreate.length) {
             for (i = 0, len = this._scenesToCreate.length; i < len; i++) {
                 var scene = this._scenesToCreate[i];
-
                 this.game.stage.addChild(scene.container);
                 this.scenes.push(scene);
-
                 scene.play();
-
-                scene.trigger('create');
-
+                scene.trigger('created');
                 window.console.log("Scene " + scene.name + " CREATED.");
             }
             this._scenesToCreate.length = 0;
