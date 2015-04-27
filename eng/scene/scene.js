@@ -8,7 +8,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         this.game = sceneManager.game;
         this.name = name;
         this.cameraOptions = cameraOptions;
-//        this.map = map ? map.substring(map.lastIndexOf("/") + 1) : "";
         this.map = map;
 
         this.container = new PIXI.DisplayObjectContainer();
@@ -50,7 +49,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
             this.createDebugLayer();
 
         if (map) {
-            A_.TILES.createTiledMap(A_.DATA[this.map], this);
+            A_.TILES.createTiledMap(A_.UTILS.getAsset(this.map), this);
         }
         else {
             this.createDummyLayer();
@@ -201,24 +200,20 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         this.sounds.push(sound);
         return sound;
     },
-    destroySounds: function () {
+    unloadSounds: function () {
         _.each(this.sounds, function (sound) {
             sound.unload();
         });
         this.sounds.length = 0;
     },
     clear: function () {
-        this.destroySounds();
-
         _.each(this.layers, function (layer) {
             layer.scene = null;
             delete(layer.scene);
             layer.removeChildren();
             this.container.removeChild(layer);
         }, this);
-
         A_.game.stage.removeChild(this.container);
-
         this.debind();
     },
     // START/STOP scene execution

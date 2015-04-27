@@ -1,23 +1,22 @@
 A_.Loader = A_.EventDispatcher.extend({
-    onAssetLoaded: function (numAssets) {
-        return function (callback) {
-            if (numAssets)
-                this.trigger('loaded');
-            if (--numAssets <= 0) {
-                (callback || function () {
-                    window.console.log("Asset loaded.");
-                })();
-            }
-        };
-    },
-    loadAssets: function (assets, callback) {
-        var onAssetLoaded = this.onAssetLoaded((assets && assets.length) || 0);
+    loadAssets: function (assets, onComplete, onProgress) {
+        if (_.isObject(assets)) {
+            assets = _.flatten(_.values(assets), true);
+        }
         if (!assets || !assets.length) {
-            onAssetLoaded(callback);
+            onComplete();
             return;
         }
+        var assetsRemaining = assets.length;
+        var onAssetLoaded = function () {
+            --assetsRemaining;
+            onProgress && onProgress(assets.length - assetsRemaining, assets.length);
+            if (assetsRemaining <= 0) {
+                onComplete && onComplete();
+            }
+        };
         _.each(assets, function (asset) {
-            this["load" + A_.UTILS.getAssetType(asset)](asset, onAssetLoaded.bind(this, callback));
+            this["load" + A_.UTILS.getAssetType(asset)](asset, onAssetLoaded);
         }, this);
     },
     loadScript: function (url, callback, path) {
@@ -54,22 +53,11 @@ A_.Loader = A_.EventDispatcher.extend({
             callback();
         };
         httpRequest.send();
-    },
-    // MANIFEST loader
-    maps: {},
-    loadManifest: function (manifest, onComplete, onProgress) {
-        if (onProgress) {
-            this.bind('load', onProgress)
-        }
-        var onAssetTypeLoaded = this.onAssetLoaded((manifest && _.keys(manifest).length) || 0);
-        this.loadAssets(manifest.scripts, onAssetTypeLoaded.bind(this, onComplete));
-        this.loadAssets(manifest.maps, onAssetTypeLoaded.bind(this, onComplete));
-        this.loadAssets(manifest.graphics, onAssetTypeLoaded.bind(this, onComplete));
-        this.loadAssets(manifest.sounds, onAssetTypeLoaded.bind(this, onComplete));
-    }
+    }   
 });
 
 A_.DATA = {};
+
 // Augmentable list of asset types
 A_.UTILS.AssetTypes = {
     // Script Assets
@@ -81,6 +69,7 @@ A_.UTILS.AssetTypes = {
     // Sound Assets (currently not used, but there for reference)
     ogg: 'Sound', wav: 'Sound', m4a: 'Sound', mp3: 'Sound'
 };
+
 // Determine the type of an asset with a lookup table
 A_.UTILS.getAssetType = function (asset) {
     // Cf. Loader.loadSound()
@@ -90,4 +79,8 @@ A_.UTILS.getAssetType = function (asset) {
     var fileExt = _(asset.split(".")).last().toLowerCase();
     // Lookup the asset in the assetTypes hash, or return other
     return A_.UTILS.AssetTypes[fileExt] || 'Other';
+};
+
+A_.UTILS.getAsset = function (asset) {
+    return A_.DATA[asset];
 };

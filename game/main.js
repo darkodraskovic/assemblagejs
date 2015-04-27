@@ -83,11 +83,11 @@ new MyGame();
 var sceneManager = A_.game.sceneManager;
 var loader = A_.game.loader;
 
-//sceneManager.startScene(platformer, "lvl1", "platformer.json");
+sceneManager.startScene(platformer, "lvl1", "platformer.json");
 //sceneManager.startScene(skorpio, "lvl1", "skorpio1.json");
 //sceneManager.startScene(brownian, "lvl1", "brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric4.json");
-sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
+//sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 
 // FARER
 //loader.loadManifest(farer, function () {

@@ -49,7 +49,7 @@ A_.SCENE.SceneManager = Class.extend({
     },
     startScene: function (manifest, name, map) {
         if (manifest)
-            this.game.loader.loadManifest(manifest, this.createScene.bind(this, name, map));
+            this.game.loader.loadAssets(manifest, this.createScene.bind(this, name, map));
         else
             this.createScene(name, map);
     },

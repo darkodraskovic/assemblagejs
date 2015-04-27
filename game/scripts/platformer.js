@@ -174,7 +174,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
 
         scene = this.scene;
         player = this;
-        this.scene.bind('create', function () {
+        this.scene.bind('created', function () {
             var tilemap = scene.findLayerByName("Thrus").tilemap;
             tilemap.forEachTile(player.initTile);
         })
@@ -366,10 +366,8 @@ var Ball = A_.SPRITES.Kinematic.extend({
     spriteSheet: "ball.png",
     collisionResponse: "passive",
     drawCollisionPolygon: false,
-    elasticity: 0.5,
+//    elasticity: 0.5,
     bounceTreshold: 40,
-//    elasticity: 1,
-//    groundCheck: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 1;
@@ -377,7 +375,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.setGravity(0, 8);
         this.maxVelocity.x = 500;
         this.maxVelocity.y = 500;
-        this.lifeTime = 50;
+        this.lifeTime = 4;
         this.lifeTimer = 0;
     },
     update: function () {
