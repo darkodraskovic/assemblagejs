@@ -3,7 +3,7 @@ A_.INPUT = new (A_.EventDispatcher.extend({
     down: {},
     _pressed: {},
     addMapping: function(action, key) {
-        this.actions[action] = key;
+        this.actions[key] = action;
         this.down[action] = false;
         this._pressed[action] = false;
     },
@@ -37,26 +37,24 @@ A_.INPUT = new (A_.EventDispatcher.extend({
 
 // Keyboard
 window.addEventListener("keydown", function(event) {
-    for (var action in A_.INPUT.actions) {
-        if (event.keyCode === A_.INPUT.actions[action]) {
-            if (!A_.INPUT._pressed[action]) {
-                A_.INPUT._pressed[action] = true;
-                A_.INPUT.trigger(action + "Pressed");
-            }
-            A_.INPUT.down[action] = true;
-            event.preventDefault();
+    var action = A_.INPUT.actions[event.keyCode];
+    if (action) {
+        if (!A_.INPUT._pressed[action]) {
+            A_.INPUT._pressed[action] = true;
+            A_.INPUT.trigger(action + "Pressed");
         }
+        A_.INPUT.down[action] = true;
+        event.preventDefault();
     }
 }, false);
 
 window.addEventListener("keyup", function(event) {
-    for (var action in A_.INPUT.actions) {
-        if (event.keyCode === A_.INPUT.actions[action]) {
-            A_.INPUT.trigger(action + "Released");
-            A_.INPUT._pressed[action] = false;
-            A_.INPUT.down[action] = false;
-            event.preventDefault();
-        }
+    var action = A_.INPUT.actions[event.keyCode];
+    if (action) {
+        A_.INPUT.trigger(action + "Released");
+        A_.INPUT._pressed[action] = false;
+        A_.INPUT.down[action] = false;
+        event.preventDefault();
     }
 }, false);
 

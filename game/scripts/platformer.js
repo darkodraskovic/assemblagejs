@@ -156,8 +156,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
         A_.INPUT.addMapping("right", A_.KEY.D);
         A_.INPUT.addMapping("jump", A_.KEY.SPACE);
 
-        A_.INPUT.addMapping("jetpack", A_.KEY.SPACE);
-        A_.INPUT.bind("jetpackPressed", this, this.fireJetpack);
+        A_.INPUT.bind("jumpPressed", this, this.fireJetpack);
 
         A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
         A_.INPUT.bind("toggleModePressed", this, this.toggleMode);
