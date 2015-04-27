@@ -90,19 +90,19 @@ sceneManager.startScene(platformer, "lvl1", "platformer.json");
 //sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 
 // FARER
-//loader.loadManifest(farer, function () {
+//loader.loadAssets(farer, function () {
 //    var scene = sceneManager.createScene("farer1");
 //    populateScene(scene);
 //});
 
 // ROT
-//loader.loadManifest(rot, function () {
+//loader.loadAssets(rot, function () {
 //    var scene = sceneManager.createScene("rot1");
 //    createRoguelikeMap(scene);
 //});
 
 // DISKETTE
-//loader.loadManifest(diskette, function () {
+//loader.loadAssets(diskette, function () {
 //    var scene = sceneManager.createScene("Diskette Level 1", "diskette/diskette1.json");
 //    for (var i = 0; i < 50; i++) {
 //        var star = scene.createSprite(SceneryStar, scene.findLayerByName("Sky"),

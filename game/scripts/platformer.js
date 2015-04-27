@@ -366,7 +366,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     spriteSheet: "ball.png",
     collisionResponse: "passive",
     drawCollisionPolygon: false,
-//    elasticity: 0.5,
+    elasticity: 0.5,
     bounceTreshold: 40,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);

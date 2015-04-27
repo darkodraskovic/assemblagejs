@@ -19,12 +19,12 @@ A_.Loader = A_.EventDispatcher.extend({
             this["load" + A_.UTILS.getAssetType(asset)](asset, onAssetLoaded);
         }, this);
     },
-    loadScript: function (url, callback, path) {
+    loadScript: function (url, callback) {
         // Adding the script tag to the head...
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
         script.type = 'text/javascript';
-        script.src = (path || A_.CONFIG.directories.scripts) + url;
+        script.src = A_.CONFIG.directories.scripts + url;
         // Then bind the event to the callback function.
         // There are several events for cross browser compatibility.
         script.onreadystatechange = callback;
@@ -32,24 +32,24 @@ A_.Loader = A_.EventDispatcher.extend({
         // Fire the loading!
         head.appendChild(script);
     },
-    loadGraphics: function (image, callback) {
-        var imageLoader = new PIXI.ImageLoader(A_.CONFIG.directories.graphics + image);
+    loadGraphics: function (url, callback) {
+        var imageLoader = new PIXI.ImageLoader(A_.CONFIG.directories.graphics + url);
         imageLoader.on('loaded', callback);
         imageLoader.load();
     },
-    loadSound: function (soundArray, callback) {
+    loadSound: function (urlArray, callback) {
         new Howl({
-            urls: _.map(soundArray, function (sound) {
+            urls: _.map(urlArray, function (sound) {
                 return A_.CONFIG.directories.sounds + sound;
             }),
             onload: callback
         });
     },
-    loadJSON: function (url, callback) {
+    loadOther: function (url, callback) {
         var httpRequest = new XMLHttpRequest();
         httpRequest.open('GET', A_.CONFIG.directories.maps + url);
         httpRequest.onload = function () {
-            A_.DATA[url] = JSON.parse(httpRequest.responseText);
+            A_.DATA[url] = httpRequest.responseText;
             callback();
         };
         httpRequest.send();
@@ -62,8 +62,6 @@ A_.DATA = {};
 A_.UTILS.AssetTypes = {
     // Script Assets
     js: 'Script',
-    // Map Assets
-    json: 'JSON',
     // Graphics Assets
     png: 'Graphics', jpg: 'Graphics', gif: 'Graphics', jpeg: 'Graphics',
     // Sound Assets (currently not used, but there for reference)
