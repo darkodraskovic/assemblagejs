@@ -23,6 +23,24 @@ var Player = Anime.extend({
         A_.INPUT.addMapping("jump", A_.KEY.SPACE);
         A_.INPUT.addMapping("crouch", A_.KEY.S);
 
+        this.scene.bind('leftpressed', this, function() {
+            this.throwTimerRunning = true;
+            this.throwTimer = 0;
+            this.progressBarInner.setVisible(true);
+        });
+        this.scene.bind('leftreleased', this, function() {
+            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
+            this.progressBarInner.percent = 0;
+            this.progressBarInner.setVisible(false);
+        });
+        this.scene.bind('rightpressed', this, function() {
+            if (this.throwTimerRunning) {
+                this.throwTimerRunning = false;
+            }
+            else
+                this.throwTimerRunning = true;
+        });
+
         this.throwSound = this.scene.createSound({
             urls: ['diskette/throw.ogg'],
             volume: 1
@@ -94,29 +112,11 @@ var Player = Anime.extend({
         this.processControls();
         this.processFacing();
 
-        if (this.scene.leftpressed) {
-            this.throwTimerRunning = true;
-            this.throwTimer = 0;
-            this.progressBarInner.setVisible(true);
-        }
-        if (this.scene.leftreleased) {
-//            this.throwBall(this.throwForce);
-            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
-            this.progressBarInner.percent = 0;
-            this.progressBarInner.setVisible(false);
-        }
         if (this.scene.leftdown) {
             if (this.throwTimerRunning) {
                 this.throwTimer += A_.game.dt;
                 this.progressBarInner.percent = this.throwTimer.map(0, this.throwTime, 0, 100).clamp(0, 100);
             }
-        }
-        if (this.scene.rightpressed) {
-            if (this.throwTimerRunning) {
-                this.throwTimerRunning = false;
-            }
-            else
-                this.throwTimerRunning = true;
         }
 
         this._super();

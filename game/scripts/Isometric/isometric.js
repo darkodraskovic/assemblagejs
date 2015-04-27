@@ -38,7 +38,7 @@ var Anime = A_.SPRITES.Kinematic.extend({
         this.animations["death"].onComplete = function() {
             that.destroy();
         };
-        
+
     },
     update: function() {
         if (this.motionState === "moving") {
@@ -102,7 +102,12 @@ var Player = Anime.extend({
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
-        
+
+        this.scene.bind('leftpressed', this, function() {
+            var tm = this.scene.findLayerByName("Tiles").tilemap;
+            var pos = this.scene.getMousePosition();
+            window.console.log("x: " + tm.getMapIsoX(pos.x, pos.y) + ", y: " + tm.getMapIsoY(pos.x, pos.y));
+        });
     },
     update: function() {
         var cd = "";
@@ -132,12 +137,6 @@ var Player = Anime.extend({
             this.facing = "left";
         } else
             this.facing = "up";
-
-        if (this.scene.leftpressed) {
-            var tm = this.scene.findLayerByName("Tiles").tilemap;
-            var pos = this.scene.getMousePosition();
-            window.console.log("x: " + tm.getMapIsoX(pos.x, pos.y) + ", y: " + tm.getMapIsoY(pos.x, pos.y));
-        }
 
         this._super();
     }

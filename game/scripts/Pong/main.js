@@ -9,12 +9,12 @@ var Text = A_.SPRITES.Text.extend({
 
 // MAIN MENU
 var StartText = Text.extend({
-    update: function () {
-        if (this.leftpressed) {
+    init: function (parent, x, y, props) {
+        this._super(parent, x, y, props);
+        this.bind('leftpressed', this, function () {
             this.scene.pause();
             sceneManager.startScene(pong, "playground", "Pong/playground.json");
-        }
-        this._super();
+        });
     }
 });
 

@@ -19,6 +19,7 @@ var Player = A_.SPRITES.Kinematic.extend({
         this.laser2 = this.scene.createSprite(Laser, this, 18, 12);
         this.setSpritePoint("bullet1", 18, -12);
         this.setSpritePoint("bullet2", 18, 12);
+        this.scene.bind('leftpressed', this, this.shootBullet);
     },
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
@@ -58,10 +59,6 @@ var Player = A_.SPRITES.Kinematic.extend({
 
         this.acceleration.x *= cos;
         this.acceleration.y *= sin;
-
-        if (this.scene.leftpressed) {
-            this.shootBullet();
-        }
         
         this._super();
 
@@ -100,14 +97,10 @@ var Laser = A_.SPRITES.Animated.extend({
         this.origH = this.getHeight();
         var sineProps = {period: 0.5, periodRand: 25, amplitude: 3, amplitudeRand: 25};
         this.sine = this.addon("Sine", sineProps);
+        this.scene.bind('rightpressed', this, this.toggleFire.bind(this, 'on'));
+        this.scene.bind('rightreleased', this, this.toggleFire.bind(this, 'off'));
     },
     update: function () {
-        if (this.scene.rightpressed) {
-            this.toggleFire("on");
-        }
-        if (this.scene.rightreleased) {
-            this.toggleFire("off");
-        }
         if (this.scene.rightdown) {
             this.setWidth(A_.UTILS.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
         }

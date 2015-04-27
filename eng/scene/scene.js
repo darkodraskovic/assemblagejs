@@ -314,9 +314,10 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
             this.container.position.y = Math.round(this.container.position.y);
         }
     },
-    setScale: function(direction) {
-        var scale = this.scale +
-                (direction === 'forward' ? this.scaleSpeed * A_.game.dt : -this.scaleSpeed * A_.game.dt);
+    setScale: function(scale) {
+        if (_.isString(scale))
+            scale = this.scale +
+                    (scale === 'forward' ? this.scaleSpeed * A_.game.dt : -this.scaleSpeed * A_.game.dt);
 
         if (scale > 0.25 && scale < 3) {
             // scale the game world according to scale
