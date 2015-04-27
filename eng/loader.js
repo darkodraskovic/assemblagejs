@@ -1,25 +1,25 @@
 A_.Loader = A_.EventDispatcher.extend({
-    loadAssets: function (assets, onComplete, onProgress) {
+    loadAssets: function(assets, onComplete, onProgress) {
         if (_.isObject(assets)) {
             assets = _.flatten(_.values(assets), true);
         }
-        if (!assets || !assets.length) {
+        if (!assets.length) {
             onComplete();
             return;
         }
         var assetsRemaining = assets.length;
-        var onAssetLoaded = function () {
+        var onAssetLoaded = function() {
             --assetsRemaining;
             onProgress && onProgress(assets.length - assetsRemaining, assets.length);
             if (assetsRemaining <= 0) {
                 onComplete && onComplete();
             }
         };
-        _.each(assets, function (asset) {
+        _.each(assets, function(asset) {
             this["load" + A_.UTILS.getAssetType(asset)](asset, onAssetLoaded);
         }, this);
     },
-    loadScript: function (url, callback) {
+    loadScript: function(url, callback) {
         // Adding the script tag to the head...
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -32,14 +32,14 @@ A_.Loader = A_.EventDispatcher.extend({
         // Fire the loading!
         head.appendChild(script);
     },
-    loadGraphics: function (url, callback) {
+    loadGraphics: function(url, callback) {
         var imageLoader = new PIXI.ImageLoader(A_.CONFIG.directories.graphics + url);
         imageLoader.on('loaded', callback);
         imageLoader.load();
     },
-    loadSound: function (urlArray, callback) {
+    loadSound: function(urlArray, callback) {
         new Howl({
-            urls: _.map(urlArray, function (sound) {
+            urls: _.map(urlArray, function(sound) {
                 return A_.CONFIG.directories.sounds + sound;
             }),
             onload: callback
@@ -53,7 +53,7 @@ A_.Loader = A_.EventDispatcher.extend({
             callback();
         };
         httpRequest.send();
-    }   
+    }
 });
 
 A_.DATA = {};
@@ -69,7 +69,7 @@ A_.UTILS.AssetTypes = {
 };
 
 // Determine the type of an asset with a lookup table
-A_.UTILS.getAssetType = function (asset) {
+A_.UTILS.getAssetType = function(asset) {
     // Cf. Loader.loadSound()
     if (_.isArray(asset))
         return 'Sound';
@@ -79,6 +79,6 @@ A_.UTILS.getAssetType = function (asset) {
     return A_.UTILS.AssetTypes[fileExt] || 'Other';
 };
 
-A_.UTILS.getAsset = function (asset) {
+A_.UTILS.getAsset = function(asset) {
     return A_.DATA[asset];
 };

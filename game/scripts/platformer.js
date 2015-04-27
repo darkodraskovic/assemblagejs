@@ -1,14 +1,14 @@
-A_.TILES.Tile.prototype.turnOn = function () {
+A_.TILES.Tile.prototype.turnOn = function() {
     this.alpha = 1;
     this.collides = true;
     this.turned = "on";
 };
-A_.TILES.Tile.prototype.turnOff = function () {
+A_.TILES.Tile.prototype.turnOff = function() {
     this.alpha = 0.5;
     this.collides = false;
     this.turned = "off";
 };
-A_.TILES.Tile.prototype.toggleTurned = function () {
+A_.TILES.Tile.prototype.toggleTurned = function() {
     if (this.turned === "on") {
         this.turnOff();
     }
@@ -33,7 +33,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
     mode: "throwing",
     facing: "right",
     elasticity: 0,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.force = new SAT.Vector(100, 100);
         this.jumpForce = 530;
@@ -48,7 +48,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
         this.addAnimation("falling", [18], 0);
         this.setOrigin(0.5, 0.5);
     },
-    update: function () {
+    update: function() {
         if (this.applyForce) {
             if (this.facing === "right") {
                 this.acceleration.x = this.force.x;
@@ -94,7 +94,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
 
         this._super();
     },
-    toggleMode: function () {
+    toggleMode: function() {
         if (this.mode === "throwing") {
             this.mode = "building";
         } else {
@@ -102,7 +102,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
         }
     },
     // UTILS
-    flipFacing: function () {
+    flipFacing: function() {
         if (this.facing === "right") {
             this.facing = "left";
         }
@@ -110,7 +110,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
             this.facing = "right";
         }
     },
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
         this._super(other, response);
 
         // Moving platform
@@ -120,7 +120,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
             }
         }
     },
-    processMovingPlatform: function (other) {
+    processMovingPlatform: function(other) {
         if (this.getY() < other.getY()) {
             if (other instanceof Platform) {
                 this.movingPlatform = other;
@@ -132,7 +132,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
             }
         }
     },
-    setGravity: function (x, y, slopeTolerance) {
+    setGravity: function(x, y, slopeTolerance) {
         if (y > 0) {
             this.setFlippedY(false);
         } else {
@@ -149,7 +149,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     followee: true,
     player: true,
 //    elasticity: 0.5,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
         A_.INPUT.addMapping("left", A_.KEY.A);
@@ -157,7 +157,11 @@ var PlayerPlatformer = AnimePlatformer.extend({
         A_.INPUT.addMapping("jump", A_.KEY.SPACE);
 
         A_.INPUT.addMapping("jetpack", A_.KEY.SPACE);
+        A_.INPUT.bind("jetpackPressed", this, this.fireJetpack);
+
         A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
+        A_.INPUT.bind("toggleModePressed", this, this.toggleMode);
+
         this.thrus = this.scene.findLayerByName("Thrus").tilemap;
         this.groundSound = this.scene.createSound({
             urls: ['grounded.wav'],
@@ -174,19 +178,21 @@ var PlayerPlatformer = AnimePlatformer.extend({
 
         scene = this.scene;
         player = this;
-        this.scene.bind('created', function () {
+        this.scene.bind('created', function() {
             var tilemap = scene.findLayerByName("Thrus").tilemap;
             tilemap.forEachTile(player.initTile);
         })
+        this.scene.bind('leftpressed', this, this.throwBall);
+        this.scene.bind('leftpressed', this, this.manageThrus);
     },
-    initTile: function (tile) {
+    initTile: function(tile) {
         tile.turned = "on";
         tile.toggleSound = this.scene.createSound({
             urls: ['e.wav'],
             volume: 1
         });
     },
-    processControls: function () {
+    processControls: function() {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
             this.applyForce = true;
             if (A_.INPUT.down["right"] && A_.INPUT.down["left"]) {
@@ -206,19 +212,14 @@ var PlayerPlatformer = AnimePlatformer.extend({
         if (A_.INPUT.down["jump"]) {
             this.tryJump = true;
         }
-
-        if (A_.INPUT.pressed["jetpack"]) {
-            this.fireJetpack();
-        }
     },
-    fireJetpack: function () {
+    fireJetpack: function() {
         if (!this.standing) {
             this.velocity.y = (this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce) * 0.75;
             this.jetpackSound.play();
         }
     },
-    update: function () {
-//        window.console.log(this.standing);
+    update: function() {
         this.processControls();
 
         if (this.tryJump) {
@@ -230,26 +231,32 @@ var PlayerPlatformer = AnimePlatformer.extend({
             this.tryJump = false;
         }
 
-        if (A_.INPUT.pressed["toggleMode"]) {
-            this.toggleMode();
-        }
-
         if (this.ground && this.velocity.y > this.gravity.y) {
 //            this.groundSound.play();
         }
 
         this.processThrus();
 
-        if (this.scene.leftpressed && this.mode === "throwing") {
-            var ball = this.scene.createSprite(Ball, this.layer, this.getX(), this.getY());
-            var angle = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
-            ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
-            ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
-        }
         this._super();
-//        window.console.log(this.velocity);
     },
-    processThrus: function () {
+    throwBall: function() {
+        if (this.mode !== "throwing")
+            return;
+        var ball = this.scene.createSprite(Ball, this.layer, this.getX(), this.getY());
+        var angle = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
+        ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
+        ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
+    },
+    manageThrus: function() {
+        if (this.mode !== "building")
+            return;
+        var mpl = this.scene.getMousePosition();
+        var tile = this.thrus.getTileAt(mpl.x, mpl.y);
+        if (tile) {
+            tile.toggleTurned();
+        }
+    },
+    processThrus: function() {
         var tilemap = this.thrus;
         var scene = tilemap.scene;
         if (scene.rightdown) {
@@ -262,13 +269,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
             }
         }
 
-        if (this.scene.leftpressed && this.mode === "building") {
-            var mpl = this.scene.getMousePosition();
-            var tile = this.thrus.getTileAt(mpl.x, mpl.y);
-            if (tile) {
-                tile.toggleTurned();
-            }
-        }
         if (this.scene.leftdown && this.mode === "building") {
             var mpl = this.scene.getMousePosition();
             if (!this.thrus.getTileAt(mpl.x, mpl.y)) {
@@ -283,7 +283,7 @@ var Undead = AnimePlatformer.extend({
     spriteSheet: "undead.png",
     prevX: 0,
     prevY: 0,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.controlled = false;
         this.maxVelocity.x = 150;
@@ -291,7 +291,7 @@ var Undead = AnimePlatformer.extend({
         this.jumpProbability = 25;
 //        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.getX(), this.getY(), {undead: this});
     },
-    update: function () {
+    update: function() {
         this.prevX = this.getX();
         this.prevY = this.getY();
 
@@ -306,7 +306,7 @@ var Undead = AnimePlatformer.extend({
         this._super();
 
     },
-    onWall: function () {
+    onWall: function() {
         this._super();
 //        if (_.random(1, 100) < this.jumpProbability) {
 //            this.tryJump = true;
@@ -329,14 +329,14 @@ var UndeadProbe = A_.SPRITES.Colliding.extend({
     collisionResponse: "sensor",
     collisionWidth: 2,
     collisionHeight: 2,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
         this._super();
         this.addon("PinTo", {name: "probe", parent: this.undead,
             offsetX: 0, offsetY: this.undead.getHeight() / 2 + 4});
     },
-    update: function () {
+    update: function() {
         this._super();
         var undead = this.undead;
         if (!this.collided && undead.standing) {
@@ -368,7 +368,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     drawCollisionPolygon: false,
     elasticity: 0.5,
     bounceTreshold: 40,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 1;
         this.friction.y = 0;
@@ -378,7 +378,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.lifeTime = 4;
         this.lifeTimer = 0;
     },
-    update: function () {
+    update: function() {
         if (this.outOfBounds) {
             this.destroy();
         }
@@ -389,11 +389,11 @@ var Ball = A_.SPRITES.Kinematic.extend({
 
         this._super();
     },
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
         this._super(other, response);
 
     },
-    collideWithKinematic: function (other, response) {
+    collideWithKinematic: function(other, response) {
         this._super(other, response);
     }
 });
@@ -408,7 +408,7 @@ var Platform = A_.SPRITES.Colliding.extend({
     prevX: 0,
     prevY: 0,
 //    drawCollisionPolygon: false,    
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.sine = this.addon("Sine");
         this.sine.period = 2;
@@ -417,7 +417,7 @@ var Platform = A_.SPRITES.Colliding.extend({
         this.origX = this.getX();
         this.origY = this.getY();
     },
-    update: function () {
+    update: function() {
         this.prevX = this.getX();
         this.prevY = this.getY();
 
@@ -434,14 +434,14 @@ var ExplosionPlatformer = A_.SPRITES.Animated.extend({
     spriteSheet: "Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
         this.addAnimation("explode", _.range(0, 17), 0.5);
         this.setAnimation("explode");
         this.animations["explode"].loop = false;
         var that = this;
-        this.animations["explode"].onComplete = function () {
+        this.animations["explode"].onComplete = function() {
             that.destroy();
         };
         this.setScale(0.4, 0.4);

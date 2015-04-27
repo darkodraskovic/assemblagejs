@@ -412,10 +412,6 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
                 this.addons[i].update();
             }
         }
-
-        if (this.sprite.interactive) {
-            this.resetMouseReaction();
-        }
     },
     destroy: function() {
         var spritesToDestroy = this.scene.spritesToDestroy;

@@ -57,9 +57,6 @@ A_.Game = A_.EventDispatcher.extend({
         this.dt = dt / 1000;
 
         this.sceneManager.update();
-
-        A_.INPUT.reset();
-
         this.renderer.render(this.stage);
     }
 });

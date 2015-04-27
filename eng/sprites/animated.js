@@ -152,13 +152,10 @@ A_.SPRITES.Animated = A_.SPRITES.Sprite.extend({
         this.animations[name].gotoAndPlay(frame);
     },
     setOrigin: function(x, y) {
-        var delta = this._super(x, y);
-
         _.each(this.animations, function(animation) {
             animation.anchor.x = x;
             animation.anchor.y = y;
         });
-
-        return delta;
+        return this._super(x, y);
     }
 });

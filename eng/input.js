@@ -1,7 +1,75 @@
-/**************************************************************************/
-// KEYBOARD
-/**************************************************************************/
+A_.INPUT = new (A_.EventDispatcher.extend({
+    actions: {},
+    down: {},
+    _pressed: {},
+    addMapping: function(action, key) {
+        this.actions[action] = key;
+        this.down[action] = false;
+        this._pressed[action] = false;
+    },
+    mouseReactivityInjection: {
+        initMouseReactivity: function() {
+            this.sprite.mousedown = function() {
+                this.trigger('leftpressed');
+                this.leftdown = true;
+            }.bind(this);
+            this.sprite.mouseup = this.sprite.mouseupoutside = function() {
+                this.trigger('leftreleased');
+                this.leftdown = false;
+            }.bind(this);
+            this.sprite.rightdown = function() {
+                this.trigger('rightpressed');
+                this.rightdown = true;
+            }.bind(this);
+            this.sprite.rightup = this.sprite.rightupoutside = function() {
+                this.trigger('rightreleased');
+                this.rightdown = false;
+            }.bind(this);
+        },
+        setMouseReactivity: function(reactive) {
+            this.sprite.interactive = reactive;
+        },
+        getMouseReactivity: function() {
+            return this.sprite.interactive;
+        }
+    }
+}))();
 
+// Keyboard
+window.addEventListener("keydown", function(event) {
+    for (var action in A_.INPUT.actions) {
+        if (event.keyCode === A_.INPUT.actions[action]) {
+            if (!A_.INPUT._pressed[action]) {
+                A_.INPUT._pressed[action] = true;
+                A_.INPUT.trigger(action + "Pressed");
+            }
+            A_.INPUT.down[action] = true;
+            event.preventDefault();
+        }
+    }
+}, false);
+
+window.addEventListener("keyup", function(event) {
+    for (var action in A_.INPUT.actions) {
+        if (event.keyCode === A_.INPUT.actions[action]) {
+            A_.INPUT.trigger(action + "Released");
+            A_.INPUT._pressed[action] = false;
+            A_.INPUT.down[action] = false;
+            event.preventDefault();
+        }
+    }
+}, false);
+
+// Mousewheel
+window.addEventListener("mousewheel", function(e) {
+    if (e.wheelDelta > 0) {
+        A_.INPUT.trigger('forward');
+    } else {
+        A_.INPUT.trigger('backward');
+    }
+}, false);
+
+// CONSTS
 A_.KEY = {
     BACKSPACE: 8,
     TAB: 9,
@@ -90,109 +158,4 @@ A_.KEY = {
     COMMA: 188,
     MINUS: 189,
     PERIOD: 190
-};
-
-A_.INPUT.actions = {};
-A_.INPUT.pressed = {};
-A_.INPUT.released = {};
-A_.INPUT.down = {};
-
-
-A_.INPUT.addMapping = function(action, key) {
-    this.actions[action] = key;
-    this.pressed[action] = false;
-    this.released[action] = false;
-    this.down[action] = false;
-};
-
-window.addEventListener("keydown", function(event) {
-    for (var action in A_.INPUT.actions) {
-        if (event.keyCode === A_.INPUT.actions[action]) {
-            if (A_.INPUT.pressed[action] === false && A_.INPUT.down[action] === false) {
-                A_.INPUT.pressed[action] = true;
-                A_.INPUT.down[action] = true;
-            }
-        }
-    }
-}, false);
-
-window.addEventListener("keyup", function(event) {
-    for (var action in A_.INPUT.actions) {
-        if (event.keyCode === A_.INPUT.actions[action]) {
-            A_.INPUT.released[action] = true;
-            A_.INPUT.down[action] = false;
-        }
-    }
-}, false);
-
-/**************************************************************************/
-// MOUSE
-/**************************************************************************/
-
-A_.INPUT.mousePosition = {};
-A_.INPUT.mousePosition.screen = {};
-A_.INPUT.mousePosition.scene = {};
-A_.INPUT.mousewheel = null;
-
-A_.INPUT.processMouseWheel = function(e) {
-    if (e.wheelDelta > 0) {
-        A_.INPUT.mousewheel = "forward";
-    } else {
-        A_.INPUT.mousewheel = "backward";
-    }
-}
-window.addEventListener("mousewheel", A_.INPUT.processMouseWheel, false);
-
-A_.INPUT.mouseReactivityInjection = {
-    initMouseReactivity: function() {
-        this.sprite.mousedown = function() {
-            this.leftpressed = true;
-            this.leftdown = true;
-        }.bind(this);
-        this.sprite.mouseup = function() {
-            this.leftreleased = true;
-            this.leftdown = false;
-        }.bind(this);
-        this.sprite.mouseupoutside = function() {
-            this.leftreleased = true;
-            this.leftdown = false;
-        }.bind(this);
-        this.sprite.rightdown = function() {
-            this.rightpressed = true;
-            this.rightdown = true;
-        }.bind(this);
-        this.sprite.rightup = function() {
-            this.rightreleased = true;
-            this.rightdown = false;
-        }.bind(this);
-        this.sprite.rightupoutside = function() {
-            this.rightreleased = true;
-            this.rightdown = false;
-        }.bind(this);
-    },
-    setMouseReactivity: function(reactive) {
-        this.sprite.interactive = reactive;
-    },
-    getMouseReactivity: function() {
-        return this.sprite.interactive;
-    },
-    resetMouseReaction: function() {
-        this.leftpressed = false;
-        this.leftreleased = false;
-        this.rightpressed = false;
-        this.rightreleased = false;
-    }
-};
-
-/**************************************************************************/
-// ROUTINES
-/**************************************************************************/
-
-A_.INPUT.reset = function() {
-    for (var action in this.actions) {
-        this.pressed[action] = false;
-        this.released[action] = false;
-    }
-
-    this.mousewheel = null;
 };
