@@ -263,7 +263,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     manageSprites: function() {
         for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
             var sprite = this.spritesToDestroy[i];
-            sprite.parent.removeChild(this.sprite);
+            sprite.sprite.parent.removeChild(sprite.sprite);
             this.sprites.splice(this.sprites.indexOf(sprite), 1);
             // DO NOT DELETE: Previous line should be replace by this, currently, BUGGY code.
 //            var sprites = this.sprites;

@@ -9,8 +9,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._vector = new SAT.Vector();
 
         if (this.drawCollisionPolygon && A_.game.debug) {
-            this.debugGraphics = new PIXI.Graphics();
-            this.scene.debugLayer.addChild(this.debugGraphics);
+            this.debugGraphics = this.scene.createSprite(A_.SPRITES.Graphics, this, 0, 0);
         }
 
         this.setCollisionPolygon(this.createCollisionPolygon(this.polygon));
@@ -19,7 +18,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     setCollisionPolygon: function(polygon) {
         this.collisionPolygon = polygon;
         if (this.drawCollisionPolygon && A_.game.debug)
-            A_.POLYGON.Utils.drawPolygon(this.debugGraphics, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
+            A_.POLYGON.Utils.drawPolygon(this.debugGraphics.sprite, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
     },
     resetCollisionData: function() {
         this.collisionWidth = this.collisionHeight = this.collisionOffsetX = this.collisionOffsetY = 0;
@@ -53,15 +52,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         }
 
         return collisionPolygon;
-    },
-    updateDebug: function() {
-        // Update debug transform
-        var debugGraphics = this.debugGraphics;
-        var colPol = this.collisionPolygon;
-        debugGraphics.position.x = colPol.pos.x;
-        debugGraphics.position.y = colPol.pos.y;
-        debugGraphics.rotation = colPol.angle;
-        debugGraphics.scale = colPol.scale;
     },
     collidesWithEntity: function(other) {
         this.response.clear();
@@ -110,11 +100,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
 
         colPol.translate(delta[0] * Math.sign(colPol.scale.x), delta[1]* Math.sign(colPol.scale.y));
         colPol.calcBounds();
-
-        if (this.debugGraphics) {
-            this.debugGraphics.pivot.x -= delta[0] / colPol.scale.x * Math.sign(colPol.scale.x);
-            this.debugGraphics.pivot.y -= delta[1] / colPol.scale.y * Math.sign(colPol.scale.y);
-        }
     },
     synchCollisionPolygon: function() {
         var colPol = this.collisionPolygon;
@@ -134,17 +119,6 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         // Synch rotation.
         if (this.getRotation() !== colPol.angle)
             colPol.setAngle(this.getRotation());
-
-        if (this.debugGraphics) {
-            this.updateDebug();
-        }
-    },
-    removeFromScene: function() {
-        if (this.debugGraphics) {
-            this.scene.debugLayer.removeChild(this.debugGraphics);
-            this.debugGraphics = null;
-        }
-        this._super();
     },
     // UTILS
     aabbWidth: function() {

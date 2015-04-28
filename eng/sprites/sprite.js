@@ -355,9 +355,9 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         if (_.contains(spritesToDestroy, this))
             return;
         this.debind();
-        if (this.container) 
-            this.container.removeSprite(this);
-        if (this.sprites.length) {
+//        if (this.container) 
+//            this.container.removeSprite(this);
+        if (this.sprites && this.sprites.length) {
             for (var i = 0; i < this.sprites.length; i++) {
                 this.sprites[i].destroy();
             }
