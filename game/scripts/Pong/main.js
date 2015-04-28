@@ -47,14 +47,8 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.scene.bind('created', this, function () {
             this.pointsText = this.scene.findSpriteByClass(PointsText);
         });
-        this.breakSound = this.scene.createSound({
-            urls: ['Pong/xylo1.wav'],
-            volume: 1
-        });
-        this.bounceSound = this.scene.createSound({
-            urls: ['Pong/bounce.wav'],
-            volume: 1
-        });
+        this.breakSound = A_.UTILS.getAsset('Pong/xylo1.wav');
+        this.bounceSound = A_.UTILS.getAsset('Pong/bounce.wav');
     },
     update: function () {
         if (this.getX() > this.scene.getWidth()) {

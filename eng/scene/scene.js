@@ -3,8 +3,6 @@ A_.SCENE.Layer = function (scene, name) {
     this.scene = scene;
     this.name = name;    
     this.scene.container.addChild(this);
-    this.baked = false;
-    this.collision = false;
     this.parallax = 100;
 };
 A_.SCENE.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
@@ -83,30 +81,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
 
         sprite.baked = true;
         return sprite;
-    },
-    // ENTITIES management
-    createSound: function (props) {
-        var urls = props["urls"];
-        for (var i = 0, len = urls.length; i < len; i++) {
-            urls[i] = "game/sounds/" + urls[i];
-        }
-
-        var sound = _.find(this.sounds, function (sound) {
-            return _.isEqual(sound.urls(), props["urls"]);
-        });
-        if (sound) {
-            return sound;
-        }
-
-        var sound = new Howl(props);
-        this.sounds.push(sound);
-        return sound;
-    },
-    unloadSounds: function () {
-        _.each(this.sounds, function (sound) {
-            sound.unload();
-        });
-        this.sounds.length = 0;
     },
     destroy: function () {
         this.trigger('destroyed');

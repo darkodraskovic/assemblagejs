@@ -40,10 +40,7 @@ var Player = Anime.extend({
                 this.throwTimerRunning = true;
         });
 
-        this.throwSound = this.scene.createSound({
-            urls: ['diskette/throw.ogg'],
-            volume: 1
-        });
+        this.throwSound = A_.UTILS.getAsset('diskette/throw.ogg');
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);

@@ -31,10 +31,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         this.maxVelocity.y = 800;
         this.dynamicsMap = this.scene.findLayerByName("Dynamics").tilemap;
         this.addAnimation("inserting", _.range(0, 10), 0.2);
-        this.springSound = this.scene.createSound({
-            urls: ['diskette/bounce.ogg'],
-            volume: 1
-        });
+        this.springSound = A_.UTILS.getAsset('diskette/bounce.ogg');
     },
     update: function () {
         if (this.inserting) {

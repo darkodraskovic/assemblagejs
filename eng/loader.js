@@ -34,11 +34,14 @@ A_.Loader = A_.EventDispatcher.extend({
     },
     loadGraphics: function(url, callback) {
         var imageLoader = new PIXI.ImageLoader(A_.CONFIG.directories.graphics + url);
-        imageLoader.on('loaded', callback);
+        imageLoader.on('loaded', function () {
+            A_.ASSETS[url] = imageLoader.texture;
+            callback();
+        });
         imageLoader.load();
     },
     loadSound: function(urlArray, callback) {
-        new Howl({
+        A_.ASSETS[urlArray[0]] = new Howl({
             urls: _.map(urlArray, function(sound) {
                 return A_.CONFIG.directories.sounds + sound;
             }),
@@ -49,14 +52,14 @@ A_.Loader = A_.EventDispatcher.extend({
         var httpRequest = new XMLHttpRequest();
         httpRequest.open('GET', A_.CONFIG.directories.maps + url);
         httpRequest.onload = function () {
-            A_.DATA[url] = httpRequest.responseText;
+            A_.ASSETS[url] = httpRequest.responseText;
             callback();
         };
         httpRequest.send();
     }
 });
 
-A_.DATA = {};
+A_.ASSETS = {};
 
 // Augmentable list of asset types
 A_.UTILS.AssetTypes = {
@@ -80,5 +83,5 @@ A_.UTILS.getAssetType = function(asset) {
 };
 
 A_.UTILS.getAsset = function(asset) {
-    return A_.DATA[asset];
+    return A_.ASSETS[asset];
 };

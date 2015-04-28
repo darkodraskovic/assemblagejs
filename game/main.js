@@ -93,7 +93,7 @@ var loader = A_.game.loader;
 //sceneManager.startScene(brownian, "lvl1", "brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric2.json");
 //sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
-
+//
 // FARER
 //loader.loadAssets(farer, function () {
 //    var scene = new A_.SCENE.Scene("farer1", A_.CONFIG.camera);
@@ -107,15 +107,15 @@ var loader = A_.game.loader;
 //});
 
 // DISKETTE
-//loader.loadAssets(diskette, function () {
-//    var scene =  new A_.SCENE.Scene("Diskette Level 1", A_.CONFIG.camera, "diskette/diskette1.json");
-//    for (var i = 0; i < 50; i++) {
-//        var star = new SceneryStar(scene.findLayerByName("Sky"),
-//                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
-//        star.sprite.alpha = Math.random();
-//    }
-//    scene.findSpriteByClass(ScenerySun).setZ("top");
-//    player = scene.findSpriteByClass(Player);
-//    
-//    A_.INPUT.addMapping("restart", A_.KEY.T);
-//});
+loader.loadAssets(diskette, function () {
+    var scene =  new A_.SCENE.Scene("Diskette Level 1", A_.CONFIG.camera, "diskette/diskette1.json");
+    for (var i = 0; i < 50; i++) {
+        var star = new SceneryStar(scene.findLayerByName("Sky"),
+                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
+        star.sprite.alpha = Math.random();
+    }
+    scene.findSpriteByClass(ScenerySun).setZ("top");
+    player = scene.findSpriteByClass(Player);
+    
+    A_.INPUT.addMapping("restart", A_.KEY.T);
+});

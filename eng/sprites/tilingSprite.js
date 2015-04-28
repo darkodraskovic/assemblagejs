@@ -36,5 +36,3 @@ A_.SPRITES.TilingSprite = Class.extend({
         }
     }
 });
-
-

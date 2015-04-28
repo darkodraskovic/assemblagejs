@@ -66,10 +66,7 @@ var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
         }
         else {
             if (!this.groaned) {
-                var sound = this.scene.createSound({
-                    urls: ['grunt.wav'],
-                    volume: 0.5
-                });
+                var sound = A_.UTILS.getAsset('grunt.wav');
                 sound.play();
                 this.groaned = true;
             }
@@ -255,10 +252,9 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 600;
         this.bounded = false;
-        this.scene.createSound({
-            urls: ['gunshot.mp3'],
-            volume: 0.5
-        }).play();
+        var sound = A_.UTILS.getAsset('gunshot.mp3');
+        sound.volume(0.5);
+        sound.play();
     },
     update: function() {
         if (this.outOfBounds) {
@@ -305,11 +301,9 @@ var LaserBeam = A_.SPRITES.Animated.extend({
                 this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collisionWidth: 4, collisionHeight: 4});
         this.laserTip.laser = this;
-        this.sound = this.scene.createSound({
-            urls: ['laser-beam.mp3'],
-            loop: true,
-            volume: 0.4
-        }).play();
+        this.sound = A_.UTILS.getAsset('laser-beam.mp3').play();
+        this.sound.volume(0.5);
+        this.sound.loop(true);
 
         this.origH = this.getHeight();
         var sineProps = {period: 1, periodRand: 50, amplitude: 8, amplitudeRand: 4};
@@ -400,11 +394,9 @@ var LaserFire = A_.SPRITES.Animated.extend({
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
-        this.sound = this.scene.createSound({
-            urls: ['fire.wav'],
-            loop: true,
-            volume: 0.3
-        });
+        this.sound = A_.UTILS.getAsset('fire.wav');
+        this.sound.volume(0.3);
+        this.sound.loop(true);
         this.sound.play();
 
 //        var blur = new PIXI.BlurFilter();
@@ -440,10 +432,9 @@ var ExplosionSkorpio = A_.SPRITES.Animated.extend({
         this.animations["explode"].onComplete = function() {
             that.destroy();
         };
-        this.scene.createSound({
-            urls: ['explosion.mp3'],
-            volume: 0.6
-        }).play();
+        this.sound = A_.UTILS.getAsset('explosion.mp3');
+        this.sound.volume(0.4);
+        this.sound.play();
         this.setOrigin(0.5, 0.5);
     }
 });

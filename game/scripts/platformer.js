@@ -161,18 +161,9 @@ var PlayerPlatformer = AnimePlatformer.extend({
         A_.INPUT.bind("toggleModePressed", this, this.toggleMode);
 
         this.thrus = this.scene.findLayerByName("Thrus").tilemap;
-        this.groundSound = this.scene.createSound({
-            urls: ['grounded.wav'],
-            volume: 1
-        });
-        this.jetpackSound = this.scene.createSound({
-            urls: ['jetpack.wav'],
-            volume: 1,
-        });
-        this.jumpSound = this.scene.createSound({
-            urls: ['jump.wav'],
-            volume: 1
-        });
+        this.groundSound = A_.UTILS.getAsset('grounded.wav');
+        this.jetpackSound = A_.UTILS.getAsset('jetpack.wav');
+        this.jumpSound = A_.UTILS.getAsset('jump.wav');
 
         scene = this.scene;
         player = this;
@@ -187,10 +178,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     },
     initTile: function(tile) {
         tile.turned = "on";
-        tile.toggleSound = this.scene.createSound({
-            urls: ['e.wav'],
-            volume: 1
-        });
+        tile.toggleSound = A_.UTILS.getAsset('e.wav');
     },
     processControls: function() {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
@@ -363,10 +351,7 @@ var ExplosionPlatformer = A_.SPRITES.Animated.extend({
             that.destroy();
         };
         this.setScale(0.4, 0.4);
-        this.scene.createSound({
-            urls: ['dull.wav'],
-            volume: 0.5
-        }).play();
+        A_.UTILS.getAsset('dull.wav').play();
 
         this.setOrigin(0.5, 0.5);
     }

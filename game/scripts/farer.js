@@ -25,7 +25,7 @@ var Player = A_.SPRITES.Kinematic.extend({
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
         this.setRotation(rot);
-        
+
         var speedSign = 0;
         if (this.getRotation() < 0)
             speedSign = -1;
@@ -50,8 +50,8 @@ var Player = A_.SPRITES.Kinematic.extend({
         }
         else {
             this.acceleration.x = this.acceleration.y = 0;
-        } 
-        
+        }
+
         var sin = Math.sin(this.movementAngle);
         var cos = Math.cos(this.movementAngle);
 
@@ -60,7 +60,7 @@ var Player = A_.SPRITES.Kinematic.extend({
 
         this.acceleration.x *= cos;
         this.acceleration.y *= sin;
-        
+
         this._super();
 
     },
@@ -87,11 +87,9 @@ var Laser = A_.SPRITES.Animated.extend({
         this.sprite.alpha = 0.4;
         this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
-        this.sound = this.scene.createSound({
-            urls: ['laser-beam.mp3'],
-            loop: true,
-            volume: 0.75
-        });
+        this.sound = A_.UTILS.getAsset('laser-beam.mp3');
+        this.sound.loop(true);
+        this.sound.volume(0.75);
         this.soundId = 0;
 
         this.origW = this.getWidth();
@@ -145,10 +143,9 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.friction.x = this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 800;
         this.bounded = false;
-        this.scene.createSound({
-            urls: ['bullet.wav'],
-            volume: 0.75
-        }).play();
+        var sound = A_.UTILS.getAsset('bullet.wav');
+        sound.volume(0.75);
+        sound.play();
         this.setOrigin(0, 0.5);
         this.sprite.alpha = 0.75;
     },
@@ -175,7 +172,7 @@ var Rotor = A_.SPRITES.Colliding.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.016);
-        this.setOrigin(0.5, 0.5);        
+        this.setOrigin(0.5, 0.5);
     },
     update: function () {
         this.setRotation(this.getRotation() + Math.PI / 2 * A_.game.dt);
@@ -197,11 +194,8 @@ var Explosion = A_.SPRITES.Animated.extend({
             that.destroy();
         };
 
-        this.scene.createSound({
-            urls: ['explosion.mp3'],
-            volume: 0.2
-        }).play();
-        
+        A_.UTILS.getAsset('explosion.mp3').volume(0.5).play();
+
         this.setOrigin(0.5, 0.5);
     }
 });
