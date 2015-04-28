@@ -24,8 +24,7 @@ A_.SCENE.SceneManager = Class.extend({
         if (this._scenesToDestroy.length) {
             for (var i = 0, len = this._scenesToDestroy.length; i < len; i++) {
                 var scene = this._scenesToDestroy[i];
-                scene.clear();
-                scene.trigger('destroyed');
+                scene._destroy();                
                 var ind = this.scenes.indexOf(scene);
                 if (ind > -1)
                     this.scenes.splice(ind, 1);

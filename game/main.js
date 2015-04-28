@@ -101,21 +101,21 @@ var loader = A_.game.loader;
 //});
 
 // ROT
-loader.loadAssets(rot, function () {
-    var scene = sceneManager.createScene("rot1");
-    createRoguelikeMap(scene);
-});
+//loader.loadAssets(rot, function () {
+//    var scene = sceneManager.createScene("rot1");
+//    createRoguelikeMap(scene);
+//});
 
 // DISKETTE
-//loader.loadAssets(diskette, function () {
-//    var scene = sceneManager.createScene("Diskette Level 1", "diskette/diskette1.json");
-//    for (var i = 0; i < 50; i++) {
-//        var star = scene.createSprite(SceneryStar, scene.findLayerByName("Sky"),
-//                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
-//        star.sprite.alpha = Math.random();
-//    }
-//    scene.findSpriteByClass(ScenerySun).setZ("top");
-//    player = scene.findSpriteByClass(Player);
-//    
-//    A_.INPUT.addMapping("restart", A_.KEY.T);
-//});
+loader.loadAssets(diskette, function () {
+    var scene = sceneManager.createScene("Diskette Level 1", "diskette/diskette1.json");
+    for (var i = 0; i < 50; i++) {
+        var star = new SceneryStar(scene.findLayerByName("Sky"),
+                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);
+        star.sprite.alpha = Math.random();
+    }
+    scene.findSpriteByClass(ScenerySun).setZ("top");
+    player = scene.findSpriteByClass(Player);
+    
+    A_.INPUT.addMapping("restart", A_.KEY.T);
+});

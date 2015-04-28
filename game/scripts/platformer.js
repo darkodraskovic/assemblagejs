@@ -242,7 +242,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     throwBall: function() {
         if (this.mode !== "throwing")
             return;
-        var ball = this.scene.createSprite(Ball, this.layer, this.getX(), this.getY());
+        var ball = new Ball(this.layer, this.getX(), this.getY());
         var angle = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
         ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
         ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
@@ -263,7 +263,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
             var mpl = scene.getMousePosition();
             var tile = this.thrus.getTileAt(mpl.x, mpl.y);
             if (tile) {
-                tilemap.scene.createSprite(ExplosionPlatformer, scene.findLayerByName("Thrus"),
+                new ExplosionPlatformer(this.scene.findLayerByName("Thrus"),
                         tilemap.getSceneX(tilemap.getMapX(mpl.x)) + tilemap.tileW / 2, tilemap.getSceneY(tilemap.getMapY(mpl.y)) + tilemap.tileH / 2);
                 tilemap.removeTile(tilemap.getMapX(mpl.x), tilemap.getMapY(mpl.y));
             }

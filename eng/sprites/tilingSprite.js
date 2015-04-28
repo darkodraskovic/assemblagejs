@@ -1,4 +1,4 @@
-A_.SCENERY.TiledSprite = Class.extend({
+A_.SPRITES.TilingSprite = Class.extend({
     init: function (parent, props) {
         for (var prop in props) {
             this[prop] = props[prop];
@@ -15,17 +15,16 @@ A_.SCENERY.TiledSprite = Class.extend({
         }
         this.sprite = new PIXI.TilingSprite(texture, 2 * this.width, 2 * this.height);
         parent.addChild(this.sprite);
+        this.position = this.sprite.position;
 
         if (!_.isObject(this.velocity)) {
             this.velocity = {x: 0, y: 0};
         }
-    },
-    setPosition: function (x, y) {
-        this.sprite.position.x = x;
-        this.sprite.position.y = y;
+        
+        this.scene.spritesToCreate.push(this);
     },
     update: function () {
-        var pos = this.sprite.position;
+        var pos = this.position;
         
         pos.x += this.velocity.x * A_.game.dt;
         pos.y += this.velocity.y * A_.game.dt;

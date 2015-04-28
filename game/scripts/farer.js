@@ -14,8 +14,8 @@ var Player = A_.SPRITES.Kinematic.extend({
         A_.INPUT.addMapping("down", A_.KEY.S);
         A_.INPUT.addMapping("up", A_.KEY.W);
         this.setOrigin(0.5, 0.5);
-        this.laser1 = this.scene.createSprite(Laser, this, 18, -12);
-        this.laser2 = this.scene.createSprite(Laser, this, 18, 12);
+        this.laser1 = new Laser(this, 18, -12);
+        this.laser2 = new Laser(this, 18, 12);
         this.setSpritePoint("bullet1", 18, -12);
         this.setSpritePoint("bullet2", 18, 12);
         this.scene.bind('leftpressed', this, this.shootBullet);
@@ -67,13 +67,13 @@ var Player = A_.SPRITES.Kinematic.extend({
     shootBullet: function () {
         var rot = this.getRotation();
         var pos1 = this.getSpritePoint("bullet1").getPosition();
-        var bullet1 = this.scene.createSprite(Bullet, this.scene.findLayerByName("Effects"), pos1.x, pos1.y);
+        var bullet1 = new Bullet(this.scene.findLayerByName("Effects"), pos1.x, pos1.y);
         bullet1.setRotation(rot);
         bullet1.velocity.x = Math.cos(rot) * bullet1.maxVelocity.x;
         bullet1.velocity.y = Math.sin(rot) * bullet1.maxVelocity.y;
 
         var pos2 = this.getSpritePoint("bullet2").getPosition();
-        var bullet2 = this.scene.createSprite(Bullet, this.scene.findLayerByName("Effects"), pos2.x, pos2.y);
+        var bullet2 = new Bullet(this.scene.findLayerByName("Effects"), pos2.x, pos2.y);
         bullet2.setRotation(rot);
         bullet2.velocity.x = Math.cos(rot) * bullet2.maxVelocity.x;
         bullet2.velocity.y = Math.sin(rot) * bullet2.maxVelocity.y;
@@ -159,7 +159,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this._super();
     },
     collideWithStatic: function (other, response) {
-        this.scene.createSprite(Explosion, this.scene.findLayerByName("Effects"),
+        new Explosion(this.scene.findLayerByName("Effects"),
                 other.getX(), other.getY());
         other.destroy();
         this.destroy();
@@ -215,22 +215,22 @@ populateScene = function (scene) {
     scene.setWidth(2048);
     scene.setHeight(2048);
 
-    var layer = scene.createEmptyLayer("Starfield");
-    scene.createImage(layer, {image: "starfield.png"});
+    var layer = scene.createLayer("Starfield");
+    new A_.SPRITES.TilingSprite(layer, {image: "starfield.png"});
     layer.parallax = 10;
 
-    layer = scene.createEmptyLayer("Nebula");
-    scene.createImage(layer, {image: "nebula.png"});
+    layer = scene.createLayer("Nebula");
+    new A_.SPRITES.TilingSprite(layer, {image: "nebula.png"});
     layer.parallax = 20;
 
-    var spriteLayer = scene.createEmptyLayer("Sprites");
-    scene.createEmptyLayer("Effects");
+    var spriteLayer = scene.createLayer("Sprites");
+    scene.createLayer("Effects");
 
     window.console.log("created FARER layers");
 
-    player = scene.createSprite(Player, spriteLayer, scene.width / 2, scene.height / 2);
+    player = new Player(spriteLayer, scene.width / 2, scene.height / 2);
     for (var i = 0; i < numRotors; i++) {
-        scene.createSprite(Rotor, spriteLayer, _.random(0, scene.width), _.random(0, scene.height));
+        new Rotor(spriteLayer, _.random(0, scene.width), _.random(0, scene.height));
     }
 };
 

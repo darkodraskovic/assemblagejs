@@ -107,7 +107,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
         this.force = new SAT.Vector(512, 512);
-        this.rifle = this.scene.createSprite(Rifle, this.layer,
+        this.rifle = new Rifle(this.layer,
                 this.getX(), this.getY(),
                 {holder: this, animSpeed: this.animSpeed});
 
@@ -149,7 +149,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     },
     shootBullet: function() {
         var sprPt = this.rifle.getSpritePoint(this.facing);
-        var bullet = this.scene.createSprite(Bullet, this.scene.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
+        var bullet = new Bullet(this.scene.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
         var rot = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
         bullet.setRotation(rot);
         bullet.velocity.x = Math.cos(rot) * bullet.maxVelocity.x;
@@ -158,7 +158,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     },
     shootLaser: function() {
         var pos = this.getPosition();
-        this.scene.createSprite(LaserBeam, this.scene.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
+        new LaserBeam(this.scene.findLayerByName("Effects"), pos.x, pos.y, {spawner: this});
     }
 });
 
@@ -300,7 +300,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.setPosition(sprPt.getX(), sprPt.getY());
 
         this.tip = {x: this.getX(), y: this.getY()};
-        this.laserTip = this.scene.createSprite(LaserTip, this.scene.findLayerByName("Effects"),
+        this.laserTip = new LaserTip(this.scene.findLayerByName("Effects"),
                 this.getX() + Math.cos(this.getRotation()) * this.getWidth(),
                 this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collisionWidth: 4, collisionHeight: 4});
@@ -376,13 +376,13 @@ var LaserTip = A_.SPRITES.Kinematic.extend({
                 this.timer -= A_.game.dt;
             }
             if (this.timer < 0) {
-                this.scene.createSprite(ExplosionSkorpio, this.scene.findLayerByName("Effects"),
+                new ExplosionSkorpio(this.scene.findLayerByName("Effects"),
                         other.getCenterX(), other.getCenterY());
                 other.destroy();
                 this.timer = null;
             }
             if (!this.fire) {
-                this.fire = this.scene.createSprite(LaserFire, this.scene.findLayerByName("Effects"),
+                this.fire = new LaserFire(this.scene.findLayerByName("Effects"),
                         this.getX(), this.getY());
                 this.fire.laserTip = this;
             }

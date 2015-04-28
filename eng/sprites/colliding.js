@@ -9,7 +9,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this._vector = new SAT.Vector();
 
         if (this.drawCollisionPolygon && A_.game.debug) {
-            this.debugGraphics = this.scene.createSprite(A_.SPRITES.Graphics, this, 0, 0);
+            this.debugGraphics = new A_.SPRITES.Graphics(this, 0, 0);
         }
 
         this.setCollisionPolygon(this.createCollisionPolygon(this.polygon));

@@ -8,7 +8,7 @@ A_.TILES.createTiledMap = function (mapData, scene) {
     var layersData = mapData["layers"];
 
     for (i = 0; i < layersData.length; i++) {
-        var layer = scene.createEmptyLayer();
+        var layer = scene.createLayer();
         var layerData = layersData[i];
 
         for (var prop in layerData) {
@@ -25,11 +25,8 @@ A_.TILES.createTiledMap = function (mapData, scene) {
 
         // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld.
         if (layerData["type"] === "imagelayer") {
-            var image = scene.createImage(layer, {image: layer["image"], width: scene.width, height: scene.height,
+            new A_.SPRITES.TilingSprite(layer, {image: layer["image"], width: scene.width, height: scene.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
-            if (layer.active) {
-                scene.images.push(image);
-            }
         }
         
         // if current layer is TILE LAYER
@@ -115,7 +112,7 @@ A_.TILES.createTiledMap = function (mapData, scene) {
                 } else {
                     type = A_.SPRITES.Colliding; // Colliding polygon
                 }
-                var o = scene.createSprite(type, layer, oData["x"], oData["y"], args);
+                var o = new type(layer, oData["x"], oData["y"], args);
 
                 // General object transform
                 o.setRotation(oData["rotation"].toRad());
