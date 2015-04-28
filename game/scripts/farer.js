@@ -210,21 +210,21 @@ populateScene = function (scene) {
     scene.setHeight(2048);
 
     var layer = new A_.SCENE.Layer(scene, "Starfield");
-    new A_.SPRITES.TilingSprite(layer, {image: "starfield.png"});
     layer.parallax = 10;
+    new A_.SPRITES.TilingSprite(layer, {image: "starfield.png"});
 
     layer = new A_.SCENE.Layer(scene, "Nebula");
-    new A_.SPRITES.TilingSprite(layer, {image: "nebula.png"});
     layer.parallax = 20;
+    new A_.SPRITES.TilingSprite(layer, {image: "nebula.png"});
 
     var spriteLayer = new A_.SCENE.Layer(scene, "Sprites");
     new A_.SCENE.Layer(scene, "Effects");
-
-    window.console.log("created FARER layers");
 
     player = new Player(spriteLayer, scene.width / 2, scene.height / 2);
     for (var i = 0; i < numRotors; i++) {
         new Rotor(spriteLayer, _.random(0, scene.width), _.random(0, scene.height));
     }
+    
+    window.console.log("Created FARER layers.");
 };
 

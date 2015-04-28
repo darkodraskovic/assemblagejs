@@ -5,7 +5,7 @@ A_.SPRITES.TilingSprite = Class.extend({
         }
         this.scene = parent.scene;
         
-        var texture = new PIXI.Texture.fromImage(A_.CONFIG.directories.graphics + this.image);
+        var texture = A_.UTILS.getAsset(this.image);
 
         if (!this.width) {
             this.width = this.scene.getWidth();
