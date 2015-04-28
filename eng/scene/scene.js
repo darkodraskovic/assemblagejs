@@ -47,7 +47,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
             A_.TILES.createTiledMap(A_.UTILS.getAsset(this.map), this);
         }
         else {
-            this.createDummyLayer();
+            this.createEmptyLayer("Empty");
         }
     },
     // LAYER management
@@ -64,16 +64,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         this.layers.push(layer);
         this.container.addChild(layer);
         return layer;
-    },
-    createDummyLayer: function() {
-        var layer = this.createEmptyLayer();
-        var text = new PIXI.Text("Scene loaded :)", {font: "Bold 50px Courier New", fill: "Black",
-            stroke: "LightGrey", strokeThickness: 0,
-            dropShadow: true, dropShadowColor: '#444444', dropShadowAngle: Math.PI / 4, dropShadowDistance: 4});
-        layer.addChild(text);
-        text.anchor = new PIXI.Point(0.5, 0.5);
-        text.position.x = this.game.renderer.width / 2;
-        text.position.y = this.game.renderer.height / 2;
     },
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
