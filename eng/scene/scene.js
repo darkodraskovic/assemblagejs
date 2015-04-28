@@ -118,32 +118,22 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     },
     // START/STOP scene execution
     play: function () {
-        if (!this.running) {
-            this.running = true;
-            for (var i = 0, len = this.sprites.length; i < len; i++) {
-                if (this.sprites[i] instanceof A_.SPRITES.Animated)
-                    this.sprites[i].currentAnimation.play();
-            }
-            this.trigger('play');
+        this.running = true;
+        for (var i = 0, len = this.sprites.length; i < len; i++) {
+            if (this.sprites[i] instanceof A_.SPRITES.Animated)
+                this.sprites[i].currentAnimation.play();
         }
     },
     pause: function () {
-        if (this.running) {
-            this.running = false;
-            for (var i = 0, len = this.sprites.length; i < len; i++) {
-                if (this.sprites[i] instanceof A_.SPRITES.Animated)
-                    this.sprites[i].currentAnimation.stop();
-            }
-            this._paused = true;
+        this.running = false;
+        for (var i = 0, len = this.sprites.length; i < len; i++) {
+            if (this.sprites[i] instanceof A_.SPRITES.Animated)
+                this.sprites[i].currentAnimation.stop();
         }
     },
     // Scene LOOP/UPDATE
     update: function () {
         if (!this.running) {
-            if (this._paused) {
-                this.trigger('pause');
-                this._paused = false;
-            }
             return;
         }
 

@@ -30,21 +30,13 @@ A_.Game = A_.EventDispatcher.extend({
         if (!this.running) {
             this.time = new Date().getTime();
             this.running = true;
-            this.trigger('play');
         }
     },
     pause: function () {
-        if (this.running) {
-            this.running = false;
-            this._paused = true;
-        }
+        this.running = false;
     },
     update: function () {
         if (!this.running) {
-            if (this._paused) {
-                this._paused = false;
-                this.trigger('pause');
-            }
             return;
         }
 
