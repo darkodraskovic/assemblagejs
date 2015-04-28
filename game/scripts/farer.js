@@ -2,7 +2,6 @@
 var Player = A_.SPRITES.Kinematic.extend({
     spriteSheet: "player_farer.png",
     collisionResponse: "active",
-    followee: true,
     movementAngle: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -20,6 +19,8 @@ var Player = A_.SPRITES.Kinematic.extend({
         this.setSpritePoint("bullet1", 18, -12);
         this.setSpritePoint("bullet2", 18, 12);
         this.scene.bind('leftpressed', this, this.shootBullet);
+        this.setFollowee(true);
+        player = this;
     },
     update: function () {
         var rot = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());

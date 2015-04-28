@@ -146,7 +146,6 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
 var PlayerPlatformer = AnimePlatformer.extend({
     spriteSheet: "player_platformer.png",
     controlled: true,
-    followee: true,
     player: true,
 //    elasticity: 0.5,
     init: function(parent, x, y, props) {
@@ -183,6 +182,8 @@ var PlayerPlatformer = AnimePlatformer.extend({
         })
         this.scene.bind('leftpressed', this, this.throwBall);
         this.scene.bind('leftpressed', this, this.manageThrus);
+        
+        this.setFollowee(true);
     },
     initTile: function(tile) {
         tile.turned = "on";

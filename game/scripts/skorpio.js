@@ -93,7 +93,6 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     collisionType: A_.COLLISION.Type.PLAYER,
     collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     controlled: true,
-    followee: true,
     player: true,
     mass: 4,
     drawCollisionPolygon: true,
@@ -114,6 +113,8 @@ var PlayerSkorpio = AnimeSkorpio.extend({
 
         this.scene.bind('leftpressed', this, this.shootBullet);
         this.scene.bind('rightpressed', this, this.shootLaser);
+        
+        this.setFollowee(true);
     },
     update: function() {
         var cd = "";

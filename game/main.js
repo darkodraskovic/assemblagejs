@@ -89,16 +89,16 @@ var sceneManager = A_.game.sceneManager;
 var loader = A_.game.loader;
 
 //sceneManager.startScene(platformer, "lvl1", "platformer.json");
-sceneManager.startScene(skorpio, "lvl1", "skorpio1.json");
+//sceneManager.startScene(skorpio, "lvl1", "skorpio1.json");
 //sceneManager.startScene(brownian, "lvl1", "brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric2.json");
 //sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 
 // FARER
-//loader.loadAssets(farer, function () {
-//    var scene = sceneManager.createScene("farer1");
-//    populateScene(scene);
-//});
+loader.loadAssets(farer, function () {
+    var scene = sceneManager.createScene("farer1");
+    populateScene(scene);
+});
 
 // ROT
 //loader.loadAssets(rot, function () {

@@ -1,6 +1,5 @@
 var Player = Anime.extend({
     spriteSheet: "diskette/player.png",
-    followee: true,
     throwForce: 750,
     throwTimer: 0,
     throwTime: 0.75,
@@ -64,6 +63,8 @@ var Player = Anime.extend({
         this.collisionHeight = this.collisionPolygon.h * 0.65;
         this.collisionOffsetY = this.collisionPolygon.h * 0.175;
         this.crouchPolygon = this.createCollisionPolygon();
+        
+        this.setFollowee(true);
     },
     processControls: function() {
         if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {

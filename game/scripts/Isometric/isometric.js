@@ -82,7 +82,6 @@ var Anime = A_.SPRITES.Kinematic.extend({
 
 var Player = Anime.extend({
     spriteSheet: "Isometric/player.png",
-    followee: true,
     mass: 4,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -108,6 +107,8 @@ var Player = Anime.extend({
             var pos = this.scene.getMousePosition();
             window.console.log("x: " + tm.getMapIsoX(pos.x, pos.y) + ", y: " + tm.getMapIsoY(pos.x, pos.y));
         });
+        
+        this.setFollowee(true);
     },
     update: function() {
         var cd = "";
@@ -155,7 +156,6 @@ var Cube = A_.SPRITES.Kinematic.extend({
 var Sphere = A_.SPRITES.Kinematic.extend({
     spriteSheet: "Isometric/sphere.png",
     drawCollisionPolygon: true,
-    followee: true,
     origin: new PIXI.Point(0.5, 1),
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -172,6 +172,8 @@ var Sphere = A_.SPRITES.Kinematic.extend({
 
         window.scene = this.scene;
         window.player = this;
+        
+        this.setFollowee(true);
     },
     update: function() {
         if (A_.INPUT.down["up"]) {

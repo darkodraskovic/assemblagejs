@@ -2,7 +2,6 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     destroyThis: false,
     updates: true,
     origin: new PIXI.Point(0, 0),
-    // init() is called when the sprite is instantiated with new keyword.
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
     init: function(parent, x, y, props) {
         // Add all the properties of the prop obj to this instance.
@@ -19,13 +18,10 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         this.scale = this.sprite.scale;
 
         this.scene = parent.scene;
-        this.spritePoints = [];
 
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
         var sprites = new PIXI.DisplayObjectContainer();
         this.sprite.addChild(sprites);
-        // An array of all sprite children (instances of A_.SPRITES.Sprite) of this object 
-        this.sprites = [];
 
         if (parent instanceof A_.SPRITES.Sprite) {
             parent.addSprite(this);
@@ -35,11 +31,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
             this.layer.addChild(this.sprite);
         }
 
-        this.setFollowee(this.followee);
-
-//        this.parent = parent;
         this.setPosition(x, y);
-//        this.setOrigin(this.getOrigin().x, this.getOrigin().y)        
     },
     setFollowee: function(isFollowee) {
         if (isFollowee) {
@@ -90,6 +82,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     },
     // SPRITE CHILDREN
     addSprite: function(sprite) {
+        this.sprites = this.sprites || [];
         this.sprites.push(sprite);
         // The second child of this PIXI sprite is the parent of sprites added to this PIXI sprite.
         this.sprite.children[1].addChild(sprite.sprite);
@@ -109,6 +102,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     // SPRITE POINTS
     setSpritePoint: function(name, x, y) {
         var sprPt = new A_.SPRITES.SpritePoint(this, name, x, y);
+        this.spritePoints = this.spritePoints || [];
         this.spritePoints.push(sprPt);
         return sprPt;
     },
@@ -355,13 +349,14 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     },
     // CREATION/DESTRUCTION & UPDATE
     update: function() {
-
     },
     destroy: function() {
         var spritesToDestroy = this.scene.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
         this.debind();
+        if (this.container) 
+            this.container.removeSprite(this);
         if (this.sprites.length) {
             for (var i = 0; i < this.sprites.length; i++) {
                 this.sprites[i].destroy();
@@ -369,10 +364,6 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         }
         this.trigger('destroyed');
         spritesToDestroy.push(this);
-    },
-    removeFromScene: function() {
-        this.setFollowee(false);
-        this.sprite.parent.removeChild(this.sprite);
     }
 });
 
