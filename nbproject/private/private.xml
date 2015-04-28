@@ -10,10 +10,23 @@
             </bookmark>
         </file>
         <file>
+            <url>eng/game.js</url>
+            <bookmark id="15">
+                <name/>
+                <line>13</line>
+                <key/>
+            </bookmark>
+            <bookmark id="14">
+                <name/>
+                <line>51</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>game/scripts/platformer.js</url>
             <bookmark id="17">
                 <name/>
-                <line>238</line>
+                <line>227</line>
                 <key/>
             </bookmark>
         </file>
@@ -41,27 +54,6 @@
             </bookmark>
         </file>
         <file>
-            <url>eng/Sprite.js</url>
-            <bookmark id="2">
-                <name/>
-                <line>322</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>eng/game.js</url>
-            <bookmark id="15">
-                <name/>
-                <line>13</line>
-                <key/>
-            </bookmark>
-            <bookmark id="14">
-                <name/>
-                <line>59</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>eng/sprites/kinematic.js</url>
             <bookmark id="19">
                 <name/>
@@ -79,12 +71,21 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>eng/Sprite.js</url>
+            <bookmark id="2">
+                <name/>
+                <line>322</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Darko/Radovi/AppDev/JS/Assemblage/game/main.js</file>
-            <file>file:/C:/Users/Darko/Radovi/AppDev/JS/Assemblage/index.html</file>
-            <file>file:/C:/Users/Darko/Radovi/AppDev/JS/Assemblage/game/config.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/game/main.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/sprites/sprite.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/scene/scene.js</file>
+            <file>file:/C:/Users/darko/Dropbox/Radovi/AppDev/JS/Assemblage/eng/scene/sceneManager.js</file>
         </group>
     </open-files>
 </project-private>

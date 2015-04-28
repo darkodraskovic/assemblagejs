@@ -54,6 +54,8 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         }
 
         this.trigger('created');
+        this.game.stage.addChild(this.container);
+        this.play();
         A_.game.sceneManager._scenesToCreate.push(this);
     },
     // If layer's objects do not update their properties, such as animation or position,

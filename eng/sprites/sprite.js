@@ -355,7 +355,6 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         var spritesToDestroy = this.scene.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
-        this.debind();
         if (this.container && !recursive)
             this.container.removeSprite(this);
         if (this.sprites && this.sprites.length) {
@@ -364,6 +363,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
             }
         }
         this.trigger('destroyed');
+        this.debind();
         spritesToDestroy.push(this);
     }
 });

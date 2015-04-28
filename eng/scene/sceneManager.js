@@ -21,9 +21,7 @@ A_.SCENE.SceneManager = Class.extend({
         if (this._scenesToCreate.length) {
             for (i = 0, len = this._scenesToCreate.length; i < len; i++) {
                 var scene = this._scenesToCreate[i];
-                this.game.stage.addChild(scene.container);
                 this.scenes.push(scene);
-                scene.play();
                 window.console.log("Scene " + scene.name + " CREATED.");
             }
             this._scenesToCreate.length = 0;
