@@ -350,16 +350,16 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     // CREATION/DESTRUCTION & UPDATE
     update: function() {
     },
-    destroy: function() {
+    destroy: function(recursive) {
         var spritesToDestroy = this.scene.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
         this.debind();
-//        if (this.container) 
-//            this.container.removeSprite(this);
+        if (this.container && !recursive) 
+            this.container.removeSprite(this);
         if (this.sprites && this.sprites.length) {
             for (var i = 0; i < this.sprites.length; i++) {
-                this.sprites[i].destroy();
+                this.sprites[i].destroy(true);
             }
         }
         this.trigger('destroyed');

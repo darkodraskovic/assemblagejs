@@ -46,9 +46,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         A_.INPUT.bind('backward', this, this.setScale.bind(this, 'backward'));
         this.createCamera();
 
-        if (this.game.debug)
-            this.createDebugLayer();
-
         if (map) {
             A_.TILES.createTiledMap(A_.UTILS.getAsset(this.map), this);
         }
@@ -99,11 +96,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         this.addTileLayer(layer);
         return layer;
     },
-    createDebugLayer: function(name) {
-        var layer = this.createEmptyLayer(name);
-        this.addDebugLayer(layer);
-        return layer;
-    },
     createDummyLayer: function() {
         var layer = this.createEmptyLayer();
         var text = new PIXI.Text("Scene loaded :)", {font: "Bold 50px Courier New", fill: "Black",
@@ -118,9 +110,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     addLayer: function(layer) {
         this.layers.push(layer);
         this.container.addChild(layer);
-        if (this.debugLayer) {
-            this.toTopOfContainer(this.debugLayer);
-        }
     },
     addImageLayer: function(layer) {
         this.imageLayers.push(layer);
@@ -132,11 +121,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     },
     addTileLayer: function(layer) {
         this.tileLayers.push(layer);
-        this.addLayer(layer);
-    },
-    addDebugLayer: function(layer) {
-        this.debugLayer = layer;
-        this.debugLayer.name = "debug";
         this.addLayer(layer);
     },
     // If layer's objects do not update their properties, such as animation or position,
@@ -263,7 +247,8 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     manageSprites: function() {
         for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
             var sprite = this.spritesToDestroy[i];
-            sprite.sprite.parent.removeChild(sprite.sprite);
+            // Remove child only if parent is layer (if parent is other sprite, we already removed it via removeSprite()
+            sprite.sprite.parent && sprite.sprite.parent.removeChild(sprite.sprite);
             this.sprites.splice(this.sprites.indexOf(sprite), 1);
             // DO NOT DELETE: Previous line should be replace by this, currently, BUGGY code.
 //            var sprites = this.sprites;
