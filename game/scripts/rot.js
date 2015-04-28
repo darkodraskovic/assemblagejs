@@ -3,7 +3,6 @@ var Ball = A_.SPRITES.Kinematic.extend({
     colTimesCalled: 0,
     spriteSheet: "player_rot.png",
     elasticity: 0.5,
-    followee: true,
     drawCollisionPolygon: true,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -20,6 +19,8 @@ var Ball = A_.SPRITES.Kinematic.extend({
 
         window.scene = this.scene;
         window.player = this;
+        
+        this.setFollowee(true);
     },
     update: function() {
         if (A_.INPUT.down["up"]) {
@@ -78,12 +79,15 @@ function createRoguelikeMap(scene) {
     map.create(userCallback.bind(this));
 }
 function createRotLayers(scene) {
-    var layerFloors = scene.createTileLayer("Floor", "tilemap.png", tileW, tileH);
+    var layerFloors = scene.createEmptyLayer();
+    new A_.TILES.Tilemap(layerFloors, "tilemap.png", tileW, tileH);
     layerFloors.tilemap.populate(mapDataFloors);
-    var layerWalls = scene.createTileLayer("Walls", "tilemap.png", tileW, tileH);
+
+    var layerWalls = scene.createEmptyLayer("Walls", "tilemap.png", tileW, tileH);
+    new A_.TILES.Tilemap(layerWalls, "tilemap.png", tileW, tileH);
     layerWalls.collisionResponse = "static";    
     layerWalls.tilemap.populate(mapDataWalls);
 
-    var layer = scene.createSpriteLayer();
+    var layer = scene.createEmptyLayer();
     scene.createSprite(Ball, layer, 256, 256);   
 }

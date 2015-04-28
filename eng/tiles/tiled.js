@@ -27,12 +27,11 @@ A_.TILES.createTiledMap = function (mapData, scene) {
         if (layerData["type"] === "imagelayer") {
             var image = scene.createImage(layer, {image: layer["image"], width: scene.width, height: scene.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
-            scene.addImageLayer(layer);
             if (layer.active) {
                 scene.images.push(image);
             }
         }
-
+        
         // if current layer is TILE LAYER
         else if (layerData["type"] === "tilelayer") {
             // Temporarily turn on unset layer.baked option in order to build
@@ -94,12 +93,10 @@ A_.TILES.createTiledMap = function (mapData, scene) {
                     }
                 }
             }
-            scene.addTileLayer(layer);
         }
-
+        
         // if the current layer is OBJECT LAYER
         else if (layerData["type"] === "objectgroup") {
-            scene.addSpriteLayer(layer);
             for (var j = 0; j < layerData["objects"].length; j++) {
                 var args = {};
                 var oData = layerData["objects"][j];

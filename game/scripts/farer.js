@@ -215,14 +215,16 @@ populateScene = function (scene) {
     scene.setWidth(2048);
     scene.setHeight(2048);
 
-    var layer = scene.createImageLayer("Starfield", {image: "starfield.png"});
+    var layer = scene.createEmptyLayer("Starfield");
+    scene.createImage(layer, {image: "starfield.png"});
     layer.parallax = 10;
 
-    layer = scene.createImageLayer("Nebula", {image: "nebula.png"});
+    layer = scene.createEmptyLayer("Nebula");
+    scene.createImage(layer, {image: "nebula.png"});
     layer.parallax = 20;
 
-    var spriteLayer = scene.createSpriteLayer("Sprites");
-    scene.createSpriteLayer("Effects");
+    var spriteLayer = scene.createEmptyLayer("Sprites");
+    scene.createEmptyLayer("Effects");
 
     window.console.log("created FARER layers");
 

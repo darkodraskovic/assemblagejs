@@ -1,25 +1,20 @@
 A_.SCENERY.TiledSprite = Class.extend({
     init: function (parent, props) {
-        this.scene = parent.scene;
-        this.parent = parent;
-
         for (var prop in props) {
             this[prop] = props[prop];
         }
-
-        if (this.image) {
-            this.image = A_.CONFIG.directories.graphics + this.image;
-        }
-        var texture = new PIXI.Texture.fromImage(this.image);
+        this.scene = parent.scene;
+        
+        var texture = new PIXI.Texture.fromImage(A_.CONFIG.directories.graphics + this.image);
 
         if (!this.width) {
-            this.width = 512;
+            this.width = this.scene.getWidth();
         }
         if (!this.height) {
-            this.height = 512;
+            this.height = this.scene.getHeight();
         }
         this.sprite = new PIXI.TilingSprite(texture, 2 * this.width, 2 * this.height);
-        this.parent.addChild(this.sprite);
+        parent.addChild(this.sprite);
 
         if (!_.isObject(this.velocity)) {
             this.velocity = {x: 0, y: 0};

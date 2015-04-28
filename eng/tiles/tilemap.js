@@ -1,6 +1,7 @@
 A_.TILES.Tilemap = Class.extend({
     init: function (layer, img, tileW, tileH, spacing, orientation) {
         this.layer = layer;
+        layer.tilemap = this;
         this.baked = false;
         this.scene = layer.scene;
         this.tileW = tileW;
@@ -24,6 +25,8 @@ A_.TILES.Tilemap = Class.extend({
         this.tiles = [];
         // For tile sprite creation.
         this.frameRectangle = new PIXI.Rectangle(0, 0, this.tileW, this.tileH + this.spacing);
+        
+        return this;
     },
     populate: function (layerData) {
         if (this.layer.collisionResponse) {
@@ -47,8 +50,6 @@ A_.TILES.Tilemap = Class.extend({
                 }
             }
         }
-
-        this.layer.tilemap = this;
     },
     getTile: function (x, y) {
         if (x < 0 || x >= this.mapW)

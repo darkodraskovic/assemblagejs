@@ -18,16 +18,13 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         // WARNING: Hit area culls objects outside scene w & h, eg. objects on negative coords.
         this.container.hitArea = new PIXI.Rectangle(0, 0, this.game.renderer.width, this.game.renderer.height);
 
-        this.tileLayers = [];
-        this.spriteLayers = [];
-        this.imageLayers = [];
-        // All previous layers.
+        // Layers
         this.layers = [];
-
+        // Updateable images
         this.images = [];
         // Colliding tilemaps
         this.tileMaps = [];
-        // All the sprites & their sounds.
+        // Sprites & their sounds
         this.sprites = [];
         this.sounds = [];
         // Used for sprite management.
@@ -64,36 +61,8 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         layer.scene = this;
         if (name)
             layer.name = name;
-        return layer;
-    },
-    createImageLayer: function(name, props) {
-        var layer = this.createEmptyLayer(name);
-
-        if (!props.width) {
-            props.width = this.width;
-        }
-        if (!props.height) {
-            props.height = this.height;
-        }
-        if (!props.scene) {
-            props.scene = this;
-        }
-
-        this.createImage(layer, props);
-
-        this.addImageLayer(layer);
-        return layer;
-    },
-    createSpriteLayer: function(name) {
-        var layer = this.createEmptyLayer(name);
-        this.addSpriteLayer(layer);
-        return layer;
-    },
-    createTileLayer: function(name, image, tileW, tileH) {
-        var layer = this.createEmptyLayer(name);
-        var tilemap = new A_.TILES.Tilemap(layer, image, tileW, tileH);
-        layer.tilemap = tilemap;
-        this.addTileLayer(layer);
+        this.layers.push(layer);
+        this.container.addChild(layer);
         return layer;
     },
     createDummyLayer: function() {
@@ -105,23 +74,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         text.anchor = new PIXI.Point(0.5, 0.5);
         text.position.x = this.game.renderer.width / 2;
         text.position.y = this.game.renderer.height / 2;
-        this.addLayer(layer);
-    },
-    addLayer: function(layer) {
-        this.layers.push(layer);
-        this.container.addChild(layer);
-    },
-    addImageLayer: function(layer) {
-        this.imageLayers.push(layer);
-        this.addLayer(layer);
-    },
-    addSpriteLayer: function(layer) {
-        this.spriteLayers.push(layer);
-        this.addLayer(layer);
-    },
-    addTileLayer: function(layer) {
-        this.tileLayers.push(layer);
-        this.addLayer(layer);
     },
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
