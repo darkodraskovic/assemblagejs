@@ -1,13 +1,23 @@
+A_.SCENE.Layer = function (scene, name) {
+    PIXI.DisplayObjectContainer.call(this);
+    this.scene = scene;
+    this.name = name;    
+    this.scene.container.addChild(this);
+    this.baked = false;
+    this.collision = false;
+    this.parallax = 100;
+};
+A_.SCENE.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
+A_.SCENE.Layer.prototype.constructor = A_.SCENE.Layer;
+
 A_.SCENE.Scene = A_.EventDispatcher.extend({
     width: 0,
     height: 0,
     scale: 1,
     scaleSpeed: 2,
-    init: function (sceneManager, name, cameraOptions, map) {
-        this.sceneManager = sceneManager;
-        this.game = sceneManager.game;
+    init: function (name, cameraOptions, map) {
+        this.game = A_.game;
         this.name = name;
-        this.cameraOptions = cameraOptions;
         this.map = map;
 
         this.container = new PIXI.DisplayObjectContainer();
@@ -39,27 +49,14 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         this._MousePosition = {x: 0, y: 0};
         A_.INPUT.bind('forward', this, this.setScale.bind(this, 'forward'));
         A_.INPUT.bind('backward', this, this.setScale.bind(this, 'backward'));
-        this.createCamera();
+        this.camera = new A_.CAMERA.Camera(this, this.game.renderer.width, this.game.renderer.height, cameraOptions);
 
         if (map) {
             A_.TILES.createTiledMap(A_.UTILS.getAsset(this.map), this);
         }
-        else {
-            this.createLayer("Empty");
-        }
-    },
-    // LAYER management
-    createLayer: function (name) {
-        var layer = new PIXI.DisplayObjectContainer();
-        layer.baked = false;
-        // Used with tile layers. Has no effect on sprite layers where collision is 
-        // defined per sprite class.
-        layer.collision = false;
-        layer.parallax = 100;
-        layer.scene = this;
-        layer.name = name;
-        this.container.addChild(layer);
-        return layer;
+
+        this.trigger('created');
+        A_.game.sceneManager._scenesToCreate.push(this);
     },
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
@@ -111,10 +108,10 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         });
         this.sounds.length = 0;
     },
-    _destroy: function () {
-        A_.game.stage.removeChild(this.container);
+    destroy: function () {
         this.trigger('destroyed');
         this.debind();
+        A_.game.sceneManager._scenesToDestroy.push(this);
     },
     // START/STOP scene execution
     play: function () {
@@ -228,9 +225,6 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     },
     getHeight: function () {
         return this.height;
-    },
-    createCamera: function () {
-        this.camera = new A_.CAMERA.Camera(this, this.game.renderer.width, this.game.renderer.height, this.cameraOptions);
     },
     // Layer Z POSITION
     toTopOfContainer: function (layer) {

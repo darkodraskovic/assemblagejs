@@ -1,6 +1,5 @@
 A_.TILES.createTiledMap = function (mapData, scene) {
     mapData = JSON.parse(mapData);
-    var scene = scene;
     
     scene.setWidth(mapData["width"] * mapData["tilewidth"]);
     scene.setHeight(mapData["height"] * mapData["tileheight"]);
@@ -8,7 +7,7 @@ A_.TILES.createTiledMap = function (mapData, scene) {
     var layersData = mapData["layers"];
 
     for (i = 0; i < layersData.length; i++) {
-        var layer = scene.createLayer();
+        var layer = new A_.SCENE.Layer(scene);
         var layerData = layersData[i];
 
         for (var prop in layerData) {

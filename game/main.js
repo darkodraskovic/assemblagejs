@@ -92,23 +92,23 @@ var loader = A_.game.loader;
 //sceneManager.startScene(skorpio, "lvl1", "skorpio1.json");
 //sceneManager.startScene(brownian, "lvl1", "brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric2.json");
-sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
+//sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 
 // FARER
 //loader.loadAssets(farer, function () {
-//    var scene = sceneManager.createScene("farer1");
+//    var scene = new A_.SCENE.Scene("farer1", A_.CONFIG.camera);
 //    populateScene(scene);
 //});
 
 // ROT
 //loader.loadAssets(rot, function () {
-//    var scene = sceneManager.createScene("rot1");
+//    var scene = new A_.SCENE.Scene("rot1", A_.CONFIG.camera);
 //    createRoguelikeMap(scene);
 //});
 
 // DISKETTE
 //loader.loadAssets(diskette, function () {
-//    var scene = sceneManager.createScene("Diskette Level 1", "diskette/diskette1.json");
+//    var scene =  new A_.SCENE.Scene("Diskette Level 1", A_.CONFIG.camera, "diskette/diskette1.json");
 //    for (var i = 0; i < 50; i++) {
 //        var star = new SceneryStar(scene.findLayerByName("Sky"),
 //                Math.random() * A_.game.renderer.width, Math.random() * A_.game.renderer.width);

@@ -58,7 +58,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     },
     update: function () {
         if (this.getX() > this.scene.getWidth()) {
-            sceneManager.destroyScene(this.scene);
+            this.scene.destroy();
             sceneManager.findSceneByName("mainMenu").play();
         }
         this._super();

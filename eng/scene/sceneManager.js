@@ -5,29 +5,13 @@ A_.SCENE.SceneManager = Class.extend({
         this._scenesToDestroy = [];
         this._scenesToCreate = [];
     },
-    // Scene CREATION & DESTRUCTION
-    createScene: function (name, map) {
-        var scene = new A_.SCENE.Scene(this, name, A_.CONFIG.camera, map);
-        this._scenesToCreate.push(scene);
-        return scene;
-    },
-    destroyScene: function (scene) {
-        if (_.isString(scene))
-            scene = this.findSceneByName(scene);
-        if (!scene)
-            return;
-
-        this._scenesToDestroy.push(scene);
-    },
     _manageScenes: function () {
         // DESTROY scenes
         if (this._scenesToDestroy.length) {
             for (var i = 0, len = this._scenesToDestroy.length; i < len; i++) {
                 var scene = this._scenesToDestroy[i];
-                scene._destroy();                
-                var ind = this.scenes.indexOf(scene);
-                if (ind > -1)
-                    this.scenes.splice(ind, 1);
+                this.scenes.splice(this.scenes.indexOf(scene), 1);
+                A_.game.stage.removeChild(scene.container);
                 window.console.log("Scene " + scene.name + " DESTROYED.");
             }
             this._scenesToDestroy.length = 0;
@@ -40,24 +24,22 @@ A_.SCENE.SceneManager = Class.extend({
                 this.game.stage.addChild(scene.container);
                 this.scenes.push(scene);
                 scene.play();
-                scene.trigger('created');
                 window.console.log("Scene " + scene.name + " CREATED.");
             }
             this._scenesToCreate.length = 0;
         }
     },
     startScene: function (manifest, name, map) {
-        if (manifest)
-            this.game.loader.loadAssets(manifest, this.createScene.bind(this, name, map));
-        else
-            this.createScene(name, map);
+        this.game.loader.loadAssets(manifest, function () {
+            new A_.SCENE.Scene(name, A_.CONFIG.camera, map);
+        });
     },
     restartScene: function (name) {
         var scene = this.findSceneByName(name);
         if (!scene)
             return;
-        this.destroyScene(scene);
-        this.createScene(scene.name, scene.map);
+        scene.destroy();
+        new A_.SCENE.Scene(scene.name, A_.CONFIG.camera, scene.map);
     },
     update: function () {
         for (var i = 0, len = this.scenes.length; i < len; i++) {

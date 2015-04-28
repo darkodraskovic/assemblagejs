@@ -79,15 +79,15 @@ function createRoguelikeMap(scene) {
     map.create(userCallback.bind(this));
 }
 function createRotLayers(scene) {
-    var layerFloors = scene.createLayer();
+    var layerFloors = new A_.SCENE.Layer(scene);
     new A_.TILES.Tilemap(layerFloors, "tilemap.png", tileW, tileH);
     layerFloors.tilemap.populate(mapDataFloors);
 
-    var layerWalls = scene.createLayer("Walls", "tilemap.png", tileW, tileH);
+    var layerWalls = new A_.SCENE.Layer(scene);
     new A_.TILES.Tilemap(layerWalls, "tilemap.png", tileW, tileH);
     layerWalls.collisionResponse = "static";    
     layerWalls.tilemap.populate(mapDataWalls);
 
-    var layer = scene.createLayer();
+    layer = new A_.SCENE.Layer(scene);
     new Ball(layer, 256, 256);   
 }
