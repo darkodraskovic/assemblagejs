@@ -20,7 +20,6 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
 
         this.scene = parent.scene;
         this.spritePoints = [];
-        this.addons = [];
 
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
         var sprites = new PIXI.DisplayObjectContainer();
@@ -45,13 +44,10 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     setFollowee: function(isFollowee) {
         if (isFollowee) {
             this.scene.camera.followee = this;
-            this.followee = true;
-            return;
         }
         else if (this.scene.camera.followee === this) {
             this.scene.camera.followee = null;
         }
-        this.followee = false;
     },
     getLeft: function() {
         return this.sprite.getBounds().x / this.scene.scale + this.scene.camera.x;
