@@ -133,5 +133,4 @@ A_.TILES.createTiledMap = function (mapData, scene) {
             }
         }
     }
-    scene.manageSprites();
 };

@@ -1,7 +1,7 @@
-A_.SCENE.Layer = function (scene, name) {
+A_.SCENE.Layer = function(scene, name) {
     PIXI.DisplayObjectContainer.call(this);
     this.scene = scene;
-    this.name = name;    
+    this.name = name;
     this.scene.container.addChild(this);
     this.parallax = 100;
 };
@@ -13,7 +13,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     height: 0,
     scale: 1,
     scaleSpeed: 2,
-    init: function (name, cameraOptions, map) {
+    init: function(name, cameraOptions, map) {
         this.game = A_.game;
         this.name = name;
         this.map = map;
@@ -53,14 +53,14 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
             A_.TILES.createTiledMap(A_.UTILS.getAsset(this.map), this);
         }
 
-        this.trigger('created');
         this.game.stage.addChild(this.container);
         this.play();
+        this.trigger('created');
         A_.game.sceneManager._scenesToCreate.push(this);
     },
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
-    bakeLayer: function (layer) {
+    bakeLayer: function(layer) {
         var renderTexture = new PIXI.RenderTexture(this.width, this.height);
         // Create a sprite that uses the render texture.
         var sprite = new PIXI.Sprite(renderTexture);
@@ -84,20 +84,20 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         sprite.baked = true;
         return sprite;
     },
-    destroy: function () {
+    destroy: function() {
         this.trigger('destroyed');
         this.debind();
         A_.game.sceneManager._scenesToDestroy.push(this);
     },
     // START/STOP scene execution
-    play: function () {
+    play: function() {
         this.running = true;
         for (var i = 0, len = this.sprites.length; i < len; i++) {
             if (this.sprites[i] instanceof A_.SPRITES.Animated)
                 this.sprites[i].currentAnimation.play();
         }
     },
-    pause: function () {
+    pause: function() {
         this.running = false;
         for (var i = 0, len = this.sprites.length; i < len; i++) {
             if (this.sprites[i] instanceof A_.SPRITES.Animated)
@@ -105,7 +105,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         }
     },
     // Scene LOOP/UPDATE
-    update: function () {
+    update: function() {
         if (!this.running) {
             return;
         }
@@ -114,47 +114,28 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         for (var i = 0, len = this.sprites.length; i < len; i++) {
             this.sprites[i].update();
         }
-        this.manageSprites();
-        this.sortSprites();
-
-        this.camera.update();
-
-        this.setPosition(-this.camera.x, -this.camera.y);
-    },
-    manageSprites: function () {
+        // Manage sprites
         for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
             var sprite = this.spritesToDestroy[i];
             // Remove child only if parent is layer (if parent is other sprite, we already removed it via removeSprite()
             sprite.sprite.parent && sprite.sprite.parent.removeChild(sprite.sprite);
-            this.sprites.splice(this.sprites.indexOf(sprite), 1);
-            // DO NOT DELETE: Previous line should be replace by this, currently, BUGGY code.
-//            var sprites = this.sprites;
-//            var index = sprites.indexOf(sprite);
-//            if (index >= 0) {
-//                for (var i = index, len = sprites.length - 1; i < len; i++) {
-//                    sprites[i] = sprites[i + 1];
-//                }
-//                sprites.length = len;
-//            }
+            var sprites = this.sprites;
+            for (var index = sprites.indexOf(sprite); index < sprites.length - 1; index++) {
+                sprites[index] = sprites[index + 1];
+            }
+            sprites.length--;
         }
         this.spritesToDestroy.length = 0;
-
         for (var i = 0, len = this.spritesToCreate.length; i < len; i++) {
             this.sprites.push(this.spritesToCreate[i]);
         }
         this.spritesToCreate.length = 0;
-    },
-    sortSprites: function () {
-        // TODO: Currently only sorting on y axis. Add a generic sort routine
-        // based on an arbitrary property.
-        _.each(this.spriteLayers, function (layer) {
-            if (layer["sort"]) {
-                this.sortLayer(layer);
-            }
-        }, this);
+
+        this.camera.update();
+        this.setPosition(-this.camera.x, -this.camera.y);
     },
     // TRANSFORMATIONS && CAMERA
-    setPosition: function (x, y) {
+    setPosition: function(x, y) {
         this.container.position.x = x;
         this.container.position.y = y;
         // Parallax
@@ -173,7 +154,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
             this.container.position.y = Math.round(this.container.position.y);
         }
     },
-    setScale: function (scale) {
+    setScale: function(scale) {
         if (_.isString(scale))
             scale = this.scale +
                     (scale === 'forward' ? this.scaleSpeed * A_.game.dt : -this.scaleSpeed * A_.game.dt);
@@ -188,42 +169,42 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
             this.scale = scale;
         }
     },
-    setWidth: function (w) {
+    setWidth: function(w) {
         this.width = w;
         this.container.hitArea.width = w;
     },
-    setHeight: function (h) {
+    setHeight: function(h) {
         this.height = h;
         this.container.hitArea.height = h;
     },
-    getWidth: function () {
+    getWidth: function() {
         return this.width;
     },
-    getHeight: function () {
+    getHeight: function() {
         return this.height;
     },
     // Layer Z POSITION
-    toTopOfContainer: function (layer) {
+    toTopOfContainer: function(layer) {
         this.container.setChildIndex(layer, this.container.children.length - 1);
     },
-    toBottomOfContainer: function (layer) {
+    toBottomOfContainer: function(layer) {
         this.container.setChildIndex(layer, 0);
     },
-    sortLayer: function (layer) {
-        layer.children = _.sortBy(layer.children, function (child) {
-            return child.position.y;
+    sortLayerByAxis: function(layer, axis) {
+        layer.children = _.sortBy(layer.children, function(child) {
+            return child.position[axis];
         });
     },
     // MOUSE POSITION
-    getMouseX: function () {
+    getMouseX: function() {
         var x = this.container.stage.getMousePosition().x / this.scale;
         return x += this.camera.x;
     },
-    getMouseY: function () {
+    getMouseY: function() {
         var y = this.container.stage.getMousePosition().y / this.scale;
         return y += this.camera.y;
     },
-    getMousePosition: function () {
+    getMousePosition: function() {
         var scenePosition = this._MousePosition;
         var stagePosition = this.container.stage.getMousePosition();
         scenePosition.x = stagePosition.x;
@@ -238,60 +219,60 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     },
     // FIND
     // Layer
-    findLayerByName: function (name) {
-        return _.find(this.layers, function (layer) {
+    findLayerByName: function(name) {
+        return _.find(this.layers, function(layer) {
             return layer.name === name;
         });
     },
-    findLayerByNumber: function (num) {
+    findLayerByNumber: function(num) {
         return this.container.getChildAt(num);
     },
-    findLayerSize: function (layer) {
+    findLayerSize: function(layer) {
         return layer.children.length;
     },
     // Sprite
-    findSpriteByName: function (name) {
-        return _.find(this.sprites, function (sprite) {
+    findSpriteByName: function(name) {
+        return _.find(this.sprites, function(sprite) {
             return sprite.name === name;
         });
     },
-    findSpritesByName: function (name) {
-        return _.filter(this.sprites, function (sprite) {
+    findSpritesByName: function(name) {
+        return _.filter(this.sprites, function(sprite) {
             return sprite.name === name;
         });
     },
-    findSpritesByProperty: function (prop) {
-        return _.filter(this.sprites, function (sprite) {
+    findSpritesByProperty: function(prop) {
+        return _.filter(this.sprites, function(sprite) {
             return typeof sprite[prop] !== "undefined";
         });
     },
-    findSpriteByPropertyValue: function (prop, value) {
-        return _.find(this.sprites, function (sprite) {
+    findSpriteByPropertyValue: function(prop, value) {
+        return _.find(this.sprites, function(sprite) {
             return sprite[prop] === value;
         });
     },
-    findSpritesByPropertyValue: function (prop, value) {
-        return _.filter(this.sprites, function (sprite) {
+    findSpritesByPropertyValue: function(prop, value) {
+        return _.filter(this.sprites, function(sprite) {
             return sprite[prop] === value;
         });
     },
-    findSpriteByClass: function (spriteClass) {
-        return _.find(this.sprites, function (sprite) {
+    findSpriteByClass: function(spriteClass) {
+        return _.find(this.sprites, function(sprite) {
             return sprite instanceof spriteClass;
         });
     },
-    findSpritesByClass: function (spriteClass) {
-        return _.filter(this.sprites, function (sprite) {
+    findSpritesByClass: function(spriteClass) {
+        return _.filter(this.sprites, function(sprite) {
             return sprite instanceof spriteClass;
         });
     },
-    findSpriteContainingPoint: function (x, y) {
-        return _.find(this.collider.collisionSprites, function (sprite) {
+    findSpriteContainingPoint: function(x, y) {
+        return _.find(this.collider.collisionSprites, function(sprite) {
             return sprite.containsPoint(x, y);
         });
     },
     // TODO
-    findSpriteByID: function () {
+    findSpriteByID: function() {
 
     }
 });

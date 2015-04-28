@@ -17,7 +17,7 @@ A_.TILES.Tilemap = Class.extend({
             this.sceneW_half = this.scene.getWidth() / 2;
         }
 
-        this.baseTexture = this.baseTexture = A_.UTILS.getAsset(img);
+        this.baseTexture = A_.UTILS.getAsset(img);
         this.imgCols = this.baseTexture.width / (tileW + this.spacing);
         this.imgRows = this.baseTexture.height / (tileH + this.spacing);
 
