@@ -96,7 +96,7 @@ var Laser = A_.SPRITES.Animated.extend({
         this.origW = this.getWidth();
         this.origH = this.getHeight();
         var sineProps = {period: 0.5, periodRand: 25, amplitude: 3, amplitudeRand: 25};
-        this.sine = this.addon("Sine", sineProps);
+        this.sine = new A_.SPRITES.Addons.Sine(this, sineProps);
         this.scene.bind('rightpressed', this, this.toggleFire.bind(this, 'on'));
         this.scene.bind('rightreleased', this, this.toggleFire.bind(this, 'off'));
     },
@@ -105,6 +105,7 @@ var Laser = A_.SPRITES.Animated.extend({
             this.setWidth(A_.UTILS.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
         }
 
+        this.sine.update();
         this.setHeight(this.origH + this.sine.value);
         if (this.on)
             this.setWidth(this.getWidth() + this.sine.value);

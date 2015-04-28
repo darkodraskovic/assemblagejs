@@ -147,9 +147,10 @@ var ProgressBarInner = A_.SPRITES.Graphics.extend({
         this.sprite.endFill();
         this.progressBarOuter = this.scene.createSprite(ProgressBarOuter, this.scene.findLayerByName("HUD"), this.getX(), this.getY(),
                 {color: A_.UTILS.Colors.darkslategray, alpha: 0.75, owner: this.owner});
-        this.addon("PinTo", {parent: this.progressBarOuter, name: "inner", offsetX: 2, offsetY: 2});
+        this.pinTo = new A_.SPRITES.Addons.PinTo(this, {parent: this.progressBarOuter, name: "inner", offsetX: 2, offsetY: 2});
     },
     update: function() {
+        this.pinTo.update();
         this.setScaleX(this.percent / 100);
         this._super();
     },

@@ -219,9 +219,11 @@ var Rifle = A_.SPRITES.Animated.extend({
         this.setSpritePoint("left", -24, 6);
         this.setSpritePoint("right", 24, 6);
 
-        this.addon("PinTo", {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
+        this.pinTo = new A_.SPRITES.Addons.PinTo(this, {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
     update: function() {
+        this.pinTo.update();
+        
         this.setAnimation(this.holder.motionState + "_" + this.holder.facing);
         if (this.holder.facing === "up") {
             this.moveToSprite(this.holder, "back");
@@ -310,7 +312,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
 
         this.origH = this.getHeight();
         var sineProps = {period: 1, periodRand: 50, amplitude: 8, amplitudeRand: 4};
-        this.sine = this.addon("Sine", sineProps);
+        this.sine = new A_.SPRITES.Addons.Sine(this, sineProps);
 
         this.scene.bind('rightreleased', this, this.destroy)
     },
@@ -323,6 +325,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.tip.x = this.getX() + Math.cos(this.getRotation()) * this.getWidth();
         this.tip.y = this.getY() + Math.sin(this.getRotation()) * this.getWidth();
 
+        this.sine.update();
         this.setHeight(this.origH + this.sine.value);
 
         this._super();
@@ -415,8 +418,9 @@ var LaserFire = A_.SPRITES.Animated.extend({
         this.setScale(scale.x + A_.game.dt, scale.y + A_.game.dt);
         this._super();
     },
-    onDestruction: function() {
+    destroy: function() {
         this.sound.stop();
+        this._super();
     }
 });
 

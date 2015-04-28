@@ -42,7 +42,7 @@ var brownian = {
 var isometric = {
     scripts: ["Isometric/isometric.js"],
     maps: ["Isometric/isometric1.json", "Isometric/isometric2.json", "Isometric/isometric3.json", "Isometric/isometric4.json"],
-    graphics: ["Isometric/cube.png", "Isometric/isometricGround.png", "Isometric/player.png", 
+    graphics: ["Isometric/cube.png", "Isometric/isometricGround.png", "Isometric/player.png",
         "Isometric/sphere.png", "Isometric/tileset.png", "Isometric/tileset2.png", "Isometric/violettileset.png"],
     sounds: []
 };
@@ -65,13 +65,18 @@ var pong = {
     sounds: [['Pong/bounce.wav'], ['Pong/xylo1.wav']],
 };
 
+//var box2d = {
+//    scripts: ["box2d.js"],
+//    maps: ["box2d.json"],
+//};
+
 // GAME
 var MyGame = A_.Game.extend({
-    init: function () {
+    init: function() {
         this._super();
         // CUSTOM code
     },
-    update: function () {
+    update: function() {
         // CUSTOM code
         this._super();
     }
@@ -83,8 +88,8 @@ new MyGame();
 var sceneManager = A_.game.sceneManager;
 var loader = A_.game.loader;
 
-sceneManager.startScene(platformer, "lvl1", "platformer.json");
-//sceneManager.startScene(skorpio, "lvl1", "skorpio1.json");
+//sceneManager.startScene(platformer, "lvl1", "platformer.json");
+sceneManager.startScene(skorpio, "lvl1", "skorpio1.json");
 //sceneManager.startScene(brownian, "lvl1", "brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric2.json");
 //sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");

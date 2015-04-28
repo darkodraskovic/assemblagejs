@@ -174,13 +174,10 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     createSprite: function(SpriteClass, layer, x, y, props) {
         if (!SpriteClass)
             return;
-
         if (!layer) {
             layer = this.layers[this.layers.length - 1];
         }
-
         var sprite = new SpriteClass(layer, x, y, props);
-
         this.spritesToCreate.push(sprite);
         return sprite;
     },

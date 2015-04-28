@@ -278,88 +278,6 @@ var PlayerPlatformer = AnimePlatformer.extend({
     }
 });
 
-var Undead = AnimePlatformer.extend({
-    spriteSheet: "undead.png",
-    prevX: 0,
-    prevY: 0,
-    init: function(parent, x, y, props) {
-        this._super(parent, x, y, props);
-        this.controlled = false;
-        this.maxVelocity.x = 150;
-        this.maxVelocity.y = 600;
-        this.jumpProbability = 25;
-//        this.undeadProbe = A_.game.createSprite(UndeadProbe, this.layer, this.getX(), this.getY(), {undead: this});
-    },
-    update: function() {
-        this.prevX = this.getX();
-        this.prevY = this.getY();
-
-        if (!this.isOnScreen()) {
-            this.collides = false;
-            return;
-        } else {
-            this.collides = true;
-        }
-
-        this.applyForce = true;
-        this._super();
-
-    },
-    onWall: function() {
-        this._super();
-//        if (_.random(1, 100) < this.jumpProbability) {
-//            this.tryJump = true;
-//        }
-//        else if (this.standing) {
-//            this.velocity.x = -this.velocity.x;
-//            this.setX(this.prevX);
-//            this.flipFacing();
-//        }
-        if (this.standing) {
-            this.velocity.x = -this.velocity.x;
-            this.setX(this.prevX);
-            this.flipFacing();
-        }
-    }
-});
-
-var UndeadProbe = A_.SPRITES.Colliding.extend({
-    bounded: false,
-    collisionResponse: "sensor",
-    collisionWidth: 2,
-    collisionHeight: 2,
-    init: function(parent, x, y, props) {
-        this._super(parent, x, y, props);
-
-        this._super();
-        this.addon("PinTo", {name: "probe", parent: this.undead,
-            offsetX: 0, offsetY: this.undead.getHeight() / 2 + 4});
-    },
-    update: function() {
-        this._super();
-        var undead = this.undead;
-        if (!this.collided && undead.standing) {
-            if (_.random(1, 100) < undead.jumpProbability) {
-                undead.tryJump = true;
-            } else if (_.random(1, 100) > 75) {
-                var deltaX = 4;
-                undead.setX(undead.prevX);
-                undead.velocity.x = -undead.velocity.x;
-                if (undead.facing === "right") {
-                    undead.facing = "left";
-                    undead.setX(undead.getX() - deltaX);
-                }
-                else {
-                    undead.facing = "right";
-                    undead.setX(undead.getX() + deltaX);
-                }
-            }
-        }
-        this._super();
-
-    }
-});
-
 var Ball = A_.SPRITES.Kinematic.extend({
     bounded: false,
     spriteSheet: "ball.png",
@@ -409,7 +327,7 @@ var Platform = A_.SPRITES.Colliding.extend({
 //    drawCollisionPolygon: false,    
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.sine = this.addon("Sine");
+        this.sine = new A_.SPRITES.Addons.Sine(this);
         this.sine.period = 2;
         this.sine.amplitude = this.frameWidth;
         this.sine.reset();
@@ -420,7 +338,7 @@ var Platform = A_.SPRITES.Colliding.extend({
         this.prevX = this.getX();
         this.prevY = this.getY();
 
-
+        this.sine.update();
         this.setX(this.origX + this.sine.value);
         this.setY(this.origY - this.sine.value);
 

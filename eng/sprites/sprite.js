@@ -1,8 +1,5 @@
 A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     destroyThis: false,
-    bounded: false,
-    wrap: false,
-    outOfBounds: false,
     updates: true,
     origin: new PIXI.Point(0, 0),
     // init() is called when the sprite is instantiated with new keyword.
@@ -360,81 +357,26 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
             });
         }
     },
-    // ADDONS
-    addon: function(addonName, props) {
-        if (A_.SPRITES.ADDONS[addonName]) {
-            var a = new A_.SPRITES.ADDONS[addonName](this, props);
-            a.on();
-            this.addons.push(a);
-            return a;
-        }
-    },
-    addoff: function(addon) {
-        var a = _.find(this.addons, addon);
-        if (a) {
-            a.off();
-            this.addons.splice(this.addons.indexOf(addon), 1);
-        }
-        else {
-            return;
-        }
-    },
     // CREATION/DESTRUCTION & UPDATE
     update: function() {
-        if (!this.container) {
-            if (this.bounded) {
-                this.setPosition(Math.max(0, Math.min(this.getX(), this.scene.width)),
-                        Math.max(0, Math.min(this.getY(), this.scene.height)));
-            } else if (this.wrap) {
-                if (this.getX() < 0) {
-                    this.setX(this.scene.width);
-                } else if (this.getX() > this.scene.width) {
-                    this.setX(0);
-                }
-                if (this.getY() < 0) {
-                    this.setY(this.scene.height);
-                } else if (this.getY() > this.scene.height) {
-                    this.setY(0);
-                }
-            }
-            else {
-                if (this.getX() < 0 || this.getX() > this.scene.width ||
-                        this.getY() < 0 || this.getY() > this.scene.height) {
-                    this.outOfBounds = true;
-                } else {
-                    this.outOfBounds = false;
-                }
-            }
-        }
 
-        for (var i = 0, len = this.addons.length; i < len; i++) {
-            if (this.addons[i].active) {
-                this.addons[i].update();
-            }
-        }
     },
     destroy: function() {
         var spritesToDestroy = this.scene.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
-
         this.debind();
-        
         if (this.sprites.length) {
             for (var i = 0; i < this.sprites.length; i++) {
                 this.sprites[i].destroy();
             }
         }
-
-        this.onDestruction();
+        this.trigger('destroyed');
         spritesToDestroy.push(this);
     },
     removeFromScene: function() {
         this.setFollowee(false);
         this.sprite.parent.removeChild(this.sprite);
-    },
-    onDestruction: function() {
-
     }
 });
 

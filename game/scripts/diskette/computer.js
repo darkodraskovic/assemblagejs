@@ -10,9 +10,6 @@ var Computer = A_.SPRITES.Kinematic.extend({
         this._super(parent, x, y, props);
         this.setZ("bottom");
     },
-    update: function () {       
-        // this._super();
-    },
     getSlotY: function () {
         return this.getY() + 27;
     },

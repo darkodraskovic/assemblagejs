@@ -1,49 +1,6 @@
-/******************************************************************************/
-/* EXTENSIONS */
-/******************************************************************************/
-A_.EXTENSIONS.Polygon = {
-    addTo: function (sprite, pixiPolygon) {
-        var graphics = new PIXI.Graphics();
-//        sprite.graphics.beginFill(0xFFFF00);
-        graphics.lineStyle(4, 0x00FF00);
-        graphics.drawPolygon(pixiPolygon.points);
+A_.SPRITES.Addons = {};
 
-        sprite.sprite.addChild(graphics);
-        sprite.graphics = graphics;
-    }
-};
-
-A_.SPRITES.ADDONS = {};
-
-/* 
- * TEMPLATE *
- A_.SPRITES.ADDONS.pinTo = Class.extend({
- init: function (sprite, props) {
- if (props) {
- for (var prop in props) {
- this[prop] = props[prop];
- }
- }
- this.sprite = sprite;
- this.active = true;
- 
- },
- on: function () {
- this.reset();
- },
- off: function () {
- 
- },
- reset: function () {
- 
- },
- update: function () {
- 
- }
- });
- */
-
-A_.SPRITES.ADDONS.PinTo = Class.extend({
+A_.SPRITES.Addons.PinTo = Class.extend({
     // props: {name: "name", parent: parent, offsetX: 0, offsetY: 0}
     init: function (sprite, props) {
         if (props) {
@@ -62,22 +19,13 @@ A_.SPRITES.ADDONS.PinTo = Class.extend({
         }
         this.spritePoint = this.parent.setSpritePoint(this.name, this.offsetX, this.offsetY);
     },
-    off: function () {
-
-    },
-    on: function () {
-        this.reset();
-    },
-    reset: function () {
-
-    },
     update: function () {
         this.sprite.setRotation(this.parent.getRotation());
         this.sprite.setPosition(this.spritePoint.getX(), this.spritePoint.getY());
     }
 });
 
-A_.SPRITES.ADDONS.Sine = Class.extend({
+A_.SPRITES.Addons.Sine = Class.extend({
     angle: 0,
     positive: true,
     valueDiff: 0,
@@ -103,17 +51,8 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
         this.speed = (2 * Math.PI) / this.period;
 
         this.value = 0;
-        this.on();
-    },
-    on: function () {
-        this.reset();
-        this.active = true;
-    },
-    off: function () {
-        this.active = false;
     },
     reset: function () {
-        this.onPeriodStart();
         this.positive = true;
 
         var periodRand = _.random(-this.periodRand, this.periodRand);
@@ -139,8 +78,5 @@ A_.SPRITES.ADDONS.Sine = Class.extend({
             }
         }
         this.value = this.currentAmplitude * sin;
-    },
-    onPeriodStart: function () {
-
     }
 });

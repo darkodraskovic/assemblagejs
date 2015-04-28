@@ -1,4 +1,7 @@
 A_.SPRITES.Animated = A_.SPRITES.Sprite.extend({
+    bounded: false,
+    wrap: false,
+    outOfBounds: false,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
@@ -157,5 +160,34 @@ A_.SPRITES.Animated = A_.SPRITES.Sprite.extend({
             animation.anchor.y = y;
         });
         return this._super(x, y);
+    },
+    update: function() {
+        if (!this.container) {
+            if (this.bounded) {
+                this.setPosition(Math.max(0, Math.min(this.getX(), this.scene.width)),
+                        Math.max(0, Math.min(this.getY(), this.scene.height)));
+            } else if (this.wrap) {
+                if (this.getX() < 0) {
+                    this.setX(this.scene.width);
+                } else if (this.getX() > this.scene.width) {
+                    this.setX(0);
+                }
+                if (this.getY() < 0) {
+                    this.setY(this.scene.height);
+                } else if (this.getY() > this.scene.height) {
+                    this.setY(0);
+                }
+            }
+            else {
+                if (this.getX() < 0 || this.getX() > this.scene.width ||
+                        this.getY() < 0 || this.getY() > this.scene.height) {
+                    this.outOfBounds = true;
+                } else {
+                    this.outOfBounds = false;
+                }
+            }
+        }
+        
+        this._super();
     }
 });
