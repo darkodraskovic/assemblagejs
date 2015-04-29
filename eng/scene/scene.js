@@ -131,6 +131,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         }
         this.spritesToCreate.length = 0;
 
+        // Set POSITION
         this.camera.update();
         this.setPosition(-this.camera.x, -this.camera.y);
     },
@@ -141,8 +142,8 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         // Parallax
         for (var i = 0; i < this.layers.length; i++) {
             var layer = this.layers[i];
-            layer.position.x = -x + x * layer.parallax / 100;
-            layer.position.y = -y + y * layer.parallax / 100;
+            layer.position.x = x * (layer.parallax / 100 - 1);
+            layer.position.y = y * (layer.parallax / 100 - 1);
         }
         // Transform the position from container's scaled local system  
         // into stage's unscaled global system.        
