@@ -2,26 +2,26 @@
 Given a player sprite and a scene object, now walk through an example event functionality:
 
 // Play the intro animation on the player 
-// when the scene starts
-scene.bind('start',player,function() {
+// when the scene is created
+scene.bind('created',player,function() {
   this.showIntro();
 });
 
 // Bind a method on player using the method name
-scene.bind('finish',player,'showFinal');
+scene.bind('destroyed',player,'showFinal');
 
-// Trigger the start event on the scene
-scene.trigger('start');
+// Trigger the created event on the scene
+scene.trigger('created');
 
-// Unbind the player from the start event
-scene.unbind('start',player);
+// Unbind the player from the created event
+scene.unbind('created',player);
 
 // Release the player from listening
 // to all events (such as if it's blown up)
 player.debind();
 */
 
-DODO.EventDispatcher = Class.extend({
+DODO.Evented = Class.extend({
     bind: function (event, target, callback) {
         // Handle the case where there is no target provided
         if (!callback) {

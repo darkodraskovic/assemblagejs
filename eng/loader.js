@@ -1,4 +1,4 @@
-DODO.Loader = DODO.EventDispatcher.extend({
+DODO.Loader = DODO.Evented.extend({
     loadAssets: function(assets, onComplete, onProgress) {
         if (_.isObject(assets)) {
             assets = _.flatten(_.values(assets), true);

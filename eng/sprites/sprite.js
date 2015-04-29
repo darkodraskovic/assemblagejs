@@ -1,4 +1,4 @@
-DODO.Sprite = DODO.EventDispatcher.extend({
+DODO.Sprite = DODO.Evented.extend({
     destroyThis: false,
     updates: true,
     origin: new PIXI.Point(0, 0),

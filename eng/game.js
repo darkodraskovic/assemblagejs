@@ -1,4 +1,4 @@
-DODO.Game = DODO.EventDispatcher.extend({
+DODO.Game = DODO.Evented.extend({
     init: function () {
         DODO.game = this;
         this.createRenderer(DODO.config.screen, DODO.config.renderer);

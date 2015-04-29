@@ -1,4 +1,4 @@
-DODO.input = new (DODO.EventDispatcher.extend({
+DODO.input = new (DODO.Evented.extend({
     actions: {},
     down: {},
     _pressed: {},
