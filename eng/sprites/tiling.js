@@ -1,4 +1,4 @@
-DODO.TilingSprite = Class.extend({
+DODO.Tiling = Class.extend({
     init: function (parent, props) {
         for (var prop in props) {
             this[prop] = props[prop];

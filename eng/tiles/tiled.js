@@ -22,9 +22,9 @@ DODO.createTiledMap = function (mapData, scene) {
             }
         }
 
-        // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld.
+        // if current layer is IMAGE LAYER, create a Tiling sprite and add it to the gameworld.
         if (layerData["type"] === "imagelayer") {
-            new DODO.TilingSprite(layer, {image: layer["image"], width: scene.width, height: scene.height,
+            new DODO.Tiling(layer, {image: layer["image"], width: scene.width, height: scene.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
         }
         

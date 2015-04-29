@@ -211,11 +211,11 @@ populateScene = function (scene) {
 
     var layer = new DODO.Layer(scene, "Starfield");
     layer.parallax = 10;
-    new DODO.TilingSprite(layer, {image: "starfield.png"});
+    new DODO.Tiling(layer, {image: "starfield.png"});
 
     layer = new DODO.Layer(scene, "Nebula");
     layer.parallax = 20;
-    new DODO.TilingSprite(layer, {image: "nebula.png"});
+    new DODO.Tiling(layer, {image: "nebula.png"});
 
     var spriteLayer = new DODO.Layer(scene, "Sprites");
     new DODO.Layer(scene, "Effects");
