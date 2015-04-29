@@ -1,4 +1,4 @@
-A_.SPRITES.Animated = A_.SPRITES.Sprite.extend({
+DODO.Animated = DODO.Sprite.extend({
     bounded: false,
     wrap: false,
     outOfBounds: false,
@@ -10,7 +10,7 @@ A_.SPRITES.Animated = A_.SPRITES.Sprite.extend({
         if (this.spriteSheet) {
             // A texture stores the information that represents an image. 
             // All textures have a base texture. (PIXI doc)
-            this.baseTexture = A_.UTILS.getAsset(this.spriteSheet);
+            this.baseTexture = DODO.getAsset(this.spriteSheet);
             // If the frame size is not specified in the class definition, 
             // or the frame w/h is set to 0, use the dims of the image itself.
             if (!this.frameWidth) {
@@ -95,7 +95,7 @@ A_.SPRITES.Animated = A_.SPRITES.Sprite.extend({
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
         var sprites = new PIXI.DisplayObjectContainer();
         this.sprite.addChild(sprites);
-        // An array of all sprite children (instances of A_.SPRITES.Sprite) of this object 
+        // An array of all sprite children (instances of DODO.Sprite) of this object 
         this.sprites = [];
 
         this.origin = sprite.anchor;

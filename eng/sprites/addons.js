@@ -1,6 +1,6 @@
-A_.SPRITES.Addons = {};
+DODO.addons = {};
 
-A_.SPRITES.Addons.PinTo = Class.extend({
+DODO.addons.PinTo = Class.extend({
     // props: {name: "name", parent: parent, offsetX: 0, offsetY: 0}
     init: function (sprite, props) {
         if (props) {
@@ -25,7 +25,7 @@ A_.SPRITES.Addons.PinTo = Class.extend({
     }
 });
 
-A_.SPRITES.Addons.Sine = Class.extend({
+DODO.addons.Sine = Class.extend({
     angle: 0,
     positive: true,
     valueDiff: 0,
@@ -67,7 +67,7 @@ A_.SPRITES.Addons.Sine = Class.extend({
         this.currentAmplitude = this.amplitude + this.amplitude * valueRand;
     },
     update: function () {
-        var sin = Math.sin(this.angle += this.speed * A_.game.dt);
+        var sin = Math.sin(this.angle += this.speed * DODO.game.dt);
 
         if (sin < 0) {
             this.positive = false;

@@ -1,4 +1,4 @@
-A_.TILES.Tile = function (gid, x, y, tilemap) {
+DODO.Tile = function (gid, x, y, tilemap) {
     this.gid = gid;
 
     // SPRITE
@@ -26,7 +26,7 @@ A_.TILES.Tile = function (gid, x, y, tilemap) {
         if (tilemap.orientation === "isometric") {
             var colX = tilemap.getSceneIsoX(x, y);
             var colY = tilemap.getSceneIsoY(x, y);
-            collisionPolygon = new A_.POLYGON.Polygon(new SAT.Vector(colX, colY), [
+            collisionPolygon = new DODO.Polygon(new SAT.Vector(colX, colY), [
                 new SAT.Vector(tilemap.tileW / 2, 0),
                 new SAT.Vector(0, tilemap.tileH / 2),
                 new SAT.Vector(tilemap.tileW / 2, tilemap.tileH),
@@ -34,7 +34,7 @@ A_.TILES.Tile = function (gid, x, y, tilemap) {
             ]);
         }
         else {
-            var box = new A_.POLYGON.Box(new SAT.Vector(tilemap.getSceneX(x), tilemap.getSceneY(y)), tilemap.tileW, tilemap.tileH);
+            var box = new DODO.Box(new SAT.Vector(tilemap.getSceneX(x), tilemap.getSceneY(y)), tilemap.tileW, tilemap.tileH);
             collisionPolygon = box.toPolygon();
             collisionPolygon.w = box.w;
             collisionPolygon.h = box.h;
@@ -44,5 +44,5 @@ A_.TILES.Tile = function (gid, x, y, tilemap) {
     }
 };
 
-A_.TILES.Tile.prototype = new PIXI.Sprite();
-A_.TILES.Tile.prototype.constructor = A_.TILES.Tile;
+DODO.Tile.prototype = new PIXI.Sprite();
+DODO.Tile.prototype.constructor = DODO.Tile;

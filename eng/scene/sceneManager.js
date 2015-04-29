@@ -1,4 +1,4 @@
-A_.SCENE.SceneManager = Class.extend({
+DODO.SceneManager = Class.extend({
     init: function (game) {
         this.game = game;
         this.scenes = [];
@@ -7,7 +7,7 @@ A_.SCENE.SceneManager = Class.extend({
     },
     startScene: function (manifest, name, map) {
         this.game.loader.loadAssets(manifest, function () {
-            new A_.SCENE.Scene(name, A_.CONFIG.camera, map);
+            new DODO.Scene(name, DODO.config.camera, map);
         });
     },
     restartScene: function (name) {
@@ -15,7 +15,7 @@ A_.SCENE.SceneManager = Class.extend({
         if (!scene)
             return;
         scene.destroy();
-        new A_.SCENE.Scene(scene.name, A_.CONFIG.camera, scene.map);
+        new DODO.Scene(scene.name, DODO.config.camera, scene.map);
     },
     update: function () {
         for (var i = 0, len = this.scenes.length; i < len; i++) {
@@ -27,7 +27,7 @@ A_.SCENE.SceneManager = Class.extend({
             for (var i = 0, len = this._scenesToDestroy.length; i < len; i++) {
                 var scene = this._scenesToDestroy[i];
                 this.scenes.splice(this.scenes.indexOf(scene), 1);
-                A_.game.stage.removeChild(scene.container);
+                this.game.stage.removeChild(scene.container);
                 window.console.log("Scene " + scene.name + " DESTROYED.");
             }
             this._scenesToDestroy.length = 0;

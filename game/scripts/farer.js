@@ -1,5 +1,5 @@
 // CLASSES
-var Player = A_.SPRITES.Kinematic.extend({
+var Player = DODO.Kinematic.extend({
     spriteSheet: "player_farer.png",
     collisionResponse: "active",
     movementAngle: 0,
@@ -9,10 +9,10 @@ var Player = A_.SPRITES.Kinematic.extend({
         this.friction.x = this.friction.y = 24;
         this.origFriction = this.friction.clone();
         this.setGravity(0, 0);
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("down", A_.KEY.S);
-        A_.INPUT.addMapping("up", A_.KEY.W);
+        DODO.input.addMapping("left", DODO.Key.A);
+        DODO.input.addMapping("right", DODO.Key.D);
+        DODO.input.addMapping("down", DODO.Key.S);
+        DODO.input.addMapping("up", DODO.Key.W);
         this.setOrigin(0.5, 0.5);
         this.laser1 = new Laser(this, 18, -12);
         this.laser2 = new Laser(this, 18, 12);
@@ -23,7 +23,7 @@ var Player = A_.SPRITES.Kinematic.extend({
         player = this;
     },
     update: function () {
-        var rot = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
+        var rot = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
         this.setRotation(rot);
 
         var speedSign = 0;
@@ -32,19 +32,19 @@ var Player = A_.SPRITES.Kinematic.extend({
         else
             speedSign = 1;
 
-        if (A_.INPUT.down["up"]) {
+        if (DODO.input.down["up"]) {
             this.movementAngle = this.getRotation();
             this.acceleration.x = this.acceleration.y = 64;
         }
-        else if (A_.INPUT.down["down"]) {
+        else if (DODO.input.down["down"]) {
             this.movementAngle = this.getRotation() + Math.PI;
             this.acceleration.x = this.acceleration.y = 64;
         }
-        else if (A_.INPUT.down["left"]) {
+        else if (DODO.input.down["left"]) {
             this.movementAngle = this.getRotation() + Math.PI / 2 * speedSign;
             this.acceleration.x = this.acceleration.y = 64;
         }
-        else if (A_.INPUT.down["right"]) {
+        else if (DODO.input.down["right"]) {
             this.movementAngle = this.getRotation() + -Math.PI / 2 * speedSign;
             this.acceleration.x = this.acceleration.y = 64;
         }
@@ -80,14 +80,14 @@ var Player = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var Laser = A_.SPRITES.Animated.extend({
+var Laser = DODO.Animated.extend({
     spriteSheet: "laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.sprite.alpha = 0.4;
         this.setOrigin(0, 0.5);
         this.baseScale = {x: 0.3, y: 1};
-        this.sound = A_.UTILS.getAsset('laser-beam.mp3');
+        this.sound = DODO.getAsset('laser-beam.mp3');
         this.sound.loop(true);
         this.sound.volume(0.75);
         this.soundId = 0;
@@ -95,13 +95,13 @@ var Laser = A_.SPRITES.Animated.extend({
         this.origW = this.getWidth();
         this.origH = this.getHeight();
         var sineProps = {period: 0.5, periodRand: 25, amplitude: 3, amplitudeRand: 25};
-        this.sine = new A_.SPRITES.Addons.Sine(this, sineProps);
+        this.sine = new DODO.addons.Sine(this, sineProps);
         this.scene.bind('rightpressed', this, this.toggleFire.bind(this, 'on'));
         this.scene.bind('rightreleased', this, this.toggleFire.bind(this, 'off'));
     },
     update: function () {
         if (this.scene.rightdown) {
-            this.setWidth(A_.UTILS.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
+            this.setWidth(DODO.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
         }
 
         this.sine.update();
@@ -117,7 +117,7 @@ var Laser = A_.SPRITES.Animated.extend({
         if (state === "on") {
             this.on = true;
             this.sprite.alpha = 0.75;
-            this.setWidth(A_.UTILS.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
+            this.setWidth(DODO.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
 
             this.sound.play(function (id) {
                 this.soundId = id;
@@ -134,7 +134,7 @@ var Laser = A_.SPRITES.Animated.extend({
     }
 });
 
-var Bullet = A_.SPRITES.Kinematic.extend({
+var Bullet = DODO.Kinematic.extend({
     spriteSheet: "bullet.png",
     collisionResponse: "sensor",
     drawCollisionPolygon: false,
@@ -143,7 +143,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.friction.x = this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 800;
         this.bounded = false;
-        var sound = A_.UTILS.getAsset('bullet.wav');
+        var sound = DODO.getAsset('bullet.wav');
         sound.volume(0.75);
         sound.play();
         this.setOrigin(0, 0.5);
@@ -163,7 +163,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var Rotor = A_.SPRITES.Colliding.extend({
+var Rotor = DODO.Colliding.extend({
     spriteSheet: "rotor.png",
     frameWidth: 45,
     frameHeight: 45,
@@ -175,11 +175,11 @@ var Rotor = A_.SPRITES.Colliding.extend({
         this.setOrigin(0.5, 0.5);
     },
     update: function () {
-        this.setRotation(this.getRotation() + Math.PI / 2 * A_.game.dt);
+        this.setRotation(this.getRotation() + Math.PI / 2 * DODO.game.dt);
         this.synchCollisionPolygon();
     }
 });
-var Explosion = A_.SPRITES.Animated.extend({
+var Explosion = DODO.Animated.extend({
     spriteSheet: "Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
@@ -194,7 +194,7 @@ var Explosion = A_.SPRITES.Animated.extend({
             that.destroy();
         };
 
-        A_.UTILS.getAsset('explosion.mp3').volume(0.5).play();
+        DODO.getAsset('explosion.mp3').volume(0.5).play();
 
         this.setOrigin(0.5, 0.5);
     }
@@ -209,16 +209,16 @@ populateScene = function (scene) {
     scene.setWidth(2048);
     scene.setHeight(2048);
 
-    var layer = new A_.SCENE.Layer(scene, "Starfield");
+    var layer = new DODO.Layer(scene, "Starfield");
     layer.parallax = 10;
-    new A_.SPRITES.TilingSprite(layer, {image: "starfield.png"});
+    new DODO.TilingSprite(layer, {image: "starfield.png"});
 
-    layer = new A_.SCENE.Layer(scene, "Nebula");
+    layer = new DODO.Layer(scene, "Nebula");
     layer.parallax = 20;
-    new A_.SPRITES.TilingSprite(layer, {image: "nebula.png"});
+    new DODO.TilingSprite(layer, {image: "nebula.png"});
 
-    var spriteLayer = new A_.SCENE.Layer(scene, "Sprites");
-    new A_.SCENE.Layer(scene, "Effects");
+    var spriteLayer = new DODO.Layer(scene, "Sprites");
+    new DODO.Layer(scene, "Effects");
 
     player = new Player(spriteLayer, scene.width / 2, scene.height / 2);
     for (var i = 0; i < numRotors; i++) {

@@ -1,35 +1,37 @@
-A_.CONFIG.debug = true;
+DODO.config = {};
 
-A_.CONFIG.renderer = {
+DODO.config.debug = true;
+
+DODO.config.renderer = {
     antialiasing: false,
     transparent: false,
     resolution: 1
 };
-A_.CONFIG.screen = {
+DODO.config.screen = {
     width: 1024,
     height: 768,
-    color: A_.UTILS.Colors.darkslateblue
+    color: DODO.Colors.darkslateblue
 };
 
-A_.CONFIG.directories = {
+DODO.config.directories = {
     scripts: "game/scripts/",
     maps: "game/maps/",
     graphics: "game/graphics/",
     sounds: "game/sounds/"
 };
 
-A_.CONFIG.camera = {
+DODO.config.camera = {
     innerBoundOffset: 0.25,
     worldBounded: true,
     followType: "bounded" // or "centered"
 }
 
-A_.CONFIG.pixelRounding = false;
+DODO.config.pixelRounding = false;
 
 // PIXI.scaleModes : Object {DEFAULT: 0, LINEAR: 0, NEAREST: 1}
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
-A_.COLLISION.Type = {
+DODO.CollisionTypes = {
     NONE: 0,
     ITEM: 1,
     PLAYER: 2,

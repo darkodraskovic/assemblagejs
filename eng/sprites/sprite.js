@@ -1,4 +1,4 @@
-A_.SPRITES.Sprite = A_.EventDispatcher.extend({
+DODO.Sprite = DODO.EventDispatcher.extend({
     destroyThis: false,
     updates: true,
     origin: new PIXI.Point(0, 0),
@@ -23,7 +23,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         var sprites = new PIXI.DisplayObjectContainer();
         this.sprite.addChild(sprites);
 
-        if (parent instanceof A_.SPRITES.Sprite) {
+        if (parent instanceof DODO.Sprite) {
             parent.addSprite(this);
         }
         else {
@@ -87,7 +87,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         this.sprites.push(sprite);
         // The second child of this PIXI sprite is the parent of sprites added to this PIXI sprite.
         this.sprite.children[1].addChild(sprite.sprite);
-        // .container is A_ sprite containing this A_ sprite.
+        // .container is DODO sprite containing this DODO sprite.
         sprite.container = this;
         // .layer is PIXI DOC containing this PIXI sprite.
         sprite.layer = this.layer;
@@ -102,7 +102,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     },
     // SPRITE POINTS
     setSpritePoint: function (name, x, y) {
-        var sprPt = new A_.SPRITES.SpritePoint(this, name, x, y);
+        var sprPt = new DODO.SpritePoint(this, name, x, y);
         this.spritePoints = this.spritePoints || [];
         this.spritePoints.push(sprPt);
         return sprPt;
@@ -113,7 +113,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
         });
     },
     // TRANSFORMATIONS
-    // PIXI dependent setters/getters, used to keep in sync PIXI and A_.
+    // PIXI dependent setters/getters, used to keep in sync PIXI and DODO.
     setPosition: function (x, y) {
         this.position.x = x;
         this.position.y = y;
@@ -271,7 +271,7 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     // Z ORDER & LAYERS
     getParent: function () {
         if (this.container) {
-            // this.container is the instance of A_ sprite.
+            // this.container is the instance of DODO sprite.
             return this.container.sprite.children[1];
         } else {
             // this.layer is the instance of PIXI DOC.
@@ -368,4 +368,4 @@ A_.SPRITES.Sprite = A_.EventDispatcher.extend({
     }
 });
 
-A_.SPRITES.Sprite.inject(A_.INPUT.mouseReactivityInjection);
+DODO.Sprite.inject(DODO.input.mouseReactivityInjection);

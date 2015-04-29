@@ -1,11 +1,11 @@
-A_.SPRITES.TilingSprite = Class.extend({
+DODO.TilingSprite = Class.extend({
     init: function (parent, props) {
         for (var prop in props) {
             this[prop] = props[prop];
         }
         this.scene = parent.scene;
         
-        var texture = A_.UTILS.getAsset(this.image);
+        var texture = DODO.getAsset(this.image);
 
         if (!this.width) {
             this.width = this.scene.getWidth();
@@ -26,8 +26,8 @@ A_.SPRITES.TilingSprite = Class.extend({
     update: function () {
         var pos = this.position;
         
-        pos.x += this.velocity.x * A_.game.dt;
-        pos.y += this.velocity.y * A_.game.dt;
+        pos.x += this.velocity.x * DODO.game.dt;
+        pos.y += this.velocity.y * DODO.game.dt;
         
         if (pos.x > 0) 
             pos.x -= this.scene.getWidth();

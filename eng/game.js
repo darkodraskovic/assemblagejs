@@ -1,10 +1,10 @@
-A_.Game = A_.EventDispatcher.extend({
+DODO.Game = DODO.EventDispatcher.extend({
     init: function () {
-        A_.game = this;
-        this.createRenderer(A_.CONFIG.screen, A_.CONFIG.renderer);
-        this.loader = new A_.Loader();
-        this.sceneManager = new A_.SCENE.SceneManager(this);
-        this.debug = A_.CONFIG.debug;
+        DODO.game = this;
+        this.createRenderer(DODO.config.screen, DODO.config.renderer);
+        this.loader = new DODO.Loader();
+        this.sceneManager = new DODO.SceneManager(this);
+        this.debug = DODO.config.debug;
         this.maxTick = 50;
         this.play();
         requestAnimFrame(runGame);
@@ -54,7 +54,7 @@ A_.Game = A_.EventDispatcher.extend({
 });
 
 function runGame() {
-    A_.game.update();
+    DODO.game.update();
 
     requestAnimFrame(runGame);
 }

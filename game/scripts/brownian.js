@@ -1,4 +1,4 @@
-var Particle = A_.SPRITES.Kinematic.extend({
+var Particle = DODO.Kinematic.extend({
     collisionResponse: "active",
     drawCollisionPolygon: true,
 //    drawCollisionPolygon: false,

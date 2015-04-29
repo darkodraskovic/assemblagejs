@@ -1,4 +1,4 @@
-var Ball = A_.SPRITES.Kinematic.extend({
+var Ball = DODO.Kinematic.extend({
     bounded: false,
     spriteSheet: "diskette/ball.png",
     collisionResponse: "passive",
@@ -18,7 +18,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         if (this.outOfBounds) {
             this.destroy();
         }
-        this.lifeTimer += A_.game.dt;
+        this.lifeTimer += DODO.game.dt;
         if (this.lifeTimer > this.lifeTime) {
             this.destroy();
         }

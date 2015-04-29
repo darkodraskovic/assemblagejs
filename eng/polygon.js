@@ -1,24 +1,24 @@
 // SAT EXTENSION
-A_.POLYGON.Polygon = function () {
+DODO.Polygon = function () {
     SAT.Polygon.apply(this, arguments);
-    A_.POLYGON._initPolygon(this);
+    DODO._initPolygon(this);
 };
-A_.POLYGON.Polygon.prototype = Object.create(SAT.Polygon.prototype);
-A_.POLYGON.Polygon.prototype.constructor = A_.POLYGON.Polygon;
+DODO.Polygon.prototype = Object.create(SAT.Polygon.prototype);
+DODO.Polygon.prototype.constructor = DODO.Polygon;
 
-A_.POLYGON.Box = function () {
+DODO.Box = function () {
     SAT.Box.apply(this, arguments);
 };
 
-A_.POLYGON.Box.prototype = Object.create(SAT.Box.prototype);
-A_.POLYGON.Box.prototype.constructor = A_.POLYGON.Box;
-A_.POLYGON.Box.prototype.toPolygon = function () {
+DODO.Box.prototype = Object.create(SAT.Box.prototype);
+DODO.Box.prototype.constructor = DODO.Box;
+DODO.Box.prototype.toPolygon = function () {
     var polygon = SAT.Box.prototype.toPolygon.apply(this, arguments);
-    A_.POLYGON._initPolygon(polygon);
+    DODO._initPolygon(polygon);
     return polygon;
 };
 
-A_.POLYGON._initPolygon = function (polygon) {
+DODO._initPolygon = function (polygon) {
     polygon.scale = new SAT.Vector(1, 1);
     polygon.calcBounds();
 }
@@ -128,16 +128,14 @@ SAT.Polygon.prototype.clone = function () {
             function (point) {
                 return point.clone();
             });
-    var polygon = new A_.POLYGON.Polygon(this.pos.clone(), points);
+    var polygon = new DODO.Polygon(this.pos.clone(), points);
 //    polygon.setAngle(this.angle);
 //    polygon.setOffset(this.offset.clone());
 //    polygon.calcBounds();
     return polygon;
 };
 // ENGINE polygon UTILS
-A_.POLYGON.Utils = {};
-
-A_.POLYGON.Utils.TiledPolygonToPIXIPolygon = function (tiledPolygon) {
+DODO.TiledPolygonToPIXIPolygon = function (tiledPolygon) {
     var points = [];
     for (var i = 0; i < tiledPolygon.length; i++) {
         points [2 * i] = tiledPolygon[i].x;
@@ -146,7 +144,7 @@ A_.POLYGON.Utils.TiledPolygonToPIXIPolygon = function (tiledPolygon) {
     return new PIXI.Polygon(points);
 };
 
-A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData, mapData) {
+DODO.TiledPolygonToSATPolygon = function (oData, mapData) {
     var vectors = _.map(oData.polygon, function (vertex) {
         return new SAT.Vector(vertex.x, vertex.y);
     });
@@ -163,10 +161,10 @@ A_.POLYGON.Utils.TiledPolygonToSATPolygon = function (oData, mapData) {
             vector.y = (x + y) * (mapData.tileheight / 2);
         }
     }
-    return new A_.POLYGON.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
+    return new DODO.Polygon(new SAT.Vector(oData.x, oData.y), vectors);
 };
 
-A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon) {
+DODO.SATPolygonToPIXIPolygon = function (SATPolygon) {
     var calcPoints = _.map(SATPolygon.calcPoints,
             function (calcPoint) {
                 return calcPoint.clone();
@@ -183,13 +181,13 @@ A_.POLYGON.Utils.SATPolygonToPIXIPolygon = function (SATPolygon) {
     return new PIXI.Polygon(calcPointsArr);
 };
 
-A_.POLYGON.Utils.drawPolygon = function (graphics, polygon, props) {
+DODO.drawPolygon = function (graphics, polygon, props) {
     if (!_.isObject(props)) {
         props = {};        
     }
     graphics.clear();
-    graphics.beginFill(props.fillColor || A_.UTILS.Colors.violet, props.fillAlpha || 0.5);
-    graphics.lineStyle(props.lineWidth || 2, props.lineColor || A_.UTILS.Colors.green, props.lineAlpha || 0.67);
+    graphics.beginFill(props.fillColor || DODO.Colors.violet, props.fillAlpha || 0.5);
+    graphics.lineStyle(props.lineWidth || 2, props.lineColor || DODO.Colors.green, props.lineAlpha || 0.67);
     graphics.drawPolygon(polygon.points);
     graphics.endFill();
 };

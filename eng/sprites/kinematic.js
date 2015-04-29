@@ -1,4 +1,4 @@
-A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
+DODO.Kinematic = DODO.Colliding.extend({
     isMoving: false,
     elasticity: 0,
     angularSpeed: 0,
@@ -71,14 +71,14 @@ A_.SPRITES.Kinematic = A_.SPRITES.Colliding.extend({
 
         // ANGULAR velocity
         if (this.angularSpeed) {
-            this.setRotation(this.getRotation() + this.angularSpeed * A_.game.dt);
+            this.setRotation(this.getRotation() + this.angularSpeed * DODO.game.dt);
             this.isRotating = true;
         } else {
             this.isRotating = false;
         }
 
         // SYNCH position
-        this.setPositionRelative(this.velocity.x * A_.game.dt, this.velocity.y * A_.game.dt);
+        this.setPositionRelative(this.velocity.x * DODO.game.dt, this.velocity.y * DODO.game.dt);
         this.synchCollisionPolygon();
 
         // Reset collision vars

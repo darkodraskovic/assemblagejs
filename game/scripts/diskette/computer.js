@@ -1,4 +1,4 @@
-var Computer = A_.SPRITES.Kinematic.extend({
+var Computer = DODO.Kinematic.extend({
     bounded: false,
     spriteSheet: "diskette/computer.png",
     collisionResponse: "sensor",

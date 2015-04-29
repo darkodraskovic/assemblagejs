@@ -1,4 +1,4 @@
-A_.TILES.createTiledMap = function (mapData, scene) {
+DODO.createTiledMap = function (mapData, scene) {
     mapData = JSON.parse(mapData);
     
     scene.setWidth(mapData["width"] * mapData["tilewidth"]);
@@ -7,7 +7,7 @@ A_.TILES.createTiledMap = function (mapData, scene) {
     var layersData = mapData["layers"];
 
     for (i = 0; i < layersData.length; i++) {
-        var layer = new A_.SCENE.Layer(scene);
+        var layer = new DODO.Layer(scene);
         var layerData = layersData[i];
 
         for (var prop in layerData) {
@@ -24,7 +24,7 @@ A_.TILES.createTiledMap = function (mapData, scene) {
 
         // if current layer is IMAGE LAYER, create a TilingSprite and add it to the gameworld.
         if (layerData["type"] === "imagelayer") {
-            new A_.SPRITES.TilingSprite(layer, {image: layer["image"], width: scene.width, height: scene.height,
+            new DODO.TilingSprite(layer, {image: layer["image"], width: scene.width, height: scene.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
         }
         
@@ -73,7 +73,7 @@ A_.TILES.createTiledMap = function (mapData, scene) {
                 }
             }
 
-            var tilemap = new A_.TILES.Tilemap(layer, layer["image"], tileW, tileH, spacing,
+            var tilemap = new DODO.Tilemap(layer, layer["image"], tileW, tileH, spacing,
                     mapData.orientation);
             tilemap.populate(tileData2D);
 
@@ -102,14 +102,14 @@ A_.TILES.createTiledMap = function (mapData, scene) {
                 args["name"] = oData["name"];
 
                 if (oData["polygon"]) {
-                    args.polygon = A_.POLYGON.Utils.TiledPolygonToSATPolygon(oData, mapData);
+                    args.polygon = DODO.TiledPolygonToSATPolygon(oData, mapData);
                 }
 
                 var type;
                 if (oData["type"]) { // user defined type
                     type = eval(oData["type"]);
                 } else {
-                    type = A_.SPRITES.Colliding; // Colliding polygon
+                    type = DODO.Colliding; // Colliding polygon
                 }
                 var o = new type(layer, oData["x"], oData["y"], args);
 
@@ -123,7 +123,7 @@ A_.TILES.createTiledMap = function (mapData, scene) {
                     o.position.y = (x + y) * (mapData.tileheight / 2);
                 }
 
-                if (o instanceof A_.SPRITES.Colliding) {
+                if (o instanceof DODO.Colliding) {
                     o.synchCollisionPolygon();
                 }
             }

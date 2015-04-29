@@ -11,7 +11,7 @@ var Dynamics = {
     VIRUS_KILLER: 6
 };
 
-var Diskette = A_.SPRITES.Kinematic.extend({
+var Diskette = DODO.Kinematic.extend({
     spriteSheet: "diskette/diskette.png",
     collisionResponse: "active",
     drawCollisionPolygon: false,
@@ -31,7 +31,7 @@ var Diskette = A_.SPRITES.Kinematic.extend({
         this.maxVelocity.y = 800;
         this.dynamicsMap = this.scene.findLayerByName("Dynamics").tilemap;
         this.addAnimation("inserting", _.range(0, 10), 0.2);
-        this.springSound = A_.UTILS.getAsset('diskette/bounce.ogg');
+        this.springSound = DODO.getAsset('diskette/bounce.ogg');
     },
     update: function () {
         if (this.inserting) {

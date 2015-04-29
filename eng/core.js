@@ -92,20 +92,7 @@
     };
 })();
 
-var A_ = {};
-A_.UTILS = {};
-A_.SPRITES = {};
-A_.SPRITES.Injections = {};
-A_.TILES = {};
-A_.SCENERY = {};
-A_.COLLISION = {};
-A_.MODULES = {};
-A_.SCENE = {};
-A_.EXTENSIONS = {};
-A_.POLYGON = {};
-A_.CAMERA = {};
-A_.INPUT = {};
-A_.CONFIG = {};
+var DODO = {};
 
 // JS EXTENSIONS
 Number.prototype.map = function(istart, istop, ostart, ostop) {
@@ -167,18 +154,18 @@ Number.prototype.abs = function () {
     return Math.abs(this);
 };
 
-A_.UTILS.angleTo = function (pos1, pos2) {
+DODO.angleTo = function (pos1, pos2) {
     return Math.atan2(pos2.y - pos1.y, pos2.x - pos1.x);
 };
 
-A_.UTILS.distanceTo = function (pos1, pos2) {
+DODO.distanceTo = function (pos1, pos2) {
     var xd = pos2.x - pos1.x;
     var yd = pos2.y - pos1.y;
     return Math.sqrt(xd * xd + yd * yd);
 };
 
 // OBJECT manipulation utils
-A_.UTILS.copy = function (object) {
+DODO.copy = function (object) {
     if (
             !object || typeof (object) !== 'object' ||
             object instanceof HTMLElement ||
@@ -189,14 +176,14 @@ A_.UTILS.copy = function (object) {
     else if (object instanceof Array) {
         var c = [];
         for (var i = 0, l = object.length; i < l; i++) {
-            c[i] = A_.UTILS.copy(object[i]);
+            c[i] = DODO.copy(object[i]);
         }
         return c;
     }
     else {
         var c = {};
         for (var i in object) {
-            c[i] = A_.UTILS.copy(object[i]);
+            c[i] = DODO.copy(object[i]);
         }
         return c;
     }
@@ -204,7 +191,7 @@ A_.UTILS.copy = function (object) {
 
 // remove all own properties on obj,
 // effectively reverting it to a new object
-A_.UTILS.wipe = function (obj)
+DODO.wipe = function (obj)
 {
     for (var p in obj)
     {
@@ -214,7 +201,7 @@ A_.UTILS.wipe = function (obj)
 };
 
 // CONSTANTS
-A_.UTILS.Colors = {
+DODO.Colors = {
     'aliceblue': '0xF0F8FF',
     'antiquewhite': '0xFAEBD7',
     'aquamarine': '0x7FFFD4',

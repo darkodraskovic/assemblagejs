@@ -1,4 +1,4 @@
-A_.INPUT = new (A_.EventDispatcher.extend({
+DODO.input = new (DODO.EventDispatcher.extend({
     actions: {},
     down: {},
     _pressed: {},
@@ -37,23 +37,23 @@ A_.INPUT = new (A_.EventDispatcher.extend({
 
 // Keyboard
 window.addEventListener("keydown", function(event) {
-    var action = A_.INPUT.actions[event.keyCode];
+    var action = DODO.input.actions[event.keyCode];
     if (action) {
-        if (!A_.INPUT._pressed[action]) {
-            A_.INPUT._pressed[action] = true;
-            A_.INPUT.trigger(action + "Pressed");
+        if (!DODO.input._pressed[action]) {
+            DODO.input._pressed[action] = true;
+            DODO.input.trigger(action + "Pressed");
         }
-        A_.INPUT.down[action] = true;
+        DODO.input.down[action] = true;
         event.preventDefault();
     }
 }, false);
 
 window.addEventListener("keyup", function(event) {
-    var action = A_.INPUT.actions[event.keyCode];
+    var action = DODO.input.actions[event.keyCode];
     if (action) {
-        A_.INPUT.trigger(action + "Released");
-        A_.INPUT._pressed[action] = false;
-        A_.INPUT.down[action] = false;
+        DODO.input.trigger(action + "Released");
+        DODO.input._pressed[action] = false;
+        DODO.input.down[action] = false;
         event.preventDefault();
     }
 }, false);
@@ -61,14 +61,14 @@ window.addEventListener("keyup", function(event) {
 // Mousewheel
 window.addEventListener("mousewheel", function(e) {
     if (e.wheelDelta > 0) {
-        A_.INPUT.trigger('forward');
+        DODO.input.trigger('forward');
     } else {
-        A_.INPUT.trigger('backward');
+        DODO.input.trigger('backward');
     }
 }, false);
 
 // CONSTS
-A_.KEY = {
+DODO.Key = {
     BACKSPACE: 8,
     TAB: 9,
     ENTER: 13,

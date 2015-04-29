@@ -159,9 +159,7 @@
                         }],
                  "properties":
                     {
-                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
-                     "collisionResponse":"\"static\"",
-                     "collisonType":"0"
+                     "collisionResponse":"\"static\""
                     },
                  "rotation":0,
                  "type":"",
@@ -556,9 +554,7 @@
                         }],
                  "properties":
                     {
-                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
-                     "collisionResponse":"\"sensor\"",
-                     "collisonType":"0"
+                     "collisionResponse":"\"sensor\""
                     },
                  "rotation":0,
                  "type":"",
@@ -597,9 +593,7 @@
                         }],
                  "properties":
                     {
-                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
-                     "collisionResponse":"\"sensor\"",
-                     "collisonType":"0"
+                     "collisionResponse":"\"sensor\""
                     },
                  "rotation":0,
                  "type":"",

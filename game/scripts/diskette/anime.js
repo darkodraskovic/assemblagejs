@@ -1,4 +1,4 @@
-var Anime = A_.SPRITES.Kinematic.extend({
+var Anime = DODO.Kinematic.extend({
     frameWidth: 40,
     frameHeight: 68,
     bounded: false,

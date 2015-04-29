@@ -12,15 +12,15 @@ var Player = Anime.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        A_.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
-        A_.game.renderer.view.addEventListener("mouseover", function (event) {
-            A_.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
+        DODO.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
+        DODO.game.renderer.view.addEventListener("mouseover", function (event) {
+            DODO.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
         });
 
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("jump", A_.KEY.SPACE);
-        A_.INPUT.addMapping("crouch", A_.KEY.S);
+        DODO.input.addMapping("left", DODO.Key.A);
+        DODO.input.addMapping("right", DODO.Key.D);
+        DODO.input.addMapping("jump", DODO.Key.SPACE);
+        DODO.input.addMapping("crouch", DODO.Key.S);
 
         this.scene.bind('leftpressed', this, function () {
             this.throwTimerRunning = true;
@@ -40,7 +40,7 @@ var Player = Anime.extend({
                 this.throwTimerRunning = true;
         });
 
-        this.throwSound = A_.UTILS.getAsset('diskette/throw.ogg');
+        this.throwSound = DODO.getAsset('diskette/throw.ogg');
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
@@ -49,7 +49,7 @@ var Player = Anime.extend({
         this.scene.bind('created', this, function () {
             this.progressBarInner = new ProgressBarInner(this.scene.findLayerByName("Entities"),
                     this.getX(), this.getY(),
-                    {color: A_.UTILS.Colors.purple, alpha: 0.75, owner: this});
+                    {color: DODO.Colors.purple, alpha: 0.75, owner: this});
             this.progressBarInner.setVisible(false);
         })
 
@@ -64,11 +64,11 @@ var Player = Anime.extend({
         this.setFollowee(true);
     },
     processControls: function () {
-        if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
-            if (A_.INPUT.down["right"]) {
+        if (DODO.input.down["right"] || DODO.input.down["left"]) {
+            if (DODO.input.down["right"]) {
                 this.velocity.x = this.speed;
             }
-            else if (A_.INPUT.down["left"]) {
+            else if (DODO.input.down["left"]) {
                 this.velocity.x = -this.speed;
             }
             if (this.standing) {
@@ -76,7 +76,7 @@ var Player = Anime.extend({
             }
 
         }
-        else if (A_.INPUT.down["crouch"]) {
+        else if (DODO.input.down["crouch"]) {
             this.platformerState = "crouching";
         }
         else if (this.standing) {
@@ -93,7 +93,7 @@ var Player = Anime.extend({
             this.setCollisionPolygon(this.uprightPolygon);
         }
 
-        if (A_.INPUT.down["jump"]) {
+        if (DODO.input.down["jump"]) {
             if (this.standing) {
                 this.velocity.y = this.gravityN.y < 0 ? this.jumpForce : -this.jumpForce;
             }
@@ -113,7 +113,7 @@ var Player = Anime.extend({
 
         if (this.scene.leftdown) {
             if (this.throwTimerRunning) {
-                this.throwTimer += A_.game.dt;
+                this.throwTimer += DODO.game.dt;
                 this.progressBarInner.percent = this.throwTimer.map(0, this.throwTime, 0, 100).clamp(0, 100);
             }
         }
@@ -122,7 +122,7 @@ var Player = Anime.extend({
     },
     throwBall: function (force) {
         var ball = new Ball(this.layer, this.getX(), this.aabbTop() + (this.platformerState === "crouching" ? 16 : 20));
-        var angle = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
+        var angle = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
         ball.velocity.x = force * Math.cos(angle);
         ball.velocity.y = force * Math.sin(angle);
         this.throwSound.play();
@@ -130,7 +130,7 @@ var Player = Anime.extend({
 });
 
 var alpha = 0.75;
-var ProgressBarInner = A_.SPRITES.Graphics.extend({
+var ProgressBarInner = DODO.Graphics.extend({
     frameWidth: 124,
     frameHeight: 20,
     graphics: true,
@@ -142,8 +142,8 @@ var ProgressBarInner = A_.SPRITES.Graphics.extend({
         this.sprite.drawRect(0, 0, this.frameWidth, this.frameHeight);
         this.sprite.endFill();
         this.progressBarOuter = new ProgressBarOuter(this.scene.findLayerByName("Entities"), this.getX(), this.getY(),
-                {color: A_.UTILS.Colors.darkslategray, alpha: 0.75, owner: this.owner});
-        this.pinTo = new A_.SPRITES.Addons.PinTo(this, {parent: this.progressBarOuter, name: "inner", offsetX: 2, offsetY: 2});
+                {color: DODO.Colors.darkslategray, alpha: 0.75, owner: this.owner});
+        this.pinTo = new DODO.addons.PinTo(this, {parent: this.progressBarOuter, name: "inner", offsetX: 2, offsetY: 2});
     },
     update: function () {
         this.pinTo.update();
@@ -155,7 +155,7 @@ var ProgressBarInner = A_.SPRITES.Graphics.extend({
         this.progressBarOuter.sprite.visible = visible;
     }
 });
-var ProgressBarOuter = A_.SPRITES.Graphics.extend({
+var ProgressBarOuter = DODO.Graphics.extend({
     frameWidth: 128,
     frameHeight: 24,
     graphics: true,

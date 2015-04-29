@@ -1,4 +1,4 @@
-A_.TILES.Tilemap = Class.extend({
+DODO.Tilemap = Class.extend({
     init: function (layer, img, tileW, tileH, spacing, orientation) {
         this.layer = layer;
         layer.tilemap = this;
@@ -17,7 +17,7 @@ A_.TILES.Tilemap = Class.extend({
             this.sceneW_half = this.scene.getWidth() / 2;
         }
 
-        this.baseTexture = A_.UTILS.getAsset(img);
+        this.baseTexture = DODO.getAsset(img);
         this.imgCols = this.baseTexture.width / (tileW + this.spacing);
         this.imgRows = this.baseTexture.height / (tileH + this.spacing);
 
@@ -78,7 +78,7 @@ A_.TILES.Tilemap = Class.extend({
             this.removeTile(x, y);
         }
 
-        return this.tiles[x][y] = new A_.TILES.Tile(gid, x, y, this);
+        return this.tiles[x][y] = new DODO.Tile(gid, x, y, this);
     },
     removeTile: function (x, y) {
         if (this.layer.baked)

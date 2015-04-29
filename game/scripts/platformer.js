@@ -1,14 +1,14 @@
-A_.TILES.Tile.prototype.turnOn = function() {
+DODO.Tile.prototype.turnOn = function() {
     this.alpha = 1;
     this.collides = true;
     this.turned = "on";
 };
-A_.TILES.Tile.prototype.turnOff = function() {
+DODO.Tile.prototype.turnOff = function() {
     this.alpha = 0.5;
     this.collides = false;
     this.turned = "off";
 };
-A_.TILES.Tile.prototype.toggleTurned = function() {
+DODO.Tile.prototype.toggleTurned = function() {
     if (this.turned === "on") {
         this.turnOff();
     }
@@ -18,7 +18,7 @@ A_.TILES.Tile.prototype.toggleTurned = function() {
     this.toggleSound.play();
 };
 
-var AnimePlatformer = A_.SPRITES.Kinematic.extend({
+var AnimePlatformer = DODO.Kinematic.extend({
     frameWidth: 32,
     frameHeight: 64,
     bounded: false,
@@ -114,7 +114,7 @@ var AnimePlatformer = A_.SPRITES.Kinematic.extend({
         this._super(other, response);
 
         // Moving platform
-        if (response.overlap && response.overlapN.y > 0 && !(other instanceof A_.TILES.Tile)) {
+        if (response.overlap && response.overlapN.y > 0 && !(other instanceof DODO.Tile)) {
             if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
                 this.processMovingPlatform(other);
             }
@@ -151,19 +151,19 @@ var PlayerPlatformer = AnimePlatformer.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("jump", A_.KEY.SPACE);
+        DODO.input.addMapping("left", DODO.Key.A);
+        DODO.input.addMapping("right", DODO.Key.D);
+        DODO.input.addMapping("jump", DODO.Key.SPACE);
 
-        A_.INPUT.bind("jumpPressed", this, this.fireJetpack);
+        DODO.input.bind("jumpPressed", this, this.fireJetpack);
 
-        A_.INPUT.addMapping("toggleMode", A_.KEY.SHIFT);
-        A_.INPUT.bind("toggleModePressed", this, this.toggleMode);
+        DODO.input.addMapping("toggleMode", DODO.Key.SHIFT);
+        DODO.input.bind("toggleModePressed", this, this.toggleMode);
 
         this.thrus = this.scene.findLayerByName("Thrus").tilemap;
-        this.groundSound = A_.UTILS.getAsset('grounded.wav');
-        this.jetpackSound = A_.UTILS.getAsset('jetpack.wav');
-        this.jumpSound = A_.UTILS.getAsset('jump.wav');
+        this.groundSound = DODO.getAsset('grounded.wav');
+        this.jetpackSound = DODO.getAsset('jetpack.wav');
+        this.jumpSound = DODO.getAsset('jump.wav');
 
         scene = this.scene;
         player = this;
@@ -178,18 +178,18 @@ var PlayerPlatformer = AnimePlatformer.extend({
     },
     initTile: function(tile) {
         tile.turned = "on";
-        tile.toggleSound = A_.UTILS.getAsset('e.wav');
+        tile.toggleSound = DODO.getAsset('e.wav');
     },
     processControls: function() {
-        if (A_.INPUT.down["right"] || A_.INPUT.down["left"]) {
+        if (DODO.input.down["right"] || DODO.input.down["left"]) {
             this.applyForce = true;
-            if (A_.INPUT.down["right"] && A_.INPUT.down["left"]) {
+            if (DODO.input.down["right"] && DODO.input.down["left"]) {
                 this.applyForce = false;
             }
-            else if (A_.INPUT.down["right"]) {
+            else if (DODO.input.down["right"]) {
                 this.facing = "right";
             }
-            else if (A_.INPUT.down["left"]) {
+            else if (DODO.input.down["left"]) {
                 this.facing = "left";
             }
         }
@@ -197,7 +197,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
             this.applyForce = false;
         }
 
-        if (A_.INPUT.down["jump"]) {
+        if (DODO.input.down["jump"]) {
             this.tryJump = true;
         }
     },
@@ -231,7 +231,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
         if (this.mode !== "throwing")
             return;
         var ball = new Ball(this.layer, this.getX(), this.getY());
-        var angle = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
+        var angle = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
         ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
         ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
     },
@@ -267,7 +267,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     }
 });
 
-var Ball = A_.SPRITES.Kinematic.extend({
+var Ball = DODO.Kinematic.extend({
     bounded: false,
     spriteSheet: "ball.png",
     collisionResponse: "passive",
@@ -288,7 +288,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
         if (this.outOfBounds) {
             this.destroy();
         }
-        this.lifeTimer += A_.game.dt;
+        this.lifeTimer += DODO.game.dt;
         if (this.lifeTimer > this.lifeTime) {
             this.destroy();
         }
@@ -305,7 +305,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
 });
 
 
-var Platform = A_.SPRITES.Colliding.extend({
+var Platform = DODO.Colliding.extend({
     spriteSheet: "moving_platform.png",
     frameWidth: 128,
     frameHeight: 32,
@@ -316,7 +316,7 @@ var Platform = A_.SPRITES.Colliding.extend({
 //    drawCollisionPolygon: false,    
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.sine = new A_.SPRITES.Addons.Sine(this);
+        this.sine = new DODO.addons.Sine(this);
         this.sine.period = 2;
         this.sine.amplitude = this.frameWidth;
         this.sine.reset();
@@ -336,7 +336,7 @@ var Platform = A_.SPRITES.Colliding.extend({
     }
 });
 
-var ExplosionPlatformer = A_.SPRITES.Animated.extend({
+var ExplosionPlatformer = DODO.Animated.extend({
     spriteSheet: "Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
@@ -351,7 +351,7 @@ var ExplosionPlatformer = A_.SPRITES.Animated.extend({
             that.destroy();
         };
         this.setScale(0.4, 0.4);
-        A_.UTILS.getAsset('dull.wav').play();
+        DODO.getAsset('dull.wav').play();
 
         this.setOrigin(0.5, 0.5);
     }

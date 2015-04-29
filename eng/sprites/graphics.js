@@ -1,11 +1,11 @@
-A_.SPRITES.Graphics = A_.SPRITES.Sprite.extend({
+DODO.Graphics = DODO.Sprite.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
         this.sprite = new PIXI.Graphics();
         if (this.polygon) {
-            var polygon = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(this.polygon);
-            A_.POLYGON.Utils.drawPolygon(this.sprite, polygon, props);
+            var polygon = DODO.SATPolygonToPIXIPolygon(this.polygon);
+            DODO.drawPolygon(this.sprite, polygon, props);
         }
 
         this.origin = this.sprite.pivot;
@@ -13,7 +13,7 @@ A_.SPRITES.Graphics = A_.SPRITES.Sprite.extend({
     }
 });
 
-A_.SPRITES.Text = A_.SPRITES.Sprite.extend({
+DODO.Text = DODO.Sprite.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 

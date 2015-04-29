@@ -1,25 +1,25 @@
-A_.SCENE.Layer = function(scene, name) {
+DODO.Layer = function(scene, name) {
     PIXI.DisplayObjectContainer.call(this);
     this.scene = scene;
     this.name = name;
     this.scene.container.addChild(this);
     this.parallax = 100;
 };
-A_.SCENE.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
-A_.SCENE.Layer.prototype.constructor = A_.SCENE.Layer;
+DODO.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
+DODO.Layer.prototype.constructor = DODO.Layer;
 
-A_.SCENE.Scene = A_.EventDispatcher.extend({
+DODO.Scene = DODO.EventDispatcher.extend({
     width: 0,
     height: 0,
     scale: 1,
     scaleSpeed: 2,
     init: function(name, cameraOptions, map) {
-        this.game = A_.game;
+        this.game = DODO.game;
         this.name = name;
         this.map = map;
 
         this.container = new PIXI.DisplayObjectContainer();
-        // this.sprite is referenced by the A_.INPUT.mouseReactivityInjection
+        // this.sprite is referenced by the DODO.input.mouseReactivityInjection
         this.sprite = this.container;
         this.initMouseReactivity();
         this.setMouseReactivity(true);
@@ -45,18 +45,19 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
 
         // Helper object. Its purpose is to avoid getMousePosition() object creation.
         this._MousePosition = {x: 0, y: 0};
-        A_.INPUT.bind('forward', this, this.setScale.bind(this, 'forward'));
-        A_.INPUT.bind('backward', this, this.setScale.bind(this, 'backward'));
-        this.camera = new A_.CAMERA.Camera(this, this.game.renderer.width, this.game.renderer.height, cameraOptions);
+        DODO.input.bind('forward', this, this.setScale.bind(this, 'forward'));
+        DODO.input.bind('backward', this, this.setScale.bind(this, 'backward'));
+        this.camera = new DODO.Camera(this, this.game.renderer.width, this.game.renderer.height, cameraOptions);
 
         if (map) {
-            A_.TILES.createTiledMap(A_.UTILS.getAsset(this.map), this);
+            DODO.createTiledMap(DODO.getAsset(this.map), this);
         }
 
         this.game.stage.addChild(this.container);
         this.play();
+        this.update();
         this.trigger('created');
-        A_.game.sceneManager._scenesToCreate.push(this);
+        this.game.sceneManager._scenesToCreate.push(this);
     },
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
@@ -87,20 +88,20 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     destroy: function() {
         this.trigger('destroyed');
         this.debind();
-        A_.game.sceneManager._scenesToDestroy.push(this);
+        this.game.sceneManager._scenesToDestroy.push(this);
     },
     // START/STOP scene execution
     play: function() {
         this.running = true;
         for (var i = 0, len = this.sprites.length; i < len; i++) {
-            if (this.sprites[i] instanceof A_.SPRITES.Animated)
+            if (this.sprites[i] instanceof DODO.Animated)
                 this.sprites[i].currentAnimation.play();
         }
     },
     pause: function() {
         this.running = false;
         for (var i = 0, len = this.sprites.length; i < len; i++) {
-            if (this.sprites[i] instanceof A_.SPRITES.Animated)
+            if (this.sprites[i] instanceof DODO.Animated)
                 this.sprites[i].currentAnimation.stop();
         }
     },
@@ -150,7 +151,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
         this.container.position.x *= this.scale;
         this.container.position.y *= this.scale;
 
-        if (A_.CONFIG.pixelRounding) {
+        if (DODO.config.pixelRounding) {
             this.container.position.x = Math.round(this.container.position.x);
             this.container.position.y = Math.round(this.container.position.y);
         }
@@ -158,7 +159,7 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     setScale: function(scale) {
         if (_.isString(scale))
             scale = this.scale +
-                    (scale === 'forward' ? this.scaleSpeed * A_.game.dt : -this.scaleSpeed * A_.game.dt);
+                    (scale === 'forward' ? this.scaleSpeed * DODO.game.dt : -this.scaleSpeed * DODO.game.dt);
 
         if (scale > 0.25 && scale < 3) {
             // scale the game world according to scale
@@ -278,4 +279,4 @@ A_.SCENE.Scene = A_.EventDispatcher.extend({
     }
 });
 
-A_.SCENE.Scene.inject(A_.INPUT.mouseReactivityInjection);
+DODO.Scene.inject(DODO.input.mouseReactivityInjection);

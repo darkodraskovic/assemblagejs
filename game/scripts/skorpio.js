@@ -1,5 +1,5 @@
 // CLASSES
-var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
+var AnimeSkorpio = DODO.Kinematic.extend({
     motionState: "idle",
     motionStates: ["moving", "idle"],
     cardinalDir: "E",
@@ -66,7 +66,7 @@ var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
         }
         else {
             if (!this.groaned) {
-                var sound = A_.UTILS.getAsset('grunt.wav');
+                var sound = DODO.getAsset('grunt.wav');
                 sound.play();
                 this.groaned = true;
             }
@@ -87,8 +87,6 @@ var AnimeSkorpio = A_.SPRITES.Kinematic.extend({
 
 var PlayerSkorpio = AnimeSkorpio.extend({
     spriteSheet: "player_skorpio.png",
-    collisionType: A_.COLLISION.Type.PLAYER,
-    collidesWith: A_.COLLISION.Type.ENEMY | A_.COLLISION.Type.ITEM,
     controlled: true,
     player: true,
     mass: 4,
@@ -96,10 +94,10 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("down", A_.KEY.S);
-        A_.INPUT.addMapping("up", A_.KEY.W);
+        DODO.input.addMapping("left", DODO.Key.A);
+        DODO.input.addMapping("right", DODO.Key.D);
+        DODO.input.addMapping("down", DODO.Key.S);
+        DODO.input.addMapping("up", DODO.Key.W);
 
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
@@ -115,14 +113,14 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     },
     update: function() {
         var cd = "";
-        if (A_.INPUT.down["up"]) {
+        if (DODO.input.down["up"]) {
             cd = "N";
-        } else if (A_.INPUT.down["down"]) {
+        } else if (DODO.input.down["down"]) {
             cd = "S";
         }
-        if (A_.INPUT.down["left"]) {
+        if (DODO.input.down["left"]) {
             cd += "W";
-        } else if (A_.INPUT.down["right"]) {
+        } else if (DODO.input.down["right"]) {
             cd += "E";
         }
 
@@ -132,7 +130,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         } else
             this.motionState = "idle";
 
-        var rot = (A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition())).toDeg();
+        var rot = (DODO.angleTo(this.getPosition(), this.scene.getMousePosition())).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
@@ -147,7 +145,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     shootBullet: function() {
         var sprPt = this.rifle.getSpritePoint(this.facing);
         var bullet = new Bullet(this.scene.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
-        var rot = A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition());
+        var rot = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
         bullet.setRotation(rot);
         bullet.velocity.x = Math.cos(rot) * bullet.maxVelocity.x;
         bullet.velocity.y = Math.sin(rot) * bullet.maxVelocity.y;
@@ -162,8 +160,6 @@ var PlayerSkorpio = AnimeSkorpio.extend({
 var Agent = AnimeSkorpio.extend({
     spriteSheet: "AgentComplete.png",
     timer: 0,
-    collisionType: A_.COLLISION.Type.ENEMY,
-    collidesWith: A_.COLLISION.Type.FRIENDLY_FIRE,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.maxVelocity = new SAT.Vector(128, 128);
@@ -185,7 +181,7 @@ var Agent = AnimeSkorpio.extend({
             if (this.cardinalContains("E")) {
                 this.facing = "right";
             }
-            this.timer += A_.game.dt;
+            this.timer += DODO.game.dt;
             if (this.timer > 6) {
                 this.timer = 0;
                 this.cardinalDir = _.sample(this.cardinalDirs);
@@ -195,7 +191,7 @@ var Agent = AnimeSkorpio.extend({
     }
 });
 
-var Rifle = A_.SPRITES.Animated.extend({
+var Rifle = DODO.Animated.extend({
     spriteSheet: "AssaultRifle.png",
     frameWidth: 64,
     frameHeight: 64,
@@ -217,7 +213,7 @@ var Rifle = A_.SPRITES.Animated.extend({
         this.setSpritePoint("left", -24, 6);
         this.setSpritePoint("right", 24, 6);
 
-        this.pinTo = new A_.SPRITES.Addons.PinTo(this, {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
+        this.pinTo = new DODO.addons.PinTo(this, {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
     update: function() {
         this.pinTo.update();
@@ -233,7 +229,7 @@ var Rifle = A_.SPRITES.Animated.extend({
     }
 });
 // WEAPONS & AMMO
-var Bullet = A_.SPRITES.Kinematic.extend({
+var Bullet = DODO.Kinematic.extend({
     spriteSheet: "Muzzleflashes-Shots.png",
     frameWidth: 32,
     frameHeight: 32,
@@ -244,7 +240,6 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     collisionOffsetY: -5,
     lifeTime: 4,
     lifeTimer: 0,
-    collidesWith: A_.COLLISION.Type.ENEMY,
     origin: {x: 0.5, y: 0.5},
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -252,7 +247,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         this.friction.y = 0;
         this.maxVelocity.x = this.maxVelocity.y = 600;
         this.bounded = false;
-        var sound = A_.UTILS.getAsset('gunshot.mp3');
+        var sound = DODO.getAsset('gunshot.mp3');
         sound.volume(0.5);
         sound.play();
     },
@@ -260,7 +255,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
         if (this.outOfBounds) {
             this.destroy();
         }
-        this.lifeTimer += A_.game.dt;
+        this.lifeTimer += DODO.game.dt;
         if (this.lifeTimer > this.lifeTime)
             this.destroy();
 
@@ -280,7 +275,7 @@ var Bullet = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var LaserBeam = A_.SPRITES.Animated.extend({
+var LaserBeam = DODO.Animated.extend({
     spriteSheet: "Muzzleflashes-Shots.png",
     frameWidth: 32,
     frameHeight: 32,
@@ -291,7 +286,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         this.setAnimation("all", 18, 0);
         this.setOrigin(0, 0.5);
 
-        this.setRotation(A_.UTILS.angleTo(this.spawner.getPosition(), this.scene.getMousePosition()));
+        this.setRotation(DODO.angleTo(this.spawner.getPosition(), this.scene.getMousePosition()));
         var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
 
@@ -301,13 +296,13 @@ var LaserBeam = A_.SPRITES.Animated.extend({
                 this.getY() + Math.sin(this.getRotation()) * this.getWidth(),
                 {collisionWidth: 4, collisionHeight: 4});
         this.laserTip.laser = this;
-        this.sound = A_.UTILS.getAsset('laser-beam.mp3').play();
+        this.sound = DODO.getAsset('laser-beam.mp3').play();
         this.sound.volume(0.5);
         this.sound.loop(true);
 
         this.origH = this.getHeight();
         var sineProps = {period: 1, periodRand: 50, amplitude: 8, amplitudeRand: 4};
-        this.sine = new A_.SPRITES.Addons.Sine(this, sineProps);
+        this.sine = new DODO.addons.Sine(this, sineProps);
 
         this.scene.bind('rightreleased', this, this.destroy)
     },
@@ -315,8 +310,8 @@ var LaserBeam = A_.SPRITES.Animated.extend({
         var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
         this.setPosition(sprPt.getX(), sprPt.getY());
 
-        this.setRotation(A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition()));
-        this.setWidth(A_.UTILS.distanceTo(this.getPosition(), this.scene.getMousePosition()));
+        this.setRotation(DODO.angleTo(this.getPosition(), this.scene.getMousePosition()));
+        this.setWidth(DODO.distanceTo(this.getPosition(), this.scene.getMousePosition()));
         this.tip.x = this.getX() + Math.cos(this.getRotation()) * this.getWidth();
         this.tip.y = this.getY() + Math.sin(this.getRotation()) * this.getWidth();
 
@@ -336,7 +331,7 @@ var LaserBeam = A_.SPRITES.Animated.extend({
     }
 });
 
-var LaserTip = A_.SPRITES.Kinematic.extend({
+var LaserTip = DODO.Kinematic.extend({
     bounded: false,
     collisionResponse: "sensor",
     collisionWidth: 8,
@@ -367,7 +362,7 @@ var LaserTip = A_.SPRITES.Kinematic.extend({
                 this.timer = 1;
             }
             else {
-                this.timer -= A_.game.dt;
+                this.timer -= DODO.game.dt;
             }
             if (this.timer < 0) {
                 new ExplosionSkorpio(this.scene.findLayerByName("Effects"),
@@ -385,7 +380,7 @@ var LaserTip = A_.SPRITES.Kinematic.extend({
 });
 
 
-var LaserFire = A_.SPRITES.Animated.extend({
+var LaserFire = DODO.Animated.extend({
     spriteSheet: "Fire.png",
     frameWidth: 64,
     frameHeight: 64,
@@ -394,7 +389,7 @@ var LaserFire = A_.SPRITES.Animated.extend({
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
         this.setAnimation("burn");
-        this.sound = A_.UTILS.getAsset('fire.wav');
+        this.sound = DODO.getAsset('fire.wav');
         this.sound.volume(0.3);
         this.sound.loop(true);
         this.sound.play();
@@ -408,7 +403,7 @@ var LaserFire = A_.SPRITES.Animated.extend({
     update: function() {
         this.setPosition(this.laserTip.getX(), this.laserTip.getY());
         var scale = this.getScale();
-        this.setScale(scale.x + A_.game.dt, scale.y + A_.game.dt);
+        this.setScale(scale.x + DODO.game.dt, scale.y + DODO.game.dt);
         this._super();
     },
     destroy: function() {
@@ -418,7 +413,7 @@ var LaserFire = A_.SPRITES.Animated.extend({
 });
 
 
-var ExplosionSkorpio = A_.SPRITES.Animated.extend({
+var ExplosionSkorpio = DODO.Animated.extend({
     spriteSheet: "Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
@@ -432,7 +427,7 @@ var ExplosionSkorpio = A_.SPRITES.Animated.extend({
         this.animations["explode"].onComplete = function() {
             that.destroy();
         };
-        this.sound = A_.UTILS.getAsset('explosion.mp3');
+        this.sound = DODO.getAsset('explosion.mp3');
         this.sound.volume(0.4);
         this.sound.play();
         this.setOrigin(0.5, 0.5);
@@ -440,11 +435,9 @@ var ExplosionSkorpio = A_.SPRITES.Animated.extend({
 });
 
 // ITEMS
-var Computer = A_.SPRITES.Colliding.extend({
+var Computer = DODO.Colliding.extend({
     spriteSheet: "Computer1.png",
     collisionResponse: "static",
-//    collisionType: A_.COLLISION.Type.ITEM,
-//    collidesWith: A_.COLLISION.Type.NONE,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
     }

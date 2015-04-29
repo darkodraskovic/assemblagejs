@@ -1,4 +1,4 @@
-var Text = A_.SPRITES.Text.extend({
+var Text = DODO.Text.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.initMouseReactivity();
@@ -23,13 +23,12 @@ var PointsText = Text.extend({
     points: 0,
     update: function () {
         this.sprite.setText(this.points);
-
         this._super();
     }
 });
 
 // ENTITIES
-var Ball = A_.SPRITES.Kinematic.extend({
+var Ball = DODO.Kinematic.extend({
     spriteSheet: "Pong/ball.png",
     collisionResponse: "lite",
     drawCollisionPolygon: false,
@@ -47,8 +46,8 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.scene.bind('created', this, function () {
             this.pointsText = this.scene.findSpriteByClass(PointsText);
         });
-        this.breakSound = A_.UTILS.getAsset('Pong/xylo1.wav');
-        this.bounceSound = A_.UTILS.getAsset('Pong/bounce.wav');
+        this.breakSound = DODO.getAsset('Pong/xylo1.wav');
+        this.bounceSound = DODO.getAsset('Pong/bounce.wav');
     },
     update: function () {
         if (this.getX() > this.scene.getWidth()) {
@@ -76,7 +75,7 @@ var Ball = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var Bar = A_.SPRITES.Kinematic.extend({
+var Bar = DODO.Kinematic.extend({
     spriteSheet: "Pong/bar.png",
     collisionResponse: "active",
     drawCollisionPolygon: false,
@@ -90,21 +89,21 @@ var Bar = A_.SPRITES.Kinematic.extend({
         this.maxVelocity.x = this.maxVelocity.y = 288;
         this.setGravity(0, 0);
 
-        A_.INPUT.addMapping("down", A_.KEY.S);
-        A_.INPUT.addMapping("up", A_.KEY.W);
+        DODO.input.addMapping("down", DODO.Key.S);
+        DODO.input.addMapping("up", DODO.Key.W);
     },
     update: function () {
-        if (A_.INPUT.down["up"]) {
+        if (DODO.input.down["up"]) {
             this.velocity.y -= this.velocityStep;
         }
-        if (A_.INPUT.down["down"]) {
+        if (DODO.input.down["down"]) {
             this.velocity.y += this.velocityStep;
         }
         this._super();
     }
 });
 
-var Brick = A_.SPRITES.Colliding.extend({
+var Brick = DODO.Colliding.extend({
     spriteSheet: "Pong/brick.png",
     drawCollisionPolygon: false,
     frameWidth: 16,

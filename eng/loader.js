@@ -1,4 +1,4 @@
-A_.Loader = A_.EventDispatcher.extend({
+DODO.Loader = DODO.EventDispatcher.extend({
     loadAssets: function(assets, onComplete, onProgress) {
         if (_.isObject(assets)) {
             assets = _.flatten(_.values(assets), true);
@@ -16,7 +16,7 @@ A_.Loader = A_.EventDispatcher.extend({
             }
         };
         _.each(assets, function(asset) {
-            this["load" + A_.UTILS.getAssetType(asset)](asset, onAssetLoaded);
+            this["load" + DODO.getAssetType(asset)](asset, onAssetLoaded);
         }, this);
     },
     loadScript: function(url, callback) {
@@ -24,7 +24,7 @@ A_.Loader = A_.EventDispatcher.extend({
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
         script.type = 'text/javascript';
-        script.src = A_.CONFIG.directories.scripts + url;
+        script.src = DODO.config.directories.scripts + url;
         // Then bind the event to the callback function.
         // There are several events for cross browser compatibility.
         script.onreadystatechange = callback;
@@ -33,36 +33,36 @@ A_.Loader = A_.EventDispatcher.extend({
         head.appendChild(script);
     },
     loadGraphics: function(url, callback) {
-        var imageLoader = new PIXI.ImageLoader(A_.CONFIG.directories.graphics + url);
+        var imageLoader = new PIXI.ImageLoader(DODO.config.directories.graphics + url);
         imageLoader.on('loaded', function () {
-            A_.ASSETS[url] = imageLoader.texture;
+            DODO.assets[url] = imageLoader.texture;
             callback();
         });
         imageLoader.load();
     },
     loadSound: function(urlArray, callback) {
-        A_.ASSETS[urlArray[0]] = new Howl({
+        DODO.assets[urlArray[0]] = new Howl({
             urls: _.map(urlArray, function(sound) {
-                return A_.CONFIG.directories.sounds + sound;
+                return DODO.config.directories.sounds + sound;
             }),
             onload: callback
         });
     },
     loadOther: function (url, callback) {
         var httpRequest = new XMLHttpRequest();
-        httpRequest.open('GET', A_.CONFIG.directories.maps + url);
+        httpRequest.open('GET', DODO.config.directories.maps + url);
         httpRequest.onload = function () {
-            A_.ASSETS[url] = httpRequest.responseText;
+            DODO.assets[url] = httpRequest.responseText;
             callback();
         };
         httpRequest.send();
     }
 });
 
-A_.ASSETS = {};
+DODO.assets = {};
 
 // Augmentable list of asset types
-A_.UTILS.AssetTypes = {
+DODO.AssetTypes = {
     // Script Assets
     js: 'Script',
     // Graphics Assets
@@ -72,16 +72,16 @@ A_.UTILS.AssetTypes = {
 };
 
 // Determine the type of an asset with a lookup table
-A_.UTILS.getAssetType = function(asset) {
+DODO.getAssetType = function(asset) {
     // Cf. Loader.loadSound()
     if (_.isArray(asset))
         return 'Sound';
     // Determine the lowercase extension of the file
     var fileExt = _(asset.split(".")).last().toLowerCase();
     // Lookup the asset in the assetTypes hash, or return other
-    return A_.UTILS.AssetTypes[fileExt] || 'Other';
+    return DODO.AssetTypes[fileExt] || 'Other';
 };
 
-A_.UTILS.getAsset = function(asset) {
-    return A_.ASSETS[asset];
+DODO.getAsset = function(asset) {
+    return DODO.assets[asset];
 };

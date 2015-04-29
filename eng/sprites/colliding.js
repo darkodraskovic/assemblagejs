@@ -1,4 +1,4 @@
-A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
+DODO.Colliding = DODO.Animated.extend({
     collides: true,
     drawCollisionPolygon: true,
     collisionResponse: "static",
@@ -8,8 +8,8 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         this.response = new SAT.Response();
         this._vector = new SAT.Vector();
 
-        if (this.drawCollisionPolygon && A_.game.debug) {
-            this.debugGraphics = new A_.SPRITES.Graphics(this, 0, 0);
+        if (this.drawCollisionPolygon && DODO.game.debug) {
+            this.debugGraphics = new DODO.Graphics(this, 0, 0);
         }
 
         this.setCollisionPolygon(this.createCollisionPolygon(this.polygon));
@@ -17,8 +17,8 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
     },
     setCollisionPolygon: function(polygon) {
         this.collisionPolygon = polygon;
-        if (this.drawCollisionPolygon && A_.game.debug)
-            A_.POLYGON.Utils.drawPolygon(this.debugGraphics.sprite, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
+        if (this.drawCollisionPolygon && DODO.game.debug)
+            DODO.drawPolygon(this.debugGraphics.sprite, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
     },
     resetCollisionData: function() {
         this.collisionWidth = this.collisionHeight = this.collisionOffsetX = this.collisionOffsetY = 0;
@@ -36,7 +36,7 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         var collisionPolygon;
 
         if (!polygon) {
-            var box = new A_.POLYGON.Box(new SAT.Vector(0, 0), this.collisionWidth, this.collisionHeight);
+            var box = new DODO.Box(new SAT.Vector(0, 0), this.collisionWidth, this.collisionHeight);
             collisionPolygon = box.toPolygon();
         } else {
             collisionPolygon = polygon;
@@ -45,10 +45,10 @@ A_.SPRITES.Colliding = A_.SPRITES.Animated.extend({
         collisionPolygon.calcBounds();
 
 //        if (this.getMouseReactivity())
-//            this.sprite.hitArea = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon, false);
+//            this.sprite.hitArea = DODO.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
-        if (this.drawCollisionPolygon && A_.game.debug) {
-            collisionPolygon.PIXIPolygon = A_.POLYGON.Utils.SATPolygonToPIXIPolygon(collisionPolygon);
+        if (this.drawCollisionPolygon && DODO.game.debug) {
+            collisionPolygon.PIXIPolygon = DODO.SATPolygonToPIXIPolygon(collisionPolygon);
         }
 
         return collisionPolygon;

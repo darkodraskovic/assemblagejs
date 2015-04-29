@@ -1,5 +1,5 @@
 // CLASSES
-var Ball = A_.SPRITES.Kinematic.extend({
+var Ball = DODO.Kinematic.extend({
     colTimesCalled: 0,
     spriteSheet: "player_rot.png",
     elasticity: 0.5,
@@ -7,10 +7,10 @@ var Ball = A_.SPRITES.Kinematic.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("down", A_.KEY.S);
-        A_.INPUT.addMapping("up", A_.KEY.W);
+        DODO.input.addMapping("left", DODO.Key.A);
+        DODO.input.addMapping("right", DODO.Key.D);
+        DODO.input.addMapping("down", DODO.Key.S);
+        DODO.input.addMapping("up", DODO.Key.W);
 
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
@@ -23,17 +23,17 @@ var Ball = A_.SPRITES.Kinematic.extend({
         this.setFollowee(true);
     },
     update: function() {
-        if (A_.INPUT.down["up"]) {
+        if (DODO.input.down["up"]) {
             this.acceleration.y = -this.speed;
-        } else if (A_.INPUT.down["down"]) {
+        } else if (DODO.input.down["down"]) {
             this.acceleration.y = this.speed;
         }
         else
             this.acceleration.y = 0;
 
-        if (A_.INPUT.down["left"]) {
+        if (DODO.input.down["left"]) {
             this.acceleration.x = -this.speed;
-        } else if (A_.INPUT.down["right"]) {
+        } else if (DODO.input.down["right"]) {
             this.acceleration.x = this.speed;
         }
         else
@@ -79,15 +79,15 @@ function createRoguelikeMap(scene) {
     map.create(userCallback.bind(this));
 }
 function createRotLayers(scene) {
-    var layerFloors = new A_.SCENE.Layer(scene);
-    new A_.TILES.Tilemap(layerFloors, "tilemap.png", tileW, tileH);
+    var layerFloors = new DODO.Layer(scene);
+    new DODO.Tilemap(layerFloors, "tilemap.png", tileW, tileH);
     layerFloors.tilemap.populate(mapDataFloors);
 
-    var layerWalls = new A_.SCENE.Layer(scene);
-    new A_.TILES.Tilemap(layerWalls, "tilemap.png", tileW, tileH);
+    var layerWalls = new DODO.Layer(scene);
+    new DODO.Tilemap(layerWalls, "tilemap.png", tileW, tileH);
     layerWalls.collisionResponse = "static";    
     layerWalls.tilemap.populate(mapDataWalls);
 
-    layer = new A_.SCENE.Layer(scene);
+    layer = new DODO.Layer(scene);
     new Ball(layer, 256, 256);   
 }

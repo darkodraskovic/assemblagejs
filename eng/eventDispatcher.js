@@ -21,7 +21,7 @@ scene.unbind('start',player);
 player.debind();
 */
 
-A_.EventDispatcher = Class.extend({
+DODO.EventDispatcher = Class.extend({
     bind: function (event, target, callback) {
         // Handle the case where there is no target provided
         if (!callback) {

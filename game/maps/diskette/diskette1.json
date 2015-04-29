@@ -903,7 +903,7 @@
                      "fillColor":"0xFF0000"
                     },
                  "rotation":0,
-                 "type":"A_.SPRITES.Graphics",
+                 "type":"DODO.Graphics",
                  "visible":true,
                  "width":0,
                  "x":1216,
@@ -931,7 +931,7 @@
                      "text":"\"Hello World!\""
                     },
                  "rotation":0,
-                 "type":"A_.SPRITES.Text",
+                 "type":"DODO.Text",
                  "visible":true,
                  "width":32,
                  "x":32,

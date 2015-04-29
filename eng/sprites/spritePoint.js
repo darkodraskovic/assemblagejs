@@ -1,4 +1,4 @@
-A_.SPRITES.SpritePoint = Class.extend({
+DODO.SpritePoint = Class.extend({
     init: function(parent, name, x, y) {
         this.parent = parent;
         this.name = name;

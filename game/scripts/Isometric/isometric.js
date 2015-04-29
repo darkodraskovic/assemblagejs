@@ -1,4 +1,4 @@
-var Anime = A_.SPRITES.Kinematic.extend({
+var Anime = DODO.Kinematic.extend({
     motionState: "idle",
     motionStates: ["moving", "idle"],
     cardinalDir: "E",
@@ -86,10 +86,10 @@ var Player = Anime.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("down", A_.KEY.S);
-        A_.INPUT.addMapping("up", A_.KEY.W);
+        DODO.input.addMapping("left", DODO.Key.A);
+        DODO.input.addMapping("right", DODO.Key.D);
+        DODO.input.addMapping("down", DODO.Key.S);
+        DODO.input.addMapping("up", DODO.Key.W);
 
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
@@ -112,14 +112,14 @@ var Player = Anime.extend({
     },
     update: function() {
         var cd = "";
-        if (A_.INPUT.down["up"]) {
+        if (DODO.input.down["up"]) {
             cd = "N";
-        } else if (A_.INPUT.down["down"]) {
+        } else if (DODO.input.down["down"]) {
             cd = "S";
         }
-        if (A_.INPUT.down["left"]) {
+        if (DODO.input.down["left"]) {
             cd += "W";
-        } else if (A_.INPUT.down["right"]) {
+        } else if (DODO.input.down["right"]) {
             cd += "E";
         }
 
@@ -129,7 +129,7 @@ var Player = Anime.extend({
         } else
             this.motionState = "idle";
 
-        var rot = (A_.UTILS.angleTo(this.getPosition(), this.scene.getMousePosition())).toDeg();
+        var rot = (DODO.angleTo(this.getPosition(), this.scene.getMousePosition())).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
@@ -143,7 +143,7 @@ var Player = Anime.extend({
     }
 });
 
-var Cube = A_.SPRITES.Kinematic.extend({
+var Cube = DODO.Kinematic.extend({
     spriteSheet: "Isometric/cube.png",
     drawCollisionPolygon: true,
     collisionResponse: "static",
@@ -153,17 +153,17 @@ var Cube = A_.SPRITES.Kinematic.extend({
     }
 });
 
-var Sphere = A_.SPRITES.Kinematic.extend({
+var Sphere = DODO.Kinematic.extend({
     spriteSheet: "Isometric/sphere.png",
     drawCollisionPolygon: true,
     origin: new PIXI.Point(0.5, 1),
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        A_.INPUT.addMapping("left", A_.KEY.A);
-        A_.INPUT.addMapping("right", A_.KEY.D);
-        A_.INPUT.addMapping("down", A_.KEY.S);
-        A_.INPUT.addMapping("up", A_.KEY.W);
+        DODO.input.addMapping("left", DODO.Key.A);
+        DODO.input.addMapping("right", DODO.Key.D);
+        DODO.input.addMapping("down", DODO.Key.S);
+        DODO.input.addMapping("up", DODO.Key.W);
 
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
@@ -176,17 +176,17 @@ var Sphere = A_.SPRITES.Kinematic.extend({
         this.setFollowee(true);
     },
     update: function() {
-        if (A_.INPUT.down["up"]) {
+        if (DODO.input.down["up"]) {
             this.acceleration.y = -this.speed;
-        } else if (A_.INPUT.down["down"]) {
+        } else if (DODO.input.down["down"]) {
             this.acceleration.y = this.speed;
         }
         else
             this.acceleration.y = 0;
 
-        if (A_.INPUT.down["left"]) {
+        if (DODO.input.down["left"]) {
             this.acceleration.x = -this.speed;
-        } else if (A_.INPUT.down["right"]) {
+        } else if (DODO.input.down["right"]) {
             this.acceleration.x = this.speed;
         }
         else
