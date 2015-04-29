@@ -1,6 +1,6 @@
-DODO.createTiledMap = function (mapData, scene) {
+DODO.createTiledMap = function(mapData, scene) {
     mapData = JSON.parse(mapData);
-    
+
     scene.setWidth(mapData["width"] * mapData["tilewidth"]);
     scene.setHeight(mapData["height"] * mapData["tileheight"]);
 
@@ -27,7 +27,7 @@ DODO.createTiledMap = function (mapData, scene) {
             new DODO.Tiling(layer, {image: layer["image"], width: scene.width, height: scene.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
         }
-        
+
         // if current layer is TILE LAYER
         else if (layerData["type"] === "tilelayer") {
             // Temporarily turn on unset layer.baked option in order to build
@@ -90,7 +90,7 @@ DODO.createTiledMap = function (mapData, scene) {
                 }
             }
         }
-        
+
         // if the current layer is OBJECT LAYER
         else if (layerData["type"] === "objectgroup") {
             for (var j = 0; j < layerData["objects"].length; j++) {
@@ -104,14 +104,8 @@ DODO.createTiledMap = function (mapData, scene) {
                 if (oData["polygon"]) {
                     args.polygon = DODO.TiledPolygonToSATPolygon(oData, mapData);
                 }
-
-                var type;
-                if (oData["type"]) { // user defined type
-                    type = eval(oData["type"]);
-                } else {
-                    type = DODO.Colliding; // Colliding polygon
-                }
-                var o = new type(layer, oData["x"], oData["y"], args);
+                
+                var o = new (eval(oData["type"]))(layer, oData["x"], oData["y"], args);
 
                 // General object transform
                 o.setRotation(oData["rotation"].toRad());

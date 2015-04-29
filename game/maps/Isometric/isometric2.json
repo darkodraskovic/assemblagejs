@@ -38,6 +38,7 @@
          "objects":[
                 {
                  "height":0,
+                 "id":1,
                  "name":"",
                  "polygon":[
                         {
@@ -54,10 +55,10 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":160,
@@ -65,6 +66,7 @@
                 }, 
                 {
                  "height":0,
+                 "id":2,
                  "name":"",
                  "polygon":[
                         {
@@ -85,10 +87,10 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":352,
@@ -96,6 +98,7 @@
                 }, 
                 {
                  "height":0,
+                 "id":3,
                  "name":"",
                  "polygon":[
                         {
@@ -119,7 +122,7 @@
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":32,
@@ -127,6 +130,7 @@
                 }, 
                 {
                  "height":0,
+                 "id":4,
                  "name":"",
                  "properties":
                     {
@@ -141,6 +145,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":5,
                  "name":"Player",
                  "properties":
                     {
@@ -160,6 +165,7 @@
          "x":0,
          "y":0
         }],
+ "nextobjectid":6,
  "orientation":"isometric",
  "properties":
     {

@@ -39,6 +39,7 @@
          "objects":[
                 {
                  "height":0,
+                 "id":1,
                  "name":"Player",
                  "polygon":[
                         {
@@ -75,6 +76,7 @@
          "x":0,
          "y":0
         }],
+ "nextobjectid":2,
  "orientation":"isometric",
  "properties":
     {

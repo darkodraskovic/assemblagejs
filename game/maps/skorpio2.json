@@ -57,10 +57,11 @@
                 {
                  "gid":257,
                  "height":1,
+                 "id":1,
                  "name":"",
                  "properties":
                     {
-                     "collisionMask":"\"Player\""
+
                     },
                  "rotation":0,
                  "type":"PlayerSkorpio",
@@ -72,6 +73,7 @@
                 {
                  "gid":258,
                  "height":1,
+                 "id":2,
                  "name":"",
                  "properties":
                     {
@@ -87,6 +89,7 @@
                 {
                  "gid":258,
                  "height":1,
+                 "id":3,
                  "name":"",
                  "properties":
                     {
@@ -102,6 +105,7 @@
                 {
                  "gid":258,
                  "height":1,
+                 "id":4,
                  "name":"",
                  "properties":
                     {
@@ -117,6 +121,7 @@
                 {
                  "gid":259,
                  "height":1,
+                 "id":5,
                  "name":"",
                  "properties":
                     {
@@ -132,6 +137,7 @@
                 {
                  "gid":259,
                  "height":1,
+                 "id":6,
                  "name":"",
                  "properties":
                     {
@@ -147,6 +153,7 @@
                 {
                  "gid":259,
                  "height":1,
+                 "id":7,
                  "name":"",
                  "properties":
                     {
@@ -205,6 +212,7 @@
          "objects":[
                 {
                  "height":0,
+                 "id":8,
                  "name":"Diamond",
                  "polygon":[
                         {
@@ -233,12 +241,10 @@
                         }],
                  "properties":
                     {
-                     "collidesWith":"A_.COLLISION.Type.PLAYER | A_.COLLISION.Type.ENEMY",
-                     "collisionResponse":"\"sensor\"",
-                     "collisionType":"0"
+
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":192,
@@ -246,7 +252,8 @@
                 }, 
                 {
                  "height":0,
-                 "name":"",
+                 "id":9,
+                 "name":"Diamond",
                  "polygon":[
                         {
                          "x":0,
@@ -266,10 +273,10 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":672,
@@ -277,7 +284,8 @@
                 }, 
                 {
                  "height":0,
-                 "name":"",
+                 "id":10,
+                 "name":"Diamond",
                  "polygon":[
                         {
                          "x":0,
@@ -297,10 +305,10 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":672,
@@ -308,6 +316,7 @@
                 }, 
                 {
                  "height":0,
+                 "id":11,
                  "name":"",
                  "polygon":[
                         {
@@ -339,7 +348,8 @@
                 }, 
                 {
                  "height":0,
-                 "name":"",
+                 "id":12,
+                 "name":"Diamond",
                  "polygon":[
                         {
                          "x":0,
@@ -359,10 +369,10 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":480,
@@ -370,7 +380,8 @@
                 }, 
                 {
                  "height":0,
-                 "name":"",
+                 "id":13,
+                 "name":"Diamond",
                  "polygon":[
                         {
                          "x":0,
@@ -390,10 +401,10 @@
                         }],
                  "properties":
                     {
-                     "collisionResponse":"\"static\""
+
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":96,
@@ -406,6 +417,7 @@
          "x":0,
          "y":0
         }],
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "properties":
     {

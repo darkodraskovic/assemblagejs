@@ -27,6 +27,7 @@
          "objects":[
                 {
                  "height":96,
+                 "id":1,
                  "name":"Sun",
                  "properties":
                     {
@@ -58,6 +59,7 @@
          "objects":[
                 {
                  "height":64,
+                 "id":2,
                  "name":"Pyramid",
                  "properties":
                     {
@@ -72,6 +74,7 @@
                 }, 
                 {
                  "height":64,
+                 "id":3,
                  "name":"Pyramid",
                  "properties":
                     {
@@ -86,6 +89,7 @@
                 }, 
                 {
                  "height":64,
+                 "id":4,
                  "name":"Pyramid",
                  "properties":
                     {
@@ -150,6 +154,7 @@
          "objects":[
                 {
                  "height":68,
+                 "id":5,
                  "name":"Player",
                  "properties":
                     {
@@ -164,6 +169,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":6,
                  "name":"Diskette",
                  "properties":
                     {
@@ -178,6 +184,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":7,
                  "name":"Diskette",
                  "properties":
                     {
@@ -192,6 +199,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":8,
                  "name":"Diskette",
                  "properties":
                     {
@@ -206,6 +214,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":9,
                  "name":"Diskette",
                  "properties":
                     {
@@ -220,6 +229,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":10,
                  "name":"Foo",
                  "properties":
                     {
@@ -234,6 +244,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":11,
                  "name":"Diskette",
                  "properties":
                     {
@@ -248,6 +259,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":12,
                  "name":"Diskette",
                  "properties":
                     {
@@ -262,6 +274,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":13,
                  "name":"Diskette",
                  "properties":
                     {
@@ -276,6 +289,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":14,
                  "name":"Diskette",
                  "properties":
                     {
@@ -290,6 +304,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":15,
                  "name":"Bar",
                  "properties":
                     {
@@ -304,6 +319,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":16,
                  "name":"Diskette",
                  "properties":
                     {
@@ -318,6 +334,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":17,
                  "name":"Diskette",
                  "properties":
                     {
@@ -332,6 +349,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":18,
                  "name":"Diskette",
                  "properties":
                     {
@@ -346,6 +364,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":19,
                  "name":"Diskette",
                  "properties":
                     {
@@ -360,6 +379,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":20,
                  "name":"Diskette",
                  "properties":
                     {
@@ -374,6 +394,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":21,
                  "name":"Diskette",
                  "properties":
                     {
@@ -388,6 +409,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":22,
                  "name":"Diskette",
                  "properties":
                     {
@@ -402,6 +424,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":23,
                  "name":"Springer",
                  "properties":
                     {
@@ -416,6 +439,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":24,
                  "name":"Diskette",
                  "properties":
                     {
@@ -430,6 +454,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":25,
                  "name":"Diskette",
                  "properties":
                     {
@@ -444,6 +469,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":26,
                  "name":"Diskette",
                  "properties":
                     {
@@ -458,6 +484,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":27,
                  "name":"Diskette",
                  "properties":
                     {
@@ -472,6 +499,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":28,
                  "name":"Diskette",
                  "properties":
                     {
@@ -486,6 +514,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":29,
                  "name":"Diskette",
                  "properties":
                     {
@@ -500,6 +529,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":30,
                  "name":"Diskette",
                  "properties":
                     {
@@ -514,6 +544,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":31,
                  "name":"Diskette",
                  "properties":
                     {
@@ -528,6 +559,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":32,
                  "name":"Diskette",
                  "properties":
                     {
@@ -542,6 +574,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":33,
                  "name":"Diskette",
                  "properties":
                     {
@@ -556,6 +589,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":34,
                  "name":"Diskette",
                  "properties":
                     {
@@ -570,6 +604,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":35,
                  "name":"Diskette",
                  "properties":
                     {
@@ -584,6 +619,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":36,
                  "name":"Diskette",
                  "properties":
                     {
@@ -598,6 +634,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":37,
                  "name":"Diskette",
                  "properties":
                     {
@@ -612,6 +649,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":38,
                  "name":"Diskette",
                  "properties":
                     {
@@ -626,6 +664,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":39,
                  "name":"Diskette",
                  "properties":
                     {
@@ -640,6 +679,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":40,
                  "name":"Diskette",
                  "properties":
                     {
@@ -654,6 +694,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":41,
                  "name":"Diskette",
                  "properties":
                     {
@@ -668,6 +709,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":42,
                  "name":"Diskette",
                  "properties":
                     {
@@ -682,6 +724,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":43,
                  "name":"Diskette",
                  "properties":
                     {
@@ -696,6 +739,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":44,
                  "name":"Diskette",
                  "properties":
                     {
@@ -710,6 +754,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":45,
                  "name":"Diskette",
                  "properties":
                     {
@@ -724,6 +769,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":46,
                  "name":"Diskette",
                  "properties":
                     {
@@ -738,6 +784,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":47,
                  "name":"Diskette",
                  "properties":
                     {
@@ -752,6 +799,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":48,
                  "name":"Diskette",
                  "properties":
                     {
@@ -766,6 +814,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":49,
                  "name":"Diskette",
                  "properties":
                     {
@@ -780,6 +829,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":50,
                  "name":"Diskette",
                  "properties":
                     {
@@ -794,6 +844,7 @@
                 }, 
                 {
                  "height":86,
+                 "id":51,
                  "name":"Hal",
                  "properties":
                     {
@@ -808,6 +859,7 @@
                 }, 
                 {
                  "height":0,
+                 "id":52,
                  "name":"",
                  "polygon":[
                         {
@@ -827,7 +879,7 @@
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":1504,
@@ -835,7 +887,8 @@
                 }, 
                 {
                  "height":0,
-                 "name":"PolyG",
+                 "id":53,
+                 "name":"",
                  "polygon":[
                         {
                          "x":0,
@@ -854,7 +907,7 @@
 
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"DODO.Colliding",
                  "visible":true,
                  "width":0,
                  "x":1504,
@@ -862,6 +915,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":54,
                  "name":"Springer",
                  "properties":
                     {
@@ -876,6 +930,7 @@
                 }, 
                 {
                  "height":0,
+                 "id":55,
                  "name":"Graphics",
                  "polygon":[
                         {
@@ -924,6 +979,7 @@
          "objects":[
                 {
                  "height":32,
+                 "id":56,
                  "name":"Text",
                  "properties":
                     {
@@ -948,6 +1004,7 @@
          "x":0,
          "y":0
         }],
+ "nextobjectid":57,
  "orientation":"orthogonal",
  "properties":
     {
