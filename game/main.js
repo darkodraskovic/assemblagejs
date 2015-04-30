@@ -95,10 +95,10 @@ var loader = DODO.game.loader;
 //sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 //
 // FARER
-loader.loadAssets(farer, function () {
-    var scene = new DODO.Scene("farer1", DODO.config.camera);
-    populateScene(scene);
-});
+//loader.loadAssets(farer, function () {
+//    var scene = new DODO.Scene("farer1", DODO.config.camera);
+//    populateScene(scene);
+//});
 
 // ROT
 //loader.loadAssets(rot, function () {
@@ -107,15 +107,15 @@ loader.loadAssets(farer, function () {
 //});
 
 // DISKETTE
-//loader.loadAssets(diskette, function () {
-//    var scene =  new DODO.Scene("Diskette Level 1", DODO.config.camera, "diskette/diskette1.json");
-//    for (var i = 0; i < 50; i++) {
-//        var star = new SceneryStar(scene.findLayerByName("Sky"),
-//                Math.random() * DODO.game.renderer.width, Math.random() * DODO.game.renderer.width);
-//        star.sprite.alpha = Math.random();
-//    }
-//    scene.findSpriteByClass(ScenerySun).setZ("top");
-//    player = scene.findSpriteByClass(Player);
-//    
-//    DODO.input.addMapping("restart", DODO.Key.T);
-//});
+loader.loadAssets(diskette, function () {
+    var scene =  new DODO.Scene("Diskette Level 1", DODO.config.camera, "diskette/diskette1.json");
+    for (var i = 0; i < 50; i++) {
+        var star = new SceneryStar(scene.findLayerByName("Sky"),
+                Math.random() * DODO.game.renderer.width, Math.random() * DODO.game.renderer.width);
+        star.sprite.alpha = Math.random();
+    }
+    scene.findSpriteByClass(ScenerySun).setZ("top");
+    player = scene.findSpriteByClass(Player);
+    
+    DODO.input.addMapping("restart", DODO.Key.T);
+});

@@ -143,8 +143,8 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this._super();
     },
     shootBullet: function() {
-        var sprPt = this.rifle.getSpritePoint(this.facing);
-        var bullet = new Bullet(this.scene.findLayerByName("Effects"), sprPt.getX(), sprPt.getY());
+        var sprPt = this.rifle.getPoint(this.facing);
+        var bullet = new Bullet(this.scene.findLayerByName("Effects"), sprPt.x, sprPt.y);
         var rot = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
         bullet.setRotation(rot);
         bullet.velocity.x = Math.cos(rot) * bullet.maxVelocity.x;
@@ -208,10 +208,10 @@ var Rifle = DODO.Animated.extend({
         this.addAnimation("moving_left", _.range(10, 18), this.animSpeed);
         this.addAnimation("moving_right", _.range(28, 36), this.animSpeed);
 
-        this.setSpritePoint("up", 14, -18);
-        this.setSpritePoint("down", -10, 28);
-        this.setSpritePoint("left", -24, 6);
-        this.setSpritePoint("right", 24, 6);
+        this.setPoint("up", 14, -18);
+        this.setPoint("down", -10, 28);
+        this.setPoint("left", -24, 6);
+        this.setPoint("right", 24, 6);
 
         this.pinTo = new DODO.addons.PinTo(this, {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
@@ -287,8 +287,8 @@ var LaserBeam = DODO.Animated.extend({
         this.setOrigin(0, 0.5);
 
         this.setRotation(DODO.angleTo(this.spawner.getPosition(), this.scene.getMousePosition()));
-        var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
-        this.setPosition(sprPt.getX(), sprPt.getY());
+        var sprPt = this.spawner.rifle.getPoint(this.spawner.facing);
+        this.setPosition(sprPt.x, sprPt.y);
 
         this.tip = {x: this.getX(), y: this.getY()};
         this.laserTip = new LaserTip(this.scene.findLayerByName("Effects"),
@@ -307,8 +307,8 @@ var LaserBeam = DODO.Animated.extend({
         this.scene.bind('rightreleased', this, this.destroy)
     },
     update: function() {
-        var sprPt = this.spawner.rifle.getSpritePoint(this.spawner.facing);
-        this.setPosition(sprPt.getX(), sprPt.getY());
+        var sprPt = this.spawner.rifle.getPoint(this.spawner.facing);
+        this.setPosition(sprPt.x, sprPt.y);
 
         this.setRotation(DODO.angleTo(this.getPosition(), this.scene.getMousePosition()));
         this.setWidth(DODO.distanceTo(this.getPosition(), this.scene.getMousePosition()));

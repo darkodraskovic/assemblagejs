@@ -17,11 +17,12 @@ DODO.addons.PinTo = Class.extend({
         if (typeof this.offsetY === "undefined") {
             this.offsetY = 0;
         }
-        this.spritePoint = this.parent.setSpritePoint(this.name, this.offsetX, this.offsetY);
+        this.parent.setPoint(this.name, this.offsetX, this.offsetY);
     },
     update: function () {
         this.sprite.setRotation(this.parent.getRotation());
-        this.sprite.setPosition(this.spritePoint.getX(), this.spritePoint.getY());
+        var pos = this.parent.getPoint(this.name);
+        this.sprite.setPosition(pos.x, pos.y);
     }
 });
 

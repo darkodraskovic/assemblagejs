@@ -44,7 +44,7 @@ var Player = Anime.extend({
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
-        this.setSpritePoint("ball", 0, -this.getHeight() / 3);
+        this.setPoint("ball", 0, -this.getHeight() / 3);
 
         this.scene.bind('created', this, function () {
             this.progressBarInner = new ProgressBarInner(this.scene.findLayerByName("Entities"),

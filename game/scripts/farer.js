@@ -16,8 +16,10 @@ var Player = DODO.Kinematic.extend({
         this.setOrigin(0.5, 0.5);
         this.laser1 = new Laser(this, 18, -12);
         this.laser2 = new Laser(this, 18, 12);
-        this.setSpritePoint("bullet1", 18, -12);
-        this.setSpritePoint("bullet2", 18, 12);
+//        this.setSpritePoint("bullet1", 18, -12);
+//        this.setSpritePoint("bullet2", 18, 12);
+        this.setPoint("bullet1", 18, -12);
+        this.setPoint("bullet2", 18, 12);
         this.scene.bind('leftpressed', this, this.shootBullet);
         this.setFollowee(true);
         player = this;
@@ -66,13 +68,15 @@ var Player = DODO.Kinematic.extend({
     },
     shootBullet: function () {
         var rot = this.getRotation();
-        var pos1 = this.getSpritePoint("bullet1").getPosition();
+//        var pos1 = this.getSpritePoint("bullet1").getPosition();
+        var pos1 = this.getPoint("bullet1");
         var bullet1 = new Bullet(this.scene.findLayerByName("Effects"), pos1.x, pos1.y);
         bullet1.setRotation(rot);
         bullet1.velocity.x = Math.cos(rot) * bullet1.maxVelocity.x;
         bullet1.velocity.y = Math.sin(rot) * bullet1.maxVelocity.y;
 
-        var pos2 = this.getSpritePoint("bullet2").getPosition();
+//        var pos2 = this.getSpritePoint("bullet2").getPosition();
+        var pos2 = this.getPoint("bullet2");
         var bullet2 = new Bullet(this.scene.findLayerByName("Effects"), pos2.x, pos2.y);
         bullet2.setRotation(rot);
         bullet2.velocity.x = Math.cos(rot) * bullet2.maxVelocity.x;

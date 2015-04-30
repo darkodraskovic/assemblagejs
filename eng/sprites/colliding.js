@@ -6,7 +6,7 @@ DODO.Colliding = DODO.Animated.extend({
         this._super(parent, x, y, props);
 
         this.response = new SAT.Response();
-        this._vector = new SAT.Vector();
+//        this._vector = new SAT.Vector();
 
         if (this.drawCollisionPolygon && DODO.game.debug) {
             this.debugGraphics = new DODO.Graphics(this, 0, 0);
