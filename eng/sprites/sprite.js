@@ -18,6 +18,8 @@ DODO.Sprite = DODO.Evented.extend({
         // Used to optimize getters & setters.
         this.position = this.sprite.position;
         this.scale = this.sprite.scale;
+        
+        this.sprite.dodoSprite = this;
 
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
         var sprites = new PIXI.DisplayObjectContainer();
@@ -73,20 +75,20 @@ DODO.Sprite = DODO.Evented.extend({
         return true;
     },
     // SPRITE CHILDREN
+    // The second child of this PIXI sprite is the parent of PIXI sprites belonging to other DODO sprites.
     addSprite: function (sprite) {
-        this.sprites = this.sprites || [];
-        this.sprites.push(sprite);
-        // The second child of this PIXI sprite is the parent of sprites added to this PIXI sprite.
-        this.sprite.children[1].addChild(sprite.sprite);
-        // .container is DODO sprite containing this DODO sprite.
-        sprite.container = this;
-        return sprite;
+        this.sprite.children[this.sprite.children.length - 1].addChild(sprite.sprite);
     },
     removeSprite: function (sprite) {
-        this.sprites.splice(this.sprites.indexOf(sprite), 1);
-        this.sprite.children[1].removeChild(sprite.sprite);
-        sprite.container = null;
-        return sprite;
+        this.sprite.children[this.sprite.children.length - 1].removeChild(sprite.sprite);
+    },
+    getChildrenSprites: function () {
+        return _.map(this.sprite.children[this.sprite.children.length - 1].children, function (child) {
+            return child.dodoSprite;
+        })
+    },
+    getParentSprite: function () {
+        return this.sprite.parent.parent.dodoSprite;
     },
     // SPRITE POINTS
     setPoint: function (name, x, y) {
@@ -216,7 +218,7 @@ DODO.Sprite = DODO.Evented.extend({
         this.origin.x = x;
         this.origin.y = y;
 
-        _.each(this.sprites, function (sprite) {
+        _.each(this.getChildrenSprites(), function (sprite) {
             sprite.setPositionRelative(deltaX, deltaY);
         });
 
@@ -251,17 +253,13 @@ DODO.Sprite = DODO.Evented.extend({
     },
     setLayer: function (layer) {
         if (_.isString(layer)) {
-            var dest = this.scene.findLayerByName(layer);
+            layer = this.scene.findLayerByName(layer);
         } else if (_.isNumber(layer)) {
-            var dest = this.scene.findLayerByNumber(layer);
+            layer = this.scene.findLayerByNumber(layer);
         }
-        if (dest) {
-            if (this.container) {
-                this.container.removeSprite(this);
-            } else
-                this.sprite.parent.removeChild(this.sprite);
-
-            dest.addChild(this.sprite);
+        if (layer instanceof DODO.Layer) {
+            layer.addChild(this.sprite);
+            return layer;
         }
     },
     getZ: function () {
@@ -285,20 +283,13 @@ DODO.Sprite = DODO.Evented.extend({
     },
     moveToSprite: function (sprite, position) {
         var layer = sprite.getLayer();
-        if (!layer)
-            return;
-        if (this.container) {
-            this.container.removeSprite(this);
-        }
-        else {
-            this.sprite.parent.removeChild(this.sprite);
-        }
-        layer.addChild(this.sprite);
-        if (position === "back" || position === "front") {
-            layer.addChildAt(this.sprite, layer.getChildIndex(sprite.sprite));
-            if (position === "front") {
-                // Swaps the position of 2 PIXI DO within this PIXI DOC.
-                layer.swapChildren(this.sprite, sprite.sprite);
+        if (this.setLayer(layer)) {
+            if (position === "back" || position === "front") {
+                layer.addChildAt(this.sprite, layer.getChildIndex(sprite.sprite));
+                if (position === "front") {
+                    // Swaps the position of 2 PIXI DO within this PIXI DOC.
+                    layer.swapChildren(this.sprite, sprite.sprite);
+                }
             }
         }
     },
@@ -309,13 +300,18 @@ DODO.Sprite = DODO.Evented.extend({
         var spritesToDestroy = this.scene.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
-        if (this.container && !recursive)
-            this.container.removeSprite(this);
-        if (this.sprites && this.sprites.length) {
-            for (var i = 0; i < this.sprites.length; i++) {
-                this.sprites[i].destroy(true);
+
+        var parentSprite = this.getParentSprite();
+        if (parentSprite && !recursive)
+            parentSprite.removeSprite(this);
+
+        var sprites = this.getChildrenSprites();
+        if (sprites && sprites.length) {
+            for (var i = 0; i < sprites.length; i++) {
+                sprites[i].destroy(true);
             }
         }
+
         this.trigger('destroyed');
         this.debind();
         spritesToDestroy.push(this);

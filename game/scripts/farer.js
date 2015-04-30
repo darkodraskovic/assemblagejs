@@ -171,7 +171,7 @@ var Rotor = DODO.Colliding.extend({
     spriteSheet: "rotor.png",
     frameWidth: 45,
     frameHeight: 45,
-    collisionResponse: "sensor",
+    collisionResponse: "static",
 //    angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
