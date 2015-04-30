@@ -89,7 +89,7 @@ DODO.createTiledMap = function(mapData, scene) {
             }
         }
         if (layer.baked) {
-            layer = scene.bakeLayer(layer);
+            scene.bakeLayer(layer);
         }
     }
 };
