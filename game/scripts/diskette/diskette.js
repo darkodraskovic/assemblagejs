@@ -119,7 +119,7 @@ var Diskette = DODO.Kinematic.extend({
             this.setAnimation("inserting");
             this.inserting = true;
 //            this.setPosition(other.getSlotX(), other.getSlotY());
-            this.setX(other.getSlotX());
+            this.setX(other.getSlotX() + this.getWidth() * this.origin.x);
             this.collides = false;
         }
     }

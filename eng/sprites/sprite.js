@@ -12,13 +12,12 @@ DODO.Sprite = DODO.Evented.extend({
             }
         }
         this._vector = new SAT.Vector();
+        this.scene = parent.scene;
     },
     initializeSprite: function (parent, x, y) {
         // Used to optimize getters & setters.
         this.position = this.sprite.position;
         this.scale = this.sprite.scale;
-
-        this.scene = parent.scene;
 
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
         var sprites = new PIXI.DisplayObjectContainer();

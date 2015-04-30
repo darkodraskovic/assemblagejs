@@ -230,7 +230,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     throwBall: function() {
         if (this.mode !== "throwing")
             return;
-        var ball = new Ball(this.layer, this.getX(), this.getY());
+        var ball = new Ball(this.getLayer(), this.getX(), this.getY());
         var angle = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
         ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
         ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);

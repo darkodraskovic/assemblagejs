@@ -121,7 +121,7 @@ var Player = Anime.extend({
         this._super();
     },
     throwBall: function (force) {
-        var ball = new Ball(this.layer, this.getX(), this.aabbTop() + (this.platformerState === "crouching" ? 16 : 20));
+        var ball = new Ball(this.getLayer(), this.getX(), this.aabbTop() + (this.platformerState === "crouching" ? 16 : 20));
         var angle = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
         ball.velocity.x = force * Math.cos(angle);
         ball.velocity.y = force * Math.sin(angle);

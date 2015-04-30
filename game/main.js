@@ -95,10 +95,10 @@ var loader = DODO.game.loader;
 //sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 //
 // FARER
-loader.loadAssets(farer, function () {
-    var scene = new DODO.Scene("farer1", DODO.config.camera);
-    populateScene(scene);
-});
+//loader.loadAssets(farer, function () {
+//    var scene = new DODO.Scene("farer1", DODO.config.camera);
+//    populateScene(scene);
+//});
 
 // ROT
 //loader.loadAssets(rot, function () {

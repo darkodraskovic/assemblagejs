@@ -102,7 +102,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
         this.force = new SAT.Vector(512, 512);
-        this.rifle = new Rifle(this.layer,
+        this.rifle = new Rifle(this.getLayer(),
                 this.getX(), this.getY(),
                 {holder: this, animSpeed: this.animSpeed});
 

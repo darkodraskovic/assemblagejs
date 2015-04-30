@@ -108,7 +108,7 @@ var Player = Anime.extend({
             window.console.log("x: " + tm.getMapIsoX(pos.x, pos.y) + ", y: " + tm.getMapIsoY(pos.x, pos.y));
         });
         
-        this.setFollowee(true);
+        this.scene.camera.setFollowee(this);
     },
     update: function() {
         var cd = "";
@@ -173,7 +173,7 @@ var Sphere = DODO.Kinematic.extend({
         window.scene = this.scene;
         window.player = this;
         
-        this.setFollowee(true);
+        this.scene.camera.setFollowee(this);
     },
     update: function() {
         if (DODO.input.down["up"]) {
