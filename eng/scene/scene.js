@@ -68,22 +68,21 @@ DODO.Scene = DODO.Evented.extend({
         // Render the layer to the render texture.
         renderTexture.render(layer);
 
-//    for (var prop in layer) {
-//        if (layer.hasOwnProperty(prop)) {
-//            sprite[prop] = layer[prop];
-//        }
-//    }
-        sprite.alpha = layer.alpha;
-        sprite.scene = layer.scene;
-        sprite.position.x = layer.position.x;
-        sprite.position.y = layer.position.y;
-        sprite.parallax = layer.parallax;
-        sprite.name = layer.name;
-        sprite.tilemap = layer.tilemap;
-        sprite.collisionResponse = layer.collisionResponse;
-
-        sprite.baked = true;
-        return sprite;
+        var bakedLayer = new DODO.Layer(this, layer.name);
+        bakedLayer.alpha = layer.alpha;
+        bakedLayer.scene = layer.scene;
+        bakedLayer.position.x = layer.position.x;
+        bakedLayer.position.y = layer.position.y;
+        bakedLayer.parallax = layer.parallax;
+        bakedLayer.name = layer.name;
+        bakedLayer.tilemap = layer.tilemap; 
+        bakedLayer.tilemap.layer = bakedLayer;
+        bakedLayer.collisionResponse = layer.collisionResponse;
+        bakedLayer.baked = true;
+        bakedLayer.addChild(sprite);
+        
+        this.container.addChildAt(bakedLayer, this.container.getChildIndex(layer));
+        this.container.removeChild(layer);
     },
     destroy: function() {
         this.trigger('destroyed');

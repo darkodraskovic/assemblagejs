@@ -135,7 +135,7 @@ DODO.Kinematic = DODO.Colliding.extend({
             }
         }
         if (this.gravitySet) {
-            this.processTiles();
+            this._processPlatforms();
             if (this.velocity.len2()) {
                 if (!this.wall)
                     this.setX(x);
@@ -143,7 +143,8 @@ DODO.Kinematic = DODO.Colliding.extend({
                     this.setY(y);
             }
         }
-        this._processStaticImpulse(this._collisionNormal);
+        else
+            this._processStaticImpulse(this._collisionNormal);
     },
     collideWithTile: function(other, response) {
         this.collisionTiles.push(other);
@@ -154,28 +155,29 @@ DODO.Kinematic = DODO.Colliding.extend({
         this.synchCollisionPolygon();
         this._collisionNormal.copy(this.response.overlapN);
     },
-    processTiles: function() {
+    _processPlatforms: function() {
         for (var i = 0, len = this.collisionTiles.length; i < len; i++) {
             var entity = this.collisionTiles[i];
             var response = this.response;
-            if (!this.standing &&
-                    this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
-                if (response.overlap) {
-                    if (response.overlapN[this.gV] === this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] >= 0) {
-                        this._processVelocity(this.gV);
-                    }
-                    this.ground = entity;
-                    this._processStanding(response.overlapN);
-                }
-            }
-            else if (!this.ceiling && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], -this.gravityN[this.gV])) {
-                if (response.overlap) {
-                    this.ceiling = entity;
-                    if (response.overlapN[this.gV] === -this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] < 0) {
-                        this._processVelocity(this.gV);
+            if (this.velocity[this.gV])
+                if (!this.standing &&
+                        this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], this.gravityN[this.gV])) {
+                    if (response.overlap) {
+                        if (response.overlapN[this.gV] === this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] >= 0) {
+                            this._processVelocity(this.gV);
+                        }
+                        this.ground = entity;
+                        this._processStanding(response.overlapN);
                     }
                 }
-            }
+                else if (!this.ceiling && this.collidesWithEntityAtOffset(entity, this.gravityN[this.gH], -this.gravityN[this.gV])) {
+                    if (response.overlap) {
+                        this.ceiling = entity;
+                        if (response.overlapN[this.gV] === -this.gravityN[this.gV] && this.velocity[this.gV] / this.gravityN[this.gV] < 0) {
+                            this._processVelocity(this.gV);
+                        }
+                    }
+                }
             if (!this.velocity[this.gH])
                 continue;
             var sign = this.velocity[this.gH] / this.gravityN[this.gH] < 0 ? -1 : 1;
@@ -315,8 +317,7 @@ DODO.Kinematic = DODO.Colliding.extend({
     },
     _processStanding: function(overlapN) {
         if (overlapN.dot(this.gravityN) > 0) {
-            this.slopeNormal.x = overlapN.x;
-            this.slopeNormal.y = overlapN.y;
+            this.slopeNormal.copy(overlapN);
             if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
                 this.standing = true;
             }

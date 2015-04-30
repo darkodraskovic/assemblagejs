@@ -10,11 +10,8 @@ DODO.createTiledMap = function(mapData, scene) {
         var layer = new DODO.Layer(scene);
         var layerData = layersData[i];
 
-        for (var prop in layerData) {
-            layer[prop] = layerData[prop];
-        }
+        _.extend(layer, layerData);
         layer.alpha = layer.opacity;
-
         if (layerData["properties"]) {
             var customLayerProps = layerData["properties"];
             for (var prop in customLayerProps) {
@@ -30,40 +27,26 @@ DODO.createTiledMap = function(mapData, scene) {
 
         // if current layer is TILE LAYER
         else if (layerData["type"] === "tilelayer") {
-            // Temporarily turn on unset layer.baked option in order to build
-            // a tilemap. We'll bake the tilemap later if needed.
-            var baked = layer.baked;
-            layer.baked = false;
-
-            // This layer property must be set by user.
+            // This layer "image" property must be set by the user.
             var img = layer["image"].substring(layer["image"].lastIndexOf("/") + 1);
             var tileset;
-            var spacing;
             for (var j = 0; j < mapData["tilesets"].length; j++) {
                 var tilesetimg = mapData["tilesets"][j].image;
-                if (tilesetimg.indexOf("/") > -1) {
-                    tilesetimg = tilesetimg.substring(tilesetimg.lastIndexOf("/") + 1);
-                }
+                tilesetimg = tilesetimg.substring(tilesetimg.lastIndexOf("/") + 1);
                 if (tilesetimg === img) {
                     tileset = mapData["tilesets"][j];
-                    spacing = mapData["tilesets"][j]["spacing"];
                     break;
                 }
             }
 
-            var mapW = layerData["width"];
-            var mapH = layerData["height"];
-            var tileW = tileset.tilewidth;
-            var tileH = tileset.tileheight;
-
-            var tileData = layerData["data"];
             var tileData2D = [];
-            for (var j = 0; j < mapW; j++) {
+            for (var j = 0; j < layerData["width"]; j++) {
                 tileData2D[j] = [];
-                for (var k = 0; k < mapH; k++) {
+                for (var k = 0; k < layerData["height"]; k++) {
                     tileData2D[j][k] = 0;
                 }
             }
+            var tileData = layerData["data"];
             for (var j = 0; j < tileData.length; j++) {
                 if (tileData[j] !== 0) {
                     var gid = tileData[j] - tileset.firstgid + 1;
@@ -73,58 +56,40 @@ DODO.createTiledMap = function(mapData, scene) {
                 }
             }
 
-            var tilemap = new DODO.Tilemap(layer, layer["image"], tileW, tileH, spacing,
-                    mapData.orientation);
+            var tilemap = new DODO.Tilemap(layer, layer["image"], 
+                tileset.tilewidth, tileset.tileheight, tileset.spacing, mapData.orientation);
             tilemap.populate(tileData2D);
-
-            layer.baked = baked;
-            if (layer.baked) {
-                layer = scene.bakeLayer(layer);
-                var tiles = tilemap.tiles;
-                for (var l = 0, cols = tiles.length; l < cols; l++) {
-                    for (var m = 0, rows = tiles[0].length; m < rows; m++) {
-                        if (tiles[l][m]) {
-                            tiles[l][m].sprite = null;
-                        }
-                    }
-                }
-            }
         }
 
         // if the current layer is OBJECT LAYER
         else if (layerData["type"] === "objectgroup") {
             for (var j = 0; j < layerData["objects"].length; j++) {
-                var args = {};
+                var props = {};
                 var oData = layerData["objects"][j];
                 for (var prop in oData["properties"]) {
-                    args[prop] = eval(oData["properties"][prop]);
+                    props[prop] = eval(oData["properties"][prop]);
                 }
-                args["name"] = oData["name"];
-
+                props["name"] = oData["name"];
                 if (oData["polygon"]) {
-                    args.polygon = DODO.TiledPolygonToSATPolygon(oData, mapData);
+                    props.polygon = DODO.TiledPolygonToSATPolygon(oData, mapData);
                 }
-                
-                var o = new (eval(oData["type"]))(layer, oData["x"], oData["y"], args);
+                var o = new (eval(oData["type"]))(layer, oData["x"], oData["y"], props);
 
-                // General object transform
+                // Object TRANSFORM
                 o.setRotation(oData["rotation"].toRad());
-
                 if (mapData.orientation === "isometric") {
                     var x = o.getX() / mapData.tileheight;
                     var y = o.getY() / mapData.tileheight;
                     o.position.x = (x - y) * (mapData.tilewidth / 2) + scene.getWidth() / 2;
                     o.position.y = (x + y) * (mapData.tileheight / 2);
                 }
-
                 if (o instanceof DODO.Colliding) {
                     o.synchCollisionPolygon();
                 }
             }
-
-            if (layer.baked) {
-                layer = scene.bakeLayer(layer, scene);
-            }
+        }
+        if (layer.baked) {
+            layer = scene.bakeLayer(layer);
         }
     }
 };

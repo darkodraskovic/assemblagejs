@@ -108,6 +108,7 @@ var Player = Anime.extend({
         }
     },
     update: function () {
+//        window.console.log(this.standing);
         this.processControls();
         this.processFacing();
 

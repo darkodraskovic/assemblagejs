@@ -2,7 +2,6 @@ DODO.Tilemap = Class.extend({
     init: function (layer, img, tileW, tileH, spacing, orientation) {
         this.layer = layer;
         layer.tilemap = this;
-        this.baked = false;
         this.scene = layer.scene;
         this.tileW = tileW;
         this.tileH = tileH;
@@ -62,8 +61,6 @@ DODO.Tilemap = Class.extend({
         return this.getTile(this.getMapX(x), this.getMapX(y));
     },
     setTile: function (gid, x, y) {
-        if (this.layer.baked)
-            return;
         if (!_.isNumber(gid) || !_.isNumber(x) || !_.isNumber(y))
             return;
         if (gid <= 0 || gid > this.imgCols * this.imgRows)
@@ -81,9 +78,6 @@ DODO.Tilemap = Class.extend({
         return this.tiles[x][y] = new DODO.Tile(gid, x, y, this);
     },
     removeTile: function (x, y) {
-        if (this.layer.baked)
-            return;
-
         if (this.tiles[x] && this.tiles[x][y]) {
             var tile = this.tiles[x][y];
             this.tiles[x][y] = null;

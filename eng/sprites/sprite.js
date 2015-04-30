@@ -3,27 +3,21 @@ DODO.Sprite = DODO.Evented.extend({
     updates: true,
     origin: new PIXI.Point(0, 0),
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         // Add all the properties of the prop obj to this instance.
-        if (props) {
-            for (var prop in props) {
-                if (_.isUndefined(this[prop]))
-                    this[prop] = props[prop];
-            }
-        }
+        _.extend(this, props);
         this._vector = new SAT.Vector();
         this.scene = parent.scene;
     },
-    initializeSprite: function (parent, x, y) {
+    initializeSprite: function(parent, x, y) {
         // Used to optimize getters & setters.
         this.position = this.sprite.position;
         this.scale = this.sprite.scale;
-        
-        this.sprite.dodoSprite = this;
 
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
         var sprites = new PIXI.DisplayObjectContainer();
         this.sprite.addChild(sprites);
+        this.sprite.dodoSprite = this;
 
         if (parent instanceof DODO.Sprite) {
             parent.addSprite(this);
@@ -35,31 +29,32 @@ DODO.Sprite = DODO.Evented.extend({
         this.setPosition(x, y);
         this.scene.spritesToCreate.push(this);
     },
-    getLeft: function () {
+    // Visual BOUNDS
+    getLeft: function() {
         return this.sprite.getBounds().x / this.scene.scale + this.scene.camera.x;
     },
-    getRight: function () {
+    getRight: function() {
         var bounds = this.sprite.getBounds();
         return (bounds.x + bounds.width) / this.scene.scale + this.scene.camera.x;
     },
-    getTop: function () {
+    getTop: function() {
         return this.sprite.getBounds().y / this.scene.scale + this.scene.camera.y;
     },
-    getBottom: function () {
+    getBottom: function() {
         var bounds = this.sprite.getBounds();
         return (bounds.y + bounds.height) / this.scene.scale + this.scene.camera.y;
     },
-    getCenterX: function () {
+    getCenterX: function() {
         return this.getLeft() + this.getWidth() / 2;
     },
-    getCenterY: function () {
+    getCenterY: function() {
         return this.getTop() + this.getHeight() / 2;
     },
-    overlapsSprite: function (sprite) {
+    overlapsSprite: function(sprite) {
         return (this.getTop() <= sprite.getBottom() && this.getBottom() >= sprite.getTop()
                 && this.getLeft() <= sprite.getRight() && this.getRight() >= sprite.getLeft());
     },
-    isOnScreen: function () {
+    isOnScreen: function() {
         var bounds = this.sprite.getBounds();
         var renderer = this.scene.game.renderer;
 
@@ -74,28 +69,28 @@ DODO.Sprite = DODO.Evented.extend({
 
         return true;
     },
-    // SPRITE CHILDREN
-    // The second child of this PIXI sprite is the parent of PIXI sprites belonging to other DODO sprites.
-    addSprite: function (sprite) {
+    // Sprite HIERARCHY
+    // The last child of this PIXI sprite is the parent of PIXI sprites belonging to other DODO sprites.
+    addSprite: function(sprite) {
         this.sprite.children[this.sprite.children.length - 1].addChild(sprite.sprite);
     },
-    removeSprite: function (sprite) {
+    removeSprite: function(sprite) {
         this.sprite.children[this.sprite.children.length - 1].removeChild(sprite.sprite);
     },
-    getChildrenSprites: function () {
-        return _.map(this.sprite.children[this.sprite.children.length - 1].children, function (child) {
+    getChildrenSprites: function() {
+        return _.map(this.sprite.children[this.sprite.children.length - 1].children, function(child) {
             return child.dodoSprite;
-        })
+        });
     },
-    getParentSprite: function () {
+    getParentSprite: function() {
         return this.sprite.parent.parent.dodoSprite;
     },
-    // SPRITE POINTS
-    setPoint: function (name, x, y) {
+    // Sprite POINTS
+    setPoint: function(name, x, y) {
         this.points = this.points || {};
         this.points[name] = {x: x, y: y};
     },
-    getPoint: function (name) {
+    getPoint: function(name) {
         this._vector.x = this.points[name].x * this.scale.x;
         this._vector.y = this.points[name].y * this.scale.y;
         this.getRotation() && this._vector.rotate(this.getRotation());
@@ -104,86 +99,84 @@ DODO.Sprite = DODO.Evented.extend({
         return this._vector;
     },
     // TRANSFORMATIONS
-    // PIXI dependent setters/getters, used to keep in sync PIXI and DODO.
-    setPosition: function (x, y) {
+    setPosition: function(x, y) {
         this.position.x = x;
         this.position.y = y;
     },
-    getPosition: function () {
+    getPosition: function() {
         return this.position;
     },
-    setX: function (x) {
+    setX: function(x) {
         this.position.x = x;
     },
-    getX: function () {
+    getX: function() {
         return this.position.x;
     },
-    setY: function (y) {
+    setY: function(y) {
         this.position.y = y;
     },
-    getY: function () {
+    getY: function() {
         return this.position.y;
     },
-    setXRelative: function (x) {
+    setXRelative: function(x) {
         this.setX(this.position.x + x);
     },
-    setYRelative: function (y) {
+    setYRelative: function(y) {
         this.setY(this.position.y + y);
     },
-    setPositionRelative: function (x, y) {
+    setPositionRelative: function(x, y) {
         this.setPosition(this.position.x + x, this.position.y + y);
     },
-    getPositionScene: function () {
+    getPositionScene: function() {
         return this.scene.container.toLocal(this.scene.origin, this.sprite);
     },
-    getPositionScreen: function () {
+    getPositionScreen: function() {
         return this.sprite.toGlobal(this.scene.origin);
     },
-    setWidth: function (w) {
+    setWidth: function(w) {
         this.sprite.width = w;
     },
-    getWidth: function () {
+    getWidth: function() {
         return Math.abs(this.sprite.width);
     },
-    setHeight: function (h) {
+    setHeight: function(h) {
         this.sprite.height = h;
     },
-    getHeight: function () {
+    getHeight: function() {
         return Math.abs(this.sprite.height);
     },
-    setScale: function (x, y) {
+    setScale: function(x, y) {
         this.scale.x = x;
         this.scale.y = y;
     },
-    setScaleX: function (x) {
+    setScaleX: function(x) {
         this.scale.x = x;
     },
-    setScaleY: function (y) {
+    setScaleY: function(y) {
         this.scale.y = y;
     },
-    getScale: function () {
+    getScale: function() {
         return this.sprite.scale;
     },
-    getScaleX: function () {
+    getScaleX: function() {
         return this.sprite.scale.x;
     },
-    getScaleY: function () {
+    getScaleY: function() {
         return this.sprite.scale.y;
     },
-    setRotation: function (n) {
+    setRotation: function(n) {
         this.sprite.rotation = n;
     },
-    getRotation: function () {
+    getRotation: function() {
         return this.sprite.rotation;
     },
-    // Flip is a scaling with a negative factor.
-    flipX: function () {
+    flipX: function() {
         this.setScaleX(this.getScaleX() * -1);
     },
-    getFlippedX: function () {
+    getFlippedX: function() {
         return this.getScale().x < 0;
     },
-    setFlippedX: function (flipped) {
+    setFlippedX: function(flipped) {
         if (flipped) {
             if (!this.getFlippedX())
                 this.flipX();
@@ -193,14 +186,13 @@ DODO.Sprite = DODO.Evented.extend({
                 this.flipX();
         }
     },
-    flipY: function () {
+    flipY: function() {
         this.setScaleY(this.getScaleY() * -1);
-        this.setYRelative(-this.sprite.height * (1 - this.origin.y));
     },
-    getFlippedY: function () {
+    getFlippedY: function() {
         return this.getScale().y < 0;
     },
-    setFlippedY: function (flipped) {
+    setFlippedY: function(flipped) {
         if (flipped) {
             if (!this.getFlippedY())
                 this.flipY();
@@ -211,47 +203,43 @@ DODO.Sprite = DODO.Evented.extend({
         }
     },
     // ORIGIN (ANCHOR)
-    setOrigin: function (x, y) {
+    setOrigin: function(x, y) {
         var deltaX = -(x - this.origin.x) * this.getWidth() / this.scale.x;
         var deltaY = -(y - this.origin.y) * this.getHeight() / this.scale.y;
 
         this.origin.x = x;
         this.origin.y = y;
 
-        _.each(this.getChildrenSprites(), function (sprite) {
+        _.each(this.getChildrenSprites(), function(sprite) {
             sprite.setPositionRelative(deltaX, deltaY);
         });
 
-        _.each(this.points, function (p) {
+        _.each(this.points, function(p) {
             p.x += deltaX;
             p.y += deltaY;
         });
 
         return [deltaX, deltaY];
     },
-    getOrigin: function () {
+    getOrigin: function() {
         return this.origin;
     },
     // Z ORDER & LAYERS
-    getLayer: function () {
-        if (this.sprite.parent instanceof DODO.Layer)
-            return this.sprite.parent;
-        else {
-            var parent = this.sprite.parent;
-            while (parent && !(parent instanceof DODO.Layer)) {
-                parent = parent.parent;
-            }
-            return parent;
+    getLayer: function() {
+        var parent = this.sprite.parent;
+        while (parent && !(parent instanceof DODO.Layer)) {
+            parent = parent.parent;
         }
+        return parent;
     },
-    getLayerName: function () {
+    getLayerName: function() {
         return this.getLayer().name;
     },
-    getLayerNumber: function () {
+    getLayerNumber: function() {
         var layer = this.getLayer();
         return layer.parent.getChildIndex(layer);
     },
-    setLayer: function (layer) {
+    setLayer: function(layer) {
         if (_.isString(layer)) {
             layer = this.scene.findLayerByName(layer);
         } else if (_.isNumber(layer)) {
@@ -262,10 +250,10 @@ DODO.Sprite = DODO.Evented.extend({
             return layer;
         }
     },
-    getZ: function () {
+    getZ: function() {
         return this.sprite.parent.getChildIndex(this.sprite);
     },
-    setZ: function (position) {
+    setZ: function(position) {
         var parent = this.sprite.parent;
         if (_.isString(position)) {
             if (position === "top") {
@@ -281,7 +269,7 @@ DODO.Sprite = DODO.Evented.extend({
                 parent.setChildIndex(this.sprite, position);
         }
     },
-    moveToSprite: function (sprite, position) {
+    moveToSprite: function(sprite, position) {
         var layer = sprite.getLayer();
         if (this.setLayer(layer)) {
             if (position === "back" || position === "front") {
@@ -293,25 +281,16 @@ DODO.Sprite = DODO.Evented.extend({
             }
         }
     },
-    // CREATION/DESTRUCTION & UPDATE
-    update: function () {
+    // LIFECYCLE
+    update: function() {
     },
-    destroy: function (recursive) {
+    destroy: function() {
         var spritesToDestroy = this.scene.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
-
-        var parentSprite = this.getParentSprite();
-        if (parentSprite && !recursive)
-            parentSprite.removeSprite(this);
-
-        var sprites = this.getChildrenSprites();
-        if (sprites && sprites.length) {
-            for (var i = 0; i < sprites.length; i++) {
-                sprites[i].destroy(true);
-            }
-        }
-
+        _.each(this.getChildrenSprites(), function(sprite) {
+            sprite.destroy();
+        });
         this.trigger('destroyed');
         this.debind();
         spritesToDestroy.push(this);
