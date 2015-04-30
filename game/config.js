@@ -1,7 +1,5 @@
 DODO.config = {};
 
-DODO.config.debug = true;
-
 DODO.config.renderer = {
     antialiasing: false,
     transparent: false,
@@ -15,7 +13,7 @@ DODO.config.screen = {
 
 DODO.config.directories = {
     scripts: "game/scripts/",
-    maps: "game/maps/",
+    data: "game/data/",
     graphics: "game/graphics/",
     sounds: "game/sounds/"
 };

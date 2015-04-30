@@ -21,7 +21,7 @@ var Player = DODO.Kinematic.extend({
         this.setPoint("bullet1", 18, -12);
         this.setPoint("bullet2", 18, 12);
         this.scene.bind('leftpressed', this, this.shootBullet);
-        this.setFollowee(true);
+        this.scene.camera.setFollowee(this);
         player = this;
     },
     update: function () {
@@ -171,7 +171,7 @@ var Rotor = DODO.Colliding.extend({
     spriteSheet: "rotor.png",
     frameWidth: 45,
     frameHeight: 45,
-//    collisionResponse: "static",
+    collisionResponse: "sensor",
 //    angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);

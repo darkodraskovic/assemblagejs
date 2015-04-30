@@ -6,7 +6,7 @@ DODO.Kinematic = DODO.Colliding.extend({
     standing: false,
     mass: 1,
     collisionResponse: "sensor",
-    init: function (parent, x, y, props) {
+    init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.velocity = new SAT.Vector(0, 0);
         this.gravity = new SAT.Vector(0, 0);
@@ -22,7 +22,7 @@ DODO.Kinematic = DODO.Colliding.extend({
         this._collisionNormal = new SAT.Vector(0, 0);
         this.wall = null;
     },
-    setGravity: function (x, y, slopeTolerance) {
+    setGravity: function(x, y, slopeTolerance) {
         this.gravity.x = x;
         this.gravity.y = y;
         this.gravityN.copy(this.gravity).normalize();
@@ -45,7 +45,7 @@ DODO.Kinematic = DODO.Colliding.extend({
         else
             this.gravitySet = false;
     },
-    update: function () {
+    update: function() {
         if (this.collisionResponse === "static")
             return;
 
@@ -97,7 +97,7 @@ DODO.Kinematic = DODO.Colliding.extend({
 
         this._super();
     },
-    processTileCollisions: function () {
+    processTileCollisions: function() {
         if (this.gravitySet) {
             this.ceiling = null;
             this.wall = null;
@@ -127,9 +127,7 @@ DODO.Kinematic = DODO.Colliding.extend({
                 for (var col = xStart; col <= xEnd; col++) {
                     var tile = tilemap.getTile(col, row);
                     if (tile && tile.collides) {
-                        this.response.clear();
-                        var collided = SAT.testPolygonPolygon(this.collisionPolygon, tile.collisionPolygon, this.response);
-                        if (collided) {
+                        if (this.collidesWithEntity(tile)) {
                             this.collideWithTile(tile, this.response);
                         }
                     }
@@ -147,7 +145,7 @@ DODO.Kinematic = DODO.Colliding.extend({
         }
         this._processStaticImpulse(this._collisionNormal);
     },
-    collideWithTile: function (other, response) {
+    collideWithTile: function(other, response) {
         this.collisionTiles.push(other);
         if (!this.response.overlap)
             return;
@@ -156,7 +154,7 @@ DODO.Kinematic = DODO.Colliding.extend({
         this.synchCollisionPolygon();
         this._collisionNormal.copy(this.response.overlapN);
     },
-    processTiles: function () {
+    processTiles: function() {
         for (var i = 0, len = this.collisionTiles.length; i < len; i++) {
             var entity = this.collisionTiles[i];
             var response = this.response;
@@ -193,14 +191,14 @@ DODO.Kinematic = DODO.Colliding.extend({
         }
         this.collisionTiles.length = 0;
     },
-    _processVelocity: function (orientation) {
+    _processVelocity: function(orientation) {
         if (this.velocity[orientation].abs() > this.bounceTreshold) {
             this.velocity[orientation] = -this.velocity[orientation] * this.elasticity;
         } else {
             this.velocity[orientation] = 0;
         }
     },
-    processSpriteCollisions: function () {
+    processSpriteCollisions: function() {
         var entities = this.scene.sprites;
         for (var i = 0, len = entities.length; i < len; i++) {
             var other = entities[i];
@@ -208,18 +206,17 @@ DODO.Kinematic = DODO.Colliding.extend({
                 // Bitmasks. Currently inactive. DO NOTE DELETE!
 //                if (typeof o1.collisionType === "undefined" || typeof o2.collisionType === "undefined" ||
 //                        o1.collidesWith & o2.collisionType || o2.collidesWith & o1.collisionType) {
-//                }
-                this.response.clear();
-                var collided = SAT.testPolygonPolygon(this.collisionPolygon, other.collisionPolygon, this.response);
-                if (collided) {
-                    other.collisionResponse === "static" ? this.collideWithStatic(other, this.response) : this.collideWithKinematic(other, this.response);
+//                }                
+                if (this.collidesWithEntity(other)) {
+                    other.collisionResponse === "static" ? this.collideWithStatic(other, this.response) :
+                            this.collideWithKinematic(other, this.response);
 //                    }
                 }
             }
         }
         this._processStaticImpulse(this._collisionNormal);
     },
-    collideWithStatic: function (other, response) {
+    collideWithStatic: function(other, response) {
         if (!response.overlap)
             return;
 
@@ -236,7 +233,7 @@ DODO.Kinematic = DODO.Colliding.extend({
         if (this.gravitySet)
             this._processStanding(response.overlapN);
     },
-    _processStaticImpulse: function (overlapN) {
+    _processStaticImpulse: function(overlapN) {
         this._vector.copy(this.velocity).reverse();
         if (this._vector.dot(overlapN) < 0) {
             this._vector.project(overlapN);
@@ -245,7 +242,7 @@ DODO.Kinematic = DODO.Colliding.extend({
             this.velocity.sub(this._vector);
         }
     },
-    collideWithKinematic: function (other, response) {
+    collideWithKinematic: function(other, response) {
         if (!response.overlap)
             return;
 
@@ -295,7 +292,7 @@ DODO.Kinematic = DODO.Colliding.extend({
             }
         }
     },
-    _processKinematicImpulse: function (collisionNormal, velocityDiff, other) {
+    _processKinematicImpulse: function(collisionNormal, velocityDiff, other) {
         // Calculate the impulse
         // I = -(1 + e) * (((Vb - Va) dot N) * N) * (Mb / (Ma + Mb))
         velocityDiff.project(collisionNormal);
@@ -316,7 +313,7 @@ DODO.Kinematic = DODO.Colliding.extend({
             this._processStanding(collisionNormal);
         }
     },
-    _processStanding: function (overlapN) {
+    _processStanding: function(overlapN) {
         if (overlapN.dot(this.gravityN) > 0) {
             this.slopeNormal.x = overlapN.x;
             this.slopeNormal.y = overlapN.y;

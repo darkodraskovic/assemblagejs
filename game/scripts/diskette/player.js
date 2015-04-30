@@ -61,7 +61,7 @@ var Player = Anime.extend({
         this.crouchPolygon = this.createCollisionPolygon();
 
         this.setOrigin(0.5, 0);
-        this.setFollowee(true);
+        this.scene.camera.setFollowee(this);
     },
     processControls: function () {
         if (DODO.input.down["right"] || DODO.input.down["left"]) {

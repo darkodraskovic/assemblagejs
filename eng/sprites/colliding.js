@@ -6,19 +6,16 @@ DODO.Colliding = DODO.Animated.extend({
         this._super(parent, x, y, props);
 
         this.response = new SAT.Response();
-//        this._vector = new SAT.Vector();
-
-        if (this.drawCollisionPolygon && DODO.game.debug) {
+        if (this.drawCollisionPolygon) {
             this.debugGraphics = new DODO.Graphics(this, 0, 0);
         }
-
         this.setCollisionPolygon(this.createCollisionPolygon(this.polygon));
-        this.synchCollisionPolygon();
     },
     setCollisionPolygon: function(polygon) {
         this.collisionPolygon = polygon;
-        if (this.drawCollisionPolygon && DODO.game.debug)
+        if (this.drawCollisionPolygon)
             DODO.drawPolygon(this.debugGraphics.sprite, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
+        this.synchCollisionPolygon();
     },
     resetCollisionData: function() {
         this.collisionWidth = this.collisionHeight = this.collisionOffsetX = this.collisionOffsetY = 0;
@@ -47,7 +44,7 @@ DODO.Colliding = DODO.Animated.extend({
 //        if (this.getMouseReactivity())
 //            this.sprite.hitArea = DODO.SATPolygonToPIXIPolygon(collisionPolygon, false);
 
-        if (this.drawCollisionPolygon && DODO.game.debug) {
+        if (this.drawCollisionPolygon) {
             collisionPolygon.PIXIPolygon = DODO.SATPolygonToPIXIPolygon(collisionPolygon);
         }
 
@@ -98,7 +95,7 @@ DODO.Colliding = DODO.Animated.extend({
         var delta = this._super(x, y);
         var colPol = this.collisionPolygon;
 
-        colPol.translate(delta[0] * Math.sign(colPol.scale.x), delta[1]* Math.sign(colPol.scale.y));
+        colPol.translate(delta[0] * colPol.scale.x, delta[1] * colPol.scale.y);
         colPol.calcBounds();
     },
     synchCollisionPolygon: function() {

@@ -4,7 +4,6 @@ DODO.Game = DODO.Evented.extend({
         this.createRenderer(DODO.config.screen, DODO.config.renderer);
         this.loader = new DODO.Loader();
         this.sceneManager = new DODO.SceneManager(this);
-        this.debug = DODO.config.debug;
         this.maxTick = 50;
         this.play();
         requestAnimFrame(runGame);

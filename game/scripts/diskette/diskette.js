@@ -32,6 +32,8 @@ var Diskette = DODO.Kinematic.extend({
         this.dynamicsMap = this.scene.findLayerByName("Dynamics").tilemap;
         this.addAnimation("inserting", _.range(0, 10), 0.2);
         this.springSound = DODO.getAsset('diskette/bounce.ogg');
+        this.setOrigin(0.5, 0.5);
+        this.setPositionRelative(this.getWidth() * 0.5, this.getHeight() * 0.5);
     },
     update: function () {
         if (this.inserting) {

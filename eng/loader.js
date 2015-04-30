@@ -50,7 +50,7 @@ DODO.Loader = DODO.Evented.extend({
     },
     loadOther: function (url, callback) {
         var httpRequest = new XMLHttpRequest();
-        httpRequest.open('GET', DODO.config.directories.maps + url);
+        httpRequest.open('GET', DODO.config.directories.data + url);
         httpRequest.onload = function () {
             DODO.assets[url] = httpRequest.responseText;
             callback();

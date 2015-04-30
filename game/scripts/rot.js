@@ -20,7 +20,7 @@ var Ball = DODO.Kinematic.extend({
         window.scene = this.scene;
         window.player = this;
         
-        this.setFollowee(true);
+        this.scene.camera.setFollowee(this);
     },
     update: function() {
         if (DODO.input.down["up"]) {

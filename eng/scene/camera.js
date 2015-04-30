@@ -17,6 +17,9 @@ DODO.Camera = Class.extend({
         this.innerBounds.top = innerBoundOffset;
         this.innerBounds.bottom = 1 - innerBoundOffset;
     },
+    setFollowee: function (followee) {
+        this.followee = followee;
+    },
     getInnerBound: function (edge) {
         switch (edge) {
             case "left":

@@ -174,7 +174,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
         this.scene.bind('leftpressed', this, this.throwBall);
         this.scene.bind('leftpressed', this, this.manageThrus);
         
-        this.setFollowee(true);
+        this.scene.camera.setFollowee(this);
     },
     initTile: function(tile) {
         tile.turned = "on";

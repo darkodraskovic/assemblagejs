@@ -109,7 +109,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.scene.bind('leftpressed', this, this.shootBullet);
         this.scene.bind('rightpressed', this, this.shootLaser);
         
-        this.setFollowee(true);
+        this.scene.camera.setFollowee(this);
     },
     update: function() {
         var cd = "";
