@@ -46,10 +46,10 @@ DODO.createTiledMap = function(mapData, scene) {
                     tileData2D[j][k] = 0;
                 }
             }
-            var tileData = layerData["data"];
-            for (var j = 0; j < tileData.length; j++) {
-                if (tileData[j] !== 0) {
-                    var gid = tileData[j] - tileset.firstgid + 1;
+            var tileData1D = layerData["data"];
+            for (var j = 0; j < tileData1D.length; j++) {
+                if (tileData1D[j] !== 0) {
+                    var gid = tileData1D[j] - tileset.firstgid + 1;
                     var mapX = j % mapData["width"];
                     var mapY = Math.floor(j / mapData["width"]);
                     tileData2D[mapX][mapY] = gid;

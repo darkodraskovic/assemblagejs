@@ -1,5 +1,5 @@
 var Player = Anime.extend({
-    spriteSheet: "diskette/player.png",
+    spriteSheet: "Diskette/player.png",
     throwForce: 750,
     throwTimer: 0,
     throwTime: 0.75,
@@ -12,9 +12,9 @@ var Player = Anime.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        DODO.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
+        DODO.game.renderer.view.style.cursor = "url(game/graphics/Diskette/crosshair.png), auto";
         DODO.game.renderer.view.addEventListener("mouseover", function (event) {
-            DODO.game.renderer.view.style.cursor = "url(game/graphics/diskette/crosshair.png), auto";
+            DODO.game.renderer.view.style.cursor = "url(game/graphics/Diskette/crosshair.png), auto";
         });
 
         DODO.input.addMapping("left", DODO.Key.A);
@@ -40,7 +40,7 @@ var Player = Anime.extend({
                 this.throwTimerRunning = true;
         });
 
-        this.throwSound = DODO.getAsset('diskette/throw.ogg');
+        this.throwSound = DODO.getAsset('Diskette/throw.ogg');
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);

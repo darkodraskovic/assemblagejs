@@ -8,7 +8,7 @@
          "properties":
             {
              "baked":"true",
-             "image":"\"sci-fi-platformer-tiles-32x32.png\"",
+             "image":"\"Platformer\/sci-fi-platformer-tiles-32x32.png\"",
              "parallax":"85"
             },
          "type":"tilelayer",
@@ -25,7 +25,7 @@
          "properties":
             {
              "baked":"true",
-             "image":"\"sci-fi-platformer-tiles-32x32.png\""
+             "image":"\"Platformer\/sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -42,7 +42,7 @@
             {
              "baked":"true",
              "collisionResponse":"\"static\"",
-             "image":"\"sci-fi-platformer-tiles-32x32.png\""
+             "image":"\"Platformer\/sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -57,11 +57,8 @@
          "opacity":1,
          "properties":
             {
-             "active":"true",
-             "baked":"false",
              "collisionResponse":"\"static\"",
-             "image":"\"sci-fi-platformer-tiles-32x32.png\"",
-             "mouseReactive":"true"
+             "image":"\"Platformer\/sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -77,7 +74,7 @@
          "properties":
             {
              "baked":"true",
-             "image":"\"sci-fi-platformer-tiles-32x32.png\""
+             "image":"\"Platformer\/sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -577,7 +574,7 @@
          "properties":
             {
              "baked":"true",
-             "image":"\"sci-fi-platformer-tiles-32x32.png\"",
+             "image":"\"Platformer\/sci-fi-platformer-tiles-32x32.png\"",
              "parallax":"115"
             },
          "type":"tilelayer",
@@ -597,7 +594,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/graphics\/sci-fi-platformer-tiles-32x32.png",
+         "image":"..\/..\/graphics\/Platformer\/sci-fi-platformer-tiles-32x32.png",
          "imageheight":3520,
          "imagewidth":512,
          "margin":0,
@@ -620,7 +617,7 @@
         }, 
         {
          "firstgid":1761,
-         "image":"..\/graphics\/tiled_sprites.png",
+         "image":"..\/..\/graphics\/Platformer\/tiled_sprites.png",
          "imageheight":64,
          "imagewidth":64,
          "margin":0,
@@ -635,7 +632,7 @@
         }, 
         {
          "firstgid":1763,
-         "image":"..\/graphics\/tiled_platforms.png",
+         "image":"..\/..\/graphics\/Platformer\/tiled_platforms.png",
          "imageheight":32,
          "imagewidth":128,
          "margin":0,

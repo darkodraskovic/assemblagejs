@@ -1,6 +1,6 @@
 // CLASSES
 var Player = DODO.Kinematic.extend({
-    spriteSheet: "player_farer.png",
+    spriteSheet: "Farer/player_farer.png",
     collisionResponse: "active",
     movementAngle: 0,
     init: function (parent, x, y, props) {
@@ -85,7 +85,7 @@ var Player = DODO.Kinematic.extend({
 });
 
 var Laser = DODO.Animated.extend({
-    spriteSheet: "laser.png",
+    spriteSheet: "Farer/laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.sprite.alpha = 0.4;
@@ -139,7 +139,7 @@ var Laser = DODO.Animated.extend({
 });
 
 var Bullet = DODO.Kinematic.extend({
-    spriteSheet: "bullet.png",
+    spriteSheet: "Farer/bullet.png",
     collisionResponse: "sensor",
     drawCollisionPolygon: false,
     init: function (parent, x, y, props) {
@@ -168,7 +168,7 @@ var Bullet = DODO.Kinematic.extend({
 });
 
 var Rotor = DODO.Colliding.extend({
-    spriteSheet: "rotor.png",
+    spriteSheet: "Farer/rotor.png",
     frameWidth: 45,
     frameHeight: 45,
     collisionResponse: "static",
@@ -184,7 +184,7 @@ var Rotor = DODO.Colliding.extend({
     }
 });
 var Explosion = DODO.Animated.extend({
-    spriteSheet: "Explosion.png",
+    spriteSheet: "Common/Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
     init: function (parent, x, y, props) {
@@ -215,11 +215,11 @@ populateScene = function (scene) {
 
     var layer = new DODO.Layer(scene, "Starfield");
     layer.parallax = 10;
-    new DODO.Tiling(layer, {image: "starfield.png"});
+    new DODO.Tiling(layer, {image: "Farer/starfield.png"});
 
     layer = new DODO.Layer(scene, "Nebula");
     layer.parallax = 20;
-    new DODO.Tiling(layer, {image: "nebula.png"});
+    new DODO.Tiling(layer, {image: "Farer/nebula.png"});
 
     var spriteLayer = new DODO.Layer(scene, "Sprites");
     new DODO.Layer(scene, "Effects");

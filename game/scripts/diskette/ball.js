@@ -1,6 +1,6 @@
 var Ball = DODO.Kinematic.extend({
     bounded: false,
-    spriteSheet: "diskette/ball.png",
+    spriteSheet: "Diskette/ball.png",
     collisionResponse: "passive",
     drawCollisionPolygon: false,
     elasticity: 0.5,

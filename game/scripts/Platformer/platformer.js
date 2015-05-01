@@ -144,7 +144,7 @@ var AnimePlatformer = DODO.Kinematic.extend({
 
 // CLASSES
 var PlayerPlatformer = AnimePlatformer.extend({
-    spriteSheet: "player_platformer.png",
+    spriteSheet: "Platformer/player_platformer.png",
     controlled: true,
     player: true,
 //    elasticity: 0.5,
@@ -269,7 +269,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
 
 var Ball = DODO.Kinematic.extend({
     bounded: false,
-    spriteSheet: "ball.png",
+    spriteSheet: "Platformer/ball.png",
     collisionResponse: "passive",
     drawCollisionPolygon: false,
     elasticity: 0.5,
@@ -306,7 +306,7 @@ var Ball = DODO.Kinematic.extend({
 
 
 var Platform = DODO.Colliding.extend({
-    spriteSheet: "moving_platform.png",
+    spriteSheet: "Platformer/moving_platform.png",
     frameWidth: 128,
     frameHeight: 32,
     collisionResponse: "static",
@@ -337,7 +337,7 @@ var Platform = DODO.Colliding.extend({
 });
 
 var ExplosionPlatformer = DODO.Animated.extend({
-    spriteSheet: "Explosion.png",
+    spriteSheet: "Common/Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
     init: function(parent, x, y, props) {

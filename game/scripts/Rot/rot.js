@@ -1,7 +1,7 @@
 // CLASSES
 var Ball = DODO.Kinematic.extend({
     colTimesCalled: 0,
-    spriteSheet: "player_rot.png",
+    spriteSheet: "Rot/player_rot.png",
     elasticity: 0.5,
     drawCollisionPolygon: true,
     init: function(parent, x, y, props) {
@@ -80,11 +80,11 @@ function createRoguelikeMap(scene) {
 }
 function createRotLayers(scene) {
     var layerFloors = new DODO.Layer(scene);
-    new DODO.Tilemap(layerFloors, "tilemap.png", tileW, tileH);
+    new DODO.Tilemap(layerFloors, "Rot/tilemap.png", tileW, tileH);
     layerFloors.tilemap.populate(mapDataFloors);
 
     var layerWalls = new DODO.Layer(scene);
-    new DODO.Tilemap(layerWalls, "tilemap.png", tileW, tileH);
+    new DODO.Tilemap(layerWalls, "Rot/tilemap.png", tileW, tileH);
     layerWalls.collisionResponse = "static";    
     layerWalls.tilemap.populate(mapDataWalls);
 

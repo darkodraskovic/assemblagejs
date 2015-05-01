@@ -8,7 +8,7 @@
          "properties":
             {
              "baked":"true",
-             "image":"\"Interior-Furniture.png\""
+             "image":"\"Skorpio\/Interior-Furniture.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -24,7 +24,7 @@
          "properties":
             {
              "baked":"true",
-             "image":"\"Interior-Furniture.png\""
+             "image":"\"Skorpio\/Interior-Furniture.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -41,7 +41,7 @@
             {
              "baked":"true",
              "collisionResponse":"\"static\"",
-             "image":"\"Interior-Furniture.png\""
+             "image":"\"Skorpio\/Interior-Furniture.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -525,7 +525,7 @@
          "properties":
             {
              "baked":"true",
-             "image":"\"Interior-Furniture.png\""
+             "image":"\"Skorpio\/Interior-Furniture.png\""
             },
          "type":"tilelayer",
          "visible":true,
@@ -804,7 +804,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/graphics\/Interior-Furniture.png",
+         "image":"..\/..\/graphics\/Skorpio\/Interior-Furniture.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -819,7 +819,7 @@
         }, 
         {
          "firstgid":257,
-         "image":"..\/graphics\/Tiled_Sprites_1.png",
+         "image":"..\/..\/graphics\/Skorpio\/Tiled_Sprites_1.png",
          "imageheight":640,
          "imagewidth":640,
          "margin":0,

@@ -1,5 +1,5 @@
 var ScenerySun = DODO.Animated.extend({
-    spriteSheet: "diskette/moon.png",
+    spriteSheet: "Diskette/moon.png",
     bounded: false,
     origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
@@ -16,7 +16,7 @@ var ScenerySun = DODO.Animated.extend({
 });
 
 var SceneryStar = DODO.Animated.extend({
-    spriteSheet: "diskette/star.png",
+    spriteSheet: "Diskette/star.png",
     bounded: false,
     origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
@@ -32,11 +32,11 @@ var SceneryStar = DODO.Animated.extend({
     }
 });
 var SceneryPyramid = DODO.Animated.extend({
-    spriteSheet: "diskette/pyramid.png",
+    spriteSheet: "Diskette/pyramid.png",
     bounded: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-//        var displacementTexture = PIXI.Texture.fromImage("game/graphics/diskette/pyramidDisplacementMap.png");
+//        var displacementTexture = PIXI.Texture.fromImage("game/graphics/Diskette/pyramidDisplacementMap.png");
 //        var displacementFilter = new PIXI.DisplacementFilter(displacementTexture);
 //        displacementFilter.scale.x = 10;
 //        displacementFilter.scale.y = 10;

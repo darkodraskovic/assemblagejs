@@ -1,6 +1,6 @@
 var Computer = DODO.Kinematic.extend({
     bounded: false,
-    spriteSheet: "diskette/computer.png",
+    spriteSheet: "Diskette/computer.png",
     collisionResponse: "sensor",
     drawCollisionPolygon: true,
     collisionWidth: 38,

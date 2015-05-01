@@ -12,7 +12,7 @@ var Dynamics = {
 };
 
 var Diskette = DODO.Kinematic.extend({
-    spriteSheet: "diskette/diskette.png",
+    spriteSheet: "Diskette/diskette.png",
     collisionResponse: "active",
     drawCollisionPolygon: false,
     elasticity: 0.5,
@@ -31,7 +31,7 @@ var Diskette = DODO.Kinematic.extend({
         this.maxVelocity.y = 800;
         this.dynamicsMap = this.scene.findLayerByName("Dynamics").tilemap;
         this.addAnimation("inserting", _.range(0, 10), 0.2);
-        this.springSound = DODO.getAsset('diskette/bounce.ogg');
+        this.springSound = DODO.getAsset('Diskette/bounce.ogg');
         this.setOrigin(0.5, 0.5);
         this.setPositionRelative(this.getWidth() * 0.5, this.getHeight() * 0.5);
     },

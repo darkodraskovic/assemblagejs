@@ -86,7 +86,7 @@ var AnimeSkorpio = DODO.Kinematic.extend({
 });
 
 var PlayerSkorpio = AnimeSkorpio.extend({
-    spriteSheet: "player_skorpio.png",
+    spriteSheet: "Skorpio/player_skorpio.png",
     controlled: true,
     player: true,
     mass: 4,
@@ -158,7 +158,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
 });
 
 var Agent = AnimeSkorpio.extend({
-    spriteSheet: "AgentComplete.png",
+    spriteSheet: "Skorpio/AgentComplete.png",
     timer: 0,
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -192,7 +192,7 @@ var Agent = AnimeSkorpio.extend({
 });
 
 var Rifle = DODO.Animated.extend({
-    spriteSheet: "AssaultRifle.png",
+    spriteSheet: "Skorpio/AssaultRifle.png",
     frameWidth: 64,
     frameHeight: 64,
     origin: {x: 0.5, y: 0.5},
@@ -230,7 +230,7 @@ var Rifle = DODO.Animated.extend({
 });
 // WEAPONS & AMMO
 var Bullet = DODO.Kinematic.extend({
-    spriteSheet: "Muzzleflashes-Shots.png",
+    spriteSheet: "Skorpio/Muzzleflashes-Shots.png",
     frameWidth: 32,
     frameHeight: 32,
     collisionResponse: "sensor",
@@ -276,7 +276,7 @@ var Bullet = DODO.Kinematic.extend({
 });
 
 var LaserBeam = DODO.Animated.extend({
-    spriteSheet: "Muzzleflashes-Shots.png",
+    spriteSheet: "Skorpio/Muzzleflashes-Shots.png",
     frameWidth: 32,
     frameHeight: 32,
     bounded: false,
@@ -381,7 +381,7 @@ var LaserTip = DODO.Kinematic.extend({
 
 
 var LaserFire = DODO.Animated.extend({
-    spriteSheet: "Fire.png",
+    spriteSheet: "Skorpio/Fire.png",
     frameWidth: 64,
     frameHeight: 64,
 //    origin: {x: 0.5, y: 0.5},
@@ -414,7 +414,7 @@ var LaserFire = DODO.Animated.extend({
 
 
 var ExplosionSkorpio = DODO.Animated.extend({
-    spriteSheet: "Explosion.png",
+    spriteSheet: "Common/Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
     init: function(parent, x, y, props) {
@@ -436,7 +436,7 @@ var ExplosionSkorpio = DODO.Animated.extend({
 
 // ITEMS
 var Computer = DODO.Colliding.extend({
-    spriteSheet: "Computer1.png",
+    spriteSheet: "Skorpio/Computer1.png",
     collisionResponse: "static",
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
