@@ -41,7 +41,7 @@
          "properties":
             {
              "baked":"true",
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Platformer\/sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",
@@ -57,7 +57,7 @@
          "opacity":1,
          "properties":
             {
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Platformer\/sci-fi-platformer-tiles-32x32.png\""
             },
          "type":"tilelayer",

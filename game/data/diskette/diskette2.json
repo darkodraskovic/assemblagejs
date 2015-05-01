@@ -27,6 +27,7 @@
          "objects":[
                 {
                  "height":96,
+                 "id":1,
                  "name":"Sun",
                  "properties":
                     {
@@ -58,6 +59,7 @@
          "objects":[
                 {
                  "height":64,
+                 "id":2,
                  "name":"Pyramid",
                  "properties":
                     {
@@ -72,6 +74,7 @@
                 }, 
                 {
                  "height":64,
+                 "id":3,
                  "name":"Pyramid",
                  "properties":
                     {
@@ -86,6 +89,7 @@
                 }, 
                 {
                  "height":64,
+                 "id":4,
                  "name":"Pyramid",
                  "properties":
                     {
@@ -117,7 +121,7 @@
          "properties":
             {
              "baked":"true",
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Diskette\/blocks.png\""
             },
          "type":"tilelayer",
@@ -134,7 +138,7 @@
          "properties":
             {
              "baked":"true",
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Diskette\/dynamics.png\""
             },
          "type":"tilelayer",
@@ -150,6 +154,7 @@
          "objects":[
                 {
                  "height":32,
+                 "id":5,
                  "name":"Diskette",
                  "properties":
                     {
@@ -164,6 +169,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":6,
                  "name":"Diskette",
                  "properties":
                     {
@@ -178,6 +184,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":7,
                  "name":"Diskette",
                  "properties":
                     {
@@ -192,6 +199,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":8,
                  "name":"Diskette",
                  "properties":
                     {
@@ -206,6 +214,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":9,
                  "name":"Diskette",
                  "properties":
                     {
@@ -220,6 +229,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":10,
                  "name":"Diskette",
                  "properties":
                     {
@@ -234,6 +244,7 @@
                 }, 
                 {
                  "height":86,
+                 "id":11,
                  "name":"Hal",
                  "properties":
                     {
@@ -248,6 +259,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":12,
                  "name":"Diskette",
                  "properties":
                     {
@@ -262,6 +274,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":13,
                  "name":"Diskette",
                  "properties":
                     {
@@ -276,6 +289,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":14,
                  "name":"Diskette",
                  "properties":
                     {
@@ -290,6 +304,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":15,
                  "name":"Diskette",
                  "properties":
                     {
@@ -304,6 +319,7 @@
                 }, 
                 {
                  "height":68,
+                 "id":16,
                  "name":"Player",
                  "properties":
                     {
@@ -336,6 +352,7 @@
          "x":0,
          "y":0
         }],
+ "nextobjectid":17,
  "orientation":"orthogonal",
  "properties":
     {

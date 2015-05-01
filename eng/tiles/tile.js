@@ -21,7 +21,7 @@ DODO.Tile = function (gid, x, y, tilemap) {
         this.position.y -= tilemap.spacing;
 
     // COLLISION
-    if (tilemap.layer.collisionResponse) {
+    if (tilemap.collides) {
         var collisionPolygon;
         if (tilemap.orientation === "isometric") {
             var colX = tilemap.getSceneIsoX(x, y);

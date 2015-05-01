@@ -40,7 +40,7 @@
          "properties":
             {
              "baked":"true",
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Skorpio\/Interior-Furniture.png\""
             },
          "type":"tilelayer",

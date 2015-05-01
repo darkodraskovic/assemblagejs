@@ -1,10 +1,11 @@
 DODO.Tilemap = Class.extend({
-    init: function (layer, img, tileW, tileH, spacing, orientation) {
+    init: function (layer, img, tileW, tileH, collides, spacing, orientation) {
         this.layer = layer;
         layer.tilemap = this;
         this.scene = layer.scene;
         this.tileW = tileW;
         this.tileH = tileH;
+        this.collides = collides && this.scene.tileMaps.push(this);
         
         // For isometric maps processing
         this.spacing = _.isUndefined(spacing) ? 0 : spacing;
@@ -20,19 +21,11 @@ DODO.Tilemap = Class.extend({
         this.imgCols = this.baseTexture.width / (tileW + this.spacing);
         this.imgRows = this.baseTexture.height / (tileH + this.spacing);
 
-
         this.tiles = [];
         // For tile sprite creation.
         this.frameRectangle = new PIXI.Rectangle(0, 0, this.tileW, this.tileH + this.spacing);
-        
-        return this;
     },
     populate: function (layerData) {
-        if (this.layer.collisionResponse) {
-            this.collisionResponse = "static";
-            this.scene.tileMaps.push(this);
-        }
-
         this.mapW = layerData.length;
         this.mapH = layerData[0].length;
         for (var i = 0; i < this.mapW; i++) {
@@ -51,19 +44,16 @@ DODO.Tilemap = Class.extend({
         }
     },
     getTile: function (x, y) {
-        if (x < 0 || x >= this.mapW)
-            return;
-        if (y < 0 || y >= this.mapH)
-            return;
-        return this.tiles[x][y];
+        return this.tiles[x] && this.tiles[x][y];
     },
     getTileAt: function (x, y) {
-        return this.getTile(this.getMapX(x), this.getMapX(y));
+        return this.getTile(this.getMapX(x), this.getMapY(y));
+    },
+    getTileIsoAt: function (x, y) {
+        return this.getTile(this.getMapIsoX(x), this.getMapIsoY(y));
     },
     setTile: function (gid, x, y) {
-        if (!_.isNumber(gid) || !_.isNumber(x) || !_.isNumber(y))
-            return;
-        if (gid <= 0 || gid > this.imgCols * this.imgRows)
+        if (gid < 1 || gid > this.imgCols * this.imgRows)
             return;
         if (x < 0 || x >= this.mapW)
             return;
@@ -74,18 +64,15 @@ DODO.Tilemap = Class.extend({
                 return;
             this.removeTile(x, y);
         }
-
         return this.tiles[x][y] = new DODO.Tile(gid, x, y, this);
     },
     removeTile: function (x, y) {
         if (this.tiles[x] && this.tiles[x][y]) {
-            var tile = this.tiles[x][y];
+            this.tiles[x][y].parent.removeChild(this.tiles[x][y]);
             this.tiles[x][y] = null;
-            tile.parent.removeChild(tile);
         }
     },
     // UTILS
-    // Orthogonal
     forEachTile: function (fn) {
         for (var i = 0; i < this.mapW; i++) {
             for (var j = 0; j < this.mapH; j++) {
@@ -94,6 +81,7 @@ DODO.Tilemap = Class.extend({
             }
         }
     },
+    // Orthogonal
     getSceneX: function (x) {
         return (x * this.tileW);
     },

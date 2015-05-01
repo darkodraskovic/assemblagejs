@@ -57,7 +57,7 @@ DODO.createTiledMap = function(mapData, scene) {
             }
 
             var tilemap = new DODO.Tilemap(layer, layer["image"], 
-                tileset.tilewidth, tileset.tileheight, tileset.spacing, mapData.orientation);
+                tileset.tilewidth, tileset.tileheight, layer.collides, tileset.spacing, mapData.orientation);
             tilemap.populate(tileData2D);
         }
 

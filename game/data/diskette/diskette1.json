@@ -121,7 +121,7 @@
          "properties":
             {
              "baked":"true",
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Diskette\/blocks.png\""
             },
          "type":"tilelayer",
@@ -138,7 +138,7 @@
          "properties":
             {
              "baked":"true",
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Diskette\/dynamics.png\""
             },
          "type":"tilelayer",
@@ -164,8 +164,8 @@
                  "type":"Player",
                  "visible":true,
                  "width":40,
-                 "x":1248,
-                 "y":160
+                 "x":480,
+                 "y":320
                 }, 
                 {
                  "height":32,
@@ -494,8 +494,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":448,
-                 "y":288
+                 "x":320,
+                 "y":352
                 }, 
                 {
                  "height":32,
@@ -614,8 +614,8 @@
                  "type":"Diskette",
                  "visible":true,
                  "width":32,
-                 "x":448,
-                 "y":224
+                 "x":416,
+                 "y":352
                 }, 
                 {
                  "height":32,

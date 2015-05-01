@@ -22,7 +22,7 @@
          "opacity":1,
          "properties":
             {
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Isometric\/tileset.png\""
             },
          "type":"tilelayer",

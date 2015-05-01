@@ -84,8 +84,7 @@ function createRotLayers(scene) {
     layerFloors.tilemap.populate(mapDataFloors);
 
     var layerWalls = new DODO.Layer(scene);
-    new DODO.Tilemap(layerWalls, "Rot/tilemap.png", tileW, tileH);
-    layerWalls.collisionResponse = "static";    
+    new DODO.Tilemap(layerWalls, "Rot/tilemap.png", tileW, tileH, true);
     layerWalls.tilemap.populate(mapDataWalls);
 
     layer = new DODO.Layer(scene);

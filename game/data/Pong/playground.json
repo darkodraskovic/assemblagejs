@@ -22,7 +22,7 @@
          "opacity":1,
          "properties":
             {
-             "collisionResponse":"\"static\"",
+             "collides":"true",
              "image":"\"Pong\/tiles.png\""
             },
          "type":"tilelayer",
@@ -39,6 +39,7 @@
          "objects":[
                 {
                  "height":32,
+                 "id":1,
                  "name":"Brick",
                  "properties":
                     {
@@ -53,6 +54,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":2,
                  "name":"Brick",
                  "properties":
                     {
@@ -67,6 +69,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":3,
                  "name":"Brick",
                  "properties":
                     {
@@ -81,6 +84,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":4,
                  "name":"Brick",
                  "properties":
                     {
@@ -95,6 +99,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":5,
                  "name":"Brick",
                  "properties":
                     {
@@ -109,6 +114,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":6,
                  "name":"Brick",
                  "properties":
                     {
@@ -123,6 +129,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":7,
                  "name":"Brick",
                  "properties":
                     {
@@ -137,6 +144,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":8,
                  "name":"Brick",
                  "properties":
                     {
@@ -151,6 +159,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":9,
                  "name":"Brick",
                  "properties":
                     {
@@ -165,6 +174,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":10,
                  "name":"Brick",
                  "properties":
                     {
@@ -179,6 +189,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":11,
                  "name":"Brick",
                  "properties":
                     {
@@ -193,6 +204,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":12,
                  "name":"Brick",
                  "properties":
                     {
@@ -207,6 +219,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":13,
                  "name":"Brick",
                  "properties":
                     {
@@ -221,6 +234,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":14,
                  "name":"Brick",
                  "properties":
                     {
@@ -235,6 +249,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":15,
                  "name":"Brick",
                  "properties":
                     {
@@ -249,6 +264,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":16,
                  "name":"Brick",
                  "properties":
                     {
@@ -263,6 +279,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":17,
                  "name":"Brick",
                  "properties":
                     {
@@ -277,6 +294,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":18,
                  "name":"Brick",
                  "properties":
                     {
@@ -291,6 +309,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":19,
                  "name":"Brick",
                  "properties":
                     {
@@ -305,6 +324,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":20,
                  "name":"Brick",
                  "properties":
                     {
@@ -319,6 +339,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":21,
                  "name":"Brick",
                  "properties":
                     {
@@ -333,6 +354,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":22,
                  "name":"Brick",
                  "properties":
                     {
@@ -347,6 +369,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":23,
                  "name":"Brick",
                  "properties":
                     {
@@ -361,6 +384,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":24,
                  "name":"Brick",
                  "properties":
                     {
@@ -375,6 +399,7 @@
                 }, 
                 {
                  "height":16,
+                 "id":25,
                  "name":"Ball",
                  "properties":
                     {
@@ -389,6 +414,7 @@
                 }, 
                 {
                  "height":48,
+                 "id":26,
                  "name":"Bar",
                  "properties":
                     {
@@ -403,6 +429,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":27,
                  "name":"Brick",
                  "properties":
                     {
@@ -417,6 +444,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":28,
                  "name":"Brick",
                  "properties":
                     {
@@ -431,6 +459,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":29,
                  "name":"Brick",
                  "properties":
                     {
@@ -445,6 +474,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":30,
                  "name":"Brick",
                  "properties":
                     {
@@ -459,6 +489,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":31,
                  "name":"Brick",
                  "properties":
                     {
@@ -473,6 +504,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":32,
                  "name":"Brick",
                  "properties":
                     {
@@ -487,6 +519,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":33,
                  "name":"Brick",
                  "properties":
                     {
@@ -501,6 +534,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":34,
                  "name":"Brick",
                  "properties":
                     {
@@ -515,6 +549,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":35,
                  "name":"Brick",
                  "properties":
                     {
@@ -529,6 +564,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":36,
                  "name":"Brick",
                  "properties":
                     {
@@ -543,6 +579,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":37,
                  "name":"Brick",
                  "properties":
                     {
@@ -557,6 +594,7 @@
                 }, 
                 {
                  "height":32,
+                 "id":38,
                  "name":"Brick",
                  "properties":
                     {
@@ -584,6 +622,7 @@
          "objects":[
                 {
                  "height":16,
+                 "id":39,
                  "name":"Points",
                  "properties":
                     {
@@ -603,6 +642,7 @@
          "x":0,
          "y":0
         }],
+ "nextobjectid":40,
  "orientation":"orthogonal",
  "properties":
     {
