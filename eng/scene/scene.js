@@ -8,7 +8,7 @@ DODO.Layer = function(scene, name) {
 DODO.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 DODO.Layer.prototype.constructor = DODO.Layer;
 
-DODO.Scene = DODO.Evented.extend({
+DODO.Scene = DODO.Inputed.extend({
     width: 0,
     height: 0,
     scale: 1,
@@ -19,7 +19,7 @@ DODO.Scene = DODO.Evented.extend({
         this.map = map;
 
         this.container = new PIXI.DisplayObjectContainer();
-        // this.sprite is referenced by the DODO.input.mouseReactivityInjection
+        // this.sprite is referenced by the DODO.Inputed
         this.sprite = this.container;
         this.initMouseReactivity();
         this.setMouseReactivity(true);
@@ -277,5 +277,3 @@ DODO.Scene = DODO.Evented.extend({
 
     }
 });
-
-DODO.Scene.inject(DODO.input.mouseReactivityInjection);

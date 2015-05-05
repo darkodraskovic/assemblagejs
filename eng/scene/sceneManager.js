@@ -1,4 +1,4 @@
-DODO.SceneManager = Class.extend({
+DODO.SceneManager = DODO.Class.extend({
     init: function (game) {
         this.game = game;
         this.scenes = [];

@@ -1,14 +1,5 @@
-DODO.input = new (DODO.Evented.extend({
-    actions: {},
-    down: {},
-    _pressed: {},
-    addMapping: function(action, key) {
-        this.actions[key] = action;
-        this.down[action] = false;
-        this._pressed[action] = false;
-    },
-    mouseReactivityInjection: {
-        initMouseReactivity: function() {
+DODO.Inputed = DODO.Evented.extend({
+    initMouseReactivity: function() {
             this.sprite.mousedown = function() {
                 this.trigger('leftpressed');
                 this.leftdown = true;
@@ -32,6 +23,16 @@ DODO.input = new (DODO.Evented.extend({
         getMouseReactivity: function() {
             return this.sprite.interactive;
         }
+});
+
+DODO.input = new (DODO.Evented.extend({
+    actions: {},
+    down: {},
+    _pressed: {},
+    addMapping: function(action, key) {
+        this.actions[key] = action;
+        this.down[action] = false;
+        this._pressed[action] = false;
     }
 }))();
 

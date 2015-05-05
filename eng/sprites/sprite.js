@@ -1,4 +1,4 @@
-DODO.Sprite = DODO.Evented.extend({
+DODO.Sprite = DODO.Inputed.extend({
     destroyThis: false,
     updates: true,
     origin: new PIXI.Point(0, 0),
@@ -296,5 +296,3 @@ DODO.Sprite = DODO.Evented.extend({
         spritesToDestroy.push(this);
     }
 });
-
-DODO.Sprite.inject(DODO.input.mouseReactivityInjection);

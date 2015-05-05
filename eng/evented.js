@@ -21,7 +21,7 @@ scene.unbind('created',player);
 player.debind();
 */
 
-DODO.Evented = Class.extend({
+DODO.Evented = DODO.Class.extend({
     bind: function (event, target, callback) {
         // Handle the case where there is no target provided
         if (!callback) {

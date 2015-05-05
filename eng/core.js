@@ -1,3 +1,5 @@
+var DODO = {};
+
 (function () {
     'use strict';
     var initializing = false, fnTest = /xyz/.test(function () {
@@ -6,7 +8,7 @@
 
     // The base Class implementation (does nothing)
 //    this.Class = function () {
-    window.Class = function () {
+    DODO.Class = function () {
     };
 
     var inject = function (prop) {
@@ -37,7 +39,7 @@
     };
 
     // Create a new Class that inherits from this class
-    var extend = window.Class.extend = function (prop) {
+    var extend = DODO.Class.extend = function (prop) {
         var _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,
@@ -91,8 +93,6 @@
         return Class;
     };
 })();
-
-var DODO = {};
 
 // JS EXTENSIONS
 Number.prototype.map = function(istart, istop, ostart, ostop) {

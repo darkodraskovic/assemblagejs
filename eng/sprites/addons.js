@@ -1,6 +1,6 @@
 DODO.addons = {};
 
-DODO.addons.PinTo = Class.extend({
+DODO.addons.PinTo = DODO.Class.extend({
     // props: {name: "name", parent: parent, offsetX: 0, offsetY: 0}
     init: function (sprite, props) {
         if (props) {
@@ -9,14 +9,9 @@ DODO.addons.PinTo = Class.extend({
             }
         }
         this.sprite = sprite;
-        this.active = true;
 
-        if (typeof this.offsetX === "undefined") {
-            this.offsetX = 0;
-        }
-        if (typeof this.offsetY === "undefined") {
-            this.offsetY = 0;
-        }
+        this.offsetX = this.offsetX || 0;
+        this.offsetY = this.offsetY || 0;
         this.parent.setPoint(this.name, this.offsetX, this.offsetY);
     },
     update: function () {
@@ -26,7 +21,7 @@ DODO.addons.PinTo = Class.extend({
     }
 });
 
-DODO.addons.Sine = Class.extend({
+DODO.addons.Sine = DODO.Class.extend({
     angle: 0,
     positive: true,
     valueDiff: 0,

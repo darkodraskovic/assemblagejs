@@ -1,4 +1,4 @@
-DODO.Camera = Class.extend({
+DODO.Camera = DODO.Class.extend({
     init: function (scene, w, h, props) {
         this.scene = scene;
         this.width = w;

@@ -1,4 +1,4 @@
-DODO.Tiling = Class.extend({
+DODO.Tiling = DODO.Class.extend({
     init: function (parent, props) {
         for (var prop in props) {
             this[prop] = props[prop];

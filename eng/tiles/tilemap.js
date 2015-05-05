@@ -1,4 +1,4 @@
-DODO.Tilemap = Class.extend({
+DODO.Tilemap = DODO.Class.extend({
     init: function (layer, img, tileW, tileH, collides, spacing, orientation) {
         this.layer = layer;
         layer.tilemap = this;
