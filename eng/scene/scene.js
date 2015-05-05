@@ -8,7 +8,7 @@ DODO.Layer = function(scene, name) {
 DODO.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 DODO.Layer.prototype.constructor = DODO.Layer;
 
-DODO.Scene = DODO.Inputed.extend({
+DODO.Scene = DODO.Inputted.extend({
     width: 0,
     height: 0,
     scale: 1,

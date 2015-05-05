@@ -1,4 +1,4 @@
-DODO.Inputed = DODO.Evented.extend({
+DODO.Inputted = DODO.Evented.extend({
     initMouseReactivity: function() {
             this.sprite.mousedown = function() {
                 this.trigger('leftpressed');

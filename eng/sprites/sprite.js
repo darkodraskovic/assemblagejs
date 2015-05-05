@@ -1,4 +1,4 @@
-DODO.Sprite = DODO.Inputed.extend({
+DODO.Sprite = DODO.Inputted.extend({
     destroyThis: false,
     updates: true,
     origin: new PIXI.Point(0, 0),
