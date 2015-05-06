@@ -8,7 +8,6 @@ DODO.Graphics = DODO.Sprite.extend({
             DODO.drawPolygon(this.sprite, polygon, props);
         }
 
-        this.origin = this.sprite.pivot;
         this.initializeSprite(parent, x, y);
     }
 });
@@ -28,7 +27,6 @@ DODO.Text = DODO.Sprite.extend({
                     dropShadowDistance: props.dropShadowDistance || 3}
         );
 
-        this.origin = this.sprite.pivot;
         this.initializeSprite(parent, x, y);
     }
 });

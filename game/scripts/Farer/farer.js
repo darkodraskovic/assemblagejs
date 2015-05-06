@@ -173,7 +173,8 @@ var Rotor = DODO.Colliding.extend({
     collisionResponse: "static",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.016);
+        this.addAnimation("all", _.range(0, this.textures.length), 0.1);
+        this.setAnimation("all", 0, 0.016);
         this.setOrigin(0.5, 0.5);
     },
     update: function () {

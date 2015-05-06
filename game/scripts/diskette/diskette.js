@@ -33,8 +33,8 @@ var Diskette = DODO.Kinematic.extend({
         this.addAnimation("inserting", _.range(0, 10), 0.2);
         this.springSound = DODO.getAsset('Diskette/bounce.ogg');
         this.setOrigin(0.5, 0.5);
-        this.position.x += this.width * this.origin.x;
-        this.position.y += this.height * this.origin.y;
+        this.position.x += this.width * this.anchor.x;
+        this.position.y += this.height * this.anchor.y;
     },
     update: function () {
         if (this.inserting) {
@@ -119,7 +119,7 @@ var Diskette = DODO.Kinematic.extend({
         if (other instanceof Computer && response.aInB) {
             this.setAnimation("inserting");
             this.inserting = true;
-            this.x = other.getSlotX() + this.width * this.origin.x;
+            this.x = other.getSlotX() + this.width * this.anchor.x;
             this.collides = false;
         }
     }

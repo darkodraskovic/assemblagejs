@@ -36,116 +36,68 @@ DODO.Animated = DODO.Sprite.extend({
             this.textures.push(new PIXI.RenderTexture(this.frameWidth, this.frameHeight));
         }
 
-        var sprite = this.createPIXISprite(this.frameWidth, this.frameHeight);
-        this.initializePIXISprite(sprite);
-
-        this.addAnimation("default", [0], 1);
-        this.addAnimation("all", _.range(0, this.textures.length), 0.1);
-        this.setAnimation("default");
-
+        this.initializePIXISprite();
         this.initializeSprite(parent, x, y);
     },
-    // Create a transparent PIXI.Sprite that will store, as a parent,
-    // all animations, ie. PIXI.MovieClip-s and all PIXI.Sprite-s.
     createPIXISprite: function (w, h) {
-        // We'll use the graphics PIXI obj to render an invisible texture,
-        // which we'll pass to PIXI.Sprite's constructor.
         var graphics = new PIXI.Graphics();
-        // Specifies a simple one-color fill that subsequent calls to other 
-        // Graphics methods use when drawing. Second argument specifies the alpha. 
         graphics.beginFill(0xFFFFFF, 0);
         graphics.drawRect(0, 0, w, h);
         graphics.endFill();
 
-        var sprite;
-        // A texture stores the information that represents an image or part 
-        // of an image. It cannot be added to the display list directly. 
-        // Instead we use it as the texture for a PIXI.Sprite. 
-        // If no frame is provided then the whole image is used. (PIXI doc)
-        // generateTexture() is a function that returns a texture of the 
-        // graphics object that can then be used to create sprites (PIXI doc)
-        sprite = new PIXI.Sprite(graphics.generateTexture(false));
-        this.origin = this.origin || new PIXI.Point();
-        sprite.anchor.x = this.origin.x || 0;
-        sprite.anchor.y = this.origin.y || 0;
-        this.origin = sprite.anchor;
+        var sprite = new PIXI.Sprite(graphics.generateTexture(false));
+        this.anchor = sprite.anchor;
         return sprite;
     },
-    initializePIXISprite: function (sprite) {
-        this.sprite = sprite;
+    initializePIXISprite: function () {
+        this.sprite = this.createPIXISprite(this.frameWidth, this.frameHeight);
 
         // animations DOC stores MovieClip objects.
-        var animations = new PIXI.DisplayObjectContainer();
-        this.sprite.addChild(animations);
+        this.sprite.addChild(new PIXI.DisplayObjectContainer());
         // A hashmap of all animations, ie. MovieClips for easy reference.
         this.animations = {};
-
-        // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
-        var sprites = new PIXI.DisplayObjectContainer();
-        this.sprite.addChild(sprites);
-        // An array of all sprite children (instances of DODO.Sprite) of this object 
-        this.sprites = [];
+        this.addAnimation("default", [0], 1);
+        this.setAnimation("default");
     },
     // ANIMATIONS
     // frames is an array of nums refering to the index of texture in this.textures
-    addAnimation: function (name, frames, speed) {
-        // set default speed to 1; 
-        if (!speed) {
-            speed = this.defaultAnimationSpeed;
-        }
-
-        var textures = [];
-        for (var i = 0; i < frames.length; i++)
-            textures[i] = this.textures[frames[i]];
-
+    addAnimation: function (name, textures, speed) {
+        for (var i = 0; i < textures.length; i++)
+            textures[i] = this.textures[textures[i]];
         var animation = new PIXI.MovieClip(textures);
 
-        animation.anchor.x = this.origin.x;
-        animation.anchor.y = this.origin.y;
-        // MovieClip is the child of the transparent this.sprite and is invisible by default.
+        animation.anchor.x = this.anchor.x;
+        animation.anchor.y = this.anchor.y;
         animation.visible = false;
-        // set the speed that the MovieClip will play at; higher is faster, lower is slower
-        animation.animationSpeed = speed;
+        animation.animationSpeed = speed || 0;
         // The first child of this.sprite is the DOC containing MovieClips.
         this.sprite.children[0].addChild(animation);
-        // Set the animations' key/value pair for easy reference.
         this.animations[name] = animation;
 
         return animation;
     },
     setAnimation: function (name, frame, speed) {
-        // Play from the start by default.
-        if (typeof frame === 'undefined') {
-            if (this.currentAnimationName === name)
-                return;
-            frame = 0;
-        }
-        // The speed
-        if (typeof speed !== 'undefined') {
-            this.animations[name].animationSpeed = speed;
-        }
+        if (this.currentAnimationName === name)
+            return;
 
-        // Turn off the previously playing animation.
         if (this.currentAnimation) {
-            // Stop the MovieClip.
             this.currentAnimation.stop();
-            // Set the MovieClip unvisible.
             this.currentAnimation.visible = false;
         }
 
-        this.animations[name].visible = true;
         this.currentAnimation = this.animations[name];
         this.currentAnimationName = name;
-        // Goes to a frame and begins playing the animation.
-        this.animations[name].gotoAndPlay(frame);
+        this.currentAnimation.animationSpeed = _.isNumber(speed) ? speed : this.currentAnimation.animationSpeed;
+        this.currentAnimation.visible = true;
+        this.currentAnimation.gotoAndPlay(frame || 0);
     },
     // ORIGIN
     setOrigin: function (x, y) {
-        var deltaX = (x - this.origin.x) * this.width / this.scale.x;
-        var deltaY = (y - this.origin.y) * this.height / this.scale.y;
+        var deltaX = (x - this.anchor.x) * this.width / this.scale.x;
+        var deltaY = (y - this.anchor.y) * this.height / this.scale.y;
 
-        this.origin.x = x;
-        this.origin.y = y;
+        this.anchor.x = x;
+        this.anchor.y = y;
 
         _.each(this.animations, function (animation) {
             animation.anchor.x = x;
@@ -169,7 +121,7 @@ DODO.Animated = DODO.Sprite.extend({
         }
     },
     getOrigin: function () {
-        return this.origin;
+        return this.anchor;
     },
     // LIFECYCLE & UPDATE
     update: function () {

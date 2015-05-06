@@ -15,7 +15,6 @@ var Anime = DODO.Kinematic.extend({
     elasticity: 0,
     alive: true,
     bounded: false,
-    origin: {x: 0.5, y: 1},
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = this.friction.y = 60;
@@ -147,16 +146,15 @@ var Cube = DODO.Kinematic.extend({
     spriteSheet: "Isometric/cube.png",
     drawCollisionPolygon: true,
     collisionResponse: "static",
-    origin: {x: 0.5, y: 1},
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
+        this.collisionPolygon.setOffset(new SAT.Vector(this.width / 2, this.height));
     }
 });
 
 var Sphere = DODO.Kinematic.extend({
     spriteSheet: "Isometric/sphere.png",
     drawCollisionPolygon: true,
-    origin: new PIXI.Point(0.5, 1),
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 

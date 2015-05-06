@@ -10,8 +10,7 @@ DODO.Sprite = DODO.Inputted.extend({
     },
     initializeSprite: function (parent, x, y) {
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
-        var sprites = new PIXI.DisplayObjectContainer();
-        this.sprite.addChild(sprites);
+        this.sprite.addChild(new PIXI.DisplayObjectContainer());
         this.sprite.dodoSprite = this;
 
         if (parent instanceof DODO.Sprite) {
