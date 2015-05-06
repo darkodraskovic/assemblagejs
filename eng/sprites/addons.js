@@ -15,9 +15,10 @@ DODO.addons.PinTo = DODO.Class.extend({
         this.parent.setPoint(this.name, this.offsetX, this.offsetY);
     },
     update: function () {
-        this.sprite.setRotation(this.parent.getRotation());
+        this.sprite.rotation = this.parent.rotation;
         var pos = this.parent.getPoint(this.name);
-        this.sprite.setPosition(pos.x, pos.y);
+        this.sprite.position.x = pos.x;
+        this.sprite.position.y = pos.y;
     }
 });
 

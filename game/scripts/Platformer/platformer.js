@@ -64,7 +64,7 @@ var AnimePlatformer = DODO.Kinematic.extend({
 
         // PLATFORM
         if (this.movingPlatform) {
-            this.setY(this.getY() + this.platformDY + 2);
+            this.position.y = this.position.y + this.platformDY + 2;
             this.movingPlatform = null;
         }
 
@@ -115,19 +115,19 @@ var AnimePlatformer = DODO.Kinematic.extend({
 
         // Moving platform
         if (response.overlap && response.overlapN.y > 0 && !(other instanceof DODO.Tile)) {
-            if (other.getX() !== other.prevX || other.getY() !== other.prevY) {
+            if (other.position.x !== other.prevX || other.position.y !== other.prevY) {
                 this.processMovingPlatform(other);
             }
         }
     },
     processMovingPlatform: function(other) {
-        if (this.getY() < other.getY()) {
+        if (this.position.y < other.position.y) {
             if (other instanceof Platform) {
                 this.movingPlatform = other;
-                this.platformDX = other.getX() - other.prevX;
-                this.platformDY = other.getY() - other.prevY;
+                this.platformDX = other.position.x - other.prevX;
+                this.platformDY = other.position.y - other.prevY;
 
-                this.setXRelative(this.platformDX);
+                this.position.x += this.platformDX;
                 this.synchCollisionPolygon();
             }
         }
@@ -224,14 +224,14 @@ var PlayerPlatformer = AnimePlatformer.extend({
         }
 
         this.processThrus();
-
+//        window.console.log(this.width);
         this._super();
     },
     throwBall: function() {
         if (this.mode !== "throwing")
             return;
-        var ball = new Ball(this.getLayer(), this.getX(), this.getY());
-        var angle = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
+        var ball = new Ball(this.getLayer(), this.position.x, this.position.y);
+        var angle = DODO.angleTo(this.position, this.scene.getMousePosition());
         ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
         ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
     },
@@ -320,16 +320,16 @@ var Platform = DODO.Colliding.extend({
         this.sine.period = 2;
         this.sine.amplitude = this.frameWidth;
         this.sine.reset();
-        this.origX = this.getX();
-        this.origY = this.getY();
+        this.origX = this.position.x;
+        this.origY = this.position.y;
     },
     update: function() {
-        this.prevX = this.getX();
-        this.prevY = this.getY();
+        this.prevX = this.position.x;
+        this.prevY = this.position.y;
 
         this.sine.update();
-        this.setX(this.origX + this.sine.value);
-        this.setY(this.origY - this.sine.value);
+        this.position.x = this.origX + this.sine.value;
+        this.position.y = this.origY - this.sine.value;
 
         this.synchCollisionPolygon();
         this._super();
@@ -350,7 +350,7 @@ var ExplosionPlatformer = DODO.Animated.extend({
         this.animations["explode"].onComplete = function() {
             that.destroy();
         };
-        this.setScale(0.4, 0.4);
+        this.scale.x = this.scale.y = 0.4;
         DODO.getAsset('dull.wav').play();
 
         this.setOrigin(0.5, 0.5);

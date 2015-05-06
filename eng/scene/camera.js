@@ -41,30 +41,30 @@ DODO.Camera = DODO.Class.extend({
     followBounded: function () {
         var followee = this.followee;
         
-        if (followee.getX() < this.getInnerBound("left"))
+        if (followee.position.x < this.getInnerBound("left"))
         {
-            this.x = followee.getX() - this.width * this.innerBounds.left;
+            this.x = followee.position.x - this.width * this.innerBounds.left;
         }
-        if (followee.getY() < this.getInnerBound("top"))
+        if (followee.position.y < this.getInnerBound("top"))
         {
-            this.y = followee.getY() - this.height * this.innerBounds.top;
+            this.y = followee.position.y - this.height * this.innerBounds.top;
         }
-        if (followee.getX() > this.getInnerBound("right"))
+        if (followee.position.x > this.getInnerBound("right"))
         {
-            this.x = followee.getX() - this.width * this.innerBounds.right;
+            this.x = followee.position.x - this.width * this.innerBounds.right;
         }
-        if (followee.getY() > this.getInnerBound("bottom"))
+        if (followee.position.y > this.getInnerBound("bottom"))
         {
-            this.y = followee.getY() - this.height * this.innerBounds.bottom;
+            this.y = followee.position.y - this.height * this.innerBounds.bottom;
         }
     },
     followCentered: function () {
-        this.x = this.followee.getX() - this.width / 2;
-        this.y = this.followee.getY() - this.height / 2;
+        this.x = this.followee.position.x - this.width / 2;
+        this.y = this.followee.position.y - this.height / 2;
     },
     centerOn: function (center) {
-        this.x = center.getX() - this.width / 2;
-        this.y = center.getY() - this.height / 2;
+        this.x = center.position.x - this.width / 2;
+        this.y = center.position.y - this.height / 2;
     },
     bound: function () {
         var sceneW = this.scene.getWidth();

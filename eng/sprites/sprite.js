@@ -1,19 +1,14 @@
 DODO.Sprite = DODO.Inputted.extend({
     destroyThis: false,
     updates: true,
-    origin: new PIXI.Point(0, 0),
     // parent refers to the instance of Sprite or layer (instance of PIXI.DisplayObjectContainer)
-    init: function(parent, x, y, props) {
+    init: function (parent, x, y, props) {
         // Add all the properties of the prop obj to this instance.
         _.extend(this, props);
         this._vector = new SAT.Vector();
         this.scene = parent.scene;
     },
-    initializeSprite: function(parent, x, y) {
-        // Used to optimize getters & setters.
-        this.position = this.sprite.position;
-        this.scale = this.sprite.scale;
-
+    initializeSprite: function (parent, x, y) {
         // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
         var sprites = new PIXI.DisplayObjectContainer();
         this.sprite.addChild(sprites);
@@ -26,35 +21,36 @@ DODO.Sprite = DODO.Inputted.extend({
             parent.addChild(this.sprite);
         }
 
-        this.setPosition(x, y);
+        this.position.x = x;
+        this.position.y = y;
         this.scene.spritesToCreate.push(this);
     },
     // Visual BOUNDS
-    getLeft: function() {
+    getLeft: function () {
         return this.sprite.getBounds().x / this.scene.scale + this.scene.camera.x;
     },
-    getRight: function() {
+    getRight: function () {
         var bounds = this.sprite.getBounds();
         return (bounds.x + bounds.width) / this.scene.scale + this.scene.camera.x;
     },
-    getTop: function() {
+    getTop: function () {
         return this.sprite.getBounds().y / this.scene.scale + this.scene.camera.y;
     },
-    getBottom: function() {
+    getBottom: function () {
         var bounds = this.sprite.getBounds();
         return (bounds.y + bounds.height) / this.scene.scale + this.scene.camera.y;
     },
-    getCenterX: function() {
-        return this.getLeft() + this.getWidth() / 2;
+    getCenterX: function () {
+        return this.getLeft() + this.width / 2;
     },
-    getCenterY: function() {
-        return this.getTop() + this.getHeight() / 2;
+    getCenterY: function () {
+        return this.getTop() + this.height / 2;
     },
-    overlapsSprite: function(sprite) {
+    overlapsSprite: function (sprite) {
         return (this.getTop() <= sprite.getBottom() && this.getBottom() >= sprite.getTop()
                 && this.getLeft() <= sprite.getRight() && this.getRight() >= sprite.getLeft());
     },
-    isOnScreen: function() {
+    isOnScreen: function () {
         var bounds = this.sprite.getBounds();
         var renderer = this.scene.game.renderer;
 
@@ -71,112 +67,47 @@ DODO.Sprite = DODO.Inputted.extend({
     },
     // Sprite HIERARCHY
     // The last child of this PIXI sprite is the parent of PIXI sprites belonging to other DODO sprites.
-    addSprite: function(sprite) {
+    addSprite: function (sprite) {
         this.sprite.children[this.sprite.children.length - 1].addChild(sprite.sprite);
     },
-    removeSprite: function(sprite) {
+    removeSprite: function (sprite) {
         this.sprite.children[this.sprite.children.length - 1].removeChild(sprite.sprite);
     },
-    getChildrenSprites: function() {
-        return _.map(this.sprite.children[this.sprite.children.length - 1].children, function(child) {
+    getChildrenSprites: function () {
+        return _.map(this.sprite.children[this.sprite.children.length - 1].children, function (child) {
             return child.dodoSprite;
         });
     },
-    getParentSprite: function() {
+    getParentSprite: function () {
         return this.sprite.parent.parent.dodoSprite;
     },
     // Sprite POINTS
-    setPoint: function(name, x, y) {
+    setPoint: function (name, x, y) {
         this.points = this.points || {};
         this.points[name] = {x: x, y: y};
     },
-    getPoint: function(name) {
+    getPoint: function (name) {
         this._vector.x = this.points[name].x * this.scale.x;
         this._vector.y = this.points[name].y * this.scale.y;
-        this.getRotation() && this._vector.rotate(this.getRotation());
+        this.rotation && this._vector.rotate(this.rotation);
         this._vector.x += this.position.x;
         this._vector.y += this.position.y;
         return this._vector;
     },
     // TRANSFORMATIONS
-    setPosition: function(x, y) {
-        this.position.x = x;
-        this.position.y = y;
-    },
-    getPosition: function() {
-        return this.position;
-    },
-    setX: function(x) {
-        this.position.x = x;
-    },
-    getX: function() {
-        return this.position.x;
-    },
-    setY: function(y) {
-        this.position.y = y;
-    },
-    getY: function() {
-        return this.position.y;
-    },
-    setXRelative: function(x) {
-        this.setX(this.position.x + x);
-    },
-    setYRelative: function(y) {
-        this.setY(this.position.y + y);
-    },
-    setPositionRelative: function(x, y) {
-        this.setPosition(this.position.x + x, this.position.y + y);
-    },
-    getPositionScene: function() {
+    getScenePosition: function() {
         return this.scene.container.toLocal(this.scene.origin, this.sprite);
     },
-    getPositionScreen: function() {
+    getScreenPosition: function() {
         return this.sprite.toGlobal(this.scene.origin);
     },
-    setWidth: function(w) {
-        this.sprite.width = w;
+    flipX: function () {
+        this.scale.x *= -1;
     },
-    getWidth: function() {
-        return Math.abs(this.sprite.width);
+    getFlippedX: function () {
+        return this.scale.x < 0;
     },
-    setHeight: function(h) {
-        this.sprite.height = h;
-    },
-    getHeight: function() {
-        return Math.abs(this.sprite.height);
-    },
-    setScale: function(x, y) {
-        this.scale.x = x;
-        this.scale.y = y;
-    },
-    setScaleX: function(x) {
-        this.scale.x = x;
-    },
-    setScaleY: function(y) {
-        this.scale.y = y;
-    },
-    getScale: function() {
-        return this.sprite.scale;
-    },
-    getScaleX: function() {
-        return this.sprite.scale.x;
-    },
-    getScaleY: function() {
-        return this.sprite.scale.y;
-    },
-    setRotation: function(n) {
-        this.sprite.rotation = n;
-    },
-    getRotation: function() {
-        return this.sprite.rotation;
-    },
-    flipX: function() {
-        this.setScaleX(this.getScaleX() * -1);
-    },
-    getFlippedX: function() {
-        return this.getScale().x < 0;
-    },
-    setFlippedX: function(flipped) {
+    setFlippedX: function (flipped) {
         if (flipped) {
             if (!this.getFlippedX())
                 this.flipX();
@@ -186,13 +117,13 @@ DODO.Sprite = DODO.Inputted.extend({
                 this.flipX();
         }
     },
-    flipY: function() {
-        this.setScaleY(this.getScaleY() * -1);
+    flipY: function () {
+        this.scale.y *= -1;
     },
-    getFlippedY: function() {
-        return this.getScale().y < 0;
+    getFlippedY: function () {
+        return this.scale.y < 0;
     },
-    setFlippedY: function(flipped) {
+    setFlippedY: function (flipped) {
         if (flipped) {
             if (!this.getFlippedY())
                 this.flipY();
@@ -202,44 +133,22 @@ DODO.Sprite = DODO.Inputted.extend({
                 this.flipY();
         }
     },
-    // ORIGIN (ANCHOR)
-    setOrigin: function(x, y) {
-        var deltaX = -(x - this.origin.x) * this.getWidth() / this.scale.x;
-        var deltaY = -(y - this.origin.y) * this.getHeight() / this.scale.y;
-
-        this.origin.x = x;
-        this.origin.y = y;
-
-        _.each(this.getChildrenSprites(), function(sprite) {
-            sprite.setPositionRelative(deltaX, deltaY);
-        });
-
-        _.each(this.points, function(p) {
-            p.x += deltaX;
-            p.y += deltaY;
-        });
-
-        return [deltaX, deltaY];
-    },
-    getOrigin: function() {
-        return this.origin;
-    },
     // Z ORDER & LAYERS
-    getLayer: function() {
+    getLayer: function () {
         var parent = this.sprite.parent;
         while (parent && !(parent instanceof DODO.Layer)) {
             parent = parent.parent;
         }
         return parent;
     },
-    getLayerName: function() {
+    getLayerName: function () {
         return this.getLayer().name;
     },
-    getLayerNumber: function() {
+    getLayerNumber: function () {
         var layer = this.getLayer();
         return layer.parent.getChildIndex(layer);
     },
-    setLayer: function(layer) {
+    setLayer: function (layer) {
         if (_.isString(layer)) {
             layer = this.scene.findLayerByName(layer);
         } else if (_.isNumber(layer)) {
@@ -250,10 +159,10 @@ DODO.Sprite = DODO.Inputted.extend({
             return layer;
         }
     },
-    getZ: function() {
+    getZ: function () {
         return this.sprite.parent.getChildIndex(this.sprite);
     },
-    setZ: function(position) {
+    setZ: function (position) {
         var parent = this.sprite.parent;
         if (_.isString(position)) {
             if (position === "top") {
@@ -269,7 +178,7 @@ DODO.Sprite = DODO.Inputted.extend({
                 parent.setChildIndex(this.sprite, position);
         }
     },
-    moveToSprite: function(sprite, position) {
+    moveToSprite: function (sprite, position) {
         var layer = sprite.getLayer();
         if (this.setLayer(layer)) {
             if (position === "back" || position === "front") {
@@ -282,17 +191,70 @@ DODO.Sprite = DODO.Inputted.extend({
         }
     },
     // LIFECYCLE
-    update: function() {
+    update: function () {
     },
-    destroy: function() {
+    destroy: function () {
         var spritesToDestroy = this.scene.spritesToDestroy;
         if (_.contains(spritesToDestroy, this))
             return;
-        _.each(this.getChildrenSprites(), function(sprite) {
+        _.each(this.getChildrenSprites(), function (sprite) {
             sprite.destroy();
         });
         this.trigger('destroyed');
         this.debind();
         spritesToDestroy.push(this);
+    }    
+});
+
+Object.defineProperties(DODO.Sprite.prototype, {
+    'position': {
+        get: function () {
+            return this.sprite.position;
+        }
+    },
+    'rotation': {
+        set: function (n) {
+            this.sprite.rotation = n;
+        },
+        get: function () {
+            return this.sprite.rotation;
+        }
+    },
+    'scale': {
+        get: function () {
+            return this.sprite.scale;
+        }
+    },
+    'width': {
+        set: function (n) {
+            this.sprite.width = n;
+        },
+        get: function () {
+            return this.sprite.width.abs();
+        }
+    },
+    'height': {
+        set: function (n) {
+            this.sprite.height = n;
+        },
+        get: function () {
+            return this.sprite.height.abs();
+        }
+    },
+    'alpha': {
+        set: function (n) {
+            this.sprite.alpha = n;
+        },
+        get: function () {
+            return this.sprite.alpha;
+        }
+    },
+    'visible': {
+        set: function (visible) {
+            this.sprite.visible = visible;
+        },
+        get: function () {
+            return this.sprite.visible;
+        }
     }
 });

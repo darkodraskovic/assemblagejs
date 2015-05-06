@@ -85,7 +85,7 @@ new MyGame();
 var sceneManager = DODO.game.sceneManager;
 var loader = DODO.game.loader;
 
-sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
+//sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
 //sceneManager.startScene(skorpio, "lvl1", "Skorpio/skorpio1.json");
 //sceneManager.startScene(brownian, "lvl1", "Brownian/brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric3.json");
@@ -104,15 +104,15 @@ sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
 //});
 
 // DISKETTE
-//loader.loadAssets(diskette, function () {
-//    var scene =  new DODO.Scene("Diskette Level 1", DODO.config.camera, "Diskette/diskette1.json");
-//    for (var i = 0; i < 50; i++) {
-//        var star = new SceneryStar(scene.findLayerByName("Sky"),
-//                Math.random() * DODO.game.renderer.width, Math.random() * DODO.game.renderer.width);
-//        star.sprite.alpha = Math.random();
-//    }
-//    scene.findSpriteByClass(ScenerySun).setZ("top");
-//    player = scene.findSpriteByClass(Player);
-//    
-//    DODO.input.addMapping("restart", DODO.Key.T);
-//});
+loader.loadAssets(diskette, function () {
+    var scene =  new DODO.Scene("Diskette Level 1", DODO.config.camera, "Diskette/diskette1.json");
+    for (var i = 0; i < 50; i++) {
+        var star = new SceneryStar(scene.findLayerByName("Sky"),
+                Math.random() * DODO.game.renderer.width, Math.random() * DODO.game.renderer.width);
+        star.sprite.alpha = Math.random();
+    }
+    scene.findSpriteByClass(ScenerySun).setZ("top");
+    player = scene.findSpriteByClass(Player);
+    
+    DODO.input.addMapping("restart", DODO.Key.T);
+});

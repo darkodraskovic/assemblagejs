@@ -33,7 +33,8 @@ var Diskette = DODO.Kinematic.extend({
         this.addAnimation("inserting", _.range(0, 10), 0.2);
         this.springSound = DODO.getAsset('Diskette/bounce.ogg');
         this.setOrigin(0.5, 0.5);
-        this.setPositionRelative(this.getWidth() * 0.5, this.getHeight() * 0.5);
+        this.position.x += this.width * this.origin.x;
+        this.position.y += this.height * this.origin.y;
     },
     update: function () {
         if (this.inserting) {
@@ -64,17 +65,17 @@ var Diskette = DODO.Kinematic.extend({
         this._super();
     },
     detectDynamics: function () {
-        var tile = this.dynamicsMap.getTileAt(this.getX(), this.getBottom() + this.springScan);
+        var tile = this.dynamicsMap.getTileAt(this.position.x, this.getBottom() + this.springScan);
         if (tile && this.velocity.y <= 0 &&
                 (tile.gid === Dynamics.U_SPRING || tile.gid === Dynamics.UL_SPRING || tile.gid === Dynamics.UR_SPRING)) {
             return tile.gid;
         }
-        tile = this.dynamicsMap.getTileAt(this.getRight() + this.springScan, this.getY());
+        tile = this.dynamicsMap.getTileAt(this.getRight() + this.springScan, this.position.y);
         if (tile && this.velocity.x <= 0 &&
                 (tile.gid === Dynamics.L_SPRING || tile.gid === Dynamics.UL_SPRING)) {
             return tile.gid;
         }
-        tile = this.dynamicsMap.getTileAt(this.getLeft() - this.springScan, this.getY());
+        tile = this.dynamicsMap.getTileAt(this.getLeft() - this.springScan, this.position.y);
         if (tile && this.velocity.x >= 0 &&
                 (tile.gid === Dynamics.R_SPRING || tile.gid === Dynamics.UR_SPRING)) {
             return tile.gid;
@@ -118,8 +119,7 @@ var Diskette = DODO.Kinematic.extend({
         if (other instanceof Computer && response.aInB) {
             this.setAnimation("inserting");
             this.inserting = true;
-//            this.setPosition(other.getSlotX(), other.getSlotY());
-            this.setX(other.getSlotX() + this.getWidth() * this.origin.x);
+            this.x = other.getSlotX() + this.width * this.origin.x;
             this.collides = false;
         }
     }

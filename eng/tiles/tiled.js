@@ -76,10 +76,10 @@ DODO.createTiledMap = function(mapData, scene) {
                 var o = new (eval(oData["type"]))(layer, oData["x"], oData["y"], props);
 
                 // Object TRANSFORM
-                o.setRotation(oData["rotation"].toRad());
+                o.rotation = oData["rotation"].toRad();
                 if (mapData.orientation === "isometric") {
-                    var x = o.getX() / mapData.tileheight;
-                    var y = o.getY() / mapData.tileheight;
+                    var x = o.position.x / mapData.tileheight;
+                    var y = o.position.y / mapData.tileheight;
                     o.position.x = (x - y) * (mapData.tilewidth / 2) + scene.getWidth() / 2;
                     o.position.y = (x + y) * (mapData.tileheight / 2);
                 }

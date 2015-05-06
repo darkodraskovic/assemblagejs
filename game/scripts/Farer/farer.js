@@ -25,29 +25,29 @@ var Player = DODO.Kinematic.extend({
         player = this;
     },
     update: function () {
-        var rot = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
-        this.setRotation(rot);
+        var rot = DODO.angleTo(this.position, this.scene.getMousePosition());
+        this.rotation = rot;
 
         var speedSign = 0;
-        if (this.getRotation() < 0)
+        if (this.rotation < 0)
             speedSign = -1;
         else
             speedSign = 1;
 
         if (DODO.input.down["up"]) {
-            this.movementAngle = this.getRotation();
+            this.movementAngle = this.rotation;
             this.acceleration.x = this.acceleration.y = 64;
         }
         else if (DODO.input.down["down"]) {
-            this.movementAngle = this.getRotation() + Math.PI;
+            this.movementAngle = this.rotation + Math.PI;
             this.acceleration.x = this.acceleration.y = 64;
         }
         else if (DODO.input.down["left"]) {
-            this.movementAngle = this.getRotation() + Math.PI / 2 * speedSign;
+            this.movementAngle = this.rotation + Math.PI / 2 * speedSign;
             this.acceleration.x = this.acceleration.y = 64;
         }
         else if (DODO.input.down["right"]) {
-            this.movementAngle = this.getRotation() + -Math.PI / 2 * speedSign;
+            this.movementAngle = this.rotation + -Math.PI / 2 * speedSign;
             this.acceleration.x = this.acceleration.y = 64;
         }
         else {
@@ -67,18 +67,18 @@ var Player = DODO.Kinematic.extend({
 
     },
     shootBullet: function () {
-        var rot = this.getRotation();
-//        var pos1 = this.getSpritePoint("bullet1").getPosition();
+        var rot = this.rotation;
+//        var pos1 = this.getSpritePoint("bullet1").position;
         var pos1 = this.getPoint("bullet1");
         var bullet1 = new Bullet(this.scene.findLayerByName("Effects"), pos1.x, pos1.y);
-        bullet1.setRotation(rot);
+        bullet1.rotation = (rot);
         bullet1.velocity.x = Math.cos(rot) * bullet1.maxVelocity.x;
         bullet1.velocity.y = Math.sin(rot) * bullet1.maxVelocity.y;
 
-//        var pos2 = this.getSpritePoint("bullet2").getPosition();
+//        var pos2 = this.getSpritePoint("bullet2").position;
         var pos2 = this.getPoint("bullet2");
         var bullet2 = new Bullet(this.scene.findLayerByName("Effects"), pos2.x, pos2.y);
-        bullet2.setRotation(rot);
+        bullet2.rotation = (rot);
         bullet2.velocity.x = Math.cos(rot) * bullet2.maxVelocity.x;
         bullet2.velocity.y = Math.sin(rot) * bullet2.maxVelocity.y;
     }
@@ -90,14 +90,13 @@ var Laser = DODO.Animated.extend({
         this._super(parent, x, y, props);
         this.sprite.alpha = 0.4;
         this.setOrigin(0, 0.5);
-        this.baseScale = {x: 0.3, y: 1};
         this.sound = DODO.getAsset('laser-beam.mp3');
         this.sound.loop(true);
         this.sound.volume(0.75);
         this.soundId = 0;
 
-        this.origW = this.getWidth();
-        this.origH = this.getHeight();
+        this.origW = this.width;
+        this.origH = this.height;
         var sineProps = {period: 0.5, periodRand: 25, amplitude: 3, amplitudeRand: 25};
         this.sine = new DODO.addons.Sine(this, sineProps);
         this.scene.bind('rightpressed', this, this.toggleFire.bind(this, 'on'));
@@ -105,15 +104,15 @@ var Laser = DODO.Animated.extend({
     },
     update: function () {
         if (this.scene.rightdown) {
-            this.setWidth(DODO.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
+            this.width = DODO.distanceTo(this.getScenePosition(), this.scene.getMousePosition());
         }
 
         this.sine.update();
-        this.setHeight(this.origH + this.sine.value);
+        this.height = this.origH + this.sine.value;
         if (this.on)
-            this.setWidth(this.getWidth() + this.sine.value);
+            this.width = this.width + this.sine.value;
         else
-            this.setWidth(this.origW + this.sine.value);
+            this.width = this.origW + this.sine.value;
 
         this._super();
     },
@@ -121,7 +120,7 @@ var Laser = DODO.Animated.extend({
         if (state === "on") {
             this.on = true;
             this.sprite.alpha = 0.75;
-            this.setWidth(DODO.distanceTo(this.getPositionScene(), this.scene.getMousePosition()));
+            this.width = DODO.distanceTo(this.getScenePosition(), this.scene.getMousePosition());
 
             this.sound.play(function (id) {
                 this.soundId = id;
@@ -131,7 +130,7 @@ var Laser = DODO.Animated.extend({
         if (state === "off") {
             this.on = false;
             this.sprite.alpha = 0.4;
-            this.setWidth(this.origW);
+            this.width = this.origW;
 
             this.sound.fade(0.75, 0, 450, null, this.soundId);
         }
@@ -161,7 +160,7 @@ var Bullet = DODO.Kinematic.extend({
     },
     collideWithStatic: function (other, response) {
         new Explosion(this.scene.findLayerByName("Effects"),
-                other.getX(), other.getY());
+                other.position.x, other.position.y);
         other.destroy();
         this.destroy();
     }
@@ -172,14 +171,13 @@ var Rotor = DODO.Colliding.extend({
     frameWidth: 45,
     frameHeight: 45,
     collisionResponse: "static",
-//    angularSpeed: Math.PI / 2,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setAnimation("all", _.random(0, this.animations["all"].totalFrames), 0.016);
         this.setOrigin(0.5, 0.5);
     },
     update: function () {
-        this.setRotation(this.getRotation() + Math.PI / 2 * DODO.game.dt);
+        this.rotation = (this.rotation + Math.PI / 2 * DODO.game.dt);
         this.synchCollisionPolygon();
     }
 });

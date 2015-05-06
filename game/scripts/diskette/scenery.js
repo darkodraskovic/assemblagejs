@@ -10,8 +10,8 @@ var ScenerySun = DODO.Animated.extend({
     update: function () {
         this._super();
         this.sine.update();
-        this.setScaleX(1 + this.sine.value);
-        this.setScaleY(1 + this.sine.value);
+        this.scale.x = 1 + this.sine.value;
+        this.scale.y = 1 + this.sine.value;
     }
 });
 
@@ -27,8 +27,8 @@ var SceneryStar = DODO.Animated.extend({
     update: function () {
         this._super();
         this.sine.update();
-        this.setScaleX(1 + this.sine.value);
-        this.setScaleY(1 + this.sine.value);
+        this.scale.x = 1 + this.sine.value;
+        this.scale.y = 1 + this.sine.value;
     }
 });
 var SceneryPyramid = DODO.Animated.extend({

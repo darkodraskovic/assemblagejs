@@ -44,12 +44,12 @@ var Player = Anime.extend({
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
-        this.setPoint("ball", 0, -this.getHeight() / 3);
+        this.setPoint("ball", 0, -this.height / 3);
 
         this.scene.bind('created', this, function () {
             this.progressBarInner = new ProgressBarInner(this.scene.findLayerByName("Entities"),
-                    this.getX(), this.getY(),
-                    {color: DODO.Colors.purple, alpha: 0.75, owner: this});
+                    this.position.x, this.position.y,
+                    {color: DODO.Colors.purple, owner: this});
             this.progressBarInner.setVisible(false);
         })
 
@@ -101,7 +101,7 @@ var Player = Anime.extend({
     },
     processFacing: function () {
         var mousePosition = this.scene.getMousePosition();
-        if (mousePosition.x < this.getX()) {
+        if (mousePosition.x < this.position.x) {
             this.facing = "left";
         } else {
             this.facing = "right";
@@ -122,8 +122,8 @@ var Player = Anime.extend({
         this._super();
     },
     throwBall: function (force) {
-        var ball = new Ball(this.getLayer(), this.getX(), this.aabbTop() + (this.platformerState === "crouching" ? 16 : 20));
-        var angle = DODO.angleTo(this.getPosition(), this.scene.getMousePosition());
+        var ball = new Ball(this.getLayer(), this.position.x, this.aabbTop() + (this.platformerState === "crouching" ? 16 : 20));
+        var angle = DODO.angleTo(this.position, this.scene.getMousePosition());
         ball.velocity.x = force * Math.cos(angle);
         ball.velocity.y = force * Math.sin(angle);
         this.throwSound.play();
@@ -139,21 +139,21 @@ var ProgressBarInner = DODO.Graphics.extend({
     percent: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.sprite.beginFill(this.color, this.alpha);
+        this.sprite.beginFill(this.color, alpha);
         this.sprite.drawRect(0, 0, this.frameWidth, this.frameHeight);
         this.sprite.endFill();
-        this.progressBarOuter = new ProgressBarOuter(this.scene.findLayerByName("Entities"), this.getX(), this.getY(),
-                {color: DODO.Colors.darkslategray, alpha: 0.75, owner: this.owner});
+        this.progressBarOuter = new ProgressBarOuter(this.scene.findLayerByName("Entities"), this.position.x, this.position.y,
+                {color: DODO.Colors.darkslategray, owner: this.owner});
         this.pinTo = new DODO.addons.PinTo(this, {parent: this.progressBarOuter, name: "inner", offsetX: 2, offsetY: 2});
     },
     update: function () {
         this.pinTo.update();
-        this.setScaleX(this.percent / 100);
+        this.scale.x = this.percent / 100;
         this._super();
     },
     setVisible: function (visible) {
-        this.sprite.visible = visible;
-        this.progressBarOuter.sprite.visible = visible;
+        this.visible = visible;
+        this.progressBarOuter.visible = visible;
     }
 });
 var ProgressBarOuter = DODO.Graphics.extend({
@@ -162,16 +162,17 @@ var ProgressBarOuter = DODO.Graphics.extend({
     graphics: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.sprite.lineStyle(2, this.color, this.alpha);
+        this.sprite.lineStyle(2, this.color, alpha);
         this.sprite.drawRect(0, 0, this.frameWidth, this.frameHeight);
         this.sprite.endFill();
     },
     update: function () {
         var mousePosition = this.scene.getMousePosition();
-        if (mousePosition.x < this.owner.getX()) {
-            this.setPosition(mousePosition.x, mousePosition.y);
+            this.position.y = mousePosition.y;
+        if (mousePosition.x < this.owner.position.x) {
+            this.position.x = mousePosition.x;
         } else {
-            this.setPosition(mousePosition.x - this.getWidth(), mousePosition.y);
+            this.position.x = mousePosition.x - this.width;
         }
     }
 });

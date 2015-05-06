@@ -10,10 +10,10 @@ var Computer = DODO.Kinematic.extend({
         this._super(parent, x, y, props);
         this.setZ("bottom");
     },
-    getSlotY: function () {
-        return this.getY() + 27;
-    },
     getSlotX: function () {
-        return this.getX() + this.collisionOffsetX;
+        return this.position.x + this.collisionOffsetX;
+    },
+    getSlotY: function () {
+        return this.position.y + 27;
     }
 });

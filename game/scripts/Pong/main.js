@@ -50,7 +50,7 @@ var Ball = DODO.Kinematic.extend({
         this.bounceSound = DODO.getAsset('Pong/bounce.wav');
     },
     update: function () {
-        if (this.getX() > this.scene.getWidth()) {
+        if (this.position.x > this.scene.getWidth()) {
             this.scene.destroy();
             sceneManager.findSceneByName("mainMenu").play();
         }

@@ -6,7 +6,7 @@ DODO.Tilemap = DODO.Class.extend({
         this.tileW = tileW;
         this.tileH = tileH;
         this.collides = collides && this.scene.tileMaps.push(this);
-        
+
         // For isometric maps processing
         this.spacing = _.isUndefined(spacing) ? 0 : spacing;
         this.offset = layer.offset || false;
@@ -21,25 +21,22 @@ DODO.Tilemap = DODO.Class.extend({
         this.imgCols = this.baseTexture.width / (tileW + this.spacing);
         this.imgRows = this.baseTexture.height / (tileH + this.spacing);
 
-        this.tiles = [];
         // For tile sprite creation.
         this.frameRectangle = new PIXI.Rectangle(0, 0, this.tileW, this.tileH + this.spacing);
     },
     populate: function (layerData) {
+        this.tiles = [];
         this.mapW = layerData.length;
         this.mapH = layerData[0].length;
-        for (var i = 0; i < this.mapW; i++) {
-            this.tiles[i] = [];
-            for (var j = 0; j < this.mapH; j++) {
-                this.tiles[i][j] = null;
-            }
-        }
 
         for (var j = 0; j < layerData.length; j++) {
+            this.tiles[j] = [];
             for (var k = 0; k < layerData[j].length; k++) {
                 if (layerData[j][k] > 0) {
                     this.setTile(layerData[j][k], j, k);
                 }
+                else
+                    this.tiles[j][k] = null;
             }
         }
     },
@@ -96,10 +93,10 @@ DODO.Tilemap = DODO.Class.extend({
     },
     // Isometric
     getMapIsoX: function (x, y) {
-      return (((x - this.sceneW_half) / this.tileW_half + y / this.tileH_half) / 2).floor();
+        return (((x - this.sceneW_half) / this.tileW_half + y / this.tileH_half) / 2).floor();
     },
     getMapIsoY: function (x, y) {
-        return ((y / this.tileH_half - (x  - this.sceneW_half) / this.tileW_half) /2).floor();  
+        return ((y / this.tileH_half - (x - this.sceneW_half) / this.tileW_half) / 2).floor();
     },
     getSceneIsoX: function (x, y) {
         return (x - y) * this.tileW_half - this.tileW_half + this.sceneW_half;

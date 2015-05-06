@@ -1,7 +1,6 @@
 var Particle = DODO.Kinematic.extend({
     collisionResponse: "active",
     drawCollisionPolygon: true,
-//    drawCollisionPolygon: false,
     elasticity: 1,
     bounceTreshold: 0,
     init: function (parent, x, y, props) {
@@ -14,6 +13,5 @@ var Particle = DODO.Kinematic.extend({
         this.velocity.y = _.random(-this.maxVelocity.y, this.maxVelocity.y);
         this.angularSpeed = _.random(-Math.PI, Math.PI);
         this.setOrigin(0.5, 0.5);
-//        this.flipX();
     }
 });

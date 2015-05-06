@@ -22,9 +22,9 @@ DODO.Colliding = DODO.Animated.extend({
     },
     createCollisionPolygon: function(polygon) {
         if (!_.isNumber(this.collisionWidth))
-            this.collisionWidth = this.getWidth();
+            this.collisionWidth = this.width;
         if (!_.isNumber(this.collisionHeight))
-            this.collisionHeight = this.getHeight();
+            this.collisionHeight = this.height;
         if (!_.isNumber(this.collisionOffsetX))
             this.collisionOffsetX = 0;
         if (!_.isNumber(this.collisionOffsetY))
@@ -66,38 +66,6 @@ DODO.Colliding = DODO.Animated.extend({
         this._vector.y = y;
         return SAT.pointInPolygon(this._vector, this.collisionPolygon);
     },
-//    TRANSFORMATIONS
-    setScale: function(x, y) {
-        this._super(x, y);
-        this.collisionPolygon.setScale(x, y);
-    },
-    setScaleX: function(x) {
-        this._super(x);
-        this.collisionPolygon.setScaleX(x);
-    },
-    setScaleY: function(y) {
-        this._super(y);
-        this.collisionPolygon.setScaleY(y);
-    },
-    setSize: function(x, y) {
-        this._super(x, y);
-        this.collisionPolygon.setScale(this.getScaleX(), this.getScaleY());
-    },
-    setWidth: function(w) {
-        this._super(w);
-        this.collisionPolygon.setScaleX(this.getScaleX());
-    },
-    setHeight: function(h) {
-        this._super(h);
-        this.collisionPolygon.setScaleY(this.getScaleY());
-    },
-    setOrigin: function(x, y) {
-        var delta = this._super(x, y);
-        var colPol = this.collisionPolygon;
-
-        colPol.translate(delta[0] * colPol.scale.x, delta[1] * colPol.scale.y);
-        colPol.calcBounds();
-    },
     synchCollisionPolygon: function() {
         var colPol = this.collisionPolygon;
 
@@ -106,16 +74,16 @@ DODO.Colliding = DODO.Animated.extend({
         colPol.pos.y = this.position.y;
 
         // Synch scale.
-//        if (this.scale.x !== colPol.scale.x) {
-//            this.collisionPolygon.setScaleX(this.scale.x);
-//        }
-//        if (this.scale.y !== colPol.scale.y) {
-//            this.collisionPolygon.setScaleY(this.scale.y);
-//        }
+        if (this.scale.x !== colPol.scale.x) {
+            this.collisionPolygon.setScaleX(this.scale.x);
+        }
+        if (this.scale.y !== colPol.scale.y) {
+            this.collisionPolygon.setScaleY(this.scale.y);
+        }
 
         // Synch rotation.
-        if (this.getRotation() !== colPol.angle)
-            colPol.setAngle(this.getRotation());
+        if (this.rotation !== colPol.angle)
+            colPol.setAngle(this.rotation);
     },
     // UTILS
     aabbWidth: function() {
