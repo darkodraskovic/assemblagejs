@@ -1,35 +1,28 @@
 DODO.Inputted = DODO.Evented.extend({
     initMouseReactivity: function () {
-        this.interactionData = new PIXI.interaction.InteractionData();
         this.sprite.mouseover = function (interactionData) {
-            this.interactionData = interactionData;
             this.mouseover = true;
-            this.trigger('mousein');
+            this.trigger('mousein', interactionData);
         }.bind(this);
         this.sprite.mouseout = function (interactionData) {
-            this.interactionData = interactionData;
             this.mouseover = false;
-            this.trigger('mouseout');
+            this.trigger('mouseout', interactionData);
         }.bind(this);
         this.sprite.mousedown = function (interactionData) {
-            this.interactionData = interactionData;
             this.leftdown = true;
-            this.trigger('leftpressed');
+            this.trigger('leftpressed', interactionData);
         }.bind(this);
         this.sprite.mouseup = this.sprite.mouseupoutside = function (interactionData) {
-            this.interactionData = interactionData;
             this.leftdown = false;
-            this.trigger('leftreleased');
+            this.trigger('leftreleased', interactionData);
         }.bind(this);
         this.sprite.rightdown = function (interactionData) {
-            this.interactionData = interactionData;
             this.rightdown = true;
-            this.trigger('rightpressed');
+            this.trigger('rightpressed', interactionData);
         }.bind(this);
         this.sprite.rightup = this.sprite.rightupoutside = function (interactionData) {
-            this.interactionData = interactionData;
             this.rightdown = false;
-            this.trigger('rightreleased');
+            this.trigger('rightreleased', interactionData);
         }.bind(this);
     },
     setMouseReactivity: function (reactive) {
@@ -55,6 +48,11 @@ DODO.input = new (DODO.Evented.extend({
             this.mouse.x = event.clientX - canvas.offsetLeft;
             this.mouse.y = event.clientY - canvas.offsetTop;
         }.bind(this));
+    },
+    disableContextMenu: function (canvas) {
+        canvas.oncontextmenu = function (e) {
+            e.preventDefault();
+        };
     }
 }))();
 

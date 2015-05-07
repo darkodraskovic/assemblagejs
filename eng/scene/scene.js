@@ -201,9 +201,8 @@ DODO.Scene = DODO.Inputted.extend({
     // MOUSE POSITION
     getMousePosition: function() {
         var scenePosition = this._mousePosition;
-        var stagePosition = DODO.input.mouse;
-        scenePosition.x = stagePosition.x;
-        scenePosition.y = stagePosition.y;
+        scenePosition.x = DODO.input.mouse.x;
+        scenePosition.y = DODO.input.mouse.y;
         scenePosition.x /= this.scale;
         scenePosition.y /= this.scale;
         scenePosition.x += this.camera.x;

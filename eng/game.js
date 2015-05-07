@@ -11,19 +11,18 @@ DODO.Game = DODO.Evented.extend({
     createRenderer: function (screenOptions, rendererOptions) {
         this.stage = new PIXI.Container();
         this.renderer = PIXI.autoDetectRenderer(screenOptions.width, screenOptions.height, rendererOptions);
-        document.body.appendChild(this.renderer.view);
-        DODO.input.initMouse(this.renderer.view);
-        // Prevent the right click context menu.
-        this.renderer.view.oncontextmenu = function (e) {
-            e.preventDefault();
-        };
-        window.onresize = this.onResizeWindow.bind(this);
-        this.onResizeWindow();
+        
+        var view = this.renderer.view;
+        document.body.appendChild(view);
+        DODO.input.initMouse(view);
+        DODO.input.disableContextMenu(view)
+        window.onresize = this.onResizeWindow.bind(this, view);
+        this.onResizeWindow(view);
     },
-    onResizeWindow: function () {
-        this.renderer.view.style.position = "absolute";
-        this.renderer.view.style.top = window.innerHeight / 2 - this.renderer.height / 2;
-        this.renderer.view.style.left = window.innerWidth / 2 - this.renderer.width / 2;
+    onResizeWindow: function (canvas) {
+        canvas.style.position = "absolute";
+        canvas.style.top = window.innerHeight / 2 - this.renderer.height / 2;
+        canvas.style.left = window.innerWidth / 2 - this.renderer.width / 2;
     },
     // GAME LOOP
     play: function () {
@@ -54,6 +53,5 @@ DODO.Game = DODO.Evented.extend({
 
 function runGame() {
     DODO.game.update();
-
     requestAnimationFrame(runGame);
 }
