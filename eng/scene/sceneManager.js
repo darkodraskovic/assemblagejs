@@ -28,6 +28,7 @@ DODO.SceneManager = DODO.Class.extend({
                 var scene = this._scenesToDestroy[i];
                 this.scenes.splice(this.scenes.indexOf(scene), 1);
                 this.game.stage.removeChild(scene.container);
+                scene.container.destroy();
                 window.console.log("Scene " + scene.name + " DESTROYED.");
             }
             this._scenesToDestroy.length = 0;

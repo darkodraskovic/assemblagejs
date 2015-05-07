@@ -5,13 +5,13 @@ DODO.Textured = DODO.Sprite.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        this.baseTexture = DODO.getAsset(this.spriteSheet);
-        if (this.baseTexture) {
+        var texture = DODO.getAsset(this.spriteSheet);
+        if (texture) {
             if (!_.isNumber(this.frameWidth) || !_.isNumber(this.frameHeight))
-                this.sprite = new PIXI.Sprite(this.baseTexture);
+                this.sprite = new PIXI.Sprite(texture);
             else {
                 this.sprite = this.createTransparentSprite(this.frameWidth, this.frameHeight);
-                this.initializeAnimation();
+                this.initAnimation(texture);
             }
         }
         else {
@@ -28,10 +28,10 @@ DODO.Textured = DODO.Sprite.extend({
         graphics.endFill();
         return new PIXI.Sprite(graphics.generateTexture(false));
     },
-    initializeAnimation: function () {
+    initAnimation: function (texture) {
         this.textures = [];
-        var colls = Math.round(this.baseTexture.width / this.frameWidth);
-        var rows = Math.round(this.baseTexture.height / this.frameHeight);
+        var colls = Math.round(texture.width / this.frameWidth);
+        var rows = Math.round(texture.height / this.frameHeight);
         // An array of textures that we'll use to make up different sprite animations, ie. MovieClips.
         // PIXI's MovieClip is an object used to display an animation depicted by a list of textures.
         var rectangle = new PIXI.Rectangle(0, 0, this.frameWidth, this.frameHeight);
@@ -39,7 +39,7 @@ DODO.Textured = DODO.Sprite.extend({
             for (var j = 0; j < colls; j++) {
                 rectangle.x = j * this.frameWidth;
                 rectangle.y = i * this.frameHeight;
-                this.textures.push(new PIXI.Texture(this.baseTexture, rectangle));
+                this.textures.push(new PIXI.Texture(texture, rectangle));
             }
         }
         // Container stores MovieClip objects.
@@ -94,10 +94,10 @@ DODO.Textured = DODO.Sprite.extend({
             animation.anchor.y = y;
         });
 
-        _.each(this.getChildrenSprites(), function (sprite) {
-            sprite.position.x -= deltaX;
-            sprite.position.y -= deltaY;
-        });
+//        _.each(this.getChildrenSprites(), function (sprite) {
+//            sprite.position.x -= deltaX;
+//            sprite.position.y -= deltaY;
+//        });
 
         _.each(this.points, function (p) {
             p.x -= deltaX;

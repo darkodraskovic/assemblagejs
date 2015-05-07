@@ -2,10 +2,9 @@ DODO.Tilemap = DODO.Class.extend({
     init: function (layer, img, tileW, tileH, collides, spacing, orientation) {
         this.layer = layer;
         layer.tilemap = this;
-        this.scene = layer.scene;
         this.tileW = tileW;
         this.tileH = tileH;
-        this.collides = collides && this.scene.tileMaps.push(this);
+        this.collides = collides && layer.scene.tileMaps.push(this);
 
         // For isometric maps processing
         this.spacing = _.isUndefined(spacing) ? 0 : spacing;
@@ -13,7 +12,7 @@ DODO.Tilemap = DODO.Class.extend({
         if (this.orientation === "isometric") {
             this.tileW_half = this.tileW / 2;
             this.tileH_half = this.tileH / 2;
-            this.sceneW_half = this.scene.getWidth() / 2;
+            this.sceneW_half = layer.scene.getWidth() / 2;
         }
 
         this.baseTexture = DODO.getAsset(img);

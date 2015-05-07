@@ -87,6 +87,12 @@ DODO.Scene = DODO.Inputted.extend({
         this.container.removeChild(layer);
     },
     destroy: function() {
+        _.each(this.sprites, function (sprite) {
+            sprite.debind();
+        });
+        _.each(this.layers, function (layer) {
+            layer.scene = null;
+        });
         this.trigger('destroyed');
         this.debind();
         this.game.sceneManager._scenesToDestroy.push(this);

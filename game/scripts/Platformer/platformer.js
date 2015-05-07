@@ -246,7 +246,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     },
     processThrus: function() {
         var tilemap = this.thrus;
-        var scene = tilemap.scene;
+        var scene = this.scene;
         if (scene.rightdown) {
             var mpl = scene.getMousePosition();
             var tile = this.thrus.getTileAt(mpl.x, mpl.y);

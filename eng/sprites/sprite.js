@@ -7,11 +7,12 @@ DODO.Sprite = DODO.Inputted.extend({
         _.extend(this, props);
         this._vector = new SAT.Vector();
         this.scene = parent.scene;
+        this.id = _.uniqueId();
     },
     initializeSprite: function (parent, x, y) {
         // Container stores PIXI.Sprite-s belonging to children of this sprite.
         this.sprite.addChild(new PIXI.Container());
-        this.sprite.dodoSprite = this;
+        this.sprite.dodoSpriteId = this.id;
 
         if (parent instanceof DODO.Sprite) {
             parent.addSprite(this);
@@ -74,11 +75,12 @@ DODO.Sprite = DODO.Inputted.extend({
     },
     getChildrenSprites: function () {
         return _.map(this.sprite.children[this.sprite.children.length - 1].children, function (child) {
-            return child.dodoSprite;
-        });
+            var sprite = this.scene.findSpriteByPropertyValue('id', child.dodoSpriteId);
+            return sprite;
+        }, this);
     },
     getParentSprite: function () {
-        return this.sprite.parent.parent.dodoSprite;
+        return this.scene.findSpriteByPropertyValue('id', this.sprite.parent.parent.dodoSpriteId);
     },
     // Sprite POINTS
     setPoint: function (name, x, y) {
