@@ -1,44 +1,65 @@
 DODO.Inputted = DODO.Evented.extend({
-    initMouseReactivity: function() {
-            this.sprite.mousedown = function() {
-                this.trigger('leftpressed');
-                window.console.log("left pressed on " + this.name);
-                this.leftdown = true;
-            }.bind(this);
-            this.sprite.mouseup = this.sprite.mouseupoutside = function() {
-                this.trigger('leftreleased');
-                this.leftdown = false;
-            }.bind(this);
-            this.sprite.rightdown = function() {
-                this.trigger('rightpressed');
-                this.rightdown = true;
-            }.bind(this);
-            this.sprite.rightup = this.sprite.rightupoutside = function() {
-                this.trigger('rightreleased');
-                this.rightdown = false;
-            }.bind(this);
-        },
-        setMouseReactivity: function(reactive) {
-            this.sprite.interactive = reactive;
-        },
-        getMouseReactivity: function() {
-            return this.sprite.interactive;
-        }
+    initMouseReactivity: function () {
+        this.interactionData = new PIXI.interaction.InteractionData();
+        this.sprite.mouseover = function (interactionData) {
+            this.interactionData = interactionData;
+            this.mouseover = true;
+            this.trigger('mousein');
+        }.bind(this);
+        this.sprite.mouseout = function (interactionData) {
+            this.interactionData = interactionData;
+            this.mouseover = false;
+            this.trigger('mouseout');
+        }.bind(this);
+        this.sprite.mousedown = function (interactionData) {
+            this.interactionData = interactionData;
+            this.leftdown = true;
+            this.trigger('leftpressed');
+        }.bind(this);
+        this.sprite.mouseup = this.sprite.mouseupoutside = function (interactionData) {
+            this.interactionData = interactionData;
+            this.leftdown = false;
+            this.trigger('leftreleased');
+        }.bind(this);
+        this.sprite.rightdown = function (interactionData) {
+            this.interactionData = interactionData;
+            this.rightdown = true;
+            this.trigger('rightpressed');
+        }.bind(this);
+        this.sprite.rightup = this.sprite.rightupoutside = function (interactionData) {
+            this.interactionData = interactionData;
+            this.rightdown = false;
+            this.trigger('rightreleased');
+        }.bind(this);
+    },
+    setMouseReactivity: function (reactive) {
+        this.sprite.interactive = reactive;
+    },
+    getMouseReactivity: function () {
+        return this.sprite.interactive;
+    },
 });
 
 DODO.input = new (DODO.Evented.extend({
     actions: {},
     down: {},
     _pressed: {},
-    addMapping: function(action, key) {
+    mouse: {x: 0, y: 0},
+    addMapping: function (action, key) {
         this.actions[key] = action;
         this.down[action] = false;
         this._pressed[action] = false;
+    },
+    initMouse: function (canvas) {
+        canvas.addEventListener('mousemove', function (event) {
+            this.mouse.x = event.clientX - canvas.offsetLeft;
+            this.mouse.y = event.clientY - canvas.offsetTop;
+        }.bind(this));
     }
 }))();
 
 // Keyboard
-window.addEventListener("keydown", function(event) {
+window.addEventListener("keydown", function (event) {
     var action = DODO.input.actions[event.keyCode];
     if (action) {
         if (!DODO.input._pressed[action]) {
@@ -50,7 +71,7 @@ window.addEventListener("keydown", function(event) {
     }
 }, false);
 
-window.addEventListener("keyup", function(event) {
+window.addEventListener("keyup", function (event) {
     var action = DODO.input.actions[event.keyCode];
     if (action) {
         DODO.input.trigger(action + "Released");
@@ -61,7 +82,7 @@ window.addEventListener("keyup", function(event) {
 }, false);
 
 // Mousewheel
-window.addEventListener("mousewheel", function(e) {
+window.addEventListener("mousewheel", function (e) {
     if (e.wheelDelta > 0) {
         DODO.input.trigger('forward');
     } else {

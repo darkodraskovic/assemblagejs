@@ -17,8 +17,7 @@ DODO.Tile = function (gid, x, y, tilemap) {
         this.position.x = tilemap.getSceneX(x);
         this.position.y = tilemap.getSceneY(y);
     }
-    if (tilemap.offset)
-        this.position.y -= tilemap.spacing;
+    this.position.y -= tilemap.spacing;
 
     // COLLISION
     if (tilemap.collides) {

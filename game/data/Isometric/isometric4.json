@@ -23,8 +23,7 @@
          "properties":
             {
              "collides":"true",
-             "image":"\"Isometric\/isometricGround.png\"",
-             "offset":"true"
+             "image":"\"Isometric\/isometricGround.png\""
             },
          "type":"tilelayer",
          "visible":true,

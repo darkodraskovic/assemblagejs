@@ -11,8 +11,8 @@ DODO.Game = DODO.Evented.extend({
     createRenderer: function (screenOptions, rendererOptions) {
         this.stage = new PIXI.Container();
         this.renderer = PIXI.autoDetectRenderer(screenOptions.width, screenOptions.height, rendererOptions);
-        this.interactionManager = new PIXI.interaction.InteractionManager(this.renderer);
         document.body.appendChild(this.renderer.view);
+        DODO.input.initMouse(this.renderer.view);
         // Prevent the right click context menu.
         this.renderer.view.oncontextmenu = function (e) {
             e.preventDefault();
@@ -39,7 +39,6 @@ DODO.Game = DODO.Evented.extend({
         if (!this.running) {
             return;
         }
-//        window.console.log(this.interactionManager.eventData);
         var now = new Date().getTime();
         var dt = now - this.time;
         this.dt = dt;

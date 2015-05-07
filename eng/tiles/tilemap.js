@@ -9,7 +9,6 @@ DODO.Tilemap = DODO.Class.extend({
 
         // For isometric maps processing
         this.spacing = _.isUndefined(spacing) ? 0 : spacing;
-        this.offset = layer.offset || false;
         this.orientation = orientation || "orthogonal";
         if (this.orientation === "isometric") {
             this.tileW_half = this.tileW / 2;

@@ -46,8 +46,7 @@ DODO.Scene = DODO.Inputted.extend({
         this.setWidth(this.game.renderer.width);
         this.setHeight(this.game.renderer.height);
 
-        // Helper object. Its purpose is to avoid getMousePosition() object creation.
-        this._MousePosition = new PIXI.Point();
+        this._mousePosition = {x: 0, y: 0};
         DODO.input.bind('forward', this, this.setScale.bind(this, 'forward'));
         DODO.input.bind('backward', this, this.setScale.bind(this, 'backward'));
         this.camera = new DODO.Camera(this, this.game.renderer.width, this.game.renderer.height, cameraOptions);
@@ -201,8 +200,8 @@ DODO.Scene = DODO.Inputted.extend({
     },
     // MOUSE POSITION
     getMousePosition: function() {
-        var scenePosition = this._MousePosition;
-        var stagePosition = DODO.game.interactionManager.mouse.global;
+        var scenePosition = this._mousePosition;
+        var stagePosition = DODO.input.mouse;
         scenePosition.x = stagePosition.x;
         scenePosition.y = stagePosition.y;
         scenePosition.x /= this.scale;

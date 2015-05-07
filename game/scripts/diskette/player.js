@@ -44,6 +44,7 @@ var Player = Anime.extend({
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
+        this.bind('leftpressed', function () {window.console.log(this.name + " pressed");})
         this.setPoint("ball", 0, -this.height / 3);
 
         this.scene.bind('created', this, function () {

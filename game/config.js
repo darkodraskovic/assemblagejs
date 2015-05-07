@@ -1,6 +1,7 @@
 DODO.config = {};
 
 DODO.config.renderer = {
+    backgroundColor : DODO.Colors.black,
     antialiasing: false,
     transparent: false,
     resolution: 1
@@ -8,7 +9,6 @@ DODO.config.renderer = {
 DODO.config.screen = {
     width: 1024,
     height: 768,
-    color: DODO.Colors.darkslateblue
 };
 
 DODO.config.directories = {
@@ -26,7 +26,7 @@ DODO.config.camera = {
 
 DODO.config.pixelRounding = false;
 
-// PIXI.scaleModes : Object {DEFAULT: 0, LINEAR: 0, NEAREST: 1}
+// PIXI.SCALE_MODES : Object {DEFAULT: 0, LINEAR: 0, NEAREST: 1}
 PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
 
 DODO.CollisionTypes = {
