@@ -336,7 +336,7 @@ var Platform = DODO.Colliding.extend({
     }
 });
 
-var ExplosionPlatformer = DODO.Animated.extend({
+var ExplosionPlatformer = DODO.Textured.extend({
     spriteSheet: "Common/Explosion.png",
     frameWidth: 128,
     frameHeight: 128,

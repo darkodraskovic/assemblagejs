@@ -94,17 +94,9 @@ DODO.Scene = DODO.Inputted.extend({
     // START/STOP scene execution
     play: function() {
         this.running = true;
-        for (var i = 0, len = this.sprites.length; i < len; i++) {
-            if (this.sprites[i] instanceof DODO.Animated)
-                this.sprites[i].currentAnimation.play();
-        }
     },
     pause: function() {
         this.running = false;
-        for (var i = 0, len = this.sprites.length; i < len; i++) {
-            if (this.sprites[i] instanceof DODO.Animated)
-                this.sprites[i].currentAnimation.stop();
-        }
     },
     // Scene LOOP/UPDATE
     update: function() {

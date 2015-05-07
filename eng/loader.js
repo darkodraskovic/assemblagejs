@@ -49,6 +49,13 @@ DODO.Loader = DODO.Evented.extend({
             onload: callback
         });
     },
+    loadJSON: function (url, callback) {
+        PIXI.loader.add([{name: url, url: DODO.config.directories.data + url}])
+                .load(function (loader, resources) {
+                    DODO.assets[url] = resources[url].xhr.response;
+                    callback();
+                });
+    },
     loadOther: function (url, callback) {
         var httpRequest = new XMLHttpRequest();
         httpRequest.open('GET', DODO.config.directories.data + url);
@@ -66,6 +73,8 @@ DODO.assets = {};
 DODO.AssetTypes = {
     // Script Assets
     js: 'Script',
+    // Data Assets
+    json: 'JSON',
     // Graphics Assets
     png: 'Graphics', jpg: 'Graphics', gif: 'Graphics', jpeg: 'Graphics',
     // Sound Assets (currently not used, but there for reference)

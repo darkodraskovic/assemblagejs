@@ -191,7 +191,7 @@ var Agent = AnimeSkorpio.extend({
     }
 });
 
-var Rifle = DODO.Animated.extend({
+var Rifle = DODO.Textured.extend({
     spriteSheet: "Skorpio/AssaultRifle.png",
     frameWidth: 64,
     frameHeight: 64,
@@ -275,7 +275,7 @@ var Bullet = DODO.Kinematic.extend({
     }
 });
 
-var LaserBeam = DODO.Animated.extend({
+var LaserBeam = DODO.Textured.extend({
     spriteSheet: "Skorpio/Muzzleflashes-Shots.png",
     frameWidth: 32,
     frameHeight: 32,
@@ -383,7 +383,7 @@ var LaserTip = DODO.Kinematic.extend({
 });
 
 
-var LaserFire = DODO.Animated.extend({
+var LaserFire = DODO.Textured.extend({
     spriteSheet: "Skorpio/Fire.png",
     frameWidth: 64,
     frameHeight: 64,
@@ -418,7 +418,7 @@ var LaserFire = DODO.Animated.extend({
 });
 
 
-var ExplosionSkorpio = DODO.Animated.extend({
+var ExplosionSkorpio = DODO.Textured.extend({
     spriteSheet: "Common/Explosion.png",
     frameWidth: 128,
     frameHeight: 128,

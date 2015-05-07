@@ -1,23 +1,22 @@
 DODO.Game = DODO.Evented.extend({
     init: function () {
         DODO.game = this;
-        this.createRenderer(DODO.config.screen, DODO.config.renderer);
-        this.loader = new DODO.Loader();
-        this.sceneManager = new DODO.SceneManager(this);
-        this.maxTick = 50;        
-        this.play();
-        requestAnimationFrame(runGame);
-    },
-    createRenderer: function (screenOptions, rendererOptions) {
-        this.stage = new PIXI.Container();
-        this.renderer = PIXI.autoDetectRenderer(screenOptions.width, screenOptions.height, rendererOptions);
         
+        this.stage = new PIXI.Container();
+        this.renderer = PIXI.autoDetectRenderer(DODO.config.screen.width, DODO.config.screen.height, DODO.config.renderer);
         var view = this.renderer.view;
         document.body.appendChild(view);
         DODO.input.initMouse(view);
         DODO.input.disableContextMenu(view)
         window.onresize = this.onResizeWindow.bind(this, view);
         this.onResizeWindow(view);
+
+        this.loader = new DODO.Loader();
+        this.sceneManager = new DODO.SceneManager(this);
+
+        this.maxTick = 50;        
+        this.play();
+        requestAnimationFrame(runGame);
     },
     onResizeWindow: function (canvas) {
         canvas.style.position = "absolute";

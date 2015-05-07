@@ -1,74 +1,63 @@
-DODO.Animated = DODO.Sprite.extend({
+DODO.Textured = DODO.Sprite.extend({
     bounded: false,
     wrap: false,
     outOfBounds: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        this.textures = [];
-        if (this.spriteSheet) {
-            this.baseTexture = DODO.getAsset(this.spriteSheet);
-            this.frameWidth = this.frameWidth || this.baseTexture.width;
-            this.frameHeight = this.frameHeight || this.baseTexture.height;
-
-            var colls = Math.round(this.baseTexture.width / this.frameWidth);
-            var rows = Math.round(this.baseTexture.height / this.frameHeight);
-            // An array of textures that we'll use to make up different sprite animations, ie. MovieClips.
-            // PIXI's MovieClip is an object used to display an animation depicted by a list of textures.
-            var rectangle = new PIXI.Rectangle(0, 0, this.frameWidth, this.frameHeight);
-            for (var i = 0; i < rows; i++) {
-                for (var j = 0; j < colls; j++) {
-                    rectangle.x = j * this.frameWidth;
-                    rectangle.y = i * this.frameHeight;
-                    this.textures.push(new PIXI.Texture(this.baseTexture, rectangle));
-                }
+        this.baseTexture = DODO.getAsset(this.spriteSheet);
+        if (this.baseTexture) {
+            if (!_.isNumber(this.frameWidth) || !_.isNumber(this.frameHeight))
+                this.sprite = new PIXI.Sprite(this.baseTexture);
+            else {
+                this.sprite = this.createTransparentSprite(this.frameWidth, this.frameHeight);
+                this.initializeAnimation();
             }
         }
         else {
-            if (this.polygon) {
-                this.frameWidth = this.polygon.w;
-                this.frameHeight = this.polygon.h;
-            }
-            else {
-                this.frameWidth = this.collisionWidth;
-                this.frameHeight = this.collisionHeight;
-            }
-            this.textures.push(new PIXI.RenderTexture(this.frameWidth, this.frameHeight));
+            this.sprite = this.createTransparentSprite((this.polygon && this.polygon.w) || this.collisionWidth,
+                    (this.polygon && this.polygon.h) || this.collisionHeight);
         }
-
-        this.initializePIXISprite();
+        this.anchor = this.sprite.anchor;
         this.initializeSprite(parent, x, y);
     },
-    createPIXISprite: function (w, h) {
+    createTransparentSprite: function (w, h) {
         var graphics = new PIXI.Graphics();
         graphics.beginFill(0xFFFFFF, 0);
         graphics.drawRect(0, 0, w, h);
         graphics.endFill();
-
-        var sprite = new PIXI.Sprite(graphics.generateTexture(false));
-        this.anchor = sprite.anchor;
-        return sprite;
+        return new PIXI.Sprite(graphics.generateTexture(false));
     },
-    initializePIXISprite: function () {
-        this.sprite = this.createPIXISprite(this.frameWidth, this.frameHeight);
-
+    initializeAnimation: function () {
+        this.textures = [];
+        var colls = Math.round(this.baseTexture.width / this.frameWidth);
+        var rows = Math.round(this.baseTexture.height / this.frameHeight);
+        // An array of textures that we'll use to make up different sprite animations, ie. MovieClips.
+        // PIXI's MovieClip is an object used to display an animation depicted by a list of textures.
+        var rectangle = new PIXI.Rectangle(0, 0, this.frameWidth, this.frameHeight);
+        for (var i = 0; i < rows; i++) {
+            for (var j = 0; j < colls; j++) {
+                rectangle.x = j * this.frameWidth;
+                rectangle.y = i * this.frameHeight;
+                this.textures.push(new PIXI.Texture(this.baseTexture, rectangle));
+            }
+        }
         // Container stores MovieClip objects.
         this.sprite.addChild(new PIXI.Container());
         // A hashmap of all animations, ie. MovieClips for easy reference.
         this.animations = {};
         this.addAnimation("all", _.range(0, this.textures.length), 0);
-        this.addAnimation("default", [0], 1);
+        this.addAnimation("default", [0], 0);
         this.setAnimation("default");
     },
     // ANIMATIONS
-    // frames is an array of nums refering to the index of texture in this.textures
     addAnimation: function (name, textures, speed) {
         for (var i = 0; i < textures.length; i++)
             textures[i] = this.textures[textures[i]];
         var animation = new PIXI.extras.MovieClip(textures);
 
-        animation.anchor.x = this.anchor.x;
-        animation.anchor.y = this.anchor.y;
+        animation.anchor.x = this.sprite.anchor.x;
+        animation.anchor.y = this.sprite.anchor.y;
         animation.visible = false;
         animation.animationSpeed = speed || 0;
         // The first child of this.sprite is the DOC containing MovieClips.
