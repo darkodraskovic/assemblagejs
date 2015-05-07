@@ -148,7 +148,6 @@ var Cube = DODO.Kinematic.extend({
     collisionResponse: "static",
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.collisionPolygon.setOffset(new SAT.Vector(this.width / 2, this.height));
     }
 });
 

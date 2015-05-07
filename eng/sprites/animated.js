@@ -52,10 +52,11 @@ DODO.Animated = DODO.Sprite.extend({
     initializePIXISprite: function () {
         this.sprite = this.createPIXISprite(this.frameWidth, this.frameHeight);
 
-        // animations DOC stores MovieClip objects.
-        this.sprite.addChild(new PIXI.DisplayObjectContainer());
+        // Container stores MovieClip objects.
+        this.sprite.addChild(new PIXI.Container());
         // A hashmap of all animations, ie. MovieClips for easy reference.
         this.animations = {};
+        this.addAnimation("all", _.range(0, this.textures.length), 0);
         this.addAnimation("default", [0], 1);
         this.setAnimation("default");
     },
@@ -64,7 +65,7 @@ DODO.Animated = DODO.Sprite.extend({
     addAnimation: function (name, textures, speed) {
         for (var i = 0; i < textures.length; i++)
             textures[i] = this.textures[textures[i]];
-        var animation = new PIXI.MovieClip(textures);
+        var animation = new PIXI.extras.MovieClip(textures);
 
         animation.anchor.x = this.anchor.x;
         animation.anchor.y = this.anchor.y;

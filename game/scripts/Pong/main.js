@@ -22,7 +22,7 @@ var StartText = Text.extend({
 var PointsText = Text.extend({
     points: 0,
     update: function () {
-        this.sprite.setText(this.points);
+        this.sprite.text = this.points;
         this._super();
     }
 });

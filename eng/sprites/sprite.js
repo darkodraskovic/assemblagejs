@@ -9,8 +9,8 @@ DODO.Sprite = DODO.Inputted.extend({
         this.scene = parent.scene;
     },
     initializeSprite: function (parent, x, y) {
-        // sprites DOC stores PIXI.Sprite-s belonging to children of this sprite.
-        this.sprite.addChild(new PIXI.DisplayObjectContainer());
+        // Container stores PIXI.Sprite-s belonging to children of this sprite.
+        this.sprite.addChild(new PIXI.Container());
         this.sprite.dodoSprite = this;
 
         if (parent instanceof DODO.Sprite) {
@@ -98,7 +98,7 @@ DODO.Sprite = DODO.Inputted.extend({
         return this.scene.container.toLocal(this.scene.origin, this.sprite);
     },
     getScreenPosition: function() {
-        return this.sprite.toGlobal(this.scene.origin);
+        return this.sprite.getGlobalPosition();
     },
     flipX: function () {
         this.scale.x *= -1;

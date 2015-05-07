@@ -13,7 +13,8 @@ DODO.Tiling = DODO.Class.extend({
         if (!this.height) {
             this.height = this.scene.getHeight();
         }
-        this.sprite = new PIXI.TilingSprite(texture, 2 * this.width, 2 * this.height);
+//        this.sprite = new PIXI.TilingSprite(texture, 2 * this.width, 2 * this.height);
+        this.sprite = new PIXI.extras.TilingSprite(texture, 2 * this.width, 2 * this.height);
         parent.addChild(this.sprite);
         this.position = this.sprite.position;
 

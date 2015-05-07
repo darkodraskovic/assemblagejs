@@ -27,7 +27,7 @@ DODO.config.camera = {
 DODO.config.pixelRounding = false;
 
 // PIXI.scaleModes : Object {DEFAULT: 0, LINEAR: 0, NEAREST: 1}
-PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
+PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
 
 DODO.CollisionTypes = {
     NONE: 0,

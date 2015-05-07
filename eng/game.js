@@ -4,13 +4,14 @@ DODO.Game = DODO.Evented.extend({
         this.createRenderer(DODO.config.screen, DODO.config.renderer);
         this.loader = new DODO.Loader();
         this.sceneManager = new DODO.SceneManager(this);
-        this.maxTick = 50;
+        this.maxTick = 50;        
         this.play();
-        requestAnimFrame(runGame);
+        requestAnimationFrame(runGame);
     },
     createRenderer: function (screenOptions, rendererOptions) {
-        this.stage = new PIXI.Stage(screenOptions.color);
+        this.stage = new PIXI.Container();
         this.renderer = PIXI.autoDetectRenderer(screenOptions.width, screenOptions.height, rendererOptions);
+        this.interactionManager = new PIXI.interaction.InteractionManager(this.renderer);
         document.body.appendChild(this.renderer.view);
         // Prevent the right click context menu.
         this.renderer.view.oncontextmenu = function (e) {
@@ -38,7 +39,7 @@ DODO.Game = DODO.Evented.extend({
         if (!this.running) {
             return;
         }
-
+//        window.console.log(this.interactionManager.eventData);
         var now = new Date().getTime();
         var dt = now - this.time;
         this.dt = dt;
@@ -55,5 +56,5 @@ DODO.Game = DODO.Evented.extend({
 function runGame() {
     DODO.game.update();
 
-    requestAnimFrame(runGame);
+    requestAnimationFrame(runGame);
 }

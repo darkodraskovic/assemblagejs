@@ -2,6 +2,7 @@ DODO.Inputted = DODO.Evented.extend({
     initMouseReactivity: function() {
             this.sprite.mousedown = function() {
                 this.trigger('leftpressed');
+                window.console.log("left pressed on " + this.name);
                 this.leftdown = true;
             }.bind(this);
             this.sprite.mouseup = this.sprite.mouseupoutside = function() {

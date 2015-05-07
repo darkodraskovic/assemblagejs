@@ -1,5 +1,5 @@
 DODO.Loader = DODO.Evented.extend({
-    loadAssets: function(assets, onComplete, onProgress) {
+    loadAssets: function (assets, onComplete, onProgress) {
         if (_.isObject(assets)) {
             assets = _.flatten(_.values(assets), true);
         }
@@ -8,18 +8,19 @@ DODO.Loader = DODO.Evented.extend({
             return;
         }
         var assetsRemaining = assets.length;
-        var onAssetLoaded = function() {
+        var onAssetLoaded = function () {
             --assetsRemaining;
             onProgress && onProgress(assets.length - assetsRemaining, assets.length);
             if (assetsRemaining <= 0) {
                 onComplete && onComplete();
             }
         };
-        _.each(assets, function(asset) {
-            this["load" + DODO.getAssetType(asset)](asset, onAssetLoaded);
+        _.each(assets, function (asset) {
+            var url = _.isArray(asset) ? asset[0] : asset;
+            DODO.assets[url] ? onAssetLoaded() : this["load" + DODO.getAssetType(asset)](asset, onAssetLoaded);
         }, this);
     },
-    loadScript: function(url, callback) {
+    loadScript: function (url, callback) {
         // Adding the script tag to the head...
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -32,17 +33,17 @@ DODO.Loader = DODO.Evented.extend({
         // Fire the loading!
         head.appendChild(script);
     },
-    loadGraphics: function(url, callback) {
-        var imageLoader = new PIXI.ImageLoader(DODO.config.directories.graphics + url);
-        imageLoader.on('loaded', function () {
-            DODO.assets[url] = imageLoader.texture;
-            callback();
-        });
-        imageLoader.load();
+    loadGraphics: function (url, callback) {
+        PIXI.loader
+                .add([{name: url, url: DODO.config.directories.graphics + url}])
+                .load(function (loader, resources) {
+                    DODO.assets[url] = resources[url].texture;
+                    callback();
+                });
     },
-    loadSound: function(urlArray, callback) {
+    loadSound: function (urlArray, callback) {
         DODO.assets[urlArray[0]] = new Howl({
-            urls: _.map(urlArray, function(sound) {
+            urls: _.map(urlArray, function (sound) {
                 return DODO.config.directories.sounds + sound;
             }),
             onload: callback
@@ -72,7 +73,7 @@ DODO.AssetTypes = {
 };
 
 // Determine the type of an asset with a lookup table
-DODO.getAssetType = function(asset) {
+DODO.getAssetType = function (asset) {
     // Cf. Loader.loadSound()
     if (_.isArray(asset))
         return 'Sound';
@@ -82,6 +83,6 @@ DODO.getAssetType = function(asset) {
     return DODO.AssetTypes[fileExt] || 'Other';
 };
 
-DODO.getAsset = function(asset) {
+DODO.getAsset = function (asset) {
     return DODO.assets[asset];
 };

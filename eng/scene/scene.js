@@ -1,11 +1,13 @@
 DODO.Layer = function(scene, name) {
-    PIXI.DisplayObjectContainer.call(this);
+//    PIXI.DisplayObjectContainer.call(this);
+    PIXI.Container.call(this);
     this.scene = scene;
     this.name = name;
     this.scene.container.addChild(this);
     this.parallax = 100;
 };
-DODO.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
+//DODO.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
+DODO.Layer.prototype = Object.create(PIXI.Container.prototype);
 DODO.Layer.prototype.constructor = DODO.Layer;
 
 DODO.Scene = DODO.Inputted.extend({
@@ -18,7 +20,8 @@ DODO.Scene = DODO.Inputted.extend({
         this.name = name;
         this.map = map;
 
-        this.container = new PIXI.DisplayObjectContainer();
+//        this.container = new PIXI.DisplayObjectContainer();
+        this.container = new PIXI.Container();
         // this.sprite is referenced by the DODO.Inputed
         this.sprite = this.container;
         this.initMouseReactivity();
@@ -44,7 +47,7 @@ DODO.Scene = DODO.Inputted.extend({
         this.setHeight(this.game.renderer.height);
 
         // Helper object. Its purpose is to avoid getMousePosition() object creation.
-        this._MousePosition = {x: 0, y: 0};
+        this._MousePosition = new PIXI.Point();
         DODO.input.bind('forward', this, this.setScale.bind(this, 'forward'));
         DODO.input.bind('backward', this, this.setScale.bind(this, 'backward'));
         this.camera = new DODO.Camera(this, this.game.renderer.width, this.game.renderer.height, cameraOptions);
@@ -197,25 +200,15 @@ DODO.Scene = DODO.Inputted.extend({
         });
     },
     // MOUSE POSITION
-    getMouseX: function() {
-        var x = this.container.stage.getMousePosition().x / this.scale;
-        return x += this.camera.x;
-    },
-    getMouseY: function() {
-        var y = this.container.stage.getMousePosition().y / this.scale;
-        return y += this.camera.y;
-    },
     getMousePosition: function() {
         var scenePosition = this._MousePosition;
-        var stagePosition = this.container.stage.getMousePosition();
+        var stagePosition = DODO.game.interactionManager.mouse.global;
         scenePosition.x = stagePosition.x;
         scenePosition.y = stagePosition.y;
-
         scenePosition.x /= this.scale;
         scenePosition.y /= this.scale;
         scenePosition.x += this.camera.x;
         scenePosition.y += this.camera.y;
-
         return scenePosition;
     },
     // FIND
