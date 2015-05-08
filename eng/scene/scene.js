@@ -32,7 +32,7 @@ DODO.Scene = DODO.Inputted.extend({
         // Layers
         this.layers = this.container.children;
         // Colliding tilemaps
-        this.tileMaps = [];
+        this.tilemaps = [];
         // Sprites & their sounds
         this.sprites = [];
         this.sounds = [];
@@ -64,7 +64,7 @@ DODO.Scene = DODO.Inputted.extend({
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
     bakeLayer: function(layer) {
-        var renderTexture = new PIXI.RenderTexture(this.width, this.height);
+        var renderTexture = new PIXI.RenderTexture(DODO.game.renderer, this.width, this.height);
         // Create a sprite that uses the render texture.
         var sprite = new PIXI.Sprite(renderTexture);
         // Render the layer to the render texture.
@@ -77,14 +77,12 @@ DODO.Scene = DODO.Inputted.extend({
         bakedLayer.position.y = layer.position.y;
         bakedLayer.parallax = layer.parallax;
         bakedLayer.name = layer.name;
-        bakedLayer.tilemap = layer.tilemap; 
-        bakedLayer.tilemap.layer = bakedLayer;
-        bakedLayer.collisionResponse = layer.collisionResponse;
         bakedLayer.baked = true;
         bakedLayer.addChild(sprite);
         
         this.container.addChildAt(bakedLayer, this.container.getChildIndex(layer));
         this.container.removeChild(layer);
+        layer.destroy();
     },
     destroy: function() {
         _.each(this.sprites, function (sprite) {

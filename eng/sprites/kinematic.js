@@ -101,8 +101,8 @@ DODO.Kinematic = DODO.Colliding.extend({
             var x = this.position.x;
             var y = this.position.y;
         }
-        for (var i = 0; i < this.scene.tileMaps.length; i++) {
-            var tilemap = this.scene.tileMaps[i];
+        for (var i = 0; i < this.scene.tilemaps.length; i++) {
+            var tilemap = this.scene.tilemaps[i];
             var yStart, yEnd, xStart, xEnd;
             var top = this.aabbTop(), bottom = this.aabbBottom(),
                     left = this.aabbLeft(), right = this.aabbRight();
