@@ -7,12 +7,11 @@ DODO.Sprite = DODO.Inputted.extend({
         _.extend(this, props);
         this._vector = new SAT.Vector();
         this.scene = parent.scene;
-        this.id = _.uniqueId();
     },
     initializeSprite: function (parent, x, y) {
         // Container stores PIXI.Sprite-s belonging to children of this sprite.
         this.sprite.addChild(new PIXI.Container());
-        this.sprite.dodoSpriteId = this.id;
+        this.sprite._dodoSprite = this;
 
         if (parent instanceof DODO.Sprite) {
             parent.addSprite(this);
@@ -75,12 +74,11 @@ DODO.Sprite = DODO.Inputted.extend({
     },
     getChildrenSprites: function () {
         return _.map(this.sprite.children[this.sprite.children.length - 1].children, function (child) {
-            var sprite = this.scene.findSpriteByPropertyValue('id', child.dodoSpriteId);
-            return sprite;
-        }, this);
+            return child._dodoSprite;
+        });
     },
     getParentSprite: function () {
-        return this.scene.findSpriteByPropertyValue('id', this.sprite.parent.parent.dodoSpriteId);
+        return this.sprite.parent.parent._dodoSprite;
     },
     // Sprite POINTS
     setPoint: function (name, x, y) {
@@ -96,10 +94,10 @@ DODO.Sprite = DODO.Inputted.extend({
         return this._vector;
     },
     // TRANSFORMATIONS
-    getScenePosition: function() {
+    getScenePosition: function () {
         return this.scene.container.toLocal(this.scene.origin, this.sprite);
     },
-    getScreenPosition: function() {
+    getScreenPosition: function () {
         return this.sprite.getGlobalPosition();
     },
     flipX: function () {
@@ -201,10 +199,18 @@ DODO.Sprite = DODO.Inputted.extend({
         _.each(this.getChildrenSprites(), function (sprite) {
             sprite.destroy();
         });
+        this.spriteParent && this.spriteParent.removeSprite(this);
+        spritesToDestroy.push(this);
+    },
+    clear: function () {
+        if (this.sprite) {
+            this.sprite._dodoSprite = null;
+            this.sprite.parent && this.sprite.parent.removeChild(this.sprite);
+            this.sprite.destroy();
+        }
         this.trigger('destroyed');
         this.debind();
-        spritesToDestroy.push(this);
-    }    
+    }
 });
 
 Object.defineProperties(DODO.Sprite.prototype, {

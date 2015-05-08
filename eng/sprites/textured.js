@@ -94,10 +94,10 @@ DODO.Textured = DODO.Sprite.extend({
             animation.anchor.y = y;
         });
 
-//        _.each(this.getChildrenSprites(), function (sprite) {
-//            sprite.position.x -= deltaX;
-//            sprite.position.y -= deltaY;
-//        });
+        _.each(this.getChildrenSprites(), function (sprite) {
+            sprite.position.x -= deltaX;
+            sprite.position.y -= deltaY;
+        });
 
         _.each(this.points, function (p) {
             p.x -= deltaX;

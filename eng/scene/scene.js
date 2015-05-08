@@ -6,7 +6,6 @@ DODO.Layer = function(scene, name) {
     this.scene.container.addChild(this);
     this.parallax = 100;
 };
-//DODO.Layer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 DODO.Layer.prototype = Object.create(PIXI.Container.prototype);
 DODO.Layer.prototype.constructor = DODO.Layer;
 
@@ -89,10 +88,9 @@ DODO.Scene = DODO.Inputted.extend({
     },
     clear: function () {
         _.each(this.sprites, function (sprite) {
-            sprite.destroy();
+            sprite.clear();
         });
         _.each(this.layers, function (layer) {
-            layer.scene = null;
             layer.destroy();
         });
         this.trigger('destroyed');
@@ -114,23 +112,21 @@ DODO.Scene = DODO.Inputted.extend({
         }
 
         // Update SPRITES
-        for (var i = 0, len = this.sprites.length; i < len; i++) {
-            this.sprites[i].update();
+        var sprites = this.sprites;
+        for (var i = 0, len = sprites.length; i < len; i++) {
+            sprites[i].update();
         }
         // Manage sprites
         for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
-            var sprite = this.spritesToDestroy[i];
-            // Remove child only if parent is layer (if parent is other sprite, we already removed it via removeSprite()
-            sprite.sprite.parent && sprite.sprite.parent.removeChild(sprite.sprite);
-            var sprites = this.sprites;
-            for (var index = sprites.indexOf(sprite); index < sprites.length - 1; index++) {
+            this.spritesToDestroy[i].clear();            
+            for (var index = sprites.indexOf(this.spritesToDestroy[i]); index < sprites.length - 1; index++) {
                 sprites[index] = sprites[index + 1];
             }
             sprites.length--;
         }
         this.spritesToDestroy.length = 0;
         for (var i = 0, len = this.spritesToCreate.length; i < len; i++) {
-            this.sprites.push(this.spritesToCreate[i]);
+            sprites.push(this.spritesToCreate[i]);
         }
         this.spritesToCreate.length = 0;
 

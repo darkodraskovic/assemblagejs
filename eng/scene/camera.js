@@ -19,6 +19,9 @@ DODO.Camera = DODO.Class.extend({
     },
     setFollowee: function (followee) {
         this.followee = followee;
+        this.followee.bind('destroyed', this, function () {
+            this.followee = null;
+        });
     },
     getInnerBound: function (edge) {
         switch (edge) {
