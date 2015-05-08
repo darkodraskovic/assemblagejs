@@ -84,16 +84,21 @@ DODO.Scene = DODO.Inputted.extend({
         this.container.removeChild(layer);
         layer.destroy();
     },
-    destroy: function() {
+    destroy: function() {                
+        this.game.sceneManager._scenesToDestroy.push(this);
+    },
+    clear: function () {
         _.each(this.sprites, function (sprite) {
-            sprite.debind();
+            sprite.destroy();
         });
         _.each(this.layers, function (layer) {
             layer.scene = null;
+            layer.destroy();
         });
         this.trigger('destroyed');
         this.debind();
-        this.game.sceneManager._scenesToDestroy.push(this);
+        this.container.parent.removeChild(this.container);
+        this.container.destroy();
     },
     // START/STOP scene execution
     play: function() {
@@ -197,8 +202,9 @@ DODO.Scene = DODO.Inputted.extend({
     // MOUSE POSITION
     getMousePosition: function() {
         var scenePosition = this._mousePosition;
-        scenePosition.x = DODO.input.mouse.x;
-        scenePosition.y = DODO.input.mouse.y;
+        var mouse = DODO.game.renderer.plugins.interaction.mouse.global;
+        scenePosition.x = mouse.x;
+        scenePosition.y = mouse.y;
         scenePosition.x /= this.scale;
         scenePosition.y /= this.scale;
         scenePosition.x += this.camera.x;

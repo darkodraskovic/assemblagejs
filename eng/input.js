@@ -37,17 +37,10 @@ DODO.input = new (DODO.Evented.extend({
     actions: {},
     down: {},
     _pressed: {},
-    mouse: {x: 0, y: 0},
     addMapping: function (action, key) {
         this.actions[key] = action;
         this.down[action] = false;
         this._pressed[action] = false;
-    },
-    initMouse: function (canvas) {
-        canvas.addEventListener('mousemove', function (event) {
-            this.mouse.x = event.clientX - canvas.offsetLeft;
-            this.mouse.y = event.clientY - canvas.offsetTop;
-        }.bind(this));
     },
     disableContextMenu: function (canvas) {
         canvas.oncontextmenu = function (e) {

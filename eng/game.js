@@ -6,8 +6,7 @@ DODO.Game = DODO.Evented.extend({
         this.renderer = PIXI.autoDetectRenderer(DODO.config.screen.width, DODO.config.screen.height, DODO.config.renderer);
         var view = this.renderer.view;
         document.body.appendChild(view);
-        DODO.input.initMouse(view);
-        DODO.input.disableContextMenu(view)
+        DODO.input.disableContextMenu(view);
         window.onresize = this.onResizeWindow.bind(this, view);
         this.onResizeWindow(view);
 
