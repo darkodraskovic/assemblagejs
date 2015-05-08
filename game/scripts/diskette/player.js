@@ -61,7 +61,7 @@ var Player = Anime.extend({
         this.collisionOffsetY = (this.collisionPolygon.h - this.collisionHeight);
         this.crouchPolygon = this.createCollisionPolygon();
 
-        this.setOrigin(0.5, 0);
+        this.setAnchor(0.5, 0);
         this.scene.camera.setFollowee(this);
     },
     processControls: function () {

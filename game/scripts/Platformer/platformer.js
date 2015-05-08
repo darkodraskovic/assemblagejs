@@ -46,7 +46,7 @@ var AnimePlatformer = DODO.Kinematic.extend({
         this.addAnimation("moving", _.range(1, 7), 0.15);
         this.addAnimation("launching", [17], 0);
         this.addAnimation("falling", [18], 0);
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
     },
     update: function() {
         if (this.applyForce) {
@@ -353,6 +353,6 @@ var ExplosionPlatformer = DODO.Textured.extend({
         this.scale.x = this.scale.y = 0.4;
         DODO.getAsset('dull.wav').play();
 
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
     }
 });

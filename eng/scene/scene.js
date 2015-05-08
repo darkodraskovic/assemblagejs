@@ -70,13 +70,14 @@ DODO.Scene = DODO.Inputted.extend({
         renderTexture.render(layer);
 
         var bakedLayer = new DODO.Layer(this, layer.name);
+        bakedLayer.name = layer.name;
         bakedLayer.alpha = layer.alpha;
         bakedLayer.scene = layer.scene;
+        layer.collides && (bakedLayer.tilemap = layer.tilemap);
         bakedLayer.position.x = layer.position.x;
         bakedLayer.position.y = layer.position.y;
         bakedLayer.parallax = layer.parallax;
-        bakedLayer.name = layer.name;
-        bakedLayer.baked = true;
+        bakedLayer.baked = true;        
         bakedLayer.addChild(sprite);
         
         this.container.addChildAt(bakedLayer, this.container.getChildIndex(layer));

@@ -43,7 +43,7 @@ DODO.Textured = DODO.Sprite.extend({
             }
         }
         // Container stores MovieClip objects.
-        this.sprite.addChild(new PIXI.Container());
+        this.animationsContainer = this.sprite.addChild(new PIXI.Container());
         // A hashmap of all animations, ie. MovieClips for easy reference.
         this.animations = {};
         this.addAnimation("all", _.range(0, this.textures.length), 0);
@@ -60,8 +60,7 @@ DODO.Textured = DODO.Sprite.extend({
         animation.anchor.y = this.sprite.anchor.y;
         animation.visible = false;
         animation.animationSpeed = speed || 0;
-        // The first child of this.sprite is the DOC containing MovieClips.
-        this.sprite.children[0].addChild(animation);
+        this.animationsContainer.addChild(animation);
         this.animations[name] = animation;
 
         return animation;
@@ -82,7 +81,7 @@ DODO.Textured = DODO.Sprite.extend({
         this.currentAnimation.gotoAndPlay(frame || 0);
     },
     // ORIGIN
-    setOrigin: function (x, y) {
+    setAnchor: function (x, y) {
         var deltaX = (x - this.anchor.x) * this.width / this.scale.x;
         var deltaY = (y - this.anchor.y) * this.height / this.scale.y;
 
@@ -110,7 +109,7 @@ DODO.Textured = DODO.Sprite.extend({
             colPol.calcBounds();
         }
     },
-    getOrigin: function () {
+    getAnchor: function () {
         return this.anchor;
     },
     // LIFECYCLE & UPDATE

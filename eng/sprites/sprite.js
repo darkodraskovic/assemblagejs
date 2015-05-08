@@ -10,7 +10,7 @@ DODO.Sprite = DODO.Inputted.extend({
     },
     initializeSprite: function (parent, x, y) {
         // Container stores PIXI.Sprite-s belonging to children of this sprite.
-        this.sprite.addChild(new PIXI.Container());
+        this.spritesContainer = this.sprite.addChild(new PIXI.Container());
         this.sprite._dodoSprite = this;
 
         if (parent instanceof DODO.Sprite) {
@@ -65,15 +65,15 @@ DODO.Sprite = DODO.Inputted.extend({
         return true;
     },
     // Sprite HIERARCHY
-    // The last child of this PIXI sprite is the parent of PIXI sprites belonging to other DODO sprites.
+    // The first child of this PIXI sprite is the parent of PIXI sprites belonging to other DODO sprites.
     addSprite: function (sprite) {
-        this.sprite.children[this.sprite.children.length - 1].addChild(sprite.sprite);
+        this.spritesContainer.addChild(sprite.sprite);
     },
     removeSprite: function (sprite) {
-        this.sprite.children[this.sprite.children.length - 1].removeChild(sprite.sprite);
+        this.spritesContainer.removeChild(sprite.sprite);
     },
     getChildrenSprites: function () {
-        return _.map(this.sprite.children[this.sprite.children.length - 1].children, function (child) {
+        return _.map(this.spritesContainer.children, function (child) {
             return child._dodoSprite;
         });
     },

@@ -5,7 +5,7 @@ var ScenerySun = DODO.Textured.extend({
         this._super(parent, x, y, props);
         var sineProps = {period: 1, periodRand: 50, amplitude: 0.012, amplitudeRand: 50};
         this.sine = new DODO.addons.Sine(this, sineProps);
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
     },
     update: function () {
         this._super();
@@ -22,7 +22,7 @@ var SceneryStar = DODO.Textured.extend({
         this._super(parent, x, y, props);
         var sineProps = {period: 0.5, periodRand: 25, amplitude: 0.15, amplitudeRand: 50};
         this.sine = new DODO.addons.Sine(this, sineProps);
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
     },
     update: function () {
         this._super();

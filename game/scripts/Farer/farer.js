@@ -13,7 +13,7 @@ var Player = DODO.Kinematic.extend({
         DODO.input.addMapping("right", DODO.Key.D);
         DODO.input.addMapping("down", DODO.Key.S);
         DODO.input.addMapping("up", DODO.Key.W);
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
         this.laser1 = new Laser(this, 18, -12);
         this.laser2 = new Laser(this, 18, 12);
 //        this.setSpritePoint("bullet1", 18, -12);
@@ -89,7 +89,7 @@ var Laser = DODO.Textured.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.sprite.alpha = 0.4;
-        this.setOrigin(0, 0.5);
+        this.setAnchor(0, 0.5);
         this.sound = DODO.getAsset('laser-beam.mp3');
         this.sound.loop(true);
         this.sound.volume(0.75);
@@ -149,7 +149,7 @@ var Bullet = DODO.Kinematic.extend({
         var sound = DODO.getAsset('bullet.wav');
         sound.volume(0.75);
         sound.play();
-        this.setOrigin(0, 0.5);
+        this.setAnchor(0, 0.5);
         this.sprite.alpha = 0.75;
     },
     update: function () {
@@ -175,7 +175,7 @@ var Rotor = DODO.Colliding.extend({
         this._super(parent, x, y, props);
 //        this.addAnimation("all", _.range(0, this.textures.length), 0);
         this.setAnimation("all", 0, 0.016);
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
     },
     update: function () {
         this.rotation = (this.rotation + Math.PI / 2 * DODO.game.dt);
@@ -199,7 +199,7 @@ var Explosion = DODO.Textured.extend({
 
         DODO.getAsset('explosion.mp3').volume(0.5).play();
 
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
     }
 });
 

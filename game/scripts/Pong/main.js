@@ -42,7 +42,7 @@ var Ball = DODO.Kinematic.extend({
         this.setGravity(0, 0);
         this.velocity.x = this.maxVelocity.x;
         this.velocity.y = _.random(-this.maxVelocity.y, this.maxVelocity.y);
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
         this.scene.bind('created', this, function () {
             this.pointsText = this.scene.findSpriteByClass(PointsText);
         });

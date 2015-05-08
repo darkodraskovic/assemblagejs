@@ -39,7 +39,7 @@ var AnimeSkorpio = DODO.Kinematic.extend({
             that.destroy();
         };
 
-        this.setOrigin(0.5, 0.5)
+        this.setAnchor(0.5, 0.5)
     },
     update: function () {
         if (this.motionState === "moving") {
@@ -195,23 +195,23 @@ var Rifle = DODO.Textured.extend({
     spriteSheet: "Skorpio/AssaultRifle.png",
     frameWidth: 64,
     frameHeight: 64,
-    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.addAnimation("idle_up", [0], 1);
         this.addAnimation("idle_down", [18], 1);
         this.addAnimation("idle_left", [9], 1);
         this.addAnimation("idle_right", [27], 1);
-
+        
         this.addAnimation("moving_up", _.range(1, 9), this.animSpeed);
         this.addAnimation("moving_down", _.range(19, 27), this.animSpeed);
         this.addAnimation("moving_left", _.range(10, 18), this.animSpeed);
         this.addAnimation("moving_right", _.range(28, 36), this.animSpeed);
 
-        this.setPoint("up", 14, -18);
-        this.setPoint("down", -10, 28);
-        this.setPoint("left", -24, 6);
-        this.setPoint("right", 24, 6);
+        this.setAnchor(0.5, 0.5);
+        this.setPoint("up", 12, -8);
+        this.setPoint("down", -12, 16);
+        this.setPoint("left", -16, 6);
+        this.setPoint("right", 16, 6);
 
         this.pinTo = new DODO.addons.PinTo(this, {parent: this.holder, name: "rifle", offsetX: 0, offsetY: 0});
     },
@@ -236,11 +236,10 @@ var Bullet = DODO.Kinematic.extend({
     collisionResponse: "sensor",
     collisionWidth: 12,
     collisionHeight: 10,
-    collisionOffsetX: -6,
-    collisionOffsetY: -5,
+    collisionOffsetX: 10,
+    collisionOffsetY: 11,
     lifeTime: 4,
     lifeTimer: 0,
-    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.friction.x = 0;
@@ -250,6 +249,7 @@ var Bullet = DODO.Kinematic.extend({
         var sound = DODO.getAsset('gunshot.mp3');
         sound.volume(0.5);
         sound.play();
+        this.setAnchor(0, 0.5);
     },
     update: function () {
         if (this.outOfBounds) {
@@ -284,7 +284,7 @@ var LaserBeam = DODO.Textured.extend({
         this._super(parent, x, y, props);
         this.sprite.alpha = 0.75;
         this.setAnimation("all", 18, 0);
-        this.setOrigin(0, 0.5);
+        this.setAnchor(0, 0.5);
 
         this.rotation = (DODO.angleTo(this.spawner.position, this.scene.getMousePosition()));
         var sprPt = this.spawner.rifle.getPoint(this.spawner.facing);
@@ -338,7 +338,6 @@ var LaserTip = DODO.Kinematic.extend({
     collisionResponse: "sensor",
     collisionWidth: 8,
     collisionHeight: 8,
-    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
     },
@@ -387,7 +386,6 @@ var LaserFire = DODO.Textured.extend({
     spriteSheet: "Skorpio/Fire.png",
     frameWidth: 64,
     frameHeight: 64,
-//    origin: {x: 0.5, y: 0.5},
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
@@ -401,7 +399,7 @@ var LaserFire = DODO.Textured.extend({
 //        blur.blurX = blur.blurY = 1;
 //        this.sprite.filters = [blur];
         this.setZ("top");
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
     },
     update: function () {
         this.position.x = this.laserTip.position.x;
@@ -435,7 +433,7 @@ var ExplosionSkorpio = DODO.Textured.extend({
         this.sound = DODO.getAsset('explosion.mp3');
         this.sound.volume(0.4);
         this.sound.play();
-        this.setOrigin(0.5, 0.5);
+        this.setAnchor(0.5, 0.5);
     }
 });
 
