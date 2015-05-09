@@ -24,7 +24,6 @@ DODO.createTiledMap = function(mapData, scene) {
             new DODO.Tiling(layer, {image: layer["image"], width: scene.width, height: scene.height,
                 velocity: {x: layer["velocityX"], y: layer["velocityY"]}});
         }
-
         // if current layer is TILE LAYER
         else if (layerData["type"] === "tilelayer") {
             // This layer "image" property must be set by the user.
@@ -60,7 +59,6 @@ DODO.createTiledMap = function(mapData, scene) {
                 tileset.tilewidth, tileset.tileheight, layer.collides, tileset.spacing, mapData.orientation);
             tilemap.populate(tileData2D);
         }
-
         // if the current layer is OBJECT LAYER
         else if (layerData["type"] === "objectgroup") {
             for (var j = 0; j < layerData["objects"].length; j++) {
@@ -88,6 +86,7 @@ DODO.createTiledMap = function(mapData, scene) {
                 }
             }
         }
+        
         if (layer.baked) {
             scene.bakeLayer(layer);
         }

@@ -4,6 +4,7 @@ var Text = DODO.Text.extend({
         this.initMouseReactivity();
         this.setMouseReactivity(true);
         this.scene.setScale(2);
+//        this.sprite.style = {fill: 'green'};
     }
 });
 

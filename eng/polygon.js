@@ -182,9 +182,8 @@ DODO.SATPolygonToPIXIPolygon = function (SATPolygon) {
 };
 
 DODO.drawPolygon = function (graphics, polygon, props) {
-    if (!_.isObject(props)) {
-        props = {};        
-    }
+    _.isObject(props) || (props = {});
+    
     graphics.clear();
     graphics.beginFill(props.fillColor || DODO.Colors.violet, props.fillAlpha || 0.5);
     graphics.lineStyle(props.lineWidth || 2, props.lineColor || DODO.Colors.green, props.lineAlpha || 0.67);

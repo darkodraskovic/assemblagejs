@@ -13,15 +13,9 @@ DODO.Sprite = DODO.Inputted.extend({
         this.spritesContainer = this.sprite.addChild(new PIXI.Container());
         this.sprite._dodoSprite = this;
 
-        if (parent instanceof DODO.Sprite) {
-            parent.addSprite(this);
-        }
-        else if (parent instanceof DODO.Layer) {
-            parent.addChild(this.sprite);
-        }
-
-        this.position.x = x;
-        this.position.y = y;
+        parent instanceof DODO.Layer ? parent.addChild(this.sprite) : parent.addSprite(this);
+        this.position.set(x, y);
+        
         this.scene.spritesToCreate.push(this);
     },
     // Visual BOUNDS
@@ -179,7 +173,8 @@ DODO.Sprite = DODO.Inputted.extend({
     },
     moveToSprite: function (sprite, position) {
         var layer = sprite.getLayer();
-        if (this.setLayer(layer)) {
+        if (layer) {
+            this.setLayer(layer);
             if (position === "back" || position === "front") {
                 layer.addChildAt(this.sprite, layer.getChildIndex(sprite.sprite));
                 if (position === "front") {
