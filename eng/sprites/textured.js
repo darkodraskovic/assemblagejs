@@ -105,7 +105,9 @@ DODO.Textured = DODO.Sprite.extend({
 
         var colPol = this.collisionPolygon;
         if (colPol) {
-            colPol.translate(-deltaX * colPol.scale.x, -deltaY * colPol.scale.y);
+            // colPol.translate(-deltaX * colPol.scale.x, -deltaY * colPol.scale.y);
+	    colPol.setOffset(new SAT.Vector(colPol.offset.x - deltaX * colPol.scale.x,
+					    colPol.offset.y - deltaY * colPol.scale.y));
             colPol.calcBounds();
         }
     },

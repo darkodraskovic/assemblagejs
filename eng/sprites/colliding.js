@@ -9,46 +9,51 @@ DODO.Colliding = DODO.Textured.extend({
         if (this.drawCollisionPolygon) {
             this.debugGraphics = new DODO.Graphics(this, 0, 0);
         }
-        this.setCollisionPolygon(this.createCollisionPolygon(this.polygon));
+        this.setCollisionPolygon(this.polygon);
     },
     setCollisionPolygon: function(polygon) {
-        this.collisionPolygon = polygon;
-        if (this.drawCollisionPolygon)
-            DODO.drawPolygon(this.debugGraphics.sprite, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
-        this.synchCollisionPolygon();
+        this.collisionPolygon = polygon || this.createCollisionBox();
+	this.drawCollisionPolygon && this.drawCollision();
+
+	//        if (this.getMouseReactivity())
+	//            this.sprite.hitArea = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon, false);
+	
+	this.synchCollisionPolygon();
     },
-    resetCollisionData: function() {
-        this.collisionWidth = this.collisionHeight = this.collisionOffsetX = this.collisionOffsetY = 0;
+    setCollisionSize: function(w, h) {
+	var colPol = this.collisionPolygon;
+	var prevScaleX = colPol.scale.x;
+	var prevScaleY = colPol.scale.y;
+	var relX = (w / this.aabbWidth()) * prevScaleX;
+	var relY = (h / this.aabbHeight()) * prevScaleY;
+	colPol.setScale(relX, relY);
+	colPol.scale.x = prevScaleX;
+	colPol.scale.y = prevScaleY;
+	if (this.drawCollisionPolygon) {
+	    colPol.setScale(1, 1);
+	    this.drawCollision();
+	    this.debugGraphics.scale.set(prevScaleX, prevScaleY);
+	    colPol.setScale(prevScaleX, prevScaleY);
+	    this.debugGraphics.position.set(colPol.offset.x, colPol.offset.y);
+	}
     },
-    createCollisionPolygon: function(polygon) {
-        if (!_.isNumber(this.collisionWidth))
-            this.collisionWidth = this.width;
-        if (!_.isNumber(this.collisionHeight))
-            this.collisionHeight = this.height;
-        if (!_.isNumber(this.collisionOffsetX))
-            this.collisionOffsetX = 0;
-        if (!_.isNumber(this.collisionOffsetY))
-            this.collisionOffsetY = 0;
-
-        var collisionPolygon;
-
-        if (!polygon) {
-            var box = new DODO.Box(new SAT.Vector(0, 0), this.collisionWidth, this.collisionHeight);
-            collisionPolygon = box.toPolygon();
-        } else {
-            collisionPolygon = polygon;
-        }
-        collisionPolygon.setOffset(new SAT.Vector(this.collisionOffsetX, this.collisionOffsetY));
-        collisionPolygon.calcBounds();
-
-//        if (this.getMouseReactivity())
-//            this.sprite.hitArea = DODO.SATPolygonToPIXIPolygon(collisionPolygon, false);
-
-        if (this.drawCollisionPolygon) {
-            collisionPolygon.PIXIPolygon = DODO.SATPolygonToPIXIPolygon(collisionPolygon);
-        }
-
-        return collisionPolygon;
+    setCollisionOffset: function (x, y, relative) {
+	var colPol = this.collisionPolygon;
+	if (relative)
+	    x += colPol.offset.x, y += colPol.offset.y;
+	colPol.setOffset(new SAT.Vector(x, y));
+        colPol.calcBounds();
+	if (this.drawCollisionPolygon) {
+	    this.debugGraphics.position.set(x, y);
+	}
+    },
+    drawCollision: function (){
+	this.collisionPolygon.PIXIPolygon = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon);
+	DODO.drawPolygon(this.debugGraphics.sprite, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
+    },
+    createCollisionBox: function() {
+            var box = new DODO.Box(new SAT.Vector(0, 0), this.width, this.height);
+            return box.toPolygon();
     },
     collidesWithEntity: function(other) {
         this.response.clear();

@@ -44,7 +44,7 @@ var Player = Anime.extend({
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
-        this.bind('leftpressed', function () {window.console.log(this.name + " pressed");})
+        this.bind('leftpressed', function () {window.console.log(this.name + " pressed");});
         this.setPoint("ball", 0, -this.height / 3);
 
         this.scene.bind('created', this, function () {
@@ -52,16 +52,15 @@ var Player = Anime.extend({
                     this.position.x, this.position.y,
                     {color: DODO.Colors.purple, owner: this});
             this.progressBarInner.setVisible(false);
-        })
+        });
 
         // TODO
         this.uprightPolygon = this.collisionPolygon;
         this.collisionWidth = this.collisionPolygon.w;
         this.collisionHeight = this.collisionPolygon.h * 0.65;
         this.collisionOffsetY = (this.collisionPolygon.h - this.collisionHeight);
-        this.crouchPolygon = this.createCollisionPolygon();
+        this.crouchPolygon = this.createCollisionBox();
 
-        this.setAnchor(0.5, 0);
         this.scene.camera.setFollowee(this);
     },
     processControls: function () {
@@ -87,12 +86,12 @@ var Player = Anime.extend({
             this.platformerState = "falling";
         }
 
-        if (this.platformerState === "crouching") {
-            this.setCollisionPolygon(this.crouchPolygon);
-        }
-        else {
-            this.setCollisionPolygon(this.uprightPolygon);
-        }
+        // if (this.platformerState === "crouching") {
+        //     this.setCollisionPolygon(this.crouchPolygon);
+        // }
+        // else {
+        //     this.setCollisionPolygon(this.uprightPolygon);
+        // }
 
         if (DODO.input.down["jump"]) {
             if (this.standing) {

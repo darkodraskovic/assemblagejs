@@ -3,12 +3,11 @@ var Computer = DODO.Kinematic.extend({
     spriteSheet: "Diskette/computer.png",
     collisionResponse: "sensor",
     drawCollisionPolygon: true,
-    collisionWidth: 38,
-    collisionOffsetX: 16,
-    collisionOffsetY: 4,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setZ("bottom");
+	this.setCollisionSize(38, this.aabbHeight());
+	this.setCollisionOffset(16, 4);
     },
     getSlotX: function () {
         return this.position.x + this.collisionOffsetX;

@@ -25,10 +25,6 @@ var AnimePlatformer = DODO.Kinematic.extend({
     wrap: true,
     autoFlip: true,
     collisionResponse: "passive",
-    collisionOffsetY: 18,
-    collisionOffsetX: 7,
-    collisionWidth: 18,
-    collisionHeight: 46,
     drawCollisionPolygon: true,
     mode: "throwing",
     facing: "right",
@@ -46,7 +42,8 @@ var AnimePlatformer = DODO.Kinematic.extend({
         this.addAnimation("moving", _.range(1, 7), 0.15);
         this.addAnimation("launching", [17], 0);
         this.addAnimation("falling", [18], 0);
-        this.setAnchor(0.5, 0.5);
+        this.setAnchor(0.5, 1);
+	this.setCollisionSize(18, 46);
     },
     update: function() {
         if (this.applyForce) {
@@ -230,7 +227,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     throwBall: function() {
         if (this.mode !== "throwing")
             return;
-        var ball = new Ball(this.getLayer(), this.position.x, this.position.y);
+        var ball = new Ball(this.getLayer(), this.position.x, this.aabbTop());
         var angle = DODO.angleTo(this.position, this.scene.getMousePosition());
         ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
         ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);

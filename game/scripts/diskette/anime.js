@@ -4,9 +4,6 @@ var Anime = DODO.Kinematic.extend({
     bounded: false,
     wrap: true,
     collisionResponse: "passive",
-    collisionWidth: 28,
-    collisionHeight: 68,
-    collisionOffsetX: 6,
     drawCollisionPolygon: false,
     facing: "right",
     elasticity: 0,
@@ -28,7 +25,11 @@ var Anime = DODO.Kinematic.extend({
         this.animations["falling"].loop = false;
         this.addAnimation("crouching", _.range(30, 36), animationSpeed * 2);
         this.animations["crouching"].loop = false;
-//        this.animations["crouching"].onComplete = this.onCrouchingComplete.bind(this);
+	//        this.animations["crouching"].onComplete = this.onCrouchingComplete.bind(this);
+	this.setAnchor(0.5, 1);
+	this.setCollisionSize(28, 68);
+	this.position.x += this.anchor.x * this.width;
+	this.position.y += this.anchor.y * this.height;
     },
     onCrouchingComplete: function () {
 //        window.console.log("Crouching completed");

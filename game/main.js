@@ -2,7 +2,7 @@
 var skorpio = {
     scripts: ["Skorpio/skorpio.js"],
     maps: ["Skorpio/skorpio1.json", "Skorpio/skorpio2.json"],
-    graphics: ["Skorpio/AgentComplete.png", "Skorpio/AssaultRifle.png", 
+    graphics: ["Skorpio/AgentComplete.png", "Skorpio/AssaultRifle.png",
         "Skorpio/player_skorpio.png", "Skorpio/Computer1.png",
         "Common/Explosion.png", "Skorpio/Fire.png", "Skorpio/Interior-Furniture.png",
         "Skorpio/Muzzleflashes-Shots.png"],
@@ -15,7 +15,7 @@ var farer = {
     maps: [],
     graphics: ["Farer/bullet.png", "Common/Explosion.png", "Farer/laser.png",
         "Farer/nebula.png", "Farer/player_farer.png", "Farer/rotor.png", "Farer/starfield.png"],
-    sounds: [["bullet.wav"], ["explosion.mp3"], ["laser-beam.mp3"]],
+    sounds: [["bullet.wav"], ["explosion.mp3"], ["laser-beam.mp3"]]
 };
 
 var rot = {
@@ -28,7 +28,7 @@ var rot = {
 var platformer = {
     scripts: ["Platformer/platformer.js"],
     maps: ["Platformer/platformer.json"],
-    graphics: ["Platformer/ball.png", "Platformer/sci-fi-platformer-tiles-32x32.png", 
+    graphics: ["Platformer/ball.png", "Platformer/sci-fi-platformer-tiles-32x32.png",
         "Platformer/moving_platform.png", "Platformer/player_platformer.png",
         "Common/Explosion.png", "Platformer/undead.png"],
     sounds: [["dull.wav"], ["e.wav"], ["grounded.wav"], ["jetpack.wav"], ["jump.wav"]]
@@ -85,11 +85,12 @@ new MyGame();
 var sceneManager = DODO.game.sceneManager;
 var loader = DODO.game.loader;
 
-//sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
-//sceneManager.startScene(skorpio, "lvl1", "Skorpio/skorpio1.json");
-//sceneManager.startScene(brownian, "lvl1", "Brownian/brownian.json");
-//sceneManager.startScene(isometric, "lvl1", "Isometric/isometric4.json");
-sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
+sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
+// sceneManager.startScene(skorpio, "lvl1", "Skorpio/skorpio1.json");
+// sceneManager.startScene(brownian, "lvl1", "Brownian/brownian.json");
+// sceneManager.startScene(isometric, "lvl1", "Isometric/isometric4.json");
+// sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
+
 //
 // FARER
 //loader.loadAssets(farer, function () {
@@ -104,7 +105,7 @@ sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 //});
 
 // DISKETTE
-//loader.loadAssets(diskette, function () {
+// loader.loadAssets(diskette, function () {
 //    var scene =  new DODO.Scene("Diskette Level 1", DODO.config.camera, "Diskette/diskette1.json");
 //    for (var i = 0; i < 50; i++) {
 //        var star = new SceneryStar(scene.findLayerByName("Sky"),
@@ -113,6 +114,6 @@ sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 //    }
 //    scene.findSpriteByClass(ScenerySun).setZ("top");
 //    player = scene.findSpriteByClass(Player);
-//    
+
 //    DODO.input.addMapping("restart", DODO.Key.T);
-//});
+// });

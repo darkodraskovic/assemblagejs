@@ -21,7 +21,7 @@ DODO.Box.prototype.toPolygon = function () {
 DODO._initPolygon = function (polygon) {
     polygon.scale = new SAT.Vector(1, 1);
     polygon.calcBounds();
-}
+};
 
 SAT.Polygon.prototype.applyScale = function () {
     this.scale.x = this.scale.y = 1;
@@ -165,7 +165,8 @@ DODO.TiledPolygonToSATPolygon = function (oData, mapData) {
 };
 
 DODO.SATPolygonToPIXIPolygon = function (SATPolygon) {
-    var calcPoints = _.map(SATPolygon.calcPoints,
+    // var calcPoints = _.map(SATPolygon.calcPoints,
+    var calcPoints = _.map(SATPolygon.points,
             function (calcPoint) {
                 return calcPoint.clone();
             });
@@ -183,7 +184,7 @@ DODO.SATPolygonToPIXIPolygon = function (SATPolygon) {
 
 DODO.drawPolygon = function (graphics, polygon, props) {
     _.isObject(props) || (props = {});
-    
+
     graphics.clear();
     graphics.beginFill(props.fillColor || DODO.Colors.violet, props.fillAlpha || 0.5);
     graphics.lineStyle(props.lineWidth || 2, props.lineColor || DODO.Colors.green, props.lineAlpha || 0.67);
