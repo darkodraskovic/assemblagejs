@@ -21,11 +21,10 @@ DODO.Tile = function (gid, x, y, tilemap) {
 
     // COLLISION
     if (tilemap.collides) {
-        var collisionPolygon;
         if (tilemap.orientation === "isometric") {
             var colX = tilemap.getSceneIsoX(x, y);
             var colY = tilemap.getSceneIsoY(x, y);
-            collisionPolygon = new DODO.Polygon(new SAT.Vector(colX, colY), [
+            this.collisionPolygon = new DODO.Polygon(new SAT.Vector(colX, colY), [
                 new SAT.Vector(tilemap.tileW / 2, 0),
                 new SAT.Vector(0, tilemap.tileH / 2),
                 new SAT.Vector(tilemap.tileW / 2, tilemap.tileH),
@@ -33,12 +32,8 @@ DODO.Tile = function (gid, x, y, tilemap) {
             ]);
         }
         else {
-            var box = new DODO.Box(new SAT.Vector(tilemap.getSceneX(x), tilemap.getSceneY(y)), tilemap.tileW, tilemap.tileH);
-            collisionPolygon = box.toPolygon();
-            collisionPolygon.w = box.w;
-            collisionPolygon.h = box.h;
+            this.collisionPolygon = new DODO.Box(new SAT.Vector(tilemap.getSceneX(x), tilemap.getSceneY(y)), tilemap.tileW, tilemap.tileH);
         }
-        this.collisionPolygon = collisionPolygon;
         this.collides = true;
     }
 };

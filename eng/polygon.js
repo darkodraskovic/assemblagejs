@@ -6,14 +6,8 @@ DODO.Polygon = function () {
 DODO.Polygon.prototype = Object.create(SAT.Polygon.prototype);
 DODO.Polygon.prototype.constructor = DODO.Polygon;
 
-DODO.Box = function () {
-    SAT.Box.apply(this, arguments);
-};
-
-DODO.Box.prototype = Object.create(SAT.Box.prototype);
-DODO.Box.prototype.constructor = DODO.Box;
-DODO.Box.prototype.toPolygon = function () {
-    var polygon = SAT.Box.prototype.toPolygon.apply(this, arguments);
+DODO.Box = function (pos, w, h) {
+    var polygon = (new SAT.Box(pos, w, h)).toPolygon();
     DODO._initPolygon(polygon);
     return polygon;
 };

@@ -6,18 +6,10 @@ DODO.Colliding = DODO.Textured.extend({
         this._super(parent, x, y, props);
 
         this.response = new SAT.Response();
-        if (this.drawCollisionPolygon) {
-            this.debugGraphics = new DODO.Graphics(this, 0, 0);
-        }
-        this.setCollisionPolygon(this.polygon);
-    },
-    setCollisionPolygon: function(polygon) {
-        this.collisionPolygon = polygon || this.createCollisionBox();
+	this.collisionPolygon = this.collisionPolygon || new DODO.Box(new SAT.Vector(0, 0), this.width, this.height);
 	this.drawCollisionPolygon && this.drawCollision();
-
 	//        if (this.getMouseReactivity())
 	//            this.sprite.hitArea = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon, false);
-	
 	this.synchCollisionPolygon();
     },
     setCollisionSize: function(w, h) {
@@ -29,7 +21,7 @@ DODO.Colliding = DODO.Textured.extend({
 	colPol.setScale(relX, relY);
 	colPol.scale.x = prevScaleX;
 	colPol.scale.y = prevScaleY;
-	if (this.drawCollisionPolygon) {
+	if (this.debugGraphics) {
 	    colPol.setScale(1, 1);
 	    this.drawCollision();
 	    this.debugGraphics.scale.set(prevScaleX, prevScaleY);
@@ -37,23 +29,17 @@ DODO.Colliding = DODO.Textured.extend({
 	    this.debugGraphics.position.set(colPol.offset.x, colPol.offset.y);
 	}
     },
-    setCollisionOffset: function (x, y, relative) {
-	var colPol = this.collisionPolygon;
-	if (relative)
-	    x += colPol.offset.x, y += colPol.offset.y;
-	colPol.setOffset(new SAT.Vector(x, y));
-        colPol.calcBounds();
-	if (this.drawCollisionPolygon) {
+    setCollisionOffset: function (x, y) {
+	this.collisionPolygon.setOffset(new SAT.Vector(x, y));
+        this.collisionPolygon.calcBounds();
+	if (this.debugGraphics) {
 	    this.debugGraphics.position.set(x, y);
 	}
     },
     drawCollision: function (){
+	this.debugGraphics = this.debugGraphics || new DODO.Graphics(this, 0, 0);
 	this.collisionPolygon.PIXIPolygon = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon);
 	DODO.drawPolygon(this.debugGraphics.sprite, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
-    },
-    createCollisionBox: function() {
-            var box = new DODO.Box(new SAT.Vector(0, 0), this.width, this.height);
-            return box.toPolygon();
     },
     collidesWithEntity: function(other) {
         this.response.clear();
