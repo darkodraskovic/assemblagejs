@@ -3,6 +3,8 @@ DODO.Colliding = DODO.Textured.extend({
     drawCollisionPolygon: true,
     collisionResponse: "static",
     init: function(parent, x, y, props) {
+        if (!this.spriteSheet && props.polygon)
+            this.sprite = this.createTransparentSprite(props.polygon.w, props.polygon.h);
         this._super(parent, x, y, props);
 
         this.response = new SAT.Response();
@@ -80,6 +82,11 @@ DODO.Colliding = DODO.Textured.extend({
         // Synch rotation.
         if (this.rotation !== colPol.angle)
             colPol.setAngle(this.rotation);
+    },
+    setAnchor: function (x, y) {
+        var delta = this._super(x, y);
+        this.collisionPolygon.translate(-delta[0] * this.scale.x, -delta[1] * this.scale.y);
+        this.collisionPolygon.calcBounds();
     },
     // UTILS
     aabbWidth: function() {

@@ -4,7 +4,6 @@ DODO.Textured = DODO.Sprite.extend({
     outOfBounds: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-
         var texture = DODO.getAsset(this.spriteSheet);
         if (texture) {
             if (!_.isNumber(this.frameWidth) || !_.isNumber(this.frameHeight))
@@ -13,10 +12,6 @@ DODO.Textured = DODO.Sprite.extend({
                 this.sprite = this.createTransparentSprite(this.frameWidth, this.frameHeight);
                 this.initAnimation(texture);
             }
-        }
-        else {
-            this.sprite = this.createTransparentSprite((this.polygon && this.polygon.w) || this.collisionWidth,
-                    (this.polygon && this.polygon.h) || this.collisionHeight);
         }
         this.anchor = this.sprite.anchor;
         this.initializeSprite(parent, x, y);
@@ -114,13 +109,7 @@ DODO.Textured = DODO.Sprite.extend({
             p.y -= deltaY;
         });
 
-        var colPol = this.collisionPolygon;
-        if (colPol) {
-            colPol.translate(-deltaX * colPol.scale.x, -deltaY * colPol.scale.y);
-//	    colPol.setOffset(new SAT.Vector(colPol.offset.x - deltaX * colPol.scale.x,
-//					    colPol.offset.y - deltaY * colPol.scale.y));
-            colPol.calcBounds();
-        }
+        return [deltaX, deltaY];
     },
     getAnchor: function () {
         return this.anchor;
