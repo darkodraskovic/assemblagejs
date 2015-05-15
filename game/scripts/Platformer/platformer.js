@@ -340,13 +340,12 @@ var ExplosionPlatformer = DODO.Textured.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        this.addAnimation("explode", _.range(0, 17), 0.5);
+        var anim = this.addAnimation("explode", _.range(0, 17), 0.5);
         this.setAnimation("explode");
-        this.animations["explode"].loop = false;
-        var that = this;
-        this.animations["explode"].onComplete = function() {
-            that.destroy();
-        };
+        anim.loop = false;
+        anim.onComplete = function() {
+            this.destroy();
+        }.bind(this);
         this.scale.x = this.scale.y = 0.4;
         DODO.getAsset('dull.wav').play();
 

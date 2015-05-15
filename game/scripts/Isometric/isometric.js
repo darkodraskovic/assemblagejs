@@ -7,10 +7,6 @@ var Anime = DODO.Kinematic.extend({
     frameWidth: 64,
     frameHeight: 64,
     collisionResponse: "active",
-//    collisionOffsetX: 19,
-//    collisionOffsetY: 14,
-//    collisionWidth: 26,
-//    collisionHeight: 48,
     animSpeed: 0.15,
     elasticity: 0,
     alive: true,
@@ -142,16 +138,21 @@ var Player = Anime.extend({
     }
 });
 
-var Cube = DODO.Kinematic.extend({
-    spriteSheet: "Isometric/cube.png",
-    drawCollisionPolygon: true,
-    collisionResponse: "static",
+var Offseted = DODO.Kinematic.extend({
     init: function(parent, x, y, props) {
         this._super(parent, x, y, props);
+	// this.setCollisionOffset(this.width / 2, this.height);
+	// this.position.x -= this.width / 2;
+	// this.position.y -= this.height;
     }
 });
+var Cube = Offseted.extend({
+    spriteSheet: "Isometric/cube.png",
+    drawCollisionPolygon: true,
+    collisionResponse: "static"
+});
 
-var Sphere = DODO.Kinematic.extend({
+var Sphere = Offseted.extend({
     spriteSheet: "Isometric/sphere.png",
     drawCollisionPolygon: true,
     init: function(parent, x, y, props) {
@@ -171,8 +172,11 @@ var Sphere = DODO.Kinematic.extend({
         window.player = this;
         
         this.scene.camera.setFollowee(this);
+	this.scene.bind('created', this.scene.sortLayerByAxis.bind(this.scene, "Sprites", "y"));
     },
     update: function() {
+	this.scene.sortLayerByAxis("Sprites", "y");
+	
         if (DODO.input.down["up"]) {
             this.acceleration.y = -this.speed;
         } else if (DODO.input.down["down"]) {

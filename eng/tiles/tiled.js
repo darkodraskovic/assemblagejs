@@ -69,7 +69,7 @@ DODO.createTiledMap = function(mapData, scene) {
                 }
                 props["name"] = oData["name"];
                 if (oData["polygon"]) {
-                    props.collisionPolygon = DODO.TiledPolygonToSATPolygon(oData, mapData);
+                    props.polygon = DODO.TiledPolygonToSATPolygon(oData, mapData);
                 }
                 var o = new (eval(oData["type"]))(layer, oData["x"], oData["y"], props);
 

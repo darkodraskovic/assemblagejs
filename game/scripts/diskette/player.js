@@ -52,14 +52,7 @@ var Player = Anime.extend({
                     this.position.x, this.position.y,
                     {color: DODO.Colors.purple, owner: this});
             this.progressBarInner.setVisible(false);
-        });
-
-        // TODO
-        this.uprightPolygon = this.collisionPolygon;
-        this.collisionWidth = this.collisionPolygon.w;
-        this.collisionHeight = this.collisionPolygon.h * 0.65;
-        this.collisionOffsetY = (this.collisionPolygon.h - this.collisionHeight);
-        this.crouchPolygon = this.createCollisionBox();
+        });       
 
         this.scene.camera.setFollowee(this);
     },
@@ -86,12 +79,12 @@ var Player = Anime.extend({
             this.platformerState = "falling";
         }
 
-        // if (this.platformerState === "crouching") {
-        //     this.setCollisionPolygon(this.crouchPolygon);
-        // }
-        // else {
-        //     this.setCollisionPolygon(this.uprightPolygon);
-        // }
+         if (this.platformerState === "crouching") {
+             this.setCollisionSize(this.aabbWidth(), 44);
+         }
+         else {
+             this.setCollisionSize(this.aabbWidth(), 68);
+         }
 
         if (DODO.input.down["jump"]) {
             if (this.standing) {

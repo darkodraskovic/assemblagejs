@@ -38,11 +38,12 @@ var Diskette = DODO.Kinematic.extend({
     },
     update: function () {
         if (this.inserting) {
-            if (this.currentAnimation.currentFrame.floor() !== this.insertingFrameCount % this.currentAnimation.totalFrames) {
+            var currentAnimation = this.getAnimation();
+            if (currentAnimation.currentFrame.floor() !== this.insertingFrameCount % currentAnimation.totalFrames) {
                 this.insertingFrameCount++;
             }
-            if (this.insertingFrameCount >= this.currentAnimation.totalFrames * 2 + 6) {
-                this.currentAnimation.stop();
+            if (this.insertingFrameCount >= currentAnimation.totalFrames * 2 + 6) {
+                currentAnimation.stop();
                 this.destroy();
             }
             return;

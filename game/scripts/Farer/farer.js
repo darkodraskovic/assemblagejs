@@ -189,13 +189,12 @@ var Explosion = DODO.Textured.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        this.addAnimation("explode", _.range(0, 17), 0.2);
+        var anim = this.addAnimation("explode", _.range(0, 17), 0.5);
         this.setAnimation("explode");
-        this.animations["explode"].loop = false;
-        var that = this;
-        this.animations["explode"].onComplete = function () {
-            that.destroy();
-        };
+        anim.loop = false;
+        anim.onComplete = function() {
+            this.destroy();
+        }.bind(this);
 
         DODO.getAsset('explosion.mp3').volume(0.5).play();
 

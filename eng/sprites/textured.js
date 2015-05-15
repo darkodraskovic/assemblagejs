@@ -44,41 +44,51 @@ DODO.Textured = DODO.Sprite.extend({
         }
         // Container stores MovieClip objects.
         this.animationsContainer = this.sprite.addChild(new PIXI.Container());
-        // A hashmap of all animations, ie. MovieClips for easy reference.
-        this.animations = {};
         this.addAnimation("all", _.range(0, this.textures.length), 0);
-        this.addAnimation("default", [0], 0);
-        this.setAnimation("default");
+        this.setAnimation(this.addAnimation("default", [0], 0));
     },
     // ANIMATIONS
     addAnimation: function (name, textures, speed) {
         for (var i = 0; i < textures.length; i++)
             textures[i] = this.textures[textures[i]];
-        var animation = new PIXI.extras.MovieClip(textures);
 
+        var animation = new PIXI.extras.MovieClip(textures);
         animation.anchor.x = this.sprite.anchor.x;
         animation.anchor.y = this.sprite.anchor.y;
         animation.visible = false;
         animation.animationSpeed = speed || 0;
+        animation.name = name;
         this.animationsContainer.addChild(animation);
-        this.animations[name] = animation;
-
         return animation;
     },
-    setAnimation: function (name, frame, speed) {
-        if (this.currentAnimationName === name)
+    setAnimation: function (anim, frame, speed) {
+        if (_.isString(anim))
+            anim = this.findAnimationByName(anim);
+        if (!anim)
             return;
-
-        if (this.currentAnimation) {
-            this.currentAnimation.stop();
-            this.currentAnimation.visible = false;
+        var currentAnim = this.getAnimation();
+        if (currentAnim === anim)
+            return;
+        if (currentAnim) {
+            currentAnim.stop();
+            currentAnim.visible = false;
         }
-
-        this.currentAnimation = this.animations[name];
-        this.currentAnimationName = name;
-        this.currentAnimation.animationSpeed = _.isNumber(speed) ? speed : this.currentAnimation.animationSpeed;
-        this.currentAnimation.visible = true;
-        this.currentAnimation.gotoAndPlay(frame || 0);
+        anim.animationSpeed = _.isNumber(speed) ? speed : anim.animationSpeed;
+        anim.visible = true;
+        anim.gotoAndPlay(frame || 0);
+    },
+    findAnimationByName: function (name) {
+        var animContainerChildren = this.animationsContainer.children;
+        for (var i = 0; i < animContainerChildren.length; i++) {
+            if (animContainerChildren[i].name === name)
+                return animContainerChildren[i];
+        }
+    },
+    getAnimation: function () {
+        var animContChildren = this.animationsContainer.children;
+        for (var i = 0; i < animContChildren.length; i++)
+            if (animContChildren[i].visible)
+                return animContChildren[i];
     },
     // ORIGIN
     setAnchor: function (x, y) {
@@ -88,10 +98,11 @@ DODO.Textured = DODO.Sprite.extend({
         this.anchor.x = x;
         this.anchor.y = y;
 
-        _.each(this.animations, function (animation) {
-            animation.anchor.x = x;
-            animation.anchor.y = y;
-        });
+        if (this.animationsContainer)
+            _.each(this.animationsContainer.children, function (animation) {
+                animation.anchor.x = x;
+                animation.anchor.y = y;
+            });
 
         _.each(this.getChildrenSprites(), function (sprite) {
             sprite.position.x -= deltaX;
@@ -105,9 +116,9 @@ DODO.Textured = DODO.Sprite.extend({
 
         var colPol = this.collisionPolygon;
         if (colPol) {
-            // colPol.translate(-deltaX * colPol.scale.x, -deltaY * colPol.scale.y);
-	    colPol.setOffset(new SAT.Vector(colPol.offset.x - deltaX * colPol.scale.x,
-					    colPol.offset.y - deltaY * colPol.scale.y));
+            colPol.translate(-deltaX * colPol.scale.x, -deltaY * colPol.scale.y);
+//	    colPol.setOffset(new SAT.Vector(colPol.offset.x - deltaX * colPol.scale.x,
+//					    colPol.offset.y - deltaY * colPol.scale.y));
             colPol.calcBounds();
         }
     },

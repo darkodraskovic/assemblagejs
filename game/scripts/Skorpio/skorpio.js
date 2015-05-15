@@ -9,10 +9,6 @@ var AnimeSkorpio = DODO.Kinematic.extend({
     frameWidth: 64,
     frameHeight: 64,
     collisionResponse: "active",
-    collisionOffsetX: 18,
-    collisionOffsetY: 14,
-    collisionWidth: 26,
-    collisionHeight: 48,
     animSpeed: 0.15,
     elasticity: 0,
     alive: true,
@@ -31,15 +27,16 @@ var AnimeSkorpio = DODO.Kinematic.extend({
         this.addAnimation("moving_left", _.range(10, 18), this.animSpeed);
         this.addAnimation("moving_right", _.range(28, 36), this.animSpeed);
 
-        this.addAnimation("death", _.range(36, 42), this.animSpeed);
-        this.animations["death"].loop = false;
-
-        var that = this;
-        this.animations["death"].onComplete = function () {
-            that.destroy();
-        };
+        var deathAnim = this.addAnimation("death", _.range(36, 42), this.animSpeed);
+        deathAnim.loop = false;
+        deathAnim.onComplete = function () {
+            this.destroy();
+        }.bind(this);
 
         this.setAnchor(0.5, 0.5)
+        this.setCollisionSize(26, 48);
+        this.setCollisionOffset(0, 6);
+
     },
     update: function () {
         if (this.motionState === "moving") {
@@ -110,6 +107,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.scene.bind('rightpressed', this, this.shootLaser);
 
         this.scene.camera.setFollowee(this);
+        window.player = this;
     },
     update: function () {
         var cd = "";
@@ -201,7 +199,7 @@ var Rifle = DODO.Textured.extend({
         this.addAnimation("idle_down", [18], 1);
         this.addAnimation("idle_left", [9], 1);
         this.addAnimation("idle_right", [27], 1);
-        
+
         this.addAnimation("moving_up", _.range(1, 9), this.animSpeed);
         this.addAnimation("moving_down", _.range(19, 27), this.animSpeed);
         this.addAnimation("moving_left", _.range(10, 18), this.animSpeed);
@@ -234,10 +232,6 @@ var Bullet = DODO.Kinematic.extend({
     frameWidth: 32,
     frameHeight: 32,
     collisionResponse: "sensor",
-    collisionWidth: 12,
-    collisionHeight: 10,
-    collisionOffsetX: 10,
-    collisionOffsetY: 11,
     lifeTime: 4,
     lifeTimer: 0,
     init: function (parent, x, y, props) {
@@ -250,6 +244,8 @@ var Bullet = DODO.Kinematic.extend({
         sound.volume(0.5);
         sound.play();
         this.setAnchor(0, 0.5);
+        this.setCollisionSize(12, 10);
+        this.setCollisionOffset(10, 0);
     },
     update: function () {
         if (this.outOfBounds) {
@@ -340,10 +336,12 @@ var LaserTip = DODO.Kinematic.extend({
     collisionHeight: 8,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
+        this.setCollisionSize(8, 8);
     },
     update: function () {
         this.position.x = this.laser.tip.x;
         this.position.y = this.laser.tip.y;
+
         if (!this.collided) {
             if (this.fire) {
                 this.fire.destroy();
@@ -351,6 +349,7 @@ var LaserTip = DODO.Kinematic.extend({
             }
             this.timer = null;
         }
+        this.collided = false;
 
         this.synchCollisionPolygon();
         this._super();
@@ -359,24 +358,23 @@ var LaserTip = DODO.Kinematic.extend({
         window.console.log("collide");
         this._super(other, response);
 
-        if (other.collisionResponse === "static") {
-            if (!this.timer) {
-                this.timer = 1;
-            }
-            else {
-                this.timer -= DODO.game.dt;
-            }
-            if (this.timer < 0) {
-                new ExplosionSkorpio(this.scene.findLayerByName("Effects"),
-                        other.getCenterX(), other.getCenterY());
-                other.destroy();
-                this.timer = null;
-            }
-            if (!this.fire) {
-                this.fire = new LaserFire(this.scene.findLayerByName("Effects"),
-                        this.position.x, this.position.y);
-                this.fire.laserTip = this;
-            }
+        this.collided = true;
+        if (!this.timer) {
+            this.timer = 1;
+        }
+        else {
+            this.timer -= DODO.game.dt;
+        }
+        if (this.timer < 0) {
+            new ExplosionSkorpio(this.scene.findLayerByName("Effects"),
+                    other.getCenterX(), other.getCenterY());
+            other.destroy();
+            this.timer = null;
+        }
+        if (!this.fire) {
+            this.fire = new LaserFire(this.scene.findLayerByName("Effects"),
+                    this.position.x, this.position.y);
+            this.fire.laserTip = this;
         }
     }
 });
@@ -423,13 +421,12 @@ var ExplosionSkorpio = DODO.Textured.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        this.addAnimation("explode", _.range(0, 17), 0.2);
+        var anim = this.addAnimation("explode", _.range(0, 17), 0.2);
         this.setAnimation("explode");
-        this.animations["explode"].loop = false;
-        var that = this;
-        this.animations["explode"].onComplete = function () {
-            that.destroy();
-        };
+        anim.loop = false;
+        anim.onComplete = function () {
+            this.destroy();
+        }.bind(this);
         this.sound = DODO.getAsset('explosion.mp3');
         this.sound.volume(0.4);
         this.sound.play();

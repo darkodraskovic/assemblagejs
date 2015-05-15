@@ -19,12 +19,12 @@ var Anime = DODO.Kinematic.extend({
         var animationSpeed = 0.25;
         this.addAnimation("idle", [0], 0);
         this.addAnimation("walking", _.range(10, 20), animationSpeed);
-        this.addAnimation("jumping", _.range(25, 30), animationSpeed);
-        this.animations["jumping"].loop = false;
-        this.addAnimation("falling", _.range(25, 30), animationSpeed);
-        this.animations["falling"].loop = false;
-        this.addAnimation("crouching", _.range(30, 36), animationSpeed * 2);
-        this.animations["crouching"].loop = false;
+        var anim = this.addAnimation("jumping", _.range(25, 30), animationSpeed);
+        anim.loop = false;
+        anim = this.addAnimation("falling", _.range(25, 30), animationSpeed);
+        anim.loop = false;
+        anim = this.addAnimation("crouching", _.range(30, 36), animationSpeed * 2);
+        anim.loop = false;
 	//        this.animations["crouching"].onComplete = this.onCrouchingComplete.bind(this);
 	this.setAnchor(0.5, 1);
 	this.setCollisionSize(28, 68);

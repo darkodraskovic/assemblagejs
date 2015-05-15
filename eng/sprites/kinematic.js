@@ -78,7 +78,6 @@ DODO.Kinematic = DODO.Colliding.extend({
         this.synchCollisionPolygon();
 
         // Reset collision vars
-        this.collided = false;
         this.standing = false;
         this._collisionNormal.x = this._collisionNormal.y = 0;
         this.slopeNormal.x = 0;
@@ -86,14 +85,14 @@ DODO.Kinematic = DODO.Colliding.extend({
 
         // Process COLLISION
         if (this.collides) {
-            this.processSpriteCollisions();
+            this._processSpriteCollisions();
             if (this.collisionResponse !== "sensor")
-                this.processTileCollisions();
+                this._processTileCollisions();
         }
 
         this._super();
     },
-    processTileCollisions: function () {
+    _processTileCollisions: function () {
         if (this.gravitySet) {
             this.ceiling = null;
             this.wall = null;
@@ -146,7 +145,6 @@ DODO.Kinematic = DODO.Colliding.extend({
         this.collisionTiles.push(other);
         if (!this.response.overlap)
             return;
-        this.collided = true;
         this.position.x -= response.overlapV.x;
         this.position.y -= response.overlapV.y;
         this.synchCollisionPolygon();
@@ -197,7 +195,15 @@ DODO.Kinematic = DODO.Colliding.extend({
             this.velocity[orientation] = 0;
         }
     },
-    processSpriteCollisions: function () {
+    _processStanding: function (overlapN) {
+        if (overlapN.dot(this.gravityN) > 0) {
+            this.slopeNormal.copy(overlapN);
+            if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
+                this.standing = true;
+            }
+        }
+    },
+    _processSpriteCollisions: function () {
         var entities = this.scene.sprites;
         for (var i = 0, len = entities.length; i < len; i++) {
             var other = entities[i];
@@ -218,9 +224,6 @@ DODO.Kinematic = DODO.Colliding.extend({
     collideWithStatic: function (other, response) {
         if (!response.overlap)
             return;
-
-        this.collided = true;
-
         if (this.collisionResponse === "sensor") {
             return;
         }
@@ -245,9 +248,6 @@ DODO.Kinematic = DODO.Colliding.extend({
     collideWithKinematic: function (other, response) {
         if (!response.overlap)
             return;
-
-        this.collided = true;
-
         if (this.collisionResponse === "sensor" || other.collisionResponse === "sensor" || other.collisionResponse === "lite")
             return;
 
@@ -312,14 +312,6 @@ DODO.Kinematic = DODO.Colliding.extend({
                 }
             }
             this._processStanding(collisionNormal);
-        }
-    },
-    _processStanding: function (overlapN) {
-        if (overlapN.dot(this.gravityN) > 0) {
-            this.slopeNormal.copy(overlapN);
-            if (overlapN[this.gH] > -this.slopeOffset && overlapN[this.gH] < this.slopeOffset) {
-                this.standing = true;
-            }
         }
     }
 });

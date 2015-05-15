@@ -6,7 +6,8 @@ DODO.Colliding = DODO.Textured.extend({
         this._super(parent, x, y, props);
 
         this.response = new SAT.Response();
-	this.collisionPolygon = this.collisionPolygon || new DODO.Box(new SAT.Vector(0, 0), this.width, this.height);
+	this.collisionPolygon = this.polygon || new DODO.Box(new SAT.Vector(0, 0), this.width, this.height);
+	delete this.polygon;
 	this.drawCollisionPolygon && this.drawCollision();
 	//        if (this.getMouseReactivity())
 	//            this.sprite.hitArea = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon, false);
@@ -14,6 +15,8 @@ DODO.Colliding = DODO.Textured.extend({
     },
     setCollisionSize: function(w, h) {
 	var colPol = this.collisionPolygon;
+        if (w * colPol.scale.x === this.aabbWidth() && h * colPol.scale.x === this.aabbHeight())
+            return;
 	var prevScaleX = colPol.scale.x;
 	var prevScaleY = colPol.scale.y;
 	var relX = (w / this.aabbWidth()) * prevScaleX;
@@ -23,6 +26,7 @@ DODO.Colliding = DODO.Textured.extend({
 	colPol.scale.y = prevScaleY;
 	if (this.debugGraphics) {
 	    colPol.setScale(1, 1);
+	    this.debugGraphics.scale.set(1, 1);
 	    this.drawCollision();
 	    this.debugGraphics.scale.set(prevScaleX, prevScaleY);
 	    colPol.setScale(prevScaleX, prevScaleY);
@@ -30,8 +34,9 @@ DODO.Colliding = DODO.Textured.extend({
 	}
     },
     setCollisionOffset: function (x, y) {
-	this.collisionPolygon.setOffset(new SAT.Vector(x, y));
-        this.collisionPolygon.calcBounds();
+        var colPol = this.collisionPolygon;
+	colPol.setOffset(new SAT.Vector(x * colPol.scale.x, y * colPol.scale.y));
+        colPol.calcBounds();
 	if (this.debugGraphics) {
 	    this.debugGraphics.position.set(x, y);
 	}

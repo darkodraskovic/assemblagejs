@@ -112,6 +112,6 @@ var Brick = DODO.Colliding.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setAnimation("all");
-        this.currentAnimation.gotoAndStop(_.random(0, 1));
+        this.getAnimation().gotoAndStop(_.random(0, 1));
     }
 });

@@ -192,6 +192,8 @@ DODO.Scene = DODO.Inputted.extend({
         this.container.setChildIndex(layer, 0);
     },
     sortLayerByAxis: function(layer, axis) {
+	if (_.isString(layer)) layer = this.findLayerByName(layer);
+	if (!(layer instanceof DODO.Layer)) return;
         layer.children = _.sortBy(layer.children, function(child) {
             return child.position[axis];
         });
