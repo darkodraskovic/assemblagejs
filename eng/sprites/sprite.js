@@ -125,7 +125,7 @@ DODO.Sprite = DODO.Inputted.extend({
                 this.flipY();
         }
     },
-    // Z ORDER & LAYERS
+    // LAYER
     getLayer: function () {
         var parent = this.sprite.parent;
         while (parent && !(parent instanceof DODO.Layer)) {
@@ -151,6 +151,7 @@ DODO.Sprite = DODO.Inputted.extend({
             return layer;
         }
     },
+    // Z ORDER
     getZ: function () {
         return this.sprite.parent.getChildIndex(this.sprite);
     },
@@ -174,10 +175,9 @@ DODO.Sprite = DODO.Inputted.extend({
         var layer = sprite.getLayer();
         if (layer) {
             this.setLayer(layer);
-            if (position === "back" || position === "front") {
+            if (position) {
                 layer.addChildAt(this.sprite, layer.getChildIndex(sprite.sprite));
                 if (position === "front") {
-                    // Swaps the position of 2 PIXI DO within this PIXI DOC.
                     layer.swapChildren(this.sprite, sprite.sprite);
                 }
             }
