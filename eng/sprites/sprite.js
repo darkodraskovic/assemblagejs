@@ -9,13 +9,9 @@ DODO.Sprite = DODO.Inputted.extend({
         this.scene = parent.scene;
     },
     initializeSprite: function (parent, x, y) {
-        // Container stores PIXI.Sprite-s belonging to children of this sprite.
-        this.spritesContainer = this.sprite.addChild(new PIXI.Container());
         this.sprite._dodoSprite = this;
-
         parent instanceof DODO.Layer ? parent.addChild(this.sprite) : parent.addSprite(this);
         this.position.set(x, y);
-        
         this.scene.spritesToCreate.push(this);
     },
     // Visual BOUNDS
@@ -61,18 +57,21 @@ DODO.Sprite = DODO.Inputted.extend({
     // Sprite HIERARCHY
     // The first child of this PIXI sprite is the parent of PIXI sprites belonging to other DODO sprites.
     addSprite: function (sprite) {
-        this.spritesContainer.addChild(sprite.sprite);
+        this.sprite.addChild(sprite.sprite);
     },
     removeSprite: function (sprite) {
-        this.spritesContainer.removeChild(sprite.sprite);
+        this.sprite.removeChild(sprite.sprite);
     },
     getChildrenSprites: function () {
-        return _.map(this.spritesContainer.children, function (child) {
-            return child._dodoSprite;
+        var children = [];
+        _.each(this.sprite.children, function (child) {
+            if (!_.isUndefined(child._dodoSprite))
+                children.push(child._dodoSprite);
         });
+        return children;
     },
     getParentSprite: function () {
-        return this.sprite.parent.parent._dodoSprite;
+        return this.sprite.parent._dodoSprite;
     },
     // Sprite POINTS
     setPoint: function (name, x, y) {

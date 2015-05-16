@@ -37,8 +37,6 @@ DODO.Textured = DODO.Sprite.extend({
                 this.textures.push(new PIXI.Texture(texture, rectangle));
             }
         }
-        // Container stores MovieClip objects.
-        this.animationsContainer = this.sprite.addChild(new PIXI.Container());
         this.addAnimation("all", _.range(0, this.textures.length), 0);
         this.setAnimation(this.addAnimation("default", [0], 0));
     },
@@ -53,37 +51,38 @@ DODO.Textured = DODO.Sprite.extend({
         animation.visible = false;
         animation.animationSpeed = speed || 0;
         animation.name = name;
-        this.animationsContainer.addChild(animation);
+        this.sprite.addChild(animation);
         return animation;
     },
-    setAnimation: function (anim, frame, speed) {
-        if (_.isString(anim))
-            anim = this.findAnimationByName(anim);
-        if (!anim)
+    setAnimation: function (animation, frame, speed) {
+        if (_.isString(animation))
+            animation = this.findAnimationByName(animation);
+        if (!animation)
             return;
         var currentAnim = this.getAnimation();
-        if (currentAnim === anim)
+        if (currentAnim === animation)
             return;
         if (currentAnim) {
             currentAnim.stop();
             currentAnim.visible = false;
         }
-        anim.animationSpeed = _.isNumber(speed) ? speed : anim.animationSpeed;
-        anim.visible = true;
-        anim.gotoAndPlay(frame || 0);
+        animation.animationSpeed = _.isNumber(speed) ? speed : animation.animationSpeed;
+        animation.visible = true;
+        animation.gotoAndPlay(frame || 0);
     },
     findAnimationByName: function (name) {
-        var animContainerChildren = this.animationsContainer.children;
-        for (var i = 0; i < animContainerChildren.length; i++) {
-            if (animContainerChildren[i].name === name)
-                return animContainerChildren[i];
+        var animations = this.sprite.children;
+        for (var i = 0; i < animations.length; i++) {
+            if (animations[i].name === name)
+                return animations[i];
         }
     },
     getAnimation: function () {
-        var animContChildren = this.animationsContainer.children;
-        for (var i = 0; i < animContChildren.length; i++)
-            if (animContChildren[i].visible)
-                return animContChildren[i];
+        var animations = this.sprite.children;
+        for (var i = 0; i < animations.length; i++) {
+            if (animations[i].visible && animations[i] instanceof PIXI.extras.MovieClip)
+                return animations[i];
+        }
     },
     // ORIGIN
     setAnchor: function (x, y) {
@@ -93,11 +92,12 @@ DODO.Textured = DODO.Sprite.extend({
         this.anchor.x = x;
         this.anchor.y = y;
 
-        if (this.animationsContainer)
-            _.each(this.animationsContainer.children, function (animation) {
+        _.each(this.sprite.children, function (animation) {
+            if (animation instanceof PIXI.extras.MovieClip) {
                 animation.anchor.x = x;
                 animation.anchor.y = y;
-            });
+            }
+        });
 
         _.each(this.getChildrenSprites(), function (sprite) {
             sprite.position.x -= deltaX;
@@ -141,7 +141,6 @@ DODO.Textured = DODO.Sprite.extend({
                 }
             }
         }
-
         this._super();
     }
 });

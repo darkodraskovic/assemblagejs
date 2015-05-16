@@ -7,7 +7,7 @@ DODO.Graphics = DODO.Sprite.extend({
             DODO.drawPolygon(this.sprite, polygon, props && props.style);
 	    delete this.polygon, delete this.style;
         }
-        this.initializeSprite(parent, x, y);
+        this.initializeSprite(parent, x || 0, y || 0);
     }
 });
 
@@ -16,6 +16,6 @@ DODO.Text = DODO.Sprite.extend({
         this._super(parent, x, y, props);
         this.sprite = new PIXI.Text(props.text || "Text", props && props.style);
 	delete this.style;
-        this.initializeSprite(parent, x, y);
+        this.initializeSprite(parent, x || 0, y || 0);
     }
 });
