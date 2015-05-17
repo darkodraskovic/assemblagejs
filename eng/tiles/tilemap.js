@@ -22,7 +22,7 @@ DODO.Tilemap = function (layer, img, tileW, tileH, collides, spacing, orientatio
 
     // For tile sprite creation.
     this.frameRectangle = new PIXI.Rectangle(0, 0, this.tileW, this.tileH + this.spacing);
-}
+};
 
 DODO.Tilemap.prototype = Object.create(PIXI.Container.prototype);
 DODO.Tilemap.prototype.constructor = DODO.Tilemap;

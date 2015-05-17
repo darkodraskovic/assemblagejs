@@ -1,5 +1,21 @@
 var DODO = {};
 
+//Function.prototype.extends = function (parentClassOrObject) {
+//    if (typeof parentClassOrObject.constructor === 'function') {
+//        //Normal Inheritance 
+//        this.prototype = new parentClassOrObject();
+//        this.prototype.constructor = this;
+//        this.prototype.parent = parentClassOrObject.prototype;
+//    }
+//    else {
+//        //Pure Virtual Inheritance 
+//        this.prototype = parentClassOrObject;
+//        this.prototype.constructor = this;
+//        this.prototype.parent = parentClassOrObject;
+//    }
+//    return this;
+//};
+
 (function () {
     'use strict';
     var initializing = false, fnTest = /xyz/.test(function () {
@@ -95,8 +111,8 @@ var DODO = {};
 })();
 
 // JS EXTENSIONS
-Number.prototype.map = function(istart, istop, ostart, ostop) {
-	return ostart + (ostop - ostart) * ((this - istart) / (istop - istart));
+Number.prototype.map = function (istart, istop, ostart, ostop) {
+    return ostart + (ostop - ostart) * ((this - istart) / (istop - istart));
 };
 
 /** Converts numeric degrees to radians */

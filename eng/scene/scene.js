@@ -15,18 +15,14 @@ DODO.Scene = DODO.Inputted.extend({
     scale: 1,
     scaleSpeed: 2,
     init: function(name, cameraOptions, map) {
-        this.game = DODO.game;
         this.name = name;
         this.map = map;
 
-//        this.container = new PIXI.DisplayObjectContainer();
         this.container = new PIXI.Container();
-        // this.sprite is referenced by the DODO.Inputed
-        this.sprite = this.container;
-        this.initMouseReactivity();
-        this.setMouseReactivity(true);
+        this.initMouseReactivity("container");
+        this.setMouseReactivity(true, "container");
         // WARNING: Hit area culls objects outside scene w & h, eg. objects on negative coords.
-        this.container.hitArea = new PIXI.Rectangle(0, 0, this.game.renderer.width, this.game.renderer.height);
+        this.container.hitArea = new PIXI.Rectangle(0, 0, DODO.game.renderer.width, DODO.game.renderer.height);
 
         // Layers
         this.layers = this.container.children;
@@ -34,7 +30,6 @@ DODO.Scene = DODO.Inputted.extend({
         this.tilemaps = [];
         // Sprites & their sounds
         this.sprites = [];
-        this.sounds = [];
         // Used for sprite management.
         this.spritesToCreate = [];
         this.spritesToDestroy = [];
@@ -42,23 +37,23 @@ DODO.Scene = DODO.Inputted.extend({
         // Used to calculate the scene position of sprites.
         this.origin = new PIXI.Point(0, 0);
         // The scene size defaults to screen witdth x height.
-        this.setWidth(this.game.renderer.width);
-        this.setHeight(this.game.renderer.height);
+        this.setWidth(DODO.game.renderer.width);
+        this.setHeight(DODO.game.renderer.height);
 
         this._mousePosition = {x: 0, y: 0};
         DODO.input.bind('forward', this, this.setScale.bind(this, 'forward'));
         DODO.input.bind('backward', this, this.setScale.bind(this, 'backward'));
-        this.camera = new DODO.Camera(this, this.game.renderer.width, this.game.renderer.height, cameraOptions);
+        this.camera = new DODO.Camera(this, DODO.game.renderer.width, DODO.game.renderer.height, cameraOptions);
 
         if (map) {
             DODO.createTiledMap(DODO.getAsset(this.map), this);
         }
 
-        this.game.stage.addChild(this.container);
+        DODO.game.stage.addChild(this.container);
         this.play();
         this.update();
         this.trigger('created');
-        this.game.sceneManager._scenesToCreate.push(this);
+        DODO.game.sceneManager._scenesToCreate.push(this);
     },
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
@@ -85,7 +80,7 @@ DODO.Scene = DODO.Inputted.extend({
         layer.destroy();
     },
     destroy: function() {                
-        this.game.sceneManager._scenesToDestroy.push(this);
+        DODO.game.sceneManager._scenesToDestroy.push(this);
     },
     clear: function () {
         _.each(this.sprites, function (sprite) {

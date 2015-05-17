@@ -26,13 +26,11 @@ var Anime = DODO.Kinematic.extend({
         this.addAnimation("moving_left", _.range(10, 18), this.animSpeed);
         this.addAnimation("moving_right", _.range(28, 36), this.animSpeed);
 
-        this.addAnimation("death", _.range(36, 42), this.animSpeed);
-        this.animations["death"].loop = false;
-
-        var that = this;
-        this.animations["death"].onComplete = function() {
-            that.destroy();
-        };
+        var anim = this.addAnimation("death", _.range(36, 42), this.animSpeed);
+        anim.loop = false;
+        anim.onComplete = function() {
+            this.destroy();
+        }.bind(this);
 
     },
     update: function() {
@@ -124,7 +122,7 @@ var Player = Anime.extend({
         } else
             this.motionState = "idle";
 
-        var rot = (DODO.angleTo(this.getPosition(), this.scene.getMousePosition())).toDeg();
+        var rot = (DODO.angleTo(this.position, this.scene.getMousePosition())).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
