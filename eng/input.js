@@ -1,38 +1,35 @@
 DODO.Inputted = DODO.Evented.extend({
-    initMouseReactivity: function (inputted) {
-        inputted = inputted || "sprite";
-        this[inputted].mouseover = function (interactionData) {
+    initMouseReactivity: function () {
+        this.container.mouseover = function (interactionData) {
             this.mouseover = true;
             this.trigger('mousein', interactionData);
         }.bind(this);
-        this[inputted].mouseout = function (interactionData) {
+        this.container.mouseout = function (interactionData) {
             this.mouseover = false;
             this.trigger('mouseout', interactionData);
         }.bind(this);
-        this[inputted].mousedown = function (interactionData) {
+        this.container.mousedown = function (interactionData) {
             this.leftdown = true;
             this.trigger('leftpressed', interactionData);
         }.bind(this);
-        this[inputted].mouseup = this[inputted].mouseupoutside = function (interactionData) {
+        this.container.mouseup = this.container.mouseupoutside = function (interactionData) {
             this.leftdown = false;
             this.trigger('leftreleased', interactionData);
         }.bind(this);
-        this[inputted].rightdown = function (interactionData) {
+        this.container.rightdown = function (interactionData) {
             this.rightdown = true;
             this.trigger('rightpressed', interactionData);
         }.bind(this);
-        this[inputted].rightup = this[inputted].rightupoutside = function (interactionData) {
+        this.container.rightup = this.container.rightupoutside = function (interactionData) {
             this.rightdown = false;
             this.trigger('rightreleased', interactionData);
         }.bind(this);
     },
-    setMouseReactivity: function (reactive, inputted) {
-        inputted = inputted || "sprite";
-        this[inputted].interactive = reactive;
+    setMouseReactivity: function (reactive) {
+        this.container.interactive = reactive;
     },
-    getMouseReactivity: function (inputted) {
-        inputted = inputted || "sprite";
-        return this[inputted].interactive;
+    getMouseReactivity: function () {
+        return this.container.interactive;
     },
 });
 

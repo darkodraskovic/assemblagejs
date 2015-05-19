@@ -6,7 +6,7 @@ DODO.Tile = function (gid, x, y, tilemap) {
     frame.x = ((gid - 1) % tilemap.imgCols) * (tilemap.tileW + tilemap.spacing);
     frame.y = Math.floor((gid - 1) / tilemap.imgCols) * (tilemap.tileH + tilemap.spacing);
     PIXI.Sprite.call(this, new PIXI.Texture(tilemap.baseTexture, frame));
-    tilemap.addChild(this);
+    tilemap.container.addChild(this);
     
     // POSITION
     if (tilemap.orientation === "isometric") {

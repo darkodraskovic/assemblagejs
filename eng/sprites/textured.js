@@ -7,13 +7,18 @@ DODO.Textured = DODO.Sprite.extend({
         var texture = DODO.getAsset(this.spriteSheet);
         if (texture) {
             if (!_.isNumber(this.frameWidth) || !_.isNumber(this.frameHeight))
-                this.sprite = new PIXI.Sprite(texture);
+                this.container = new PIXI.Sprite(texture);
             else {
-                this.sprite = this.createTransparentSprite(this.frameWidth, this.frameHeight);
+                this.container = this.createTransparentSprite(this.frameWidth, this.frameHeight);
                 this.initAnimation(texture);
             }
         }
-        this.anchor = this.sprite.anchor;
+        else {
+            this.container = this.createTransparentSprite(((props && props.polygon) && props.polygon.w) || 0,
+                    ((props && props.polygon) && props.polygon.h) || 0);
+        }
+
+        this.anchor = this.container.anchor;
         this.initializeSprite(parent, x, y);
     },
     createTransparentSprite: function (w, h) {
@@ -46,12 +51,12 @@ DODO.Textured = DODO.Sprite.extend({
             textures[i] = this.textures[textures[i]];
 
         var animation = new PIXI.extras.MovieClip(textures);
-        animation.anchor.x = this.sprite.anchor.x;
-        animation.anchor.y = this.sprite.anchor.y;
+        animation.anchor.x = this.container.anchor.x;
+        animation.anchor.y = this.container.anchor.y;
         animation.visible = false;
         animation.animationSpeed = speed || 0;
         animation.name = name;
-        this.sprite.addChild(animation);
+        this.container.addChild(animation);
         return animation;
     },
     setAnimation: function (animation, frame, speed) {
@@ -71,14 +76,14 @@ DODO.Textured = DODO.Sprite.extend({
         animation.gotoAndPlay(frame || 0);
     },
     findAnimationByName: function (name) {
-        var animations = this.sprite.children;
+        var animations = this.container.children;
         for (var i = 0; i < animations.length; i++) {
             if (animations[i].name === name)
                 return animations[i];
         }
     },
     getAnimation: function () {
-        var animations = this.sprite.children;
+        var animations = this.container.children;
         for (var i = 0; i < animations.length; i++) {
             if (animations[i].visible && animations[i] instanceof PIXI.extras.MovieClip)
                 return animations[i];
@@ -92,7 +97,7 @@ DODO.Textured = DODO.Sprite.extend({
         this.anchor.x = x;
         this.anchor.y = y;
 
-        _.each(this.sprite.children, function (animation) {
+        _.each(this.container.children, function (animation) {
             if (animation instanceof PIXI.extras.MovieClip) {
                 animation.anchor.x = x;
                 animation.anchor.y = y;
@@ -116,10 +121,10 @@ DODO.Textured = DODO.Sprite.extend({
     },
     // LIFECYCLE & UPDATE
     update: function () {
-        if (!this.container) {
+        if (!this.getParentSprite()) {
             if (this.bounded) {
-                this.setPosition(Math.max(0, Math.min(this.position.x, this.scene.width)),
-                        Math.max(0, Math.min(this.position.y, this.scene.height)));
+                this.position.x = Math.max(0, Math.min(this.position.x, this.scene.getWidth()));
+                this.position.y = Math.max(0, Math.min(this.position.y, this.scene.getHeight()));
             } else if (this.wrap) {
                 if (this.position.x < 0) {
                     this.position.x = this.scene.width;

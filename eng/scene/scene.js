@@ -19,8 +19,8 @@ DODO.Scene = DODO.Inputted.extend({
         this.map = map;
 
         this.container = new PIXI.Container();
-        this.initMouseReactivity("container");
-        this.setMouseReactivity(true, "container");
+        this.initMouseReactivity();
+        this.setMouseReactivity(true);
         // WARNING: Hit area culls objects outside scene w & h, eg. objects on negative coords.
         this.container.hitArea = new PIXI.Rectangle(0, 0, DODO.game.renderer.width, DODO.game.renderer.height);
 

@@ -91,7 +91,7 @@
                  "gid":1761,
                  "height":0,
                  "id":1,
-                 "name":"",
+                 "name":"Player",
                  "properties":
                     {
                      "collisionMask":"\"Player\""

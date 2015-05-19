@@ -88,7 +88,7 @@ var Laser = DODO.Textured.extend({
     spriteSheet: "Farer/laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.sprite.alpha = 0.4;
+        this.container.alpha = 0.4;
         this.setAnchor(0, 0.5);
         this.sound = DODO.getAsset('laser-beam.mp3');
         this.sound.loop(true);
@@ -119,7 +119,7 @@ var Laser = DODO.Textured.extend({
     toggleFire: function (state) {
         if (state === "on") {
             this.on = true;
-            this.sprite.alpha = 0.75;
+            this.container.alpha = 0.75;
             this.width = DODO.distanceTo(this.getScenePosition(), this.scene.getMousePosition());
 
             this.sound.play(function (id) {
@@ -129,7 +129,7 @@ var Laser = DODO.Textured.extend({
         }
         if (state === "off") {
             this.on = false;
-            this.sprite.alpha = 0.4;
+            this.container.alpha = 0.4;
             this.width = this.origW;
 
             this.sound.fade(0.75, 0, 450, null, this.soundId);
@@ -150,7 +150,7 @@ var Bullet = DODO.Kinematic.extend({
         sound.volume(0.75);
         sound.play();
         this.setAnchor(0, 0.5);
-        this.sprite.alpha = 0.75;
+        this.container.alpha = 0.75;
     },
     update: function () {
         if (this.outOfBounds) {

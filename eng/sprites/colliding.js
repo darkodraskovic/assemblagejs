@@ -3,8 +3,6 @@ DODO.Colliding = DODO.Textured.extend({
     drawCollisionPolygon: true,
     collisionResponse: "static",
     init: function (parent, x, y, props) {
-        if (!this.spriteSheet && props.polygon)
-            this.sprite = this.createTransparentSprite(props.polygon.w, props.polygon.h);
         this._super(parent, x, y, props);
 
         this.response = new SAT.Response();
@@ -12,7 +10,7 @@ DODO.Colliding = DODO.Textured.extend({
         delete this.polygon;
         this.drawCollisionPolygon && this.drawCollision();
         //        if (this.getMouseReactivity())
-        //            this.sprite.hitArea = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon, false);
+        //            this.container.hitArea = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon, false);
         this.synchCollisionPolygon();
     },
     setCollisionSize: function (w, h) {
@@ -40,14 +38,14 @@ DODO.Colliding = DODO.Textured.extend({
         colPol.setOffset(new SAT.Vector(x * colPol.scale.x, y * colPol.scale.y));
         colPol.calcBounds();
         if (this.debugGraphics) {
-            this.debugGraphics.position.set(x - this.width * this.anchor.x,
-                    - this.height * this.anchor.y);
+            // FIX ME
+            this.debugGraphics.position.set(x, y);
         }
     },
     drawCollision: function () {
         this.debugGraphics = this.debugGraphics || new DODO.Graphics(this, 0, 0);
         this.collisionPolygon.PIXIPolygon = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon);
-        DODO.drawPolygon(this.debugGraphics.sprite, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
+        DODO.drawPolygon(this.debugGraphics.container, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
     },
     collidesWithEntity: function (other) {
         this.response.clear();

@@ -132,9 +132,9 @@ var ProgressBarInner = DODO.Graphics.extend({
     percent: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.sprite.beginFill(this.color, alpha);
-        this.sprite.drawRect(0, 0, this.frameWidth, this.frameHeight);
-        this.sprite.endFill();
+        this.container.beginFill(this.color, alpha);
+        this.container.drawRect(0, 0, this.frameWidth, this.frameHeight);
+        this.container.endFill();
         this.progressBarOuter = new ProgressBarOuter(this.scene.findLayerByName("Entities"), this.position.x, this.position.y,
                 {color: DODO.Colors.darkslategray, owner: this.owner});
         this.pinTo = new DODO.addons.PinTo(this, {parent: this.progressBarOuter, name: "inner", offsetX: 2, offsetY: 2});
@@ -155,9 +155,9 @@ var ProgressBarOuter = DODO.Graphics.extend({
     graphics: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.sprite.lineStyle(2, this.color, alpha);
-        this.sprite.drawRect(0, 0, this.frameWidth, this.frameHeight);
-        this.sprite.endFill();
+        this.container.lineStyle(2, this.color, alpha);
+        this.container.drawRect(0, 0, this.frameWidth, this.frameHeight);
+        this.container.endFill();
     },
     update: function () {
         var mousePosition = this.scene.getMousePosition();

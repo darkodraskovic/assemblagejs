@@ -278,7 +278,7 @@ var LaserBeam = DODO.Textured.extend({
     bounded: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.sprite.alpha = 0.75;
+        this.container.alpha = 0.75;
         this.setAnimation("all", 18, 0);
         this.setAnchor(0, 0.5);
 
@@ -290,8 +290,7 @@ var LaserBeam = DODO.Textured.extend({
         this.tip = {x: this.position.x, y: this.position.y};
         this.laserTip = new LaserTip(this.scene.findLayerByName("Effects"),
                 this.position.x + Math.cos(this.rotation) * this.width,
-                this.position.y + Math.sin(this.rotation) * this.width,
-                {collisionWidth: 4, collisionHeight: 4});
+                this.position.y + Math.sin(this.rotation) * this.width);
         this.laserTip.laser = this;
         this.sound = DODO.getAsset('laser-beam.mp3').play();
         this.sound.volume(0.5);
@@ -332,8 +331,6 @@ var LaserBeam = DODO.Textured.extend({
 var LaserTip = DODO.Kinematic.extend({
     bounded: false,
     collisionResponse: "sensor",
-    collisionWidth: 8,
-    collisionHeight: 8,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.setCollisionSize(8, 8);
@@ -395,7 +392,7 @@ var LaserFire = DODO.Textured.extend({
 
 //        var blur = new PIXI.BlurFilter();
 //        blur.blurX = blur.blurY = 1;
-//        this.sprite.filters = [blur];
+//        this.container.filters = [blur];
         this.setZ("top");
         this.setAnchor(0.5, 0.5);
     },
