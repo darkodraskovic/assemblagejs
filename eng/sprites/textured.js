@@ -123,8 +123,8 @@ DODO.Textured = DODO.Sprite.extend({
     update: function () {
         if (!this.getParentSprite()) {
             if (this.bounded) {
-                this.position.x = Math.max(0, Math.min(this.position.x, this.scene.getWidth()));
-                this.position.y = Math.max(0, Math.min(this.position.y, this.scene.getHeight()));
+                this.position.x = Math.max(0, Math.min(this.position.x, this.scene.width));
+                this.position.y = Math.max(0, Math.min(this.position.y, this.scene.height));
             } else if (this.wrap) {
                 if (this.position.x < 0) {
                     this.position.x = this.scene.width;

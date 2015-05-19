@@ -363,6 +363,7 @@ var LaserTip = DODO.Kinematic.extend({
             this.timer -= DODO.game.dt;
         }
         if (this.timer < 0) {
+            window.console.log(other.getCenterX());
             new ExplosionSkorpio(this.scene.findLayerByName("Effects"),
                     other.getCenterX(), other.getCenterY());
             other.destroy();

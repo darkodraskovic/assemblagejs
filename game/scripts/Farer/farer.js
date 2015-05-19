@@ -208,8 +208,8 @@ var numRotors = 40;
 
 // PROCEDURES
 populateScene = function (scene) {
-    scene.setWidth(2048);
-    scene.setHeight(2048);
+    scene.width = 2048;
+    scene.height = 2048;
 
     var layer = new DODO.Layer(scene, "Starfield");
     layer.parallax = 10;

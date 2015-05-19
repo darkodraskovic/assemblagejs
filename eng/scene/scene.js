@@ -1,4 +1,4 @@
-DODO.Layer = function(scene, name) {
+DODO.Layer = function (scene, name) {
 //    PIXI.DisplayObjectContainer.call(this);
     PIXI.Container.call(this);
     this.scene = scene;
@@ -10,19 +10,17 @@ DODO.Layer.prototype = Object.create(PIXI.Container.prototype);
 DODO.Layer.prototype.constructor = DODO.Layer;
 
 DODO.Scene = DODO.Inputted.extend({
-    width: 0,
-    height: 0,
     scale: 1,
     scaleSpeed: 2,
-    init: function(name, cameraOptions, map) {
+    init: function (name, cameraOptions, map) {
         this.name = name;
         this.map = map;
 
         this.container = new PIXI.Container();
-        this.initMouseReactivity();
-        this.setMouseReactivity(true);
         // WARNING: Hit area culls objects outside scene w & h, eg. objects on negative coords.
         this.container.hitArea = new PIXI.Rectangle(0, 0, DODO.game.renderer.width, DODO.game.renderer.height);
+        this.initMouseReactivity();
+        this.setMouseReactivity(true);
 
         // Layers
         this.layers = this.container.children;
@@ -37,10 +35,9 @@ DODO.Scene = DODO.Inputted.extend({
         // Used to calculate the scene position of sprites.
         this.origin = new PIXI.Point(0, 0);
         // The scene size defaults to screen witdth x height.
-        this.setWidth(DODO.game.renderer.width);
-        this.setHeight(DODO.game.renderer.height);
+        this.width = DODO.game.renderer.width;
+        this.height = DODO.game.renderer.height;
 
-        this._mousePosition = {x: 0, y: 0};
         DODO.input.bind('forward', this, this.setScale.bind(this, 'forward'));
         DODO.input.bind('backward', this, this.setScale.bind(this, 'backward'));
         this.camera = new DODO.Camera(this, DODO.game.renderer.width, DODO.game.renderer.height, cameraOptions);
@@ -57,7 +54,7 @@ DODO.Scene = DODO.Inputted.extend({
     },
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
-    bakeLayer: function(layer) {
+    bakeLayer: function (layer) {
         var renderTexture = new PIXI.RenderTexture(DODO.game.renderer, this.width, this.height);
         // Create a sprite that uses the render texture.
         var sprite = new PIXI.Sprite(renderTexture);
@@ -72,14 +69,14 @@ DODO.Scene = DODO.Inputted.extend({
         bakedLayer.position.x = layer.position.x;
         bakedLayer.position.y = layer.position.y;
         bakedLayer.parallax = layer.parallax;
-        bakedLayer.baked = true;        
+        bakedLayer.baked = true;
         bakedLayer.addChild(sprite);
-        
+
         this.container.addChildAt(bakedLayer, this.container.getChildIndex(layer));
         this.container.removeChild(layer);
         layer.destroy();
     },
-    destroy: function() {                
+    destroy: function () {
         DODO.game.sceneManager._scenesToDestroy.push(this);
     },
     clear: function () {
@@ -89,20 +86,23 @@ DODO.Scene = DODO.Inputted.extend({
         _.each(this.layers, function (layer) {
             layer.destroy();
         });
+        _.each(this.tilemaps, function (tilemap) {
+            tilemap = null;
+        });
         this.trigger('destroyed');
         this.debind();
         this.container.parent.removeChild(this.container);
         this.container.destroy();
     },
     // START/STOP scene execution
-    play: function() {
+    play: function () {
         this.running = true;
     },
-    pause: function() {
+    pause: function () {
         this.running = false;
     },
     // Scene LOOP/UPDATE
-    update: function() {
+    update: function () {
         if (!this.running) {
             return;
         }
@@ -112,9 +112,9 @@ DODO.Scene = DODO.Inputted.extend({
         for (var i = 0, len = sprites.length; i < len; i++) {
             sprites[i].update();
         }
-        // Manage sprites
+        // Manage SPRITES
         for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
-            this.spritesToDestroy[i].clear();            
+            this.spritesToDestroy[i].clear();
             for (var index = sprites.indexOf(this.spritesToDestroy[i]); index < sprites.length - 1; index++) {
                 sprites[index] = sprites[index + 1];
             }
@@ -126,31 +126,22 @@ DODO.Scene = DODO.Inputted.extend({
         }
         this.spritesToCreate.length = 0;
 
-        // Set POSITION
-        this.camera.update();
-        this.setPosition(-this.camera.x, -this.camera.y);
-    },
-    // TRANSFORMATIONS && CAMERA
-    setPosition: function(x, y) {
-        this.container.position.x = x;
-        this.container.position.y = y;
-        // Parallax
+        // Camera & Scene POSITION
+        var camPosition = this.camera.update();
+        this.container.position.x = -camPosition.x * this.scale;
+        this.container.position.y = -camPosition.y * this.scale;
+        // Layer parallax
         for (var i = 0; i < this.layers.length; i++) {
             var layer = this.layers[i];
-            layer.position.x = x * (layer.parallax / 100 - 1);
-            layer.position.y = y * (layer.parallax / 100 - 1);
+            layer.position.x = -camPosition.x * (layer.parallax / 100 - 1);
+            layer.position.y = -camPosition.y * (layer.parallax / 100 - 1);
         }
-        // Transform the position from container's scaled local system  
-        // into stage's unscaled global system.        
-        this.container.position.x *= this.scale;
-        this.container.position.y *= this.scale;
-
         if (DODO.config.pixelRounding) {
             this.container.position.x = Math.round(this.container.position.x);
             this.container.position.y = Math.round(this.container.position.y);
         }
     },
-    setScale: function(scale) {
+    setScale: function (scale) {
         if (_.isString(scale))
             scale = this.scale +
                     (scale === 'forward' ? this.scaleSpeed * DODO.game.dt : -this.scaleSpeed * DODO.game.dt);
@@ -165,102 +156,102 @@ DODO.Scene = DODO.Inputted.extend({
             this.scale = scale;
         }
     },
-    setWidth: function(w) {
-        this.width = w;
-        this.container.hitArea.width = w;
-    },
-    setHeight: function(h) {
-        this.height = h;
-        this.container.hitArea.height = h;
-    },
-    getWidth: function() {
-        return this.width;
-    },
-    getHeight: function() {
-        return this.height;
-    },
     // Layer Z POSITION
-    toTopOfContainer: function(layer) {
+    toTopOfContainer: function (layer) {
         this.container.setChildIndex(layer, this.container.children.length - 1);
     },
-    toBottomOfContainer: function(layer) {
+    toBottomOfContainer: function (layer) {
         this.container.setChildIndex(layer, 0);
     },
-    sortLayerByAxis: function(layer, axis) {
-	if (_.isString(layer)) layer = this.findLayerByName(layer);
-	if (!(layer instanceof DODO.Layer)) return;
-        layer.children = _.sortBy(layer.children, function(child) {
+    sortLayerByAxis: function (layer, axis) {
+        if (_.isString(layer))
+            layer = this.findLayerByName(layer);
+        if (!(layer instanceof DODO.Layer))
+            return;
+        layer.children = _.sortBy(layer.children, function (child) {
             return child.position[axis];
         });
     },
-    // MOUSE POSITION
-    getMousePosition: function() {
-        var scenePosition = this._mousePosition;
-        var mouse = DODO.game.renderer.plugins.interaction.mouse.global;
-        scenePosition.x = mouse.x;
-        scenePosition.y = mouse.y;
-        scenePosition.x /= this.scale;
-        scenePosition.y /= this.scale;
-        scenePosition.x += this.camera.x;
-        scenePosition.y += this.camera.y;
-        return scenePosition;
+    getMousePosition: function () {
+        return DODO.game.renderer.plugins.interaction.mouse.getLocalPosition(this.container);
     },
     // FIND
     // Layer
-    findLayerByName: function(name) {
-        return _.find(this.layers, function(layer) {
+    findLayerByName: function (name) {
+        return _.find(this.layers, function (layer) {
             return layer.name === name;
         });
     },
-    findLayerByNumber: function(num) {
+    findLayerByNumber: function (num) {
         return this.container.getChildAt(num);
     },
-    findLayerSize: function(layer) {
+    findLayerSize: function (layer) {
         return layer.children.length;
     },
     // Sprite
-    findSpriteByName: function(name) {
-        return _.find(this.sprites, function(sprite) {
+    findSpriteByName: function (name) {
+        return _.find(this.sprites, function (sprite) {
             return sprite.name === name;
         });
     },
-    findSpritesByName: function(name) {
-        return _.filter(this.sprites, function(sprite) {
+    findSpritesByName: function (name) {
+        return _.filter(this.sprites, function (sprite) {
             return sprite.name === name;
         });
     },
-    findSpritesByProperty: function(prop) {
-        return _.filter(this.sprites, function(sprite) {
+    findSpritesByProperty: function (prop) {
+        return _.filter(this.sprites, function (sprite) {
             return typeof sprite[prop] !== "undefined";
         });
     },
-    findSpriteByPropertyValue: function(prop, value) {
-        return _.find(this.sprites, function(sprite) {
+    findSpriteByPropertyValue: function (prop, value) {
+        return _.find(this.sprites, function (sprite) {
             return sprite[prop] === value;
         });
     },
-    findSpritesByPropertyValue: function(prop, value) {
-        return _.filter(this.sprites, function(sprite) {
+    findSpritesByPropertyValue: function (prop, value) {
+        return _.filter(this.sprites, function (sprite) {
             return sprite[prop] === value;
         });
     },
-    findSpriteByClass: function(spriteClass) {
-        return _.find(this.sprites, function(sprite) {
+    findSpriteByClass: function (spriteClass) {
+        return _.find(this.sprites, function (sprite) {
             return sprite instanceof spriteClass;
         });
     },
-    findSpritesByClass: function(spriteClass) {
-        return _.filter(this.sprites, function(sprite) {
+    findSpritesByClass: function (spriteClass) {
+        return _.filter(this.sprites, function (sprite) {
             return sprite instanceof spriteClass;
         });
     },
-    findSpriteContainingPoint: function(x, y) {
-        return _.find(this.collider.collisionSprites, function(sprite) {
+    findSpriteContainingPoint: function (x, y) {
+        return _.find(this.collider.collisionSprites, function (sprite) {
             return sprite.containsPoint(x, y);
         });
     },
     // TODO
-    findSpriteByID: function() {
+    findSpriteByID: function () {
 
+    }
+});
+
+Object.defineProperties(DODO.Scene.prototype, {
+    'width': {
+        set: function (n) {
+            this._playgroundWidth = n;
+            this.container.hitArea.width = n;
+        },
+        get: function () {
+            return this._playgroundWidth;
+        }
+    },
+    'height': {
+        set: function (n) {
+            this._playgroundHeight = n;
+            this.container.hitArea.height = n;
+        },
+        get: function () {
+            return this._playgroundHeight;
+        }
     }
 });

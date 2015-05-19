@@ -1,8 +1,8 @@
 DODO.createTiledMap = function(mapData, scene) {
     mapData = JSON.parse(mapData);
 
-    scene.setWidth(mapData["width"] * mapData["tilewidth"]);
-    scene.setHeight(mapData["height"] * mapData["tileheight"]);
+    scene.width = mapData["width"] * mapData["tilewidth"];
+    scene.height = mapData["height"] * mapData["tileheight"];
 
     var layersData = mapData["layers"];
 
@@ -78,7 +78,7 @@ DODO.createTiledMap = function(mapData, scene) {
                 if (mapData.orientation === "isometric") {
                     var x = o.position.x / mapData.tileheight;
                     var y = o.position.y / mapData.tileheight;
-                    o.position.x = (x - y) * (mapData.tilewidth / 2) + scene.getWidth() / 2;
+                    o.position.x = (x - y) * (mapData.tilewidth / 2) + scene.width / 2;
                     o.position.y = (x + y) * (mapData.tileheight / 2);
                 }
                 if (o instanceof DODO.Colliding) {

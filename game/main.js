@@ -86,7 +86,7 @@ var sceneManager = DODO.game.sceneManager;
 var loader = DODO.game.loader;
 
 // sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
-// sceneManager.startScene(skorpio, "lvl1", "Skorpio/skorpio1.json");
+ sceneManager.startScene(skorpio, "lvl1", "Skorpio/skorpio1.json");
 // sceneManager.startScene(brownian, "lvl1", "Brownian/brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric4.json");
 // sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");

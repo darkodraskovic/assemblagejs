@@ -16,18 +16,18 @@ DODO.Sprite = DODO.Inputted.extend({
     },
     // Visual BOUNDS
     getLeft: function () {
-        return this.container.getBounds().x / this.scene.scale + this.scene.camera.x;
+        return this.container.getBounds().x / this.scene.scale + this.scene.camera.position.x;
     },
     getRight: function () {
         var bounds = this.container.getBounds();
-        return (bounds.x + bounds.width) / this.scene.scale + this.scene.camera.x;
+        return (bounds.x + bounds.width) / this.scene.scale + this.scene.camera.position.x;
     },
     getTop: function () {
-        return this.container.getBounds().y / this.scene.scale + this.scene.camera.y;
+        return this.container.getBounds().y / this.scene.scale + this.scene.camera.position.y;
     },
     getBottom: function () {
         var bounds = this.container.getBounds();
-        return (bounds.y + bounds.height) / this.scene.scale + this.scene.camera.y;
+        return (bounds.y + bounds.height) / this.scene.scale + this.scene.camera.position.y;
     },
     getCenterX: function () {
         return this.getLeft() + this.width / 2;
