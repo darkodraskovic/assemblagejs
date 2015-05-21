@@ -85,7 +85,7 @@ new MyGame();
 var sceneManager = DODO.game.sceneManager;
 var loader = DODO.game.loader;
 
-// sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
+ sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
 // sceneManager.startScene(skorpio, "lvl1", "Skorpio/skorpio1.json");
 // sceneManager.startScene(brownian, "lvl1", "Brownian/brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric4.json");
@@ -93,10 +93,10 @@ var loader = DODO.game.loader;
 
 //
 // FARER
-loader.loadAssets(farer, function () {
-    var scene = new DODO.Scene("farer1", DODO.config.camera);
-    populateScene(scene);
-});
+//loader.loadAssets(farer, function () {
+//    var scene = new DODO.Scene("farer1", DODO.config.camera);
+//    populateScene(scene);
+//});
 
 // ROT
 //loader.loadAssets(rot, function () {

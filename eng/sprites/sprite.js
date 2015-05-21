@@ -255,19 +255,15 @@ Object.defineProperties(DODO.Sprite.prototype, {
             return this.container.parent._dodoSprite;
         },
         set: function (sprite) {
-            if (sprite instanceof DODO.Sprite) 
-                sprite.container.addChild(this.container); 
-            else if (this.parent) {
-                this.parent.layer.addChild(this.container);
-            }
+            sprite instanceof DODO.Sprite ? sprite.container.addChild(this.container) :
+                    this.parent && this.parent.layer.addChild(this.container);
         }
     },
     'children': {
         get: function () {
             var children = [];
             _.each(this.container.children, function (child) {
-                if (!_.isUndefined(child._dodoSprite))
-                    children.push(child._dodoSprite);
+                child._dodoSprite && children.push(child._dodoSprite);
             });
             return children;
         }

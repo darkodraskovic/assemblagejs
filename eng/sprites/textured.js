@@ -6,12 +6,10 @@ DODO.Textured = DODO.Sprite.extend({
         this._super(parent, x, y, props);
         var texture = DODO.getAsset(this.spriteSheet);
         if (texture) {
-            if (!_.isNumber(this.frameWidth) || !_.isNumber(this.frameHeight))
-                this.container = new PIXI.Sprite(texture);
-            else {
-                this.container = this.createTransparentSprite(this.frameWidth, this.frameHeight);
-                this.initAnimation(texture);
-            }
+            this.frameWidth = this.frameWidth || texture.width;
+            this.frameHeight = this.frameHeight || texture.height;
+            this.container = this.createTransparentSprite(this.frameWidth, this.frameHeight);
+            this.initAnimation(texture);
         }
         else {
             this.container = this.createTransparentSprite(((props && props.polygon) && props.polygon.w) || 0,
@@ -42,14 +40,12 @@ DODO.Textured = DODO.Sprite.extend({
                 this.textures.push(new PIXI.Texture(texture, rectangle));
             }
         }
-        this.addAnimation("all", _.range(0, this.textures.length), 0);
-        this.setAnimation(this.addAnimation("default", [0], 0));
+        this.setAnimation(this.addAnimation("all", [0], 0));
     },
     // ANIMATIONS
     addAnimation: function (name, textures, speed) {
         for (var i = 0; i < textures.length; i++)
             textures[i] = this.textures[textures[i]];
-
         var animation = new PIXI.extras.MovieClip(textures);
         animation.anchor.x = this.container.anchor.x;
         animation.anchor.y = this.container.anchor.y;
