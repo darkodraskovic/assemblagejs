@@ -31,9 +31,9 @@ DODO.Tiling = DODO.Evented.extend({
         pos.y += this.velocity.y * DODO.game.dt;
         
         if (pos.x > 0) 
-            pos.x -= this.scene.getWidth();
+            pos.x -= this.scene.width;
         if (pos.y > 0) {
-            pos.y -= this.scene.getHeight();
+            pos.y -= this.scene.height;
         }
     }
 });

@@ -36,31 +36,11 @@ var Anime = DODO.Kinematic.extend({
     },
     update: function () {
         this.setAnimation(this.platformerState);
-
-        // FLIP
-        if (this.facing === "right") {
-            this.setFlippedX(false);
-        } else {
-            this.setFlippedX(true);
-        }
-
+        this.flip.x = this.facing === "left";
         this._super();
     },
-    // UTILS
-    flipFacing: function () {
-        if (this.facing === "right") {
-            this.facing = "left";
-        }
-        else {
-            this.facing = "right";
-        }
-    },
     setGravity: function (x, y, slopeTolerance) {
-        if (y > 0) {
-            this.setFlippedY(false);
-        } else {
-            this.setFlippedY(true);
-        }
+        this.flip.y = y < 0;
         this._super(x, y, slopeTolerance);
     }
 });

@@ -5,7 +5,7 @@ var Computer = DODO.Kinematic.extend({
     drawCollisionPolygon: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.setZ("bottom");
+        this.z = "bottom";
 	this.setCollisionSize(38, this.aabbHeight());
 	this.setCollisionOffset(16, 4);
     },

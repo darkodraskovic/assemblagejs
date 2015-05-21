@@ -23,7 +23,6 @@ var AnimePlatformer = DODO.Kinematic.extend({
     frameHeight: 64,
     bounded: false,
     wrap: true,
-    autoFlip: true,
     collisionResponse: "passive",
     drawCollisionPolygon: true,
     mode: "throwing",
@@ -81,13 +80,7 @@ var AnimePlatformer = DODO.Kinematic.extend({
         }
 
         // FLIP
-        if (this.autoFlip) {
-            if (this.facing === "right") {
-                this.setFlippedX(false);
-            } else {
-                this.setFlippedX(true);
-            }
-        }
+        this.flip.x = this.facing === "left";
 
         this._super();
     },
@@ -99,14 +92,6 @@ var AnimePlatformer = DODO.Kinematic.extend({
         }
     },
     // UTILS
-    flipFacing: function() {
-        if (this.facing === "right") {
-            this.facing = "left";
-        }
-        else {
-            this.facing = "right";
-        }
-    },
     collideWithStatic: function(other, response) {
         this._super(other, response);
 
@@ -131,9 +116,9 @@ var AnimePlatformer = DODO.Kinematic.extend({
     },
     setGravity: function(x, y, slopeTolerance) {
         if (y > 0) {
-            this.setFlippedY(false);
+            this.flip.y = false;
         } else {
-            this.setFlippedY(true);
+            this.flip.y = true;
         }
         this._super(x, y, slopeTolerance);
     }
@@ -227,15 +212,15 @@ var PlayerPlatformer = AnimePlatformer.extend({
     throwBall: function() {
         if (this.mode !== "throwing")
             return;
-        var ball = new Ball(this.getLayer(), this.position.x, this.aabbTop());
-        var angle = DODO.angleTo(this.position, this.scene.getMousePosition());
+        var ball = new Ball(this.layer, this.position.x, this.aabbTop());
+        var angle = DODO.angleTo(this.position, this.scene.mouse);
         ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
         ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
     },
     manageThrus: function() {
         if (this.mode !== "building")
             return;
-        var mpl = this.scene.getMousePosition();
+        var mpl = this.scene.mouse;
         var tile = this.thrus.getTileAt(mpl.x, mpl.y);
         if (tile) {
             tile.toggleTurned();
@@ -245,7 +230,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
         var tilemap = this.thrus;
         var scene = this.scene;
         if (scene.rightdown) {
-            var mpl = scene.getMousePosition();
+            var mpl = scene.mouse;
             var tile = this.thrus.getTileAt(mpl.x, mpl.y);
             if (tile) {
                 new ExplosionPlatformer(this.scene.findLayerByName("Thrus"),
@@ -255,7 +240,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
         }
 
         if (this.scene.leftdown && this.mode === "building") {
-            var mpl = this.scene.getMousePosition();
+            var mpl = this.scene.mouse;
             if (!this.thrus.getTileAt(mpl.x, mpl.y)) {
                 var tile = this.thrus.setTile(737, this.thrus.getMapX(mpl.x), this.thrus.getMapX(mpl.y));
                 this.initTile(tile);

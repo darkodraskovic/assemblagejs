@@ -132,13 +132,14 @@ DODO.Kinematic = DODO.Colliding.extend({
         if (this.gravitySet) {
             this._processPlatforms();
             if (this.velocity.len2()) {
-                if (!this.wall)
+                if (!this.wall) {
                     this.position.x = x;
+                }
                 if (!this.ground && !this.ceiling)
                     this.position.y = y;
             }
         }
-        else
+//        else
             this._processStaticImpulse(this._collisionNormal);
     },
     collideWithTile: function (other, response) {

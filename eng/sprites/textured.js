@@ -104,7 +104,7 @@ DODO.Textured = DODO.Sprite.extend({
             }
         });
 
-        _.each(this.getChildrenSprites(), function (sprite) {
+        _.each(this.children, function (sprite) {
             sprite.position.x -= deltaX;
             sprite.position.y -= deltaY;
         });
@@ -121,7 +121,7 @@ DODO.Textured = DODO.Sprite.extend({
     },
     // LIFECYCLE & UPDATE
     update: function () {
-        if (!this.getParentSprite()) {
+        if (!this.parent) {
             if (this.bounded) {
                 this.position.x = Math.max(0, Math.min(this.position.x, this.scene.width));
                 this.position.y = Math.max(0, Math.min(this.position.y, this.scene.height));

@@ -97,7 +97,7 @@ var Player = Anime.extend({
 
         this.scene.bind('leftpressed', this, function() {
             var tm = this.scene.findLayerByName("Tiles").tilemap;
-            var pos = this.scene.getMousePosition();
+            var pos = this.scene.mouse;
             window.console.log("x: " + tm.getMapIsoX(pos.x, pos.y) + ", y: " + tm.getMapIsoY(pos.x, pos.y));
         });
         
@@ -122,7 +122,7 @@ var Player = Anime.extend({
         } else
             this.motionState = "idle";
 
-        var rot = (DODO.angleTo(this.position, this.scene.getMousePosition())).toDeg();
+        var rot = (DODO.angleTo(this.position, this.scene.mouse)).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {

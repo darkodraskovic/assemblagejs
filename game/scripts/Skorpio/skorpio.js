@@ -99,7 +99,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.collisionResponse = "active";
         this.maxVelocity = new SAT.Vector(256, 256);
         this.force = new SAT.Vector(512, 512);
-        this.rifle = new Rifle(this.getLayer(),
+        this.rifle = new Rifle(this.layer,
                 this.position.x, this.position.y,
                 {holder: this, animSpeed: this.animSpeed});
 
@@ -128,7 +128,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         } else
             this.motionState = "idle";
 
-        var rot = (DODO.angleTo(this.position, this.scene.getMousePosition())).toDeg();
+        var rot = (DODO.angleTo(this.position, this.scene.mouse)).toDeg();
         if (rot >= -45 && rot < 45) {
             this.facing = "right";
         } else if (rot >= 45 && rot < 135) {
@@ -143,7 +143,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
     shootBullet: function () {
         var sprPt = this.rifle.getPoint(this.facing);
         var bullet = new Bullet(this.scene.findLayerByName("Effects"), sprPt.x, sprPt.y);
-        var rot = DODO.angleTo(this.position, this.scene.getMousePosition());
+        var rot = DODO.angleTo(this.position, this.scene.mouse);
         bullet.rotation = (rot);
         bullet.velocity.x = Math.cos(rot) * bullet.maxVelocity.x;
         bullet.velocity.y = Math.sin(rot) * bullet.maxVelocity.y;
@@ -282,7 +282,7 @@ var LaserBeam = DODO.Textured.extend({
         this.setAnimation("all", 18, 0);
         this.setAnchor(0, 0.5);
 
-        this.rotation = (DODO.angleTo(this.spawner.position, this.scene.getMousePosition()));
+        this.rotation = (DODO.angleTo(this.spawner.position, this.scene.mouse));
         var sprPt = this.spawner.rifle.getPoint(this.spawner.facing);
         this.position.x = sprPt.x;
         this.position.y = sprPt.y;
@@ -307,8 +307,8 @@ var LaserBeam = DODO.Textured.extend({
         this.position.x = sprPt.x;
         this.position.y = sprPt.y;
 
-        this.rotation = (DODO.angleTo(this.position, this.scene.getMousePosition()));
-        this.width = (DODO.distanceTo(this.position, this.scene.getMousePosition()));
+        this.rotation = (DODO.angleTo(this.position, this.scene.mouse));
+        this.width = (DODO.distanceTo(this.position, this.scene.mouse));
         this.tip.x = this.position.x + Math.cos(this.rotation) * this.width;
         this.tip.y = this.position.y + Math.sin(this.rotation) * this.width;
 
@@ -394,7 +394,7 @@ var LaserFire = DODO.Textured.extend({
 //        var blur = new PIXI.BlurFilter();
 //        blur.blurX = blur.blurY = 1;
 //        this.container.filters = [blur];
-        this.setZ("top");
+        this.z = "top";
         this.setAnchor(0.5, 0.5);
     },
     update: function () {

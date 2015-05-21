@@ -93,7 +93,7 @@ var Player = Anime.extend({
         }
     },
     processFacing: function () {
-        var mousePosition = this.scene.getMousePosition();
+        var mousePosition = this.scene.mouse;
         if (mousePosition.x < this.position.x) {
             this.facing = "left";
         } else {
@@ -115,8 +115,8 @@ var Player = Anime.extend({
         this._super();
     },
     throwBall: function (force) {
-        var ball = new Ball(this.getLayer(), this.position.x, this.aabbTop() + (this.platformerState === "crouching" ? 16 : 20));
-        var angle = DODO.angleTo(this.position, this.scene.getMousePosition());
+        var ball = new Ball(this.layer, this.position.x, this.aabbTop() + (this.platformerState === "crouching" ? 16 : 20));
+        var angle = DODO.angleTo(this.position, this.scene.mouse);
         ball.velocity.x = force * Math.cos(angle);
         ball.velocity.y = force * Math.sin(angle);
         this.throwSound.play();
@@ -160,7 +160,7 @@ var ProgressBarOuter = DODO.Graphics.extend({
         this.container.endFill();
     },
     update: function () {
-        var mousePosition = this.scene.getMousePosition();
+        var mousePosition = this.scene.mouse;
             this.position.y = mousePosition.y;
         if (mousePosition.x < this.owner.position.x) {
             this.position.x = mousePosition.x;

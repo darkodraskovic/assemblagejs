@@ -25,7 +25,7 @@ var Player = DODO.Kinematic.extend({
         player = this;
     },
     update: function () {
-        var rot = DODO.angleTo(this.position, this.scene.getMousePosition());
+        var rot = DODO.angleTo(this.position, this.scene.mouse);
         this.rotation = rot;
 
         var speedSign = 0;
@@ -104,7 +104,7 @@ var Laser = DODO.Textured.extend({
     },
     update: function () {
         if (this.scene.rightdown) {
-            this.width = DODO.distanceTo(this.getScenePosition(), this.scene.getMousePosition());
+            this.width = DODO.distanceTo(this.position.scene, this.scene.mouse);
         }
 
         this.sine.update();
@@ -120,7 +120,7 @@ var Laser = DODO.Textured.extend({
         if (state === "on") {
             this.on = true;
             this.container.alpha = 0.75;
-            this.width = DODO.distanceTo(this.getScenePosition(), this.scene.getMousePosition());
+            this.width = DODO.distanceTo(this.position.scene, this.scene.mouse);
 
             this.sound.play(function (id) {
                 this.soundId = id;

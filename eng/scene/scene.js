@@ -172,9 +172,6 @@ DODO.Scene = DODO.Inputted.extend({
             return child.position[axis];
         });
     },
-    getMousePosition: function () {
-        return DODO.game.renderer.plugins.interaction.mouse.getLocalPosition(this.container);
-    },
     // FIND
     // Layer
     findLayerByName: function (name) {
@@ -252,6 +249,11 @@ Object.defineProperties(DODO.Scene.prototype, {
         },
         get: function () {
             return this._playgroundHeight;
+        }
+    },
+    'mouse': {
+        get: function () {
+            return DODO.game.renderer.plugins.interaction.mouse.getLocalPosition(this.container);
         }
     }
 });
