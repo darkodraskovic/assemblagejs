@@ -101,7 +101,7 @@ var Player = Anime.extend({
             window.console.log("x: " + tm.getMapIsoX(pos.x, pos.y) + ", y: " + tm.getMapIsoY(pos.x, pos.y));
         });
         
-        this.scene.camera.setFollowee(this);
+        this.scene.camera.followee = this;
     },
     update: function() {
         var cd = "";
@@ -169,7 +169,7 @@ var Sphere = Offseted.extend({
         window.scene = this.scene;
         window.player = this;
         
-        this.scene.camera.setFollowee(this);
+        this.scene.camera.followee = this;
 	this.scene.bind('created', this.scene.sortLayerByAxis.bind(this.scene, "Sprites", "y"));
     },
     update: function() {

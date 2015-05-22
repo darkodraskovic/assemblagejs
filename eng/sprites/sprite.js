@@ -133,12 +133,12 @@ DODO.Sprite = DODO.Inputted.extend({
         spritesToDestroy.push(this);
     },
     clear: function () {
+        this.trigger('destroyed');
         if (this.container) {
             this.container._dodoSprite = null;
             this.container.parent && this.container.parent.removeChild(this.container);
             this.container.destroy();
         }
-        this.trigger('destroyed');
         this.debind();
     }
 });

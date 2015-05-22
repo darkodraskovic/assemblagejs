@@ -16,11 +16,16 @@ DODO.Camera = DODO.Class.extend({
         this.innerBounds.top = innerBoundOffset;
         this.innerBounds.bottom = 1 - innerBoundOffset;
     },
-    setFollowee: function (followee) {
-        this.followee = followee;
-        this.followee.bind('destroyed', this, function () {
-            this.followee = null;
-        });
+    setZoom: function (x, y) {
+        this.width /= x / this.scene.scale.x;
+        this.height /= y / this.scene.scale.y;
+        this.scene.scale.set(x, y);
+
+//        DODO.input.bind('forward', this, this.setZoom.bind(this, 'forward'));
+//        DODO.input.bind('backward', this, this.setZoom.bind(this, 'backward'));       
+    },
+    getZoom: function () {
+        return this.scene.scale;
     },
     getInnerBound: function (edge) {
         switch (edge) {
@@ -41,8 +46,8 @@ DODO.Camera = DODO.Class.extend({
         }
     },
     followBounded: function () {
-        var followee = this.followee;
-        
+        var followee = this._followee;
+
         if (followee.position.x < this.getInnerBound("left"))
         {
             this.position.x = followee.position.x - this.width * this.innerBounds.left;
@@ -61,8 +66,8 @@ DODO.Camera = DODO.Class.extend({
         }
     },
     followCentered: function () {
-        this.position.x = this.followee.position.x - this.width / 2;
-        this.position.y = this.followee.position.y - this.height / 2;
+        this.position.x = this._followee.position.x - this.width / 2;
+        this.position.y = this._followee.position.y - this.height / 2;
     },
     centerOn: function (center) {
         this.position.x = center.position.x - this.width / 2;
@@ -71,7 +76,7 @@ DODO.Camera = DODO.Class.extend({
     bound: function () {
         var sceneW = this.scene.width;
         var sceneH = this.scene.height;
-        
+
         if (this.position.x + this.width > sceneW)
         {
             this.position.x = sceneW - this.width;
@@ -90,7 +95,7 @@ DODO.Camera = DODO.Class.extend({
         }
     },
     update: function () {
-        if (this.followee) {
+        if (this._followee) {
             if (this.followType === "centered") {
                 this.followCentered();
             }
@@ -102,7 +107,21 @@ DODO.Camera = DODO.Class.extend({
         if (this.worldBounded) {
             this.bound();
         }
-        
+
         return this.position;
     }
 });
+
+Object.defineProperties(DODO.Camera.prototype, {
+    'followee': {
+        set: function (followee) {
+            this._followee = followee;
+            this._followee && this._followee.bind('destroyed', this, function () {
+                this.followee = null;
+            });
+        },
+        get: function () {
+            return this._followee;
+        }
+    }
+})

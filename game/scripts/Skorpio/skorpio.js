@@ -106,7 +106,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         this.scene.bind('leftpressed', this, this.shootBullet);
         this.scene.bind('rightpressed', this, this.shootLaser);
 
-        this.scene.camera.setFollowee(this);
+        this.scene.camera.followee = this;
         window.player = this;
     },
     update: function () {

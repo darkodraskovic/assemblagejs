@@ -21,7 +21,7 @@ var Player = DODO.Kinematic.extend({
         this.setPoint("bullet1", 18, -12);
         this.setPoint("bullet2", 18, 12);
         this.scene.bind('leftpressed', this, this.shootBullet);
-        this.scene.camera.setFollowee(this);
+        this.scene.camera.followee = this;
         player = this;
     },
     update: function () {

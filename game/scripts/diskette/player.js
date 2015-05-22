@@ -54,7 +54,8 @@ var Player = Anime.extend({
             this.progressBarInner.setVisible(false);
         });       
 
-        this.scene.camera.setFollowee(this);
+        this.scene.camera.followee = this;
+        scene = this.scene;
     },
     processControls: function () {
         if (DODO.input.down["right"] || DODO.input.down["left"]) {

@@ -10,8 +10,6 @@ DODO.Layer.prototype = Object.create(PIXI.Container.prototype);
 DODO.Layer.prototype.constructor = DODO.Layer;
 
 DODO.Scene = DODO.Inputted.extend({
-    scale: 1,
-    scaleSpeed: 2,
     init: function (name, cameraOptions, map) {
         this.name = name;
         this.map = map;
@@ -38,8 +36,6 @@ DODO.Scene = DODO.Inputted.extend({
         this.width = DODO.game.renderer.width;
         this.height = DODO.game.renderer.height;
 
-        DODO.input.bind('forward', this, this.setScale.bind(this, 'forward'));
-        DODO.input.bind('backward', this, this.setScale.bind(this, 'backward'));
         this.camera = new DODO.Camera(this, DODO.game.renderer.width, DODO.game.renderer.height, cameraOptions);
 
         if (map) {
@@ -128,8 +124,8 @@ DODO.Scene = DODO.Inputted.extend({
 
         // Camera & Scene POSITION
         var camPosition = this.camera.update();
-        this.container.position.x = -camPosition.x * this.scale;
-        this.container.position.y = -camPosition.y * this.scale;
+        this.container.position.x = -camPosition.x * this.scale.x;
+        this.container.position.y = -camPosition.y * this.scale.y;
         // Layer parallax
         for (var i = 0; i < this.layers.length; i++) {
             var layer = this.layers[i];
@@ -139,21 +135,6 @@ DODO.Scene = DODO.Inputted.extend({
         if (DODO.config.pixelRounding) {
             this.container.position.x = Math.round(this.container.position.x);
             this.container.position.y = Math.round(this.container.position.y);
-        }
-    },
-    setScale: function (scale) {
-        if (_.isString(scale))
-            scale = this.scale +
-                    (scale === 'forward' ? this.scaleSpeed * DODO.game.dt : -this.scaleSpeed * DODO.game.dt);
-
-        if (scale > 0.25 && scale < 3) {
-            // scale the game world according to scale
-            this.container.scale = new PIXI.Point(scale, scale);
-
-            this.camera.width /= scale / this.scale;
-            this.camera.height /= scale / this.scale;
-
-            this.scale = scale;
         }
     },
     // Layer Z POSITION
@@ -255,5 +236,10 @@ Object.defineProperties(DODO.Scene.prototype, {
         get: function () {
             return DODO.game.renderer.plugins.interaction.mouse.getLocalPosition(this.container);
         }
-    }
+    },
+    'scale': {
+        get: function () {
+            return this.container.scale;
+        }
+    },
 });
