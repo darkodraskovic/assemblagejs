@@ -1,21 +1,5 @@
 var DODO = {};
 
-//Function.prototype.extends = function (parentClassOrObject) {
-//    if (typeof parentClassOrObject.constructor === 'function') {
-//        //Normal Inheritance 
-//        this.prototype = new parentClassOrObject();
-//        this.prototype.constructor = this;
-//        this.prototype.parent = parentClassOrObject.prototype;
-//    }
-//    else {
-//        //Pure Virtual Inheritance 
-//        this.prototype = parentClassOrObject;
-//        this.prototype.constructor = this;
-//        this.prototype.parent = parentClassOrObject;
-//    }
-//    return this;
-//};
-
 (function () {
     'use strict';
     var initializing = false, fnTest = /xyz/.test(function () {
@@ -27,7 +11,7 @@ var DODO = {};
     DODO.Class = function () {
     };
 
-    var inject = function (prop) {
+    var inject = DODO.Class.inject = function (prop) {
         var proto = this.prototype;
         var _super = {};
         // TODO: rewrite this function to be consistent with ternary operator
@@ -102,7 +86,6 @@ var DODO = {};
         Class.prototype.constructor = Class;
 
         // And make this class extendable
-//        Class.extend = arguments.callee;
         Class.extend = extend;
         Class.inject = inject;
 

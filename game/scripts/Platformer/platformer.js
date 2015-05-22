@@ -67,15 +67,15 @@ var AnimePlatformer = DODO.Kinematic.extend({
 
         if (this.standing) {
             if (this.applyForce) {
-                this.setAnimation("moving");
+                this.animation = "moving";
             } else {
-                this.setAnimation("idle");
+                this.animation = "idle";
             }
         } else {
             if (this.velocity.y < 0) {
-                this.setAnimation("launching");
+                this.animation = "launching";
             } else {
-                this.setAnimation("falling");
+                this.animation = "falling";
             }
         }
 
@@ -326,7 +326,7 @@ var ExplosionPlatformer = DODO.Textured.extend({
         this._super(parent, x, y, props);
 
         var anim = this.addAnimation("explode", _.range(0, 17), 0.5);
-        this.setAnimation("explode");
+        this.animation = "explode";
         anim.loop = false;
         anim.onComplete = function() {
             this.destroy();

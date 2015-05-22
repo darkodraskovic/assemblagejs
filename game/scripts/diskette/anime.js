@@ -35,7 +35,7 @@ var Anime = DODO.Kinematic.extend({
 //        window.console.log("Crouching completed");
     },
     update: function () {
-        this.setAnimation(this.platformerState);
+        this.animation = this.platformerState;
         this.flip.x = this.facing === "left";
         this._super();
     },

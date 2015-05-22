@@ -40,7 +40,7 @@ DODO.Textured = DODO.Sprite.extend({
                 this.textures.push(new PIXI.Texture(texture, rectangle));
             }
         }
-        this.setAnimation(this.addAnimation("all", [0], 0));
+        this.animation = this.addAnimation("default", [0], 0);
     },
     // ANIMATIONS
     addAnimation: function (name, textures, speed) {
@@ -55,33 +55,10 @@ DODO.Textured = DODO.Sprite.extend({
         this.container.addChild(animation);
         return animation;
     },
-    setAnimation: function (animation, frame, speed) {
-        if (_.isString(animation))
-            animation = this.findAnimationByName(animation);
-        if (!animation)
-            return;
-        var currentAnim = this.getAnimation();
-        if (currentAnim === animation)
-            return;
-        if (currentAnim) {
-            currentAnim.stop();
-            currentAnim.visible = false;
-        }
-        animation.animationSpeed = _.isNumber(speed) ? speed : animation.animationSpeed;
-        animation.visible = true;
-        animation.gotoAndPlay(frame || 0);
-    },
     findAnimationByName: function (name) {
         var animations = this.container.children;
         for (var i = 0; i < animations.length; i++) {
-            if (animations[i].name === name)
-                return animations[i];
-        }
-    },
-    getAnimation: function () {
-        var animations = this.container.children;
-        for (var i = 0; i < animations.length; i++) {
-            if (animations[i].visible && animations[i] instanceof PIXI.extras.MovieClip)
+            if (animations[i].name === name && animations[i] instanceof PIXI.extras.MovieClip)
                 return animations[i];
         }
     },
@@ -143,5 +120,33 @@ DODO.Textured = DODO.Sprite.extend({
             }
         }
         this._super();
+    }
+});
+
+Object.defineProperties(DODO.Textured.prototype, {
+    'animation': {
+        get: function () {
+            var animations = this.container.children;
+            for (var i = 0; i < animations.length; i++) {
+                if (animations[i].visible && animations[i] instanceof PIXI.extras.MovieClip)
+                    return animations[i];
+            }
+        },
+        set: function (animation) {
+            if (_.isString(animation))
+                animation = this.findAnimationByName(animation);
+            if (!animation)
+                return;
+            var currentAnim = this.animation;
+            if (currentAnim === animation)
+                return;
+            if (currentAnim) {
+                currentAnim.stop();
+                currentAnim.visible = false;
+            }
+            animation.visible = true;
+            animation.play();
+            this.animation = animation;
+        }
     }
 });

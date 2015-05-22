@@ -38,7 +38,7 @@ var Diskette = DODO.Kinematic.extend({
     },
     update: function () {
         if (this.inserting) {
-            var currentAnimation = this.getAnimation();
+            var currentAnimation = this.animation;
             if (currentAnimation.currentFrame.floor() !== this.insertingFrameCount % currentAnimation.totalFrames) {
                 this.insertingFrameCount++;
             }
@@ -118,7 +118,7 @@ var Diskette = DODO.Kinematic.extend({
         this.elasticity = elasticity;
 
         if (other instanceof Computer && response.aInB) {
-            this.setAnimation("inserting");
+            this.animation = "inserting";
             this.inserting = true;
             this.x = other.getSlotX() + this.width * this.anchor.x;
             this.collides = false;

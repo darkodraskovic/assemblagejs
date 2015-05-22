@@ -173,8 +173,7 @@ var Rotor = DODO.Colliding.extend({
     collisionResponse: "static",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-//        this.addAnimation("all", _.range(0, this.textures.length), 0);
-        this.setAnimation("all", 0, 0.016);
+        this. animation = this.addAnimation("all", _.range(0, this.textures.length), 0.05);
         this.setAnchor(0.5, 0.5);
     },
     update: function () {
@@ -189,10 +188,9 @@ var Explosion = DODO.Textured.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
 
-        var anim = this.addAnimation("explode", _.range(0, 17), 0.5);
-        this.setAnimation("explode");
-        anim.loop = false;
-        anim.onComplete = function() {
+        this.animation = this.addAnimation("explode", _.range(0, 17), 0.5);
+        this.animation.loop = false;
+        this.animation.onComplete = function() {
             this.destroy();
         }.bind(this);
 

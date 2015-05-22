@@ -59,7 +59,7 @@ var AnimeSkorpio = DODO.Kinematic.extend({
         }
 
         if (this.alive) {
-            this.setAnimation(this.motionState + "_" + this.facing);
+            this.animation = this.motionState + "_" + this.facing;
         }
         else {
             if (!this.groaned) {
@@ -67,7 +67,7 @@ var AnimeSkorpio = DODO.Kinematic.extend({
                 sound.play();
                 this.groaned = true;
             }
-            this.setAnimation("death");
+            this.animation = "death";
         }
 
         this._super();
@@ -146,8 +146,7 @@ var PlayerSkorpio = AnimeSkorpio.extend({
         var rot = DODO.angleTo(this.position, this.scene.mouse);
         bullet.rotation = (rot);
         bullet.velocity.x = Math.cos(rot) * bullet.maxVelocity.x;
-        bullet.velocity.y = Math.sin(rot) * bullet.maxVelocity.y;
-        bullet.setAnimation("all", 16, 0);
+        bullet.velocity.y = Math.sin(rot) * bullet.maxVelocity.y;        
     },
     shootLaser: function () {
         var pos = this.position;
@@ -216,7 +215,7 @@ var Rifle = DODO.Textured.extend({
     update: function () {
         this.pinTo.update();
 
-        this.setAnimation(this.holder.motionState + "_" + this.holder.facing);
+        this.animation = this.holder.motionState + "_" + this.holder.facing;
         if (this.holder.facing === "up") {
             this.moveToSprite(this.holder, "back");
         } else {
@@ -246,6 +245,8 @@ var Bullet = DODO.Kinematic.extend({
         this.setAnchor(0, 0.5);
         this.setCollisionSize(12, 10);
         this.setCollisionOffset(10, 0);
+        
+        this.animation = this.addAnimation("bullet", [16], 0);
     },
     update: function () {
         if (this.outOfBounds) {
@@ -279,7 +280,7 @@ var LaserBeam = DODO.Textured.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.container.alpha = 0.75;
-        this.setAnimation("all", 18, 0);
+        this.animation = this.addAnimation("laser", [18], 0);
         this.setAnchor(0, 0.5);
 
         this.rotation = (DODO.angleTo(this.spawner.position, this.scene.mouse));
@@ -385,7 +386,7 @@ var LaserFire = DODO.Textured.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.addAnimation("burn", [0, 1, 2], 0.2);
-        this.setAnimation("burn");
+        this.animation = "burn";
         this.sound = DODO.getAsset('fire.wav');
         this.sound.volume(0.3);
         this.sound.loop(true);
@@ -420,7 +421,7 @@ var ExplosionSkorpio = DODO.Textured.extend({
         this._super(parent, x, y, props);
 
         var anim = this.addAnimation("explode", _.range(0, 17), 0.2);
-        this.setAnimation("explode");
+        this.animation = "explode";
         anim.loop = false;
         anim.onComplete = function () {
             this.destroy();

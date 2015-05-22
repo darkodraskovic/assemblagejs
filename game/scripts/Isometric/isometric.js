@@ -55,10 +55,10 @@ var Anime = DODO.Kinematic.extend({
         }
 
         if (this.alive) {
-            this.setAnimation(this.motionState + "_" + this.facing);
+            this.animation = this.motionState + "_" + this.facing;
         }
         else {
-            this.setAnimation("death");
+            this.animation = "death";
         }
 
         this._super();
