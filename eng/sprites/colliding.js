@@ -45,7 +45,7 @@ DODO.Colliding = DODO.Textured.extend({
     drawCollision: function () {
         this.debugGraphics = this.debugGraphics || new DODO.Graphics(this, 0, 0);
         this.collisionPolygon.PIXIPolygon = DODO.SATPolygonToPIXIPolygon(this.collisionPolygon);
-        DODO.drawPolygon(this.debugGraphics.container, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
+        DODO.drawPolygon(this.debugGraphics, this.collisionPolygon.PIXIPolygon, this.polygonStyle);
     },
     collidesWithEntity: function (other) {
         this.response.clear();

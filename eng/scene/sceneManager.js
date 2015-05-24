@@ -10,25 +10,27 @@ DODO.SceneManager = DODO.Class.extend({
             new DODO.Scene(name, DODO.config.camera, map);
         });
     },
-    restartScene: function (name) {
-        var scene = this.findSceneByName(name);
+    restartScene: function (scene) {
+        if (_.isString(scene))
+            scene = this.findSceneByName(scene);
         if (!scene)
             return;
-        scene.destroy();
+        scene.kill();
         new DODO.Scene(scene.name, DODO.config.camera, scene.map);
     },
     update: function () {
         for (var i = 0, len = this.scenes.length; i < len; i++) {
             this.scenes[i].update();
         }
-        
+
         // DESTROY scenes
         if (this._scenesToDestroy.length) {
             for (var i = 0, len = this._scenesToDestroy.length; i < len; i++) {
                 var scene = this._scenesToDestroy[i];
                 this.scenes.splice(this.scenes.indexOf(scene), 1);
-                scene.clear();
+                scene.wipe();
                 window.console.log("Scene " + scene.name + " DESTROYED.");
+                scene.destroy();
             }
             this._scenesToDestroy.length = 0;
         }

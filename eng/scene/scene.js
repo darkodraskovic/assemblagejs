@@ -1,27 +1,27 @@
-DODO.Layer = function (scene, name) {
-//    PIXI.DisplayObjectContainer.call(this);
-    PIXI.Container.call(this);
-    this.scene = scene;
-    this.name = name;
-    this.scene.container.addChild(this);
-    this.parallax = 100;
-};
-DODO.Layer.prototype = Object.create(PIXI.Container.prototype);
-DODO.Layer.prototype.constructor = DODO.Layer;
+DODO.Layer = DODO.Container.extend({
+    init: function (scene, name) {
+        this._super();
+        this.scene = scene;
+        this.name = name;
+        this.scene.addChild(this);
+        this.parallax = 100;
+    }
+});
 
-DODO.Scene = DODO.Inputted.extend({
+DODO.Scene = DODO.Container.extend({    
     init: function (name, cameraOptions, map) {
+        this._super();
+
         this.name = name;
         this.map = map;
 
-        this.container = new PIXI.Container();
-        // WARNING: Hit area culls objects outside scene w & h, eg. objects on negative coords.
-        this.container.hitArea = new PIXI.Rectangle(0, 0, DODO.game.renderer.width, DODO.game.renderer.height);
+        // WARNING + FIX ME: Hit area culls objects outside scene w & h, eg. objects on negative coords.
+//        this.hitArea = new PIXI.Rectangle(0, 0, DODO.game.renderer.width, DODO.game.renderer.height);
         this.initMouseReactivity();
         this.setMouseReactivity(true);
 
         // Layers
-        this.layers = this.container.children;
+        this.layers = this.children;
         // Colliding tilemaps
         this.tilemaps = [];
         // Sprites & their sounds
@@ -42,7 +42,7 @@ DODO.Scene = DODO.Inputted.extend({
             DODO.createTiledMap(DODO.getAsset(this.map), this);
         }
 
-        DODO.game.stage.addChild(this.container);
+        DODO.game.stage.addChild(this);
         this.play();
         this.update();
         this.trigger('created');
@@ -68,16 +68,17 @@ DODO.Scene = DODO.Inputted.extend({
         bakedLayer.baked = true;
         bakedLayer.addChild(sprite);
 
-        this.container.addChildAt(bakedLayer, this.container.getChildIndex(layer));
-        this.container.removeChild(layer);
+        this.addChildAt(bakedLayer, this.getChildIndex(layer));
+        this.removeChild(layer);
         layer.destroy();
     },
-    destroy: function () {
+    kill: function () {
         DODO.game.sceneManager._scenesToDestroy.push(this);
     },
-    clear: function () {
+    wipe: function () {
         _.each(this.sprites, function (sprite) {
-            sprite.clear();
+            sprite.wipe();
+            sprite.destroy();
         });
         _.each(this.layers, function (layer) {
             layer.destroy();
@@ -87,8 +88,7 @@ DODO.Scene = DODO.Inputted.extend({
         });
         this.trigger('destroyed');
         this.debind();
-        this.container.parent.removeChild(this.container);
-        this.container.destroy();
+        this.parent.removeChild(this);
     },
     // START/STOP scene execution
     play: function () {
@@ -110,7 +110,8 @@ DODO.Scene = DODO.Inputted.extend({
         }
         // Manage SPRITES
         for (var i = 0, len = this.spritesToDestroy.length; i < len; i++) {
-            this.spritesToDestroy[i].clear();
+            this.spritesToDestroy[i].wipe();
+            this.spritesToDestroy[i].destroy();
             for (var index = sprites.indexOf(this.spritesToDestroy[i]); index < sprites.length - 1; index++) {
                 sprites[index] = sprites[index + 1];
             }
@@ -124,8 +125,8 @@ DODO.Scene = DODO.Inputted.extend({
 
         // Camera & Scene POSITION
         var camPosition = this.camera.update();
-        this.container.position.x = -camPosition.x * this.scale.x;
-        this.container.position.y = -camPosition.y * this.scale.y;
+        this.position.x = -camPosition.x * this.scale.x;
+        this.position.y = -camPosition.y * this.scale.y;
         // Layer parallax
         for (var i = 0; i < this.layers.length; i++) {
             var layer = this.layers[i];
@@ -133,16 +134,16 @@ DODO.Scene = DODO.Inputted.extend({
             layer.position.y = -camPosition.y * (layer.parallax / 100 - 1);
         }
         if (DODO.config.pixelRounding) {
-            this.container.position.x = Math.round(this.container.position.x);
-            this.container.position.y = Math.round(this.container.position.y);
+            this.position.x = Math.round(this.position.x);
+            this.position.y = Math.round(this.position.y);
         }
     },
     // Layer Z POSITION
     toTopOfContainer: function (layer) {
-        this.container.setChildIndex(layer, this.container.children.length - 1);
+        this.setChildIndex(layer, this.children.length - 1);
     },
     toBottomOfContainer: function (layer) {
-        this.container.setChildIndex(layer, 0);
+        this.setChildIndex(layer, 0);
     },
     sortLayerByAxis: function (layer, axis) {
         if (_.isString(layer))
@@ -161,7 +162,7 @@ DODO.Scene = DODO.Inputted.extend({
         });
     },
     findLayerByNumber: function (num) {
-        return this.container.getChildAt(num);
+        return this.getChildAt(num);
     },
     findLayerSize: function (layer) {
         return layer.children.length;
@@ -214,32 +215,9 @@ DODO.Scene = DODO.Inputted.extend({
 });
 
 Object.defineProperties(DODO.Scene.prototype, {
-    'width': {
-        set: function (n) {
-            this._playgroundWidth = n;
-            this.container.hitArea.width = n;
-        },
-        get: function () {
-            return this._playgroundWidth;
-        }
-    },
-    'height': {
-        set: function (n) {
-            this._playgroundHeight = n;
-            this.container.hitArea.height = n;
-        },
-        get: function () {
-            return this._playgroundHeight;
-        }
-    },
     'mouse': {
         get: function () {
-            return DODO.game.renderer.plugins.interaction.mouse.getLocalPosition(this.container);
+            return DODO.game.renderer.plugins.interaction.mouse.getLocalPosition(this);
         }
-    },
-    'scale': {
-        get: function () {
-            return this.container.scale;
-        }
-    },
+    }
 });

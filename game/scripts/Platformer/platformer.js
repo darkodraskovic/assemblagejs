@@ -114,14 +114,14 @@ var AnimePlatformer = DODO.Kinematic.extend({
             }
         }
     },
-    setGravity: function(x, y, slopeTolerance) {
-        if (y > 0) {
-            this.flip.y = false;
-        } else {
-            this.flip.y = true;
-        }
-        this._super(x, y, slopeTolerance);
-    }
+//    setGravity: function(x, y, slopeTolerance) {
+//        if (y > 0) {
+//            this.flip.y = false;
+//        } else {
+//            this.flip.y = true;
+//        }
+//        this._super(x, y, slopeTolerance);
+//    }
 });
 
 // CLASSES
@@ -153,8 +153,8 @@ var PlayerPlatformer = AnimePlatformer.extend({
             var tilemap = scene.findLayerByName("Thrus").tilemap;
             tilemap.forEachTile(player.initTile);
         })
-        this.scene.bind('leftpressed', this, this.throwBall);
-        this.scene.bind('leftpressed', this, this.manageThrus);
+        this.scene.bind('lmbpressed', this, this.throwBall);
+        this.scene.bind('lmbpressed', this, this.manageThrus);
         
         this.scene.camera.followee = this;
     },
@@ -212,7 +212,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     throwBall: function() {
         if (this.mode !== "throwing")
             return;
-        var ball = new Ball(this.layer, this.position.x, this.aabbTop());
+        var ball = new Ball(this.parent, this.position.x, this.aabbTop());
         var angle = DODO.angleTo(this.position, this.scene.mouse);
         ball.velocity.x = ball.maxVelocity.x * Math.cos(angle);
         ball.velocity.y = ball.maxVelocity.y * Math.sin(angle);
@@ -229,7 +229,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
     processThrus: function() {
         var tilemap = this.thrus;
         var scene = this.scene;
-        if (scene.rightdown) {
+        if (scene.rmbdown) {
             var mpl = scene.mouse;
             var tile = this.thrus.getTileAt(mpl.x, mpl.y);
             if (tile) {
@@ -239,7 +239,7 @@ var PlayerPlatformer = AnimePlatformer.extend({
             }
         }
 
-        if (this.scene.leftdown && this.mode === "building") {
+        if (this.scene.lmbdown && this.mode === "building") {
             var mpl = this.scene.mouse;
             if (!this.thrus.getTileAt(mpl.x, mpl.y)) {
                 var tile = this.thrus.setTile(737, this.thrus.getMapX(mpl.x), this.thrus.getMapX(mpl.y));
@@ -268,11 +268,11 @@ var Ball = DODO.Kinematic.extend({
     },
     update: function() {
         if (this.outOfBounds) {
-            this.destroy();
+            this.kill();
         }
         this.lifeTimer += DODO.game.dt;
         if (this.lifeTimer > this.lifeTime) {
-            this.destroy();
+            this.kill();
         }
 
         this._super();
@@ -329,7 +329,7 @@ var ExplosionPlatformer = DODO.Textured.extend({
         this.animation = "explode";
         anim.loop = false;
         anim.onComplete = function() {
-            this.destroy();
+            this.kill();
         }.bind(this);
         this.scale.x = this.scale.y = 0.4;
         DODO.getAsset('dull.wav').play();

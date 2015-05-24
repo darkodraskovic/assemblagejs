@@ -96,12 +96,7 @@ DODO.Camera = DODO.Class.extend({
     },
     update: function () {
         if (this._followee) {
-            if (this.followType === "centered") {
-                this.followCentered();
-            }
-            else if (this.followType === "bounded") {
-                this.followBounded();
-            }
+            this['follow' + this.followType]();
         }
 
         if (this.worldBounded) {
@@ -124,4 +119,4 @@ Object.defineProperties(DODO.Camera.prototype, {
             return this._followee;
         }
     }
-})
+});

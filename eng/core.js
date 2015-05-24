@@ -86,8 +86,11 @@ var DODO = {};
         Class.prototype.constructor = Class;
 
         // And make this class extendable
+        Function.prototype.extend = extend;
+        Function.prototype.inject = inject;
         Class.extend = extend;
         Class.inject = inject;
+        
 
         return Class;
     };

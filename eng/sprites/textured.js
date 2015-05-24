@@ -1,22 +1,23 @@
-DODO.Textured = DODO.Sprite.extend({
+DODO.Textured = PIXI.Sprite.extend({
     bounded: false,
     wrap: false,
     outOfBounds: false,
     init: function (parent, x, y, props) {
-        this._super(parent, x, y, props);
+        _.extend(this, props);
+        PIXI.Sprite.call(this);
+        this._vector = new SAT.Vector();
+
         var texture = DODO.getAsset(this.spriteSheet);
         if (texture) {
             this.frameWidth = this.frameWidth || texture.width;
             this.frameHeight = this.frameHeight || texture.height;
-            this.container = this.createTransparentSprite(this.frameWidth, this.frameHeight);
+            this.createTransparentSprite(this.frameWidth, this.frameHeight);
             this.initAnimation(texture);
         }
         else {
-            this.container = this.createTransparentSprite(((props && props.polygon) && props.polygon.w) || 0,
+            this.createTransparentSprite(((props && props.polygon) && props.polygon.w) || 0,
                     ((props && props.polygon) && props.polygon.h) || 0);
         }
-
-        this.anchor = this.container.anchor;
         this.initializeSprite(parent, x, y);
     },
     createTransparentSprite: function (w, h) {
@@ -24,7 +25,7 @@ DODO.Textured = DODO.Sprite.extend({
         graphics.beginFill(0xFFFFFF, 0);
         graphics.drawRect(0, 0, w, h);
         graphics.endFill();
-        return new PIXI.Sprite(graphics.generateTexture(false));
+        this.texture = graphics.generateTexture(false);
     },
     initAnimation: function (texture) {
         this.textures = [];
@@ -47,16 +48,17 @@ DODO.Textured = DODO.Sprite.extend({
         for (var i = 0; i < textures.length; i++)
             textures[i] = this.textures[textures[i]];
         var animation = new PIXI.extras.MovieClip(textures);
-        animation.anchor.x = this.container.anchor.x;
-        animation.anchor.y = this.container.anchor.y;
+        animation.anchor.x = this.anchor.x;
+        animation.anchor.y = this.anchor.y;
         animation.visible = false;
         animation.animationSpeed = speed || 0;
         animation.name = name;
-        this.container.addChild(animation);
+        this.addChild(animation);
+        this.setChildIndex(animation, 0);
         return animation;
     },
     findAnimationByName: function (name) {
-        var animations = this.container.children;
+        var animations = this.children;
         for (var i = 0; i < animations.length; i++) {
             if (animations[i].name === name && animations[i] instanceof PIXI.extras.MovieClip)
                 return animations[i];
@@ -70,16 +72,15 @@ DODO.Textured = DODO.Sprite.extend({
         this.anchor.x = x;
         this.anchor.y = y;
 
-        _.each(this.container.children, function (animation) {
-            if (animation instanceof PIXI.extras.MovieClip) {
-                animation.anchor.x = x;
-                animation.anchor.y = y;
+        _.each(this.children, function (child) {
+            if (child instanceof PIXI.extras.MovieClip) {
+                child.anchor.x = x;
+                child.anchor.y = y;
             }
-        });
-
-        _.each(this.children, function (sprite) {
-            sprite.position.x -= deltaX;
-            sprite.position.y -= deltaY;
+            else {
+                child.position.x -= deltaX;
+                child.position.y -= deltaY;
+            }
         });
 
         _.each(this.points, function (p) {
@@ -119,14 +120,13 @@ DODO.Textured = DODO.Sprite.extend({
                 }
             }
         }
-        this._super();
     }
 });
 
 Object.defineProperties(DODO.Textured.prototype, {
     'animation': {
         get: function () {
-            var animations = this.container.children;
+            var animations = this.children;
             for (var i = 0; i < animations.length; i++) {
                 if (animations[i].visible && animations[i] instanceof PIXI.extras.MovieClip)
                     return animations[i];
@@ -147,6 +147,16 @@ Object.defineProperties(DODO.Textured.prototype, {
             animation.visible = true;
             animation.play();
             this.animation = animation;
+        }
+    },
+    animations: {
+        get: function () {
+            var animations = [];
+            for (var i = 0; i < this.children.length; i++) {
+                if (this.children[i] instanceof PIXI.extras.MovieClip)
+                    animations.push(this.children[i]);
+            }
+            return animations;
         }
     }
 });

@@ -21,7 +21,7 @@ DODO.config.directories = {
 DODO.config.camera = {
     innerBoundOffset: 0.25,
     worldBounded: true,
-    followType: "bounded" // or "centered"
+    followType: "Bounded" // or "Centered"
 }
 
 DODO.config.pixelRounding = false;

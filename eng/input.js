@@ -1,36 +1,36 @@
 DODO.Inputted = DODO.Evented.extend({
     initMouseReactivity: function () {
-        this.container.mouseover = function (interactionData) {
+        this.mouseover = function (interactionData) {
             this.mouseover = true;
             this.trigger('mousein', interactionData);
         }.bind(this);
-        this.container.mouseout = function (interactionData) {
+        this.mouseout = function (interactionData) {
             this.mouseover = false;
             this.trigger('mouseout', interactionData);
         }.bind(this);
-        this.container.mousedown = function (interactionData) {
-            this.leftdown = true;
-            this.trigger('leftpressed', interactionData);
+        this.mousedown = function (interactionData) {
+            this.lmbdown = true;
+            this.trigger('lmbpressed', interactionData);
         }.bind(this);
-        this.container.mouseup = this.container.mouseupoutside = function (interactionData) {
-            this.leftdown = false;
-            this.trigger('leftreleased', interactionData);
+        this.mouseup = this.mouseupoutside = function (interactionData) {
+            this.lmbdown = false;
+            this.trigger('lmbreleased', interactionData);
         }.bind(this);
-        this.container.rightdown = function (interactionData) {
-            this.rightdown = true;
-            this.trigger('rightpressed', interactionData);
+        this.rightdown = function (interactionData) {
+            this.rmbdown = true;
+            this.trigger('rmbpressed', interactionData);
         }.bind(this);
-        this.container.rightup = this.container.rightupoutside = function (interactionData) {
-            this.rightdown = false;
-            this.trigger('rightreleased', interactionData);
+        this.rightup = this.rightupoutside = function (interactionData) {
+            this.rmbdown = false;
+            this.trigger('rmbreleased', interactionData);
         }.bind(this);
     },
     setMouseReactivity: function (reactive) {
-        this.container.interactive = reactive;
+        this.interactive = reactive;
     },
     getMouseReactivity: function () {
-        return this.container.interactive;
-    },
+        return this.interactive;
+    }
 });
 
 DODO.input = new (DODO.Evented.extend({

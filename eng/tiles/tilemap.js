@@ -1,7 +1,7 @@
-DODO.Tilemap = DODO.Class.extend({
+DODO.Tilemap = DODO.Container.extend({
     init: function (layer, img, tileW, tileH, collides, spacing, orientation) {
-        this.container = new PIXI.Container();
-        layer.addChild(this.container);
+        this._super();
+        layer.addChild(this);
         layer.tilemap = this;
 
         this.tileW = tileW;
@@ -65,7 +65,7 @@ DODO.Tilemap = DODO.Class.extend({
     },
     removeTile: function (x, y) {
         if (this.tiles[x] && this.tiles[x][y]) {
-            this.tiles[x][y].parent.removeChild(this.tiles[x][y]);
+            this.removeChild(this.tiles[x][y]);
             this.tiles[x][y] = null;
         }
     },
