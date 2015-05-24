@@ -11,7 +11,6 @@ DODO.Inputted = DODO.Evented.extend({
         this.mousedown = function (interactionData) {
             this.lmbdown = true;
             this.trigger('lmbpressed', interactionData);
-            window.console.log(this.listeners['lmbpressed']);
         };
         this.mouseup = this.mouseupoutside = function (interactionData) {
             this.lmbdown = false;
@@ -20,6 +19,7 @@ DODO.Inputted = DODO.Evented.extend({
         this.rightdown = function (interactionData) {
             this.rmbdown = true;
             this.trigger('rmbpressed', interactionData);
+            window.console.log(this.name);
         };
         this.rightup = this.rightupoutside = function (interactionData) {
             this.rmbdown = false;

@@ -22,29 +22,29 @@ var Player = Anime.extend({
         DODO.input.addMapping("jump", DODO.Key.SPACE);
         DODO.input.addMapping("crouch", DODO.Key.S);
 
-        this.scene.bind('lmbpressed', this, function () {
-            this.throwTimerRunning = true;
-            this.throwTimer = 0;
-            this.progressBarInner.setVisible(true);
-        });
-        this.scene.bind('lmbreleased', this, function () {
-            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
-            this.progressBarInner.percent = 0;
-            this.progressBarInner.setVisible(false);
-        });
-        this.scene.bind('rmbpressed', this, function () {
-            if (this.throwTimerRunning) {
-                this.throwTimerRunning = false;
-            }
-            else
-                this.throwTimerRunning = true;
-        });
+//        this.scene.bind('lmbpressed', this, function () {
+//            this.throwTimerRunning = true;
+//            this.throwTimer = 0;
+//            this.progressBarInner.setVisible(true);
+//        });
+//        this.scene.bind('lmbreleased', this, function () {
+//            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
+//            this.progressBarInner.percent = 0;
+//            this.progressBarInner.setVisible(false);
+//        });
+//        this.scene.bind('rmbpressed', this, function () {
+//            if (this.throwTimerRunning) {
+//                this.throwTimerRunning = false;
+//            }
+//            else
+//                this.throwTimerRunning = true;
+//        });
 
         this.throwSound = DODO.getAsset('Diskette/throw.ogg');
 
         this.initMouseReactivity();
-        this.setMouseReactivity(true);
-        this.bind('lmbpressed', function () {window.console.log(this.name + " pressed");});
+//        this.bind('lmbpressed', function () {window.console.log("Player pressed");});
+
         this.setPoint("ball", 0, -this.height / 3);
 
         this.scene.bind('created', this, function () {
@@ -52,7 +52,7 @@ var Player = Anime.extend({
                     this.position.x, this.position.y,
                     {color: DODO.Colors.purple, owner: this});
             this.progressBarInner.setVisible(false);
-        });       
+        });
 
         this.scene.camera.followee = this;
         scene = this.scene;
@@ -80,12 +80,12 @@ var Player = Anime.extend({
             this.platformerState = "falling";
         }
 
-         if (this.platformerState === "crouching") {
-             this.setCollisionSize(this.aabbWidth(), 44);
-         }
-         else {
-             this.setCollisionSize(this.aabbWidth(), 68);
-         }
+        if (this.platformerState === "crouching") {
+            this.setCollisionSize(this.aabbWidth(), 44);
+        }
+        else {
+            this.setCollisionSize(this.aabbWidth(), 68);
+        }
 
         if (DODO.input.down["jump"]) {
             if (this.standing) {
@@ -162,7 +162,7 @@ var ProgressBarOuter = DODO.Graphics.extend({
     },
     update: function () {
         var mousePosition = this.scene.mouse;
-            this.position.y = mousePosition.y;
+        this.position.y = mousePosition.y;
         if (mousePosition.x < this.owner.position.x) {
             this.position.x = mousePosition.x;
         } else {

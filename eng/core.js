@@ -53,7 +53,6 @@ var DODO = {};
         // Instantiate a base class (but only create the instance,
         // don't run the init constructor)
         initializing = true;
-
         var prototype = construct(this, defaultProps);
 //        var prototype = new this();
         initializing = false;

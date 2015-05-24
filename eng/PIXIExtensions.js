@@ -20,7 +20,7 @@
     });
     DODO._Text = PIXI.Text.extend({
         init: function () {
-            PIXI.Graphics.call(this);
+            PIXI.Text.call(this, 'text');
         }
     }, ['text']);
     var displayObjectExtension = {
@@ -218,6 +218,7 @@
     Object.defineProperties(DODO._Textured.prototype, displayObjectExtension);
     Object.defineProperties(DODO._Graphics.prototype, displayObjectExtension);
     Object.defineProperties(DODO._Text.prototype, displayObjectExtension);
+    
     _.extend(DODO._Textured.prototype, DODO.Inputted.prototype);
     _.extend(DODO._Graphics.prototype, DODO.Inputted.prototype);
     _.extend(DODO._Text.prototype, DODO.Inputted.prototype);

@@ -36,10 +36,10 @@ DODO.Evented = DODO.Class.extend({
         this._listeners[event] = this._listeners[event] || [];
         this._listeners[event].push([target || this, callback]);
         if (target) {
-            if (!target.binds) {
-                target.binds = [];
+            if (!target._binds) {
+                target._binds = [];
             }
-            target.binds.push([this, event, callback]);
+            target._binds.push([this, event, callback]);
         }
     },
     trigger: function (event, data) {
@@ -71,9 +71,9 @@ DODO.Evented = DODO.Class.extend({
     },
     //  used when an object is being destroyed to remove all of its listeners
     debind: function () {
-        if (this.binds) {
-            for (var i = 0, len = this.binds.length; i < len; i++) {
-                var boundEvent = this.binds[i],
+        if (this._binds) {
+            for (var i = 0, len = this._binds.length; i < len; i++) {
+                var boundEvent = this._binds[i],
                         source = boundEvent[0],
                         event = boundEvent[1];
                 source.unbind(event, this);

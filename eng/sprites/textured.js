@@ -4,7 +4,8 @@ DODO.Textured = DODO._Textured.extend({
     outOfBounds: false,
     init: function (parent, x, y, props) {
         _.extend(this, props);
-
+        this._super();
+        
         var texture = DODO.getAsset(this.spriteSheet);
         var transparentTexture;
         if (texture) {

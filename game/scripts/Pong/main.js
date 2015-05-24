@@ -11,10 +11,8 @@ var StartText = Text.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.bind('lmbpressed', this, function (id) {
-//            if (id.target === this) {
                 this.scene.pause();
                 sceneManager.startScene(pong, "playground", "Pong/playground.json");
-//            }
         });
     }
 });
