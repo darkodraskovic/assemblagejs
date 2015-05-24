@@ -33,8 +33,8 @@ DODO.Scene = DODO.Container.extend({
         // Used to calculate the scene position of sprites.
         this.origin = new PIXI.Point(0, 0);
         // The scene size defaults to screen witdth x height.
-        this.width = DODO.game.renderer.width;
-        this.height = DODO.game.renderer.height;
+        this.playgroundWidth = DODO.game.renderer.width;
+        this.playgroundHeight = DODO.game.renderer.height;
 
         this.camera = new DODO.Camera(this, DODO.game.renderer.width, DODO.game.renderer.height, cameraOptions);
 
@@ -51,7 +51,7 @@ DODO.Scene = DODO.Container.extend({
     // If layer's objects do not update their properties, such as animation or position,
     // pre-bake layer, ie. make a single sprite/texture out of layer's sprites.
     bakeLayer: function (layer) {
-        var renderTexture = new PIXI.RenderTexture(DODO.game.renderer, this.width, this.height);
+        var renderTexture = new PIXI.RenderTexture(DODO.game.renderer, this.playgroundWidth, this.playgroundHeight);
         // Create a sprite that uses the render texture.
         var sprite = new PIXI.Sprite(renderTexture);
         // Render the layer to the render texture.
@@ -80,11 +80,11 @@ DODO.Scene = DODO.Container.extend({
             sprite.wipe();
             sprite.destroy();
         });
+        _.each(this.tilemaps, function (tilemap) {
+            tilemap.destroy();
+        });
         _.each(this.layers, function (layer) {
             layer.destroy();
-        });
-        _.each(this.tilemaps, function (tilemap) {
-            tilemap = null;
         });
         this.trigger('destroyed');
         this.debind();

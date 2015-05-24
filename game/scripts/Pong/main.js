@@ -12,7 +12,7 @@ var Text = DODO.Text.extend({
 var StartText = Text.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.bind('leftpressed', this, function () {
+        this.bind('lmbpressed', this, function () {
             this.scene.pause();
             sceneManager.startScene(pong, "playground", "Pong/playground.json");
         });
@@ -23,7 +23,7 @@ var StartText = Text.extend({
 var PointsText = Text.extend({
     points: 0,
     update: function () {
-        this.container.text = this.points;
+        this.text = this.points;
         this._super();
     }
 });

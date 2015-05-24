@@ -20,7 +20,7 @@ var Player = DODO.Kinematic.extend({
 //        this.setSpritePoint("bullet2", 18, 12);
         this.setPoint("bullet1", 18, -12);
         this.setPoint("bullet2", 18, 12);
-        this.scene.bind('leftpressed', this, this.shootBullet);
+        this.scene.bind('lmbpressed', this, this.shootBullet);
         this.scene.camera.followee = this;
         player = this;
     },
@@ -88,7 +88,7 @@ var Laser = DODO.Textured.extend({
     spriteSheet: "Farer/laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.container.alpha = 0.4;
+        this.alpha = 0.4;
         this.setAnchor(0, 0.5);
         this.sound = DODO.getAsset('laser-beam.mp3');
         this.sound.loop(true);
@@ -99,12 +99,12 @@ var Laser = DODO.Textured.extend({
         this.origH = this.height;
         var sineProps = {period: 0.5, periodRand: 25, amplitude: 3, amplitudeRand: 25};
         this.sine = new DODO.addons.Sine(this, sineProps);
-        this.scene.bind('rightpressed', this, this.toggleFire.bind(this, 'on'));
-        this.scene.bind('rightreleased', this, this.toggleFire.bind(this, 'off'));
+        this.scene.bind('rmbpressed', this, this.toggleFire.bind(this, 'on'));
+        this.scene.bind('rmbreleased', this, this.toggleFire.bind(this, 'off'));
     },
     update: function () {
-        if (this.scene.rightdown) {
-            this.width = DODO.distanceTo(this.position.scene, this.scene.mouse);
+        if (this.scene.rmbdown) {
+            this.width = DODO.distanceTo(this.getScenePosition(), this.scene.mouse);
         }
 
         this.sine.update();
@@ -119,8 +119,8 @@ var Laser = DODO.Textured.extend({
     toggleFire: function (state) {
         if (state === "on") {
             this.on = true;
-            this.container.alpha = 0.75;
-            this.width = DODO.distanceTo(this.position.scene, this.scene.mouse);
+            this.alpha = 0.75;
+            this.width = DODO.distanceTo(this.getScenePosition(), this.scene.mouse);
 
             this.sound.play(function (id) {
                 this.soundId = id;
@@ -129,7 +129,7 @@ var Laser = DODO.Textured.extend({
         }
         if (state === "off") {
             this.on = false;
-            this.container.alpha = 0.4;
+            this.alpha = 0.4;
             this.width = this.origW;
 
             this.sound.fade(0.75, 0, 450, null, this.soundId);
@@ -150,19 +150,19 @@ var Bullet = DODO.Kinematic.extend({
         sound.volume(0.75);
         sound.play();
         this.setAnchor(0, 0.5);
-        this.container.alpha = 0.75;
+        this.alpha = 0.75;
     },
     update: function () {
         if (this.outOfBounds) {
-            this.destroy();
+            this.kill();
         }
         this._super();
     },
     collideWithStatic: function (other, response) {
         new Explosion(this.scene.findLayerByName("Effects"),
                 other.position.x, other.position.y);
-        other.destroy();
-        this.destroy();
+        other.kill();
+        this.kill();
     }
 });
 
@@ -191,7 +191,7 @@ var Explosion = DODO.Textured.extend({
         this.animation = this.addAnimation("explode", _.range(0, 17), 0.5);
         this.animation.loop = false;
         this.animation.onComplete = function() {
-            this.destroy();
+            this.kill();
         }.bind(this);
 
         DODO.getAsset('explosion.mp3').volume(0.5).play();
@@ -206,9 +206,8 @@ var numRotors = 40;
 
 // PROCEDURES
 populateScene = function (scene) {
-    scene.width = 2048;
-    scene.height = 2048;
-
+    scene.playgroundWidth = 2048;
+    scene.playgroundHeight = 2048;
     var layer = new DODO.Layer(scene, "Starfield");
     layer.parallax = 10;
     new DODO.Tiling(layer, {image: "Farer/starfield.png"});

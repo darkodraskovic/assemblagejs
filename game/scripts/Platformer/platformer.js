@@ -150,9 +150,9 @@ var PlayerPlatformer = AnimePlatformer.extend({
         scene = this.scene;
         player = this;
         this.scene.bind('created', function() {
-            var tilemap = scene.findLayerByName("Thrus").tilemap;
-            tilemap.forEachTile(player.initTile);
-        })
+            var tilemap = this.scene.findLayerByName("Thrus").tilemap;
+            tilemap.forEachTile(this.initTile);
+        }.bind(this));
         this.scene.bind('lmbpressed', this, this.throwBall);
         this.scene.bind('lmbpressed', this, this.manageThrus);
         

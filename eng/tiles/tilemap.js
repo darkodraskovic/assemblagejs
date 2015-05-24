@@ -66,6 +66,7 @@ DODO.Tilemap = DODO.Container.extend({
     removeTile: function (x, y) {
         if (this.tiles[x] && this.tiles[x][y]) {
             this.removeChild(this.tiles[x][y]);
+            this.tiles[x][y].destroy();
             this.tiles[x][y] = null;
         }
     },

@@ -95,29 +95,27 @@ DODO.Textured = PIXI.Sprite.extend({
     },
     // LIFECYCLE & UPDATE
     update: function () {
-        if (!this.parent) {
-            if (this.bounded) {
-                this.position.x = Math.max(0, Math.min(this.position.x, this.scene.width));
-                this.position.y = Math.max(0, Math.min(this.position.y, this.scene.height));
-            } else if (this.wrap) {
-                if (this.position.x < 0) {
-                    this.position.x = this.scene.width;
-                } else if (this.position.x > this.scene.width) {
-                    this.position.x = 0;
-                }
-                if (this.position.y < 0) {
-                    this.position.y = this.scene.height;
-                } else if (this.position.y > this.scene.height) {
-                    this.position.y = 0;
-                }
+        if (this.bounded) {
+            this.position.x = Math.max(0, Math.min(this.position.x, this.scene.playgroundWidth));
+            this.position.y = Math.max(0, Math.min(this.position.y, this.scene.playgroundHeight));
+        } else if (this.wrap) {
+            if (this.position.x < 0) {
+                this.position.x = this.scene.playgroundWidth;
+            } else if (this.position.x > this.scene.playgroundWidth) {
+                this.position.x = 0;
             }
-            else {
-                if (this.position.x < 0 || this.position.x > this.scene.width ||
-                        this.position.y < 0 || this.position.y > this.scene.height) {
-                    this.outOfBounds = true;
-                } else {
-                    this.outOfBounds = false;
-                }
+            if (this.position.y < 0) {
+                this.position.y = this.scene.playgroundHeight;
+            } else if (this.position.y > this.scene.playgroundHeight) {
+                this.position.y = 0;
+            }
+        }
+        else {
+            if (this.position.x < 0 || this.position.x > this.scene.playgroundWidth ||
+                    this.position.y < 0 || this.position.y > this.scene.playgroundHeight) {
+                this.outOfBounds = true;
+            } else {
+                this.outOfBounds = false;
             }
         }
     }

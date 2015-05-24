@@ -6,6 +6,7 @@
             PIXI.Container.call(this);
         }
     });
+//    _.extend(DODO.Container.prototype, DODO.Inputted.prototype);
 
     // Extend PIXI.Sprite/Graphics/Text
     var displayObjectExtension = {
@@ -47,24 +48,24 @@
         },
         // Visual BOUNDS
         getScenePosition: function () {
-            return this.scene.toLocal(this._sprite.scene.origin, this._sprite);
+            return this.scene.toLocal(this.scene.origin, this);
         },
         getScreenPosition: function () {
             return this.getGlobalPosition();
         },
         getLeft: function () {
-            return this.getBounds().x / this.scene.scale + this.scene.camera.position.x;
+            return this.getBounds().x / this.scene.scale.x + this.scene.camera.position.x;
         },
         getRight: function () {
             var bounds = this.getBounds();
-            return (bounds.x + bounds.width) / this.scene.scale + this.scene.camera.position.x;
+            return (bounds.x + bounds.width) / this.scene.scale.x + this.scene.camera.position.x;
         },
         getTop: function () {
-            return this.getBounds().y / this.scene.scale + this.scene.camera.position.y;
+            return this.getBounds().y / this.scene.scale.y + this.scene.camera.position.y;
         },
         getBottom: function () {
             var bounds = this.getBounds();
-            return (bounds.y + bounds.height) / this.scene.scale + this.scene.camera.position.y;
+            return (bounds.y + bounds.height) / this.scene.scale.y + this.scene.camera.position.y;
         },
         getCenterX: function () {
             return this.getLeft() + this.width / 2;
@@ -139,7 +140,6 @@
     };
     _.extend(PIXI.Sprite.prototype, displayObjectExtension);
     _.extend(PIXI.Graphics.prototype, displayObjectExtension);
-    _.extend(PIXI.Text.prototype, displayObjectExtension);
 
     displayObjectExtension = {
         'z': {
@@ -201,5 +201,4 @@
     };
     Object.defineProperties(PIXI.Sprite.prototype, displayObjectExtension);
     Object.defineProperties(PIXI.Graphics.prototype, displayObjectExtension);
-    Object.defineProperties(PIXI.Text.prototype, displayObjectExtension);
 })();

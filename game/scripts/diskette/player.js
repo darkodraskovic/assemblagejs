@@ -22,7 +22,7 @@ var Player = Anime.extend({
         DODO.input.addMapping("jump", DODO.Key.SPACE);
         DODO.input.addMapping("crouch", DODO.Key.S);
 
-        this.scene.bind('leftpressed', this, function () {
+        this.scene.bind('lmbpressed', this, function () {
             this.throwTimerRunning = true;
             this.throwTimer = 0;
             this.progressBarInner.setVisible(true);
@@ -32,7 +32,7 @@ var Player = Anime.extend({
             this.progressBarInner.percent = 0;
             this.progressBarInner.setVisible(false);
         });
-        this.scene.bind('rightpressed', this, function () {
+        this.scene.bind('rmbpressed', this, function () {
             if (this.throwTimerRunning) {
                 this.throwTimerRunning = false;
             }
@@ -44,7 +44,7 @@ var Player = Anime.extend({
 
         this.initMouseReactivity();
         this.setMouseReactivity(true);
-        this.bind('leftpressed', function () {window.console.log(this.name + " pressed");});
+        this.bind('lmbpressed', function () {window.console.log(this.name + " pressed");});
         this.setPoint("ball", 0, -this.height / 3);
 
         this.scene.bind('created', this, function () {
@@ -106,7 +106,7 @@ var Player = Anime.extend({
         this.processControls();
         this.processFacing();
 
-        if (this.scene.leftdown) {
+        if (this.scene.lmbdown) {
             if (this.throwTimerRunning) {
                 this.throwTimer += DODO.game.dt;
                 this.progressBarInner.percent = this.throwTimer.map(0, this.throwTime, 0, 100).clamp(0, 100);

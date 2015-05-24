@@ -30,7 +30,7 @@ var AnimeSkorpio = DODO.Kinematic.extend({
         var deathAnim = this.addAnimation("death", _.range(36, 42), this.animSpeed);
         deathAnim.loop = false;
         deathAnim.onComplete = function () {
-            this.destroy();
+            this.kill();
         }.bind(this);
 
         this.setAnchor(0.5, 0.5)
@@ -103,8 +103,8 @@ var PlayerSkorpio = AnimeSkorpio.extend({
                 this.position.x, this.position.y,
                 {holder: this, animSpeed: this.animSpeed});
 
-        this.scene.bind('leftpressed', this, this.shootBullet);
-        this.scene.bind('rightpressed', this, this.shootLaser);
+        this.scene.bind('lmbpressed', this, this.shootBullet);
+        this.scene.bind('rmbpressed', this, this.shootLaser);
 
         this.scene.camera.followee = this;
         window.player = this;
@@ -250,11 +250,11 @@ var Bullet = DODO.Kinematic.extend({
     },
     update: function () {
         if (this.outOfBounds) {
-            this.destroy();
+            this.kill();
         }
         this.lifeTimer += DODO.game.dt;
         if (this.lifeTimer > this.lifeTime)
-            this.destroy();
+            this.kill();
 
         this._super();
     },
@@ -262,13 +262,13 @@ var Bullet = DODO.Kinematic.extend({
         if (other instanceof Agent) {
             other.alive = false;
             other.motionState = "idle";
-            this.destroy();
+            this.kill();
         } else if (other.collisionResponse === "static") {
-            this.destroy();
+            this.kill();
         }
     },
     collideWithStatic: function (other, response) {
-        this.destroy();
+        this.kill();
     }
 });
 
@@ -279,7 +279,7 @@ var LaserBeam = DODO.Textured.extend({
     bounded: false,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.container.alpha = 0.75;
+        this.alpha = 0.75;
         this.animation = this.addAnimation("laser", [18], 0);
         this.setAnchor(0, 0.5);
 
@@ -301,7 +301,7 @@ var LaserBeam = DODO.Textured.extend({
         var sineProps = {period: 1, periodRand: 50, amplitude: 8, amplitudeRand: 4};
         this.sine = new DODO.addons.Sine(this, sineProps);
 
-        this.scene.bind('rightreleased', this, this.destroy)
+        this.scene.bind('rmbreleased', this, this.kill)
     },
     update: function () {
         var sprPt = this.spawner.rifle.getPoint(this.spawner.facing);
@@ -318,11 +318,11 @@ var LaserBeam = DODO.Textured.extend({
 
         this._super();
     },
-    destroy: function () {
+    kill: function () {
         if (this.laserTip) {
             if (this.laserTip.fire)
-                this.laserTip.fire.destroy();
-            this.laserTip.destroy();
+                this.laserTip.fire.kill();
+            this.laserTip.kill();
         }
         this.sound.stop();
         this._super();
@@ -342,7 +342,7 @@ var LaserTip = DODO.Kinematic.extend({
 
         if (!this.collided) {
             if (this.fire) {
-                this.fire.destroy();
+                this.fire.kill();
                 this.fire = null;
             }
             this.timer = null;
@@ -364,10 +364,9 @@ var LaserTip = DODO.Kinematic.extend({
             this.timer -= DODO.game.dt;
         }
         if (this.timer < 0) {
-            window.console.log(other.getCenterX());
             new ExplosionSkorpio(this.scene.findLayerByName("Effects"),
                     other.getCenterX(), other.getCenterY());
-            other.destroy();
+            other.kill();
             this.timer = null;
         }
         if (!this.fire) {
@@ -394,7 +393,7 @@ var LaserFire = DODO.Textured.extend({
 
 //        var blur = new PIXI.BlurFilter();
 //        blur.blurX = blur.blurY = 1;
-//        this.container.filters = [blur];
+//        this.filters = [blur];
         this.z = "top";
         this.setAnchor(0.5, 0.5);
     },
@@ -406,7 +405,7 @@ var LaserFire = DODO.Textured.extend({
         this.scale.y += DODO.game.dt;
         this._super();
     },
-    destroy: function () {
+    kill: function () {
         this.sound.stop();
         this._super();
     }
@@ -424,7 +423,7 @@ var ExplosionSkorpio = DODO.Textured.extend({
         this.animation = "explode";
         anim.loop = false;
         anim.onComplete = function () {
-            this.destroy();
+            this.kill();
         }.bind(this);
         this.sound = DODO.getAsset('explosion.mp3');
         this.sound.volume(0.4);

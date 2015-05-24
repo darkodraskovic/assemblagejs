@@ -1,8 +1,8 @@
 DODO.createTiledMap = function(mapData, scene) {
     mapData = JSON.parse(mapData);
 
-    scene.width = mapData["width"] * mapData["tilewidth"];
-    scene.height = mapData["height"] * mapData["tileheight"];
+    scene.playgroundWidth = mapData["width"] * mapData["tilewidth"];
+    scene.playgroundHeight = mapData["height"] * mapData["tileheight"];
 
     var layersData = mapData["layers"];
 

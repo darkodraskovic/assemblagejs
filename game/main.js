@@ -85,11 +85,11 @@ new MyGame();
 var sceneManager = DODO.game.sceneManager;
 var loader = DODO.game.loader;
 
- sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
+// sceneManager.startScene(platformer, "lvl1", "Platformer/platformer.json");
 // sceneManager.startScene(skorpio, "lvl1", "Skorpio/skorpio1.json");
 // sceneManager.startScene(brownian, "lvl1", "Brownian/brownian.json");
 //sceneManager.startScene(isometric, "lvl1", "Isometric/isometric4.json");
-// sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
+ sceneManager.startScene(pong, "mainMenu", "Pong/mainMenu.json");
 
 //
 // FARER
@@ -110,7 +110,7 @@ var loader = DODO.game.loader;
 //    for (var i = 0; i < 50; i++) {
 //        var star = new SceneryStar(scene.findLayerByName("Sky"),
 //                Math.random() * DODO.game.renderer.width, Math.random() * DODO.game.renderer.width);
-//        star.container.alpha = Math.random();
+//        star.alpha = Math.random();
 //    }
 //    scene.findSpriteByClass(ScenerySun).z = "top";
 //    player = scene.findSpriteByClass(Player);

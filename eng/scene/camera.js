@@ -74,8 +74,8 @@ DODO.Camera = DODO.Class.extend({
         this.position.y = center.position.y - this.height / 2;
     },
     bound: function () {
-        var sceneW = this.scene.width;
-        var sceneH = this.scene.height;
+        var sceneW = this.scene.playgroundWidth;
+        var sceneH = this.scene.playgroundHeight;
 
         if (this.position.x + this.width > sceneW)
         {
@@ -110,10 +110,13 @@ DODO.Camera = DODO.Class.extend({
 Object.defineProperties(DODO.Camera.prototype, {
     'followee': {
         set: function (followee) {
+            if (this._followee) {
+                this._followee.unbind('destroyed', this);
+                this._followee.bind('destroyed', this, function () {
+                    this.__followee = null;
+                });
+            }
             this._followee = followee;
-            this._followee && this._followee.bind('destroyed', this, function () {
-                this.followee = null;
-            });
         },
         get: function () {
             return this._followee;

@@ -29,7 +29,7 @@ var Anime = DODO.Kinematic.extend({
         var anim = this.addAnimation("death", _.range(36, 42), this.animSpeed);
         anim.loop = false;
         anim.onComplete = function() {
-            this.destroy();
+            this.kill();
         }.bind(this);
 
     },
