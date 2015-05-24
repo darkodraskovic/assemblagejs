@@ -1,4 +1,4 @@
-DODO.Graphics = PIXI.Graphics.extend({
+DODO.Graphics = DODO._Graphics.extend({
     init: function (parent, x, y, props) {
         _.extend(this, props);
         PIXI.Graphics.call(this);
@@ -14,7 +14,7 @@ DODO.Graphics = PIXI.Graphics.extend({
     }
 });
 
-DODO.Text = PIXI.Text.extend({
+DODO.Text = DODO._Text.extend({
     init: function (parent, x, y, props) {
         _.extend(this, props);
         PIXI.Text.call(this, (props && props.text) || "Text", props && props.style);

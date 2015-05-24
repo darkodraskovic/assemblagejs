@@ -27,7 +27,7 @@ var Player = Anime.extend({
             this.throwTimer = 0;
             this.progressBarInner.setVisible(true);
         });
-        this.scene.bind('leftreleased', this, function () {
+        this.scene.bind('lmbreleased', this, function () {
             this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
             this.progressBarInner.percent = 0;
             this.progressBarInner.setVisible(false);
@@ -133,9 +133,9 @@ var ProgressBarInner = DODO.Graphics.extend({
     percent: 0,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.container.beginFill(this.color, alpha);
-        this.container.drawRect(0, 0, this.frameWidth, this.frameHeight);
-        this.container.endFill();
+        this.beginFill(this.color, alpha);
+        this.drawRect(0, 0, this.frameWidth, this.frameHeight);
+        this.endFill();
         this.progressBarOuter = new ProgressBarOuter(this.scene.findLayerByName("Entities"), this.position.x, this.position.y,
                 {color: DODO.Colors.darkslategray, owner: this.owner});
         this.pinTo = new DODO.addons.PinTo(this, {parent: this.progressBarOuter, name: "inner", offsetX: 2, offsetY: 2});
@@ -156,9 +156,9 @@ var ProgressBarOuter = DODO.Graphics.extend({
     graphics: true,
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.container.lineStyle(2, this.color, alpha);
-        this.container.drawRect(0, 0, this.frameWidth, this.frameHeight);
-        this.container.endFill();
+        this.lineStyle(2, this.color, alpha);
+        this.drawRect(0, 0, this.frameWidth, this.frameHeight);
+        this.endFill();
     },
     update: function () {
         var mousePosition = this.scene.mouse;

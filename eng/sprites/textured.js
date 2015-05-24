@@ -1,31 +1,33 @@
-DODO.Textured = PIXI.Sprite.extend({
+DODO.Textured = DODO._Textured.extend({
     bounded: false,
     wrap: false,
     outOfBounds: false,
     init: function (parent, x, y, props) {
         _.extend(this, props);
-        PIXI.Sprite.call(this);
-        this._vector = new SAT.Vector();
 
         var texture = DODO.getAsset(this.spriteSheet);
+        var transparentTexture;
         if (texture) {
             this.frameWidth = this.frameWidth || texture.width;
             this.frameHeight = this.frameHeight || texture.height;
-            this.createTransparentSprite(this.frameWidth, this.frameHeight);
+            transparentTexture = this.createTransparentTexture(this.frameWidth, this.frameHeight);
+            PIXI.Sprite.call(this, transparentTexture);
             this.initAnimation(texture);
         }
         else {
-            this.createTransparentSprite(((props && props.polygon) && props.polygon.w) || 0,
+            transparentTexture = this.createTransparentTexture(((props && props.polygon) && props.polygon.w) || 0,
                     ((props && props.polygon) && props.polygon.h) || 0);
+            PIXI.Sprite.call(this, transparentTexture);
         }
+
         this.initializeSprite(parent, x, y);
     },
-    createTransparentSprite: function (w, h) {
+    createTransparentTexture: function (w, h) {
         var graphics = new PIXI.Graphics();
         graphics.beginFill(0xFFFFFF, 0);
         graphics.drawRect(0, 0, w, h);
         graphics.endFill();
-        this.texture = graphics.generateTexture(false);
+        return graphics.generateTexture(false);
     },
     initAnimation: function (texture) {
         this.textures = [];
@@ -90,9 +92,6 @@ DODO.Textured = PIXI.Sprite.extend({
 
         return [deltaX, deltaY];
     },
-    getAnchor: function () {
-        return this.anchor;
-    },
     // LIFECYCLE & UPDATE
     update: function () {
         if (this.bounded) {
@@ -111,8 +110,8 @@ DODO.Textured = PIXI.Sprite.extend({
             }
         }
         else {
-            if (this.position.x < 0 || this.position.x > this.scene.playgroundWidth ||
-                    this.position.y < 0 || this.position.y > this.scene.playgroundHeight) {
+            if (this.position.x < 0 || (this.position.x > this.scene.playgroundWidth) ||
+                    this.position.y < 0 || (this.position.y > this.scene.playgroundHeight)) {
                 this.outOfBounds = true;
             } else {
                 this.outOfBounds = false;

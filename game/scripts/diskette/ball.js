@@ -16,11 +16,11 @@ var Ball = DODO.Kinematic.extend({
     },
     update: function () {
         if (this.outOfBounds) {
-            this.destroy();
+            this.kill();
         }
         this.lifeTimer += DODO.game.dt;
         if (this.lifeTimer > this.lifeTime) {
-            this.destroy();
+            this.kill();
         }
 
         this._super();

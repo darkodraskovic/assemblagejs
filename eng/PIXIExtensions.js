@@ -1,18 +1,33 @@
 (function () {
     // Extend PIXI.Container
-    _.extend(PIXI.Container.prototype, DODO.Inputted.prototype);
     DODO.Container = PIXI.Container.extend({
         init: function () {
             PIXI.Container.call(this);
         }
     });
-//    _.extend(DODO.Container.prototype, DODO.Inputted.prototype);
+    _.extend(DODO.Container.prototype, DODO.Inputted.prototype);
 
-    // Extend PIXI.Sprite/Graphics/Text
+    // Extend PIXI.Sprite & Graphics
+    DODO._Textured = PIXI.Sprite.extend({
+        init: function () {
+            PIXI.Sprite.call(this);
+        }
+    });
+    DODO._Graphics = PIXI.Graphics.extend({
+        init: function () {
+            PIXI.Graphics.call(this);
+        }
+    });
+    DODO._Text = PIXI.Text.extend({
+        init: function () {
+            PIXI.Graphics.call(this);
+        }
+    }, ['text']);
     var displayObjectExtension = {
         destroyThis: false,
         updates: true,
         initializeSprite: function (parent, x, y) {
+            this._vector = new SAT.Vector(0, 0);
             parent.addChild(this);
             this.position.set(x || 0, y || 0);
 
@@ -138,8 +153,9 @@
             this.parent && this.parent.removeChild(this);
         }
     };
-    _.extend(PIXI.Sprite.prototype, displayObjectExtension);
-    _.extend(PIXI.Graphics.prototype, displayObjectExtension);
+    _.extend(DODO._Textured.prototype, displayObjectExtension);
+    _.extend(DODO._Graphics.prototype, displayObjectExtension);
+    _.extend(DODO._Text.prototype, displayObjectExtension);
 
     displayObjectExtension = {
         'z': {
@@ -199,6 +215,10 @@
             }
         }
     };
-    Object.defineProperties(PIXI.Sprite.prototype, displayObjectExtension);
-    Object.defineProperties(PIXI.Graphics.prototype, displayObjectExtension);
+    Object.defineProperties(DODO._Textured.prototype, displayObjectExtension);
+    Object.defineProperties(DODO._Graphics.prototype, displayObjectExtension);
+    Object.defineProperties(DODO._Text.prototype, displayObjectExtension);
+    _.extend(DODO._Textured.prototype, DODO.Inputted.prototype);
+    _.extend(DODO._Graphics.prototype, DODO.Inputted.prototype);
+    _.extend(DODO._Text.prototype, DODO.Inputted.prototype);
 })();

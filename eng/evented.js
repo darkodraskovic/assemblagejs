@@ -32,9 +32,9 @@ DODO.Evented = DODO.Class.extend({
         if (_.isString(callback)) {
             callback = target[callback];
         }
-        this.listeners = this.listeners || {};
-        this.listeners[event] = this.listeners[event] || [];
-        this.listeners[event].push([target || this, callback]);
+        this._listeners = this._listeners || {};
+        this._listeners[event] = this._listeners[event] || [];
+        this._listeners[event].push([target || this, callback]);
         if (target) {
             if (!target.binds) {
                 target.binds = [];
@@ -43,9 +43,9 @@ DODO.Evented = DODO.Class.extend({
         }
     },
     trigger: function (event, data) {
-        if (this.listeners && this.listeners[event]) {
-            for (var i = 0, len = this.listeners[event].length; i < len; i++) {
-                var listener = this.listeners[event][i];
+        if (this._listeners && this._listeners[event]) {
+            for (var i = 0, len = this._listeners[event].length; i < len; i++) {
+                var listener = this._listeners[event][i];
                 listener[1].call(listener[0], data);
             }
         }
@@ -53,16 +53,16 @@ DODO.Evented = DODO.Class.extend({
     //  used to remove listeners from an object
     unbind: function (event, target, callback) {
         if (!target) {
-            if (this.listeners[event]) {
-                delete this.listeners[event];
+            if (this._listeners[event]) {
+                delete this._listeners[event];
             }
         } else {
-            var l = this.listeners && this.listeners[event];
+            var l = this._listeners && this._listeners[event];
             if (l) {
                 for (var i = l.length - 1; i >= 0; i--) {
                     if (l[i][0] === target) {
                         if (!callback || callback === l[i][1]) {
-                            this.listeners[event].splice(i, 1);
+                            this._listeners[event].splice(i, 1);
                         }
                     }
                 }

@@ -14,7 +14,7 @@ DODO.Tilemap = DODO.Container.extend({
         if (this.orientation === "isometric") {
             this.tileW_half = this.tileW / 2;
             this.tileH_half = this.tileH / 2;
-            this.sceneW_half = layer.scene.width / 2;
+            this.sceneW_half = layer.scene.playgroundWidth / 2;
         }
 
         this.baseTexture = DODO.getAsset(img);

@@ -2,9 +2,7 @@ var Text = DODO.Text.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
         this.initMouseReactivity();
-        this.setMouseReactivity(true);
-        this.scene.setScale(2);
-//        this.sprite.style = {fill: 'green'};
+        this.scene.camera.setZoom(2, 2);
     }
 });
 
@@ -12,9 +10,11 @@ var Text = DODO.Text.extend({
 var StartText = Text.extend({
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
-        this.bind('lmbpressed', this, function () {
-            this.scene.pause();
-            sceneManager.startScene(pong, "playground", "Pong/playground.json");
+        this.bind('lmbpressed', this, function (id) {
+//            if (id.target === this) {
+                this.scene.pause();
+                sceneManager.startScene(pong, "playground", "Pong/playground.json");
+//            }
         });
     }
 });
@@ -51,8 +51,8 @@ var Ball = DODO.Kinematic.extend({
         this.bounceSound = DODO.getAsset('Pong/bounce.wav');
     },
     update: function () {
-        if (this.position.x > this.scene.width) {
-            this.scene.destroy();
+        if (this.position.x > this.scene.playgroundWidth) {
+            this.scene.kill();
             sceneManager.findSceneByName("mainMenu").play();
         }
         this._super();
@@ -61,7 +61,7 @@ var Ball = DODO.Kinematic.extend({
         this._super(other, response);
         if (response.overlap) {
             this.breakSound.play();
-            other.destroy();
+            other.kill();
             this.pointsText.points++;
         }
     },

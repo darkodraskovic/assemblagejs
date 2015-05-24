@@ -10,7 +10,7 @@ var Computer = DODO.Kinematic.extend({
 	this.setCollisionOffset(16, 4);
     },
     getSlotX: function () {
-        return this.position.x + this.collisionOffsetX;
+        return this.position.x + 16;
     },
     getSlotY: function () {
         return this.position.y + 27;

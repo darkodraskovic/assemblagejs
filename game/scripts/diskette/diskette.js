@@ -44,7 +44,7 @@ var Diskette = DODO.Kinematic.extend({
             }
             if (this.insertingFrameCount >= currentAnimation.totalFrames * 2 + 6) {
                 currentAnimation.stop();
-                this.destroy();
+                this.kill();
             }
             return;
         }

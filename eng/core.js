@@ -38,14 +38,24 @@ var DODO = {};
         }
     };
 
+    function construct(constructor, args) {
+        function F() {
+            return constructor.apply(this, args);
+        }
+        F.prototype = constructor.prototype;
+        return new F();
+    }
+    
     // Create a new Class that inherits from this class
-    var extend = DODO.Class.extend = function (prop) {
+    var extend = DODO.Class.extend = function (prop, defaultProps) {
         var _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,
         // don't run the init constructor)
         initializing = true;
-        var prototype = new this();
+
+        var prototype = construct(this, defaultProps);
+//        var prototype = new this();
         initializing = false;
 
         // Copy the properties over onto the new prototype
@@ -90,7 +100,7 @@ var DODO = {};
         Function.prototype.inject = inject;
         Class.extend = extend;
         Class.inject = inject;
-        
+
 
         return Class;
     };

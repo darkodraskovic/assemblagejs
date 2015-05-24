@@ -3,33 +3,29 @@ DODO.Inputted = DODO.Evented.extend({
         this.mouseover = function (interactionData) {
             this.mouseover = true;
             this.trigger('mousein', interactionData);
-        }.bind(this);
+        };
         this.mouseout = function (interactionData) {
             this.mouseover = false;
             this.trigger('mouseout', interactionData);
-        }.bind(this);
+        };
         this.mousedown = function (interactionData) {
             this.lmbdown = true;
             this.trigger('lmbpressed', interactionData);
-        }.bind(this);
+            window.console.log(this.listeners['lmbpressed']);
+        };
         this.mouseup = this.mouseupoutside = function (interactionData) {
             this.lmbdown = false;
             this.trigger('lmbreleased', interactionData);
-        }.bind(this);
+        };
         this.rightdown = function (interactionData) {
             this.rmbdown = true;
             this.trigger('rmbpressed', interactionData);
-        }.bind(this);
+        };
         this.rightup = this.rightupoutside = function (interactionData) {
             this.rmbdown = false;
             this.trigger('rmbreleased', interactionData);
-        }.bind(this);
-    },
-    setMouseReactivity: function (reactive) {
-        this.interactive = reactive;
-    },
-    getMouseReactivity: function () {
-        return this.interactive;
+        };
+        this.interactive = true;
     }
 });
 
