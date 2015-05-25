@@ -1,4 +1,4 @@
-DODO.Colliding = DODO.Textured.extend({
+DODO.Colliding = DODO.Sprite.extend({
     collides: true,
     drawCollisionPolygon: true,
     collisionResponse: "static",

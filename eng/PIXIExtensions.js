@@ -8,7 +8,7 @@
     _.extend(DODO.Container.prototype, DODO.Inputted.prototype);
 
     // Extend PIXI.Sprite & Graphics
-    DODO._Textured = PIXI.Sprite.extend({
+    DODO._Sprite = PIXI.Sprite.extend({
         init: function () {
             PIXI.Sprite.call(this);
         }
@@ -148,12 +148,12 @@
             spritesToDestroy.push(this);
         },
         wipe: function () {
-            this.trigger('destroyed');
             this.debind();
             this.parent && this.parent.removeChild(this);
+            this.trigger('destroyed');
         }
     };
-    _.extend(DODO._Textured.prototype, displayObjectExtension);
+    _.extend(DODO._Sprite.prototype, displayObjectExtension);
     _.extend(DODO._Graphics.prototype, displayObjectExtension);
     _.extend(DODO._Text.prototype, displayObjectExtension);
 
@@ -215,11 +215,11 @@
             }
         }
     };
-    Object.defineProperties(DODO._Textured.prototype, displayObjectExtension);
+    Object.defineProperties(DODO._Sprite.prototype, displayObjectExtension);
     Object.defineProperties(DODO._Graphics.prototype, displayObjectExtension);
     Object.defineProperties(DODO._Text.prototype, displayObjectExtension);
     
-    _.extend(DODO._Textured.prototype, DODO.Inputted.prototype);
+    _.extend(DODO._Sprite.prototype, DODO.Inputted.prototype);
     _.extend(DODO._Graphics.prototype, DODO.Inputted.prototype);
     _.extend(DODO._Text.prototype, DODO.Inputted.prototype);
 })();

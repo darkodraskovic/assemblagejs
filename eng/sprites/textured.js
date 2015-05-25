@@ -1,24 +1,21 @@
-DODO.Textured = DODO._Textured.extend({
+DODO.Sprite = DODO._Sprite.extend({
     bounded: false,
     wrap: false,
     outOfBounds: false,
     init: function (parent, x, y, props) {
         _.extend(this, props);
         this._super();
-        
+
         var texture = DODO.getAsset(this.spriteSheet);
-        var transparentTexture;
         if (texture) {
             this.frameWidth = this.frameWidth || texture.width;
             this.frameHeight = this.frameHeight || texture.height;
-            transparentTexture = this.createTransparentTexture(this.frameWidth, this.frameHeight);
-            PIXI.Sprite.call(this, transparentTexture);
+            this.texture = this.createTransparentTexture(this.frameWidth, this.frameHeight);
             this.initAnimation(texture);
         }
         else {
-            transparentTexture = this.createTransparentTexture(((props && props.polygon) && props.polygon.w) || 0,
+            this.texture = this.createTransparentTexture(((props && props.polygon) && props.polygon.w) || 0,
                     ((props && props.polygon) && props.polygon.h) || 0);
-            PIXI.Sprite.call(this, transparentTexture);
         }
 
         this.initializeSprite(parent, x, y);
@@ -28,7 +25,7 @@ DODO.Textured = DODO._Textured.extend({
         graphics.beginFill(0xFFFFFF, 0);
         graphics.drawRect(0, 0, w, h);
         graphics.endFill();
-        return graphics.generateTexture(false);
+        return graphics.generateTexture();
     },
     initAnimation: function (texture) {
         this.textures = [];
@@ -121,7 +118,7 @@ DODO.Textured = DODO._Textured.extend({
     }
 });
 
-Object.defineProperties(DODO.Textured.prototype, {
+Object.defineProperties(DODO.Sprite.prototype, {
     'animation': {
         get: function () {
             var animations = this.children;

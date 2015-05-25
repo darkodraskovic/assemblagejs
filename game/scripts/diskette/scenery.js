@@ -1,4 +1,4 @@
-var ScenerySun = DODO.Textured.extend({
+var ScenerySun = DODO.Sprite.extend({
     spriteSheet: "Diskette/moon.png",
     bounded: false,
     init: function (parent, x, y, props) {
@@ -15,7 +15,7 @@ var ScenerySun = DODO.Textured.extend({
     }
 });
 
-var SceneryStar = DODO.Textured.extend({
+var SceneryStar = DODO.Sprite.extend({
     spriteSheet: "Diskette/star.png",
     bounded: false,
     init: function (parent, x, y, props) {
@@ -31,7 +31,7 @@ var SceneryStar = DODO.Textured.extend({
         this.scale.y = 1 + this.sine.value;
     }
 });
-var SceneryPyramid = DODO.Textured.extend({
+var SceneryPyramid = DODO.Sprite.extend({
     spriteSheet: "Diskette/pyramid.png",
     bounded: false,
     init: function (parent, x, y, props) {

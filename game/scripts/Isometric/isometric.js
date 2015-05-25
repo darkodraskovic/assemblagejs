@@ -93,7 +93,6 @@ var Player = Anime.extend({
         window.scene = this.scene;
 
         this.initMouseReactivity();
-        this.setMouseReactivity(true);
 
         this.scene.bind('lmbpressed', this, function() {
             var tm = this.scene.findLayerByName("Tiles").tilemap;

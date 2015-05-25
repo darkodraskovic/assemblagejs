@@ -112,10 +112,10 @@ Object.defineProperties(DODO.Camera.prototype, {
         set: function (followee) {
             if (this._followee) {
                 this._followee.unbind('destroyed', this);
-                this._followee.bind('destroyed', this, function () {
-                    this.__followee = null;
-                });
             }
+            followee && followee.bind('destroyed', this, function () {
+                this.followee = null;
+            });
             this._followee = followee;
         },
         get: function () {

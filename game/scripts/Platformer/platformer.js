@@ -147,8 +147,8 @@ var PlayerPlatformer = AnimePlatformer.extend({
         this.jetpackSound = DODO.getAsset('jetpack.wav');
         this.jumpSound = DODO.getAsset('jump.wav');
 
-        scene = this.scene;
-        player = this;
+//        scene = this.scene;
+//        player = this;
         this.scene.bind('created', function () {
             var tilemap = this.scene.findLayerByName("Thrus").tilemap;
             tilemap.forEachTile(this.initTile);
@@ -323,7 +323,7 @@ var Platform = DODO.Colliding.extend({
     }
 });
 
-var ExplosionPlatformer = DODO.Textured.extend({
+var ExplosionPlatformer = DODO.Sprite.extend({
     spriteSheet: "Common/Explosion.png",
     frameWidth: 128,
     frameHeight: 128,

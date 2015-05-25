@@ -84,7 +84,7 @@ var Player = DODO.Kinematic.extend({
     }
 });
 
-var Laser = DODO.Textured.extend({
+var Laser = DODO.Sprite.extend({
     spriteSheet: "Farer/laser.png",
     init: function (parent, x, y, props) {
         this._super(parent, x, y, props);
@@ -181,7 +181,7 @@ var Rotor = DODO.Colliding.extend({
         this.synchCollisionPolygon();
     }
 });
-var Explosion = DODO.Textured.extend({
+var Explosion = DODO.Sprite.extend({
     spriteSheet: "Common/Explosion.png",
     frameWidth: 128,
     frameHeight: 128,
