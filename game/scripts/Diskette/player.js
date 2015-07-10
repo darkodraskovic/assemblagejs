@@ -22,23 +22,23 @@ var Player = Anime.extend({
         DODO.input.addMapping("jump", DODO.Key.SPACE);
         DODO.input.addMapping("crouch", DODO.Key.S);
 
-//        this.scene.bind('lmbpressed', this, function () {
-//            this.throwTimerRunning = true;
-//            this.throwTimer = 0;
-//            this.progressBarInner.setVisible(true);
-//        });
-//        this.scene.bind('lmbreleased', this, function () {
-//            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
-//            this.progressBarInner.percent = 0;
-//            this.progressBarInner.setVisible(false);
-//        });
-//        this.scene.bind('rmbpressed', this, function () {
-//            if (this.throwTimerRunning) {
-//                this.throwTimerRunning = false;
-//            }
-//            else
-//                this.throwTimerRunning = true;
-//        });
+        this.scene.bind('lmbpressed', this, function () {
+            this.throwTimerRunning = true;
+            this.throwTimer = 0;
+            this.progressBarInner.setVisible(true);
+        });
+        this.scene.bind('lmbreleased', this, function () {
+            this.throwBall(this.progressBarInner.percent.map(0, 100, 0, this.throwForce));
+            this.progressBarInner.percent = 0;
+            this.progressBarInner.setVisible(false);
+        });
+        this.scene.bind('rmbpressed', this, function () {
+            if (this.throwTimerRunning) {
+                this.throwTimerRunning = false;
+            }
+            else
+                this.throwTimerRunning = true;
+        });
 
         this.throwSound = DODO.getAsset('Diskette/throw.ogg');
 
