@@ -105,15 +105,15 @@ var loader = DODO.game.loader;
 //});
 
 // DISKETTE
-//loader.loadAssets(diskette, function () {
-//    var scene = new DODO.Scene("Diskette Level 1", DODO.config.camera, "Diskette/diskette1.json");
-//    for (var i = 0; i < 50; i++) {
-//        var star = new SceneryStar(scene.findLayerByName("Sky"),
-//                Math.random() * DODO.game.renderer.width, Math.random() * DODO.game.renderer.width);
-//        star.alpha = Math.random();
-//    }
-//    scene.findSpriteByClass(ScenerySun).z = "top";
-//    player = scene.findSpriteByClass(Player);
-//
-//    DODO.input.addMapping("restart", DODO.Key.T);
-//});
+loader.loadAssets(diskette, function () {
+   var scene = new DODO.Scene("Diskette Level 1", DODO.config.camera, "Diskette/diskette1.json");
+   for (var i = 0; i < 50; i++) {
+       var star = new SceneryStar(scene.findLayerByName("Sky"),
+               Math.random() * DODO.game.renderer.width, Math.random() * DODO.game.renderer.width);
+       star.alpha = Math.random();
+   }
+   scene.findSpriteByClass(ScenerySun).z = "top";
+   player = scene.findSpriteByClass(Player);
+
+   DODO.input.addMapping("restart", DODO.Key.T);
+});

@@ -23,6 +23,7 @@
             PIXI.Text.call(this, 'text');
         }
     }, ['text']);
+
     var displayObjectExtension = {
         destroyThis: false,
         updates: true,
@@ -137,15 +138,12 @@
         update: function () {
         },
         kill: function () {
-            if (this instanceof PIXI.extras.MovieClip)
-                return;
-            var spritesToDestroy = this.scene.spritesToDestroy;
-            if (_.contains(spritesToDestroy, this))
+            if (_.contains(this.scene.spritesToDestroy, this))
                 return;
             _.each(this.children, function (sprite) {
                 sprite.kill && sprite.kill();
             });
-            spritesToDestroy.push(this);
+            this.scene.spritesToDestroy.push(this);
         },
         wipe: function () {
             this.debind();
@@ -157,6 +155,7 @@
     _.extend(DODO._Graphics.prototype, displayObjectExtension);
     _.extend(DODO._Text.prototype, displayObjectExtension);
 
+    // Collection of JS getter/setter properties
     displayObjectExtension = {
         'z': {
             get: function () {
@@ -194,8 +193,8 @@
                 }
                 if (layer instanceof DODO.Layer) {
                     layer.addChild(this);
-                    return layer;
                 }
+		return layer;
             }
         },
         'layerName': {

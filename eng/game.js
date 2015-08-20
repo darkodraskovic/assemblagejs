@@ -38,7 +38,6 @@ DODO.Game = DODO.Evented.extend({
         }
         var now = new Date().getTime();
         var dt = now - this.time;
-        this.dt = dt;
         if (dt > this.maxTick)
             dt = this.maxTick;
         this.time = now;
